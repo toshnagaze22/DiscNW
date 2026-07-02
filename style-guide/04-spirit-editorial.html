@@ -206,8 +206,8 @@ html.js .reveal.in{opacity:1;transform:none}
   padding:18px 36px;background:var(--paper);border-bottom:1px solid var(--line);
 }
 .mock-logo{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none}
-.mock-logo svg{width:34px;height:34px;color:var(--ink)}
-.mock-logo b{font-family:var(--sans);font-weight:800;font-size:19px;letter-spacing:-0.01em}
+/* real DiscNW lockup (black on transparent), recolored to read as Puget Ink on paper */
+.mock-logo img{width:132px;height:auto;filter:brightness(0);opacity:.92}
 .mock-links{display:flex;gap:26px;margin-left:auto;list-style:none}
 .mock-links a{
   font-size:15px;font-weight:600;color:var(--ink);text-decoration:none;
@@ -231,6 +231,15 @@ html.js .reveal.in{opacity:1;transform:none}
   position:absolute;z-index:2;font-size:11.5px;line-height:1.4;color:var(--ink);
   background:rgba(250,250,247,.88);border-radius:6px;padding:6px 10px;max-width:300px;
 }
+/* real photography, treated per the direction: documentary B&W + grain,
+   and exactly one Spirit Green duotone image per view (.img-green) */
+.photo>img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:grayscale(1) contrast(1.06) brightness(.98);
+}
+.photo>img.img-green{
+  filter:grayscale(1) sepia(1) hue-rotate(102deg) saturate(1.5) brightness(.84) contrast(1.06);
+}
 
 /* --- mock hero --- */
 .mock-hero{
@@ -242,14 +251,18 @@ html.js .reveal.in{opacity:1;transform:none}
     radial-gradient(ellipse 560px 320px at 92% 114%, rgba(8,12,20,.62), rgba(8,12,20,0) 66%),
     linear-gradient(180deg,#CDD1D4 0%, #B4BABF 32%, #8C949C 56%, #59626C 76%, #262E39 100%);
 }
+.mock-hero-img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 26%;
+  filter:grayscale(1) contrast(1.07) brightness(.94);
+}
 .mock-hero::before{
-  content:"";position:absolute;inset:0;
+  content:"";position:absolute;inset:0;z-index:1;
   background:
     radial-gradient(ellipse 1000px 700px at 14% 78%, rgba(16,25,43,.6), rgba(16,25,43,0) 72%),
-    linear-gradient(180deg, rgba(16,25,43,.04) 0%, rgba(16,25,43,.4) 33%, rgba(16,25,43,.72) 56%, rgba(16,25,43,.95) 100%);
+    linear-gradient(180deg, rgba(16,25,43,.04) 0%, rgba(16,25,43,.48) 33%, rgba(16,25,43,.76) 56%, rgba(16,25,43,.95) 100%);
 }
 .mock-hero::after{
-  content:"";position:absolute;inset:0;pointer-events:none;opacity:.28;mix-blend-mode:overlay;
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.28;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
 }
 .mock-hero .photo-note{top:18px;right:18px;text-align:left}
@@ -375,7 +388,7 @@ html.js .reveal.in{opacity:1;transform:none}
     linear-gradient(180deg,#CFD3D6 0%, #A5ABB2 50%, #454E58 100%);
 }
 .ph-goldenhour{
-  height:210px;border-radius:8px;
+  height:290px;border-radius:8px;
   background:
     radial-gradient(circle 90px at 50% 38%, rgba(250,250,247,.9), rgba(250,250,247,0) 74%),
     radial-gradient(ellipse 90px 60px at 12% 106%, rgba(8,12,20,.85), rgba(8,12,20,0) 68%),
@@ -384,11 +397,16 @@ html.js .reveal.in{opacity:1;transform:none}
     radial-gradient(ellipse 90px 60px at 90% 106%, rgba(8,12,20,.85), rgba(8,12,20,0) 68%),
     linear-gradient(180deg,#E2E4E6 0%, #B0B6BC 46%, #2E353F 100%);
 }
-.ph-seq{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;height:150px;border-radius:8px;overflow:hidden;background:var(--ink)}
-.ph-seq span{display:block}
-.ph-seq span:nth-child(1){background:radial-gradient(ellipse 70px 46px at 50% 92%, rgba(6,36,25,.95), rgba(6,36,25,0) 66%),linear-gradient(165deg,#DCEAE0 0%, #7FB093 55%, #175C40 100%)}
-.ph-seq span:nth-child(2){background:radial-gradient(ellipse 88px 40px at 52% 78%, rgba(6,36,25,.95), rgba(6,36,25,0) 66%),linear-gradient(165deg,#D3E5D9 0%, #6FA98B 55%, #124F37 100%)}
-.ph-seq span:nth-child(3){background:radial-gradient(ellipse 110px 30px at 50% 88%, rgba(6,36,25,.97), rgba(6,36,25,0) 68%),radial-gradient(ellipse 40px 12px at 74% 40%, rgba(250,250,247,.9) 0 55%, rgba(250,250,247,0) 62%),linear-gradient(165deg,#C9DFD1 0%, #5F9E7F 55%, #0E4530 100%)}
+.ph-seq{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:150px 62px;gap:4px;border-radius:8px;overflow:hidden;background:var(--ink)}
+.ph-seq img{
+  display:block;width:100%;height:100%;object-fit:cover;
+  filter:grayscale(1) sepia(1) hue-rotate(102deg) saturate(1.5) brightness(.84) contrast(1.06);
+}
+.ph-seq img:last-child{grid-column:1 / -1} /* the 1920×180 spirit-line panorama gets the full-width strip its aspect needs */
+.ph-seq::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.3;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
 
 /* impact band */
 .impact{
@@ -442,6 +460,11 @@ html.js .reveal.in{opacity:1;transform:none}
 }
 .event-dates{font-size:13px;font-weight:600;color:var(--grey)}
 .event-body{padding:14px 24px 22px}
+.event-hed{display:flex;align-items:center;gap:14px}
+.event-logo{
+  width:56px;height:56px;flex:none;border-radius:50%;border:1px solid var(--line);
+  background:#fff;filter:grayscale(1) contrast(1.05); /* real program mark, held to the page's B&W discipline */
+}
 .event-body h4{font-family:var(--serif);font-weight:500;font-size:28px;line-height:1.1}
 .event-meta{margin-top:6px;font-size:14px;color:var(--grey)}
 .event-voice{
@@ -667,14 +690,8 @@ html.js .reveal.in{opacity:1;transform:none}
           <span class="browser-url">discnw.org — DiscNW · The home for Ultimate in the Puget Sound region</span>
         </div>
         <nav class="mock-nav" aria-label="Mockup site navigation">
-          <a class="mock-logo" href="#t-hero" aria-label="DiscNW home">
-            <svg viewBox="0 0 40 40" aria-hidden="true" fill="none">
-              <circle cx="20" cy="20" r="16.5" stroke="currentColor" stroke-width="2.4"/>
-              <path d="M6 24.5 C 15 16, 27 15, 35.5 20.5" stroke="currentColor" stroke-width="2"/>
-              <path d="M7.5 13.5 C 15 20.5, 26 23, 33 27.5" stroke="currentColor" stroke-width="2" opacity=".5"/>
-              <ellipse cx="25.5" cy="11.5" rx="4.4" ry="1.8" fill="currentColor"/>
-            </svg>
-            <b>DiscNW</b>
+          <a class="mock-logo" href="#t-hero">
+            <img src="assets/discnw-logo-transparent-april2021.png" alt="DiscNW — home" width="132" height="56">
           </a>
           <ul class="mock-links">
             <li><a href="#t-hero">Events</a></li>
@@ -686,7 +703,8 @@ html.js .reveal.in{opacity:1;transform:none}
           <a class="btn btn-primary" href="#t-hero">Register</a>
         </nav>
         <div class="mock-hero on-ink">
-          <p class="photo-note">Intended photo: full-bleed black-and-white — middle-school game at Magnuson Park, white disc mid-flight against a grey Seattle sky, sideline parents blurred in the foreground.</p>
+          <img class="mock-hero-img" src="assets/ycc-tryouts-2015-4.jpg" alt="A youth player throws a forehand past her defender's mark, the white disc frozen mid-air between them; bleachers, houses, and evergreens beyond the fence.">
+          <p class="photo-note">Real photo: YCC tryouts — a forehand thrown past the mark, the disc mid-air. Treatment: full-bleed black-and-white, film grain, Puget Ink scrim keeping the quote AA-legible.</p>
           <div class="mock-hero-inner">
             <p class="mock-hero-kicker">From the sideline · Fall Middle School Leagues</p><!-- kicker sits on the darkened scrim for AA contrast -->
             <blockquote>
@@ -726,8 +744,10 @@ html.js .reveal.in{opacity:1;transform:none}
         </div>
         <div class="paths-grid">
           <article class="path-card">
-            <div class="path-photo photo ph-players" role="img" aria-label="Placeholder for a black-and-white photo of adult league players under a grey sky"></div>
-            <p class="cap path-cap">Photo — layout on a wet field, week one of Summer Mixed Hat League.</p>
+            <div class="path-photo photo ph-players">
+              <img src="assets/lili-gu.jpg" alt="A club player laughs mid-celebration, holding two water bottles aloft, teammates blurred behind her on an overcast sideline." style="object-position:50% 22%">
+            </div>
+            <p class="cap path-cap">Photo — the point won: bottles raised on a club sideline, an overcast Northwest Saturday.</p>
             <div class="path-body">
               <p class="kicker">Players</p>
               <h4>Your story starts with a hat draw.</h4>
@@ -736,8 +756,10 @@ html.js .reveal.in{opacity:1;transform:none}
             </div>
           </article>
           <article class="path-card">
-            <div class="path-photo photo ph-coaches" role="img" aria-label="Placeholder for a black-and-white photo of a spirit circle seen from a coach's shoulder"></div>
-            <p class="cap path-cap">Photo — a coach kneels in the spirit circle, both teams in one ring.</p>
+            <div class="path-photo photo ph-coaches">
+              <img src="assets/coaching-2.jpg" alt="A coach kneels facing a huddle of about ten youth players on a grass field, a white disc on the ground in the middle of the ring." style="object-position:50% 38%">
+            </div>
+            <p class="cap path-cap">Photo — a coach kneels at the huddle: ten players, one disc, one ring.</p>
             <div class="path-body">
               <p class="kicker">Coaches &amp; volunteers</p>
               <h4>The most important adult on the sideline isn't a referee.</h4>
@@ -746,8 +768,10 @@ html.js .reveal.in{opacity:1;transform:none}
             </div>
           </article>
           <article class="path-card">
-            <div class="path-photo photo ph-parents" role="img" aria-label="Placeholder for the Spirit Green tinted photo of a parent and child leaving the field"></div>
-            <p class="cap path-cap">Photo — cleats over one shoulder, walking to the car. The page's single green-tinted image.</p>
+            <div class="path-photo photo ph-parents">
+              <img class="img-green" src="assets/sheila-camarena.jpg" alt="A gray-haired parent hugs a player in a white jersey on the field while two smiling teammates look on, rendered in Spirit Green duotone." style="object-position:50% 28%">
+            </div>
+            <p class="cap path-cap">Photo — a sideline hug after the game, teammates waiting their turn. The page's single green-tinted image.</p>
             <div class="path-body">
               <p class="kicker">Parents &amp; families</p>
               <h4>What will this give your kid? Ask a parent who watched it happen.</h4>
@@ -787,18 +811,24 @@ html.js .reveal.in{opacity:1;transform:none}
         </div>
         <div class="story-photos">
           <figure>
-            <div class="photo ph-pull" role="img" aria-label="Placeholder for a black-and-white photo of the pull going up at Magnuson Park"></div>
-            <figcaption class="cap">Photo — the pull goes up: opening Saturday of the Fall Middle School League, Magnuson Park.</figcaption>
-          </figure>
-          <figure>
-            <div class="photo ph-goldenhour" role="img" aria-label="Placeholder for a black-and-white photo of a spirit circle at golden hour"></div>
-            <figcaption class="cap">Photo — spirit circle after a middle-school jamboree, golden hour, both teams in one ring.</figcaption>
-          </figure>
-          <figure>
-            <div class="ph-seq" role="img" aria-label="Placeholder for a three-frame Spirit Green tinted sequence of Theo's layout">
-              <span></span><span></span><span></span>
+            <div class="photo ph-pull">
+              <img src="assets/dsc03420-edit-1.jpg" alt="A league player releases a backhand on a grass field, the disc just leaving her hand, other players blurred downfield." style="object-position:50% 42%">
             </div>
-            <figcaption class="cap">Photo — the layout, frame by frame, shot from grass level. The spread's single accent-tinted image.</figcaption>
+            <figcaption class="cap">Photo — the disc goes up: a backhand released into a league Saturday, the field blurred behind it.</figcaption>
+          </figure>
+          <figure>
+            <div class="photo ph-goldenhour">
+              <img src="assets/hudl.jpg" alt="A youth team huddles arms-over-shoulders on a grass field at dusk, a towering wall of storm clouds filling the sky above them." style="object-position:50% 100%">
+            </div>
+            <figcaption class="cap">Photo — the huddle at dusk, arms over shoulders, a storm-lit sky held to black-and-white.</figcaption>
+          </figure>
+          <figure>
+            <div class="ph-seq">
+              <img src="assets/taylor-kanemori.jpg" alt="Youth players jump and cheer as a teammate dances mid-celebration on the sideline." style="object-position:42% 30%">
+              <img src="assets/mary-with-verge-002.jpg" alt="Masters teammates in matching shirts stand arm in arm, smiling in the sun." style="object-position:48% 22%">
+              <img src="assets/banner-home-page-3.jpg" alt="Two youth teams trade high-fives in a post-game spirit line." style="object-position:50% 50%">
+            </div>
+            <figcaption class="cap">Photo — the ritual in three frames: the celebration, arm in arm, the spirit line. The spread's single accent-tinted strip.</figcaption>
           </figure>
         </div>
       </article>
@@ -865,8 +895,13 @@ html.js .reveal.in{opacity:1;transform:none}
               <span class="event-dates">Mondays · Jun 1 – Aug 3</span>
             </div>
             <div class="event-body">
-              <h4>Summer Wonder League</h4>
-              <p class="event-meta">Women's hat league · individual signup · Seattle</p>
+              <div class="event-hed">
+                <img class="event-logo" src="assets/2025-swl-logo.png" alt="Summer Wonder League badge: line-drawn orcas and salmon circling the league name, shown here in the page's black-and-white treatment.">
+                <div>
+                  <h4>Summer Wonder League</h4>
+                  <p class="event-meta">Women's hat league · individual signup · Seattle</p>
+                </div>
+              </div>
               <blockquote class="event-voice">
                 <p>"I signed up alone. By week two I had a carpool."</p>
                 <cite>— Jess T., Wonder League</cite>

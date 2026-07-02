@@ -183,9 +183,12 @@ a{color:var(--cascade)}
   display:flex;align-items:center;gap:26px;background:#fff;
   padding:16px clamp(18px,3vw,36px);border-bottom:1px solid var(--line);
 }
-.m-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.m-logo svg{width:36px;height:36px;flex:none}
-.m-logo b{font-family:'Sora',sans-serif;font-weight:800;font-size:21px;color:var(--navy);letter-spacing:-.01em}
+.m-logo{display:flex;align-items:center;text-decoration:none}
+.m-logo img{
+  width:132px;height:auto;flex:none;
+  /* official one-color lockup (black on transparent), recolored to Anchor Navy #1c3b65 */
+  filter:brightness(0) saturate(100%) invert(29%) sepia(5%) saturate(2125%) hue-rotate(175deg) brightness(115%) contrast(176%);
+}
 .m-links{display:flex;gap:4px;margin-left:auto;list-style:none}
 .m-links a{
   font-size:15px;font-weight:600;color:var(--navy);text-decoration:none;
@@ -237,25 +240,29 @@ a{color:var(--cascade)}
 .m-trust li{display:flex;align-items:center;gap:9px}
 .m-trust li::before{content:"";flex:none;width:14px;height:7px;background:var(--arc-gold) no-repeat center/14px 4px}
 
-/* ---- photo treatment placeholder ---- */
+/* ---- photo treatment: real photo, full color, Night Flight navy-tint scrim ---- */
 .ph{
   position:relative;border-radius:var(--radius);overflow:hidden;
-  background:
-    linear-gradient(180deg,rgba(17,36,61,0) 42%,rgba(17,36,61,.55) 74%,rgba(17,36,61,.84) 100%),
-    radial-gradient(circle at 76% 22%, rgba(255,255,255,.92) 0 11px, rgba(255,255,255,0) 12px),
-    linear-gradient(178deg,#d9eafa 0%,#a8ccec 34%,var(--sky) 68%,var(--cascade) 100%);
+  background:linear-gradient(178deg,#d9eafa 0%,#a8ccec 34%,var(--sky) 68%,var(--cascade) 100%); /* fallback while the photo loads */
   box-shadow:0 18px 44px rgba(17,36,61,.18);
 }
-.ph::after{ /* faint horizon band */
-  content:"";position:absolute;left:0;right:0;bottom:22%;height:2px;
-  background:rgba(17,36,61,.18);
+.ph .ph-img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:saturate(.94) contrast(1.03); /* one notch calmer — product-grade, not postcard */
+}
+.ph::after{ /* the treatment: full color under a Night Flight (#11243d) tint that deepens into a legibility scrim */
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(17,36,61,.18) 0%,rgba(17,36,61,.08) 36%,rgba(17,36,61,.42) 58%,rgba(17,36,61,.75) 78%,rgba(17,36,61,.92) 100%);
 }
 .ph .ph-cap{
-  position:absolute;left:16px;right:16px;bottom:13px;z-index:1;
+  position:absolute;left:12px;right:12px;bottom:12px;z-index:1;
   font-size:12.5px;line-height:1.45;color:#eaf3fc;font-weight:500;
+  padding:8px 11px 9px;border-radius:9px;background:rgba(17,36,61,.6);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
 }
 .ph .ph-cap b{display:block;font-weight:700;color:#fff;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px}
 .ph-hero{aspect-ratio:4/3.4}
+.ph-hero .ph-img{height:114%;top:auto;bottom:0;object-position:38% 50%} /* trims the parking strip off the top of the frame */
 .ph-wide{aspect-ratio:16/9;border-radius:var(--radius) var(--radius) 0 0;box-shadow:none}
 .ph-tall{aspect-ratio:4/4.6;height:100%}
 
@@ -467,9 +474,11 @@ a{color:var(--cascade)}
   .ui-grid{grid-template-columns:1fr}
   .sig-scales{grid-template-columns:1fr}
   .m-links{display:none}
+  .m-cta{margin-left:auto} /* keeps Register right-aligned once the link row hides */
 }
 @media (max-width:840px){
   .path-grid{grid-template-columns:1fr}
+  .path-card{width:100%;max-width:520px;justify-self:center} /* keeps card photos at ≤1.3x native width when stacked */
   .swatches{grid-template-columns:repeat(2,1fr)}
   .voice-grid{grid-template-columns:1fr}
   .impact{grid-template-columns:1fr}
@@ -482,7 +491,6 @@ a{color:var(--cascade)}
 }
 @media (max-width:460px){
   .swatches{grid-template-columns:1fr}
-  .m-cta{margin-left:auto}
   .ts-display{font-size:32px}
   .ts-h1{font-size:27px}
 }
@@ -662,8 +670,7 @@ a{color:var(--cascade)}
 
       <div class="m-nav">
         <span class="m-logo">
-          <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#1c3b65"/><path d="M5 22 C 12 10, 24 8, 32 16" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round"/><path d="M7 27 C 14 17, 25 15, 31 21" fill="none" stroke="#9cc4e8" stroke-width="2" stroke-linecap="round"/><circle cx="30" cy="15" r="3" fill="#ffb43a"/></svg>
-          <b>DiscNW</b>
+          <img src="assets/discnw-logo-transparent-april2021.png" alt="DiscNW" width="1446" height="616">
         </span>
         <ul class="m-links">
           <li><a href="#hero-h">Events</a></li>
@@ -701,9 +708,10 @@ a{color:var(--cascade)}
               <li><a href="#hero-h">Summer Youth Ultimate Camps</a></li>
             </ul>
           </div>
-          <div class="ph ph-hero">
-            <p class="ph-cap"><b>Photo treatment</b>Full-color: layout catch under a clear midday sky, Magnuson Park — lots of sky in the crop, navy-tint gradient for legibility.</p>
-          </div>
+          <figure class="ph ph-hero">
+            <img class="ph-img" src="assets/dsc03420-edit-1.jpg" alt="An adult league player in a pink cap releases a backhand on a sunny grass field, the white disc just leaving her hand.">
+            <figcaption class="ph-cap"><b>Photo treatment · full color + navy scrim</b>A backhand leaves the hand at summer adult league — real play, full color, the Night Flight gradient carrying legibility.</figcaption>
+          </figure>
         </div>
 
         <ul class="m-trust">
@@ -722,9 +730,10 @@ a{color:var(--cascade)}
         </div>
         <div class="path-grid">
           <article class="path-card reveal">
-            <div class="ph ph-wide">
-              <p class="ph-cap"><b>Photo</b>Hat-league teammates lining up for the pull, Green Lake, evening light.</p>
-            </div>
+            <figure class="ph ph-wide">
+              <img class="ph-img" src="assets/lili-gu.jpg" alt="A laughing club player in a red, white, and blue BFG jersey celebrates with a water bottle in each hand, arms spread wide, teammates blurred behind her." style="object-position:50% 30%">
+              <figcaption class="ph-cap"><b>Photo</b>Mid-celebration between points, bottles aloft — club play, full color.</figcaption>
+            </figure>
             <div class="path-body">
               <span class="path-tag">Players</span>
               <h4>Find your next game.</h4>
@@ -735,9 +744,10 @@ a{color:var(--cascade)}
             </div>
           </article>
           <article class="path-card reveal">
-            <div class="ph ph-wide">
-              <p class="ph-cap"><b>Photo</b>Coaching Collective huddle — clipboards, cones, and coffee, Saturday morning.</p>
-            </div>
+            <figure class="ph ph-wide">
+              <img class="ph-img" src="assets/coaching-2.jpg" alt="A coach kneels face-to-face with a huddle of about ten youth players in black and yellow jerseys on a grass field, a white disc on the ground." style="object-position:50% 42%">
+              <figcaption class="ph-cap"><b>Photo</b>Taking a knee with the huddle — youth practice, overcast morning.</figcaption>
+            </figure>
             <div class="path-body">
               <span class="path-tag">Coaches &amp; Volunteers</span>
               <h4>You don't have to be an elite player to coach.</h4>
@@ -748,9 +758,10 @@ a{color:var(--cascade)}
             </div>
           </article>
           <article class="path-card reveal">
-            <div class="ph ph-wide">
-              <p class="ph-cap"><b>Photo</b>Parents in rain shells cheering from the sideline, Spring Reign, Burlington.</p>
-            </div>
+            <figure class="ph ph-wide">
+              <img class="ph-img" src="assets/sheila-camarena.jpg" alt="A gray-haired woman in a pink jacket hugs a player in a white jersey on the field while two smiling teammates look on." style="object-position:50% 28%">
+              <figcaption class="ph-cap"><b>Photo</b>A post-game hug on the field — the family half of league weekends.</figcaption>
+            </figure>
             <div class="path-body">
               <span class="path-tag">Parents &amp; Families</span>
               <h4>New to ultimate? Most parents are.</h4>
@@ -782,9 +793,10 @@ a{color:var(--cascade)}
               <a href="#stories">Share your first</a>
             </div>
           </article>
-          <div class="ph ph-tall reveal">
-            <p class="ph-cap"><b>Photo</b>Maya mid-layout, disc just out of reach, grass stains guaranteed — Spring Reign, April. Big sky, low horizon, navy-tint overlay.</p>
-          </div>
+          <figure class="ph ph-tall reveal">
+            <img class="ph-img" src="assets/hudl.jpg" alt="Youth players huddle arms-over-shoulders on a dusk field beneath a towering storm cloud lit orange by the sunset." style="object-position:50% 88%">
+            <figcaption class="ph-cap"><b>Photo</b>The team that runs over — one huddle under an enormous dusk sky. Big sky, low horizon, navy-tint overlay.</figcaption>
+          </figure>
         </div>
 
         <div class="impact reveal">

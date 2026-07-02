@@ -114,23 +114,33 @@
   .tl-band{ background:linear-gradient(180deg,#AFC1C6 0%, #D5DED9 55%, #E9EDE5 100%); }
   .tl-band .treeline{ margin-bottom:-1px; }
 
-  /* ---------- photo placeholders (duotone treatment) ---------- */
+  /* ---------- photo slots (duotone treatment, real photography) ---------- */
   .ph{
     position:relative; overflow:hidden; border-radius:10px;
     background:
       linear-gradient(16deg, rgba(20,41,31,.95) 0%, rgba(36,81,59,.72) 46%, rgba(82,112,92,.42) 72%, rgba(148,169,180,.34) 100%),
       linear-gradient(180deg, #8FA5A3 0%, #52705C 58%, #24513B 100%);
   }
+  .ph-img{ /* the photo itself, pushed into the fir/fog duotone */
+    position:absolute; inset:0; z-index:1;
+    width:100%; height:100%; object-fit:cover; display:block;
+    filter:grayscale(1) sepia(.8) hue-rotate(100deg) saturate(1.05) brightness(.96) contrast(1.05);
+  }
+  .ph-tone{ /* fir-green grade multiplied over the duotone */
+    position:absolute; inset:0; z-index:2; pointer-events:none;
+    background:linear-gradient(16deg, rgba(20,41,31,.72) 0%, rgba(36,81,59,.42) 46%, rgba(82,112,92,.18) 72%, rgba(148,169,180,.1) 100%);
+    mix-blend-mode:multiply;
+  }
   .ph::before{ /* fog band */
-    content:""; position:absolute; left:-5%; right:-5%; bottom:16%; height:42%;
+    content:""; position:absolute; z-index:3; left:-5%; right:-5%; bottom:16%; height:42%;
     background:linear-gradient(180deg, rgba(241,243,238,0) 0%, rgba(241,243,238,.36) 50%, rgba(241,243,238,0) 100%);
   }
   .ph::after{ /* rain */
-    content:""; position:absolute; inset:0;
+    content:""; position:absolute; z-index:4; inset:0;
     background:repeating-linear-gradient(112deg, rgba(241,243,238,0) 0 9px, rgba(241,243,238,.12) 9px 10px);
   }
   .ph-disc{
-    position:absolute; width:26px; height:8px; border-radius:50%;
+    position:absolute; z-index:5; width:26px; height:8px; border-radius:50%;
     background:#F4F7F2; top:23%; left:63%;
     box-shadow:0 0 14px rgba(244,247,242,.65);
   }
@@ -267,10 +277,9 @@
     padding:16px 36px;
   }
   .mock-logo{ display:flex; align-items:center; gap:10px; }
-  .mock-logo svg{ display:block; }
-  .mock-logo .wordmark{
-    font-family:'Archivo',sans-serif; font-weight:900; font-stretch:112%;
-    font-size:21px; color:var(--paper); letter-spacing:.01em;
+  .mock-logo img{
+    display:block; width:132px; height:auto;
+    filter:brightness(0) invert(1); opacity:.97; /* black lockup → paper-white on Old Fir */
   }
   .mock-links{ display:flex; gap:26px; margin-left:auto; }
   .mock-links span{
@@ -347,7 +356,7 @@
     background:var(--card); border:1px solid var(--line); border-radius:16px;
     padding:18px 18px 24px; display:flex; flex-direction:column;
   }
-  .path-card .ph{ height:168px; }
+  .path-card .ph{ height:190px; }
   .path-tag{
     margin:16px 0 8px;
     font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
@@ -421,6 +430,12 @@
     letter-spacing:.13em; text-transform:uppercase; color:var(--slate);
   }
   .event-card{ border:1px solid var(--line); border-radius:14px; padding:22px 24px; background:var(--paper); }
+  .event-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+  .event-logo{
+    width:64px; height:64px; flex-shrink:0;
+    border-radius:50%; border:1px solid var(--line); background:#FFF;
+    object-fit:cover;
+  }
   .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
   .chip{
     font-family:'Archivo',sans-serif; font-weight:700; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
@@ -490,6 +505,7 @@
   @media (max-width: 980px){
     .swatches{ grid-template-columns:repeat(2,1fr); }
     .paths{ grid-template-columns:1fr; }
+    .path-card{ width:100%; max-width:540px; margin:0 auto; } /* keeps card photos at/near native size */
     .story-grid{ grid-template-columns:1fr; }
     .ui-grid{ grid-template-columns:1fr; }
     .voice-grid{ grid-template-columns:1fr; }
@@ -507,6 +523,9 @@
   @media (max-width: 560px){
     .sec{ padding:56px 20px; }
     .swatches{ grid-template-columns:1fr; }
+    .mock-nav{ gap:14px; padding:12px 16px; }
+    .mock-logo img{ width:100px; }
+    .mock-burger{ margin-left:4px; }
     .dhead-in{ padding:22px 20px; }
     .scale-row{ flex-direction:column; gap:4px; }
     .scale-sample{ white-space:normal; }
@@ -759,16 +778,10 @@
         <div class="browser-url">discnw.org</div>
       </div>
 
-      <div class="mock" role="img" aria-label="Mockup of the redesigned DiscNW homepage hero: dark green navigation bar, a fog-grey sky with a disc in flight, the headline 'Ultimate grows here.' above a fir treeline, and a registration ticker.">
+      <div class="mock" role="img" aria-label="Mockup of the redesigned DiscNW homepage hero: dark green navigation bar with the DiscNW twin-bird logo in white, a fog-grey sky with a disc in flight, the headline 'Ultimate grows here.' above a fir treeline, and a registration ticker.">
         <div class="mock-nav">
           <div class="mock-logo">
-            <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
-              <circle cx="17" cy="17" r="15" fill="none" stroke="#3DAE54" stroke-width="2.4"/>
-              <path d="M5 20 C 12 12, 22 12, 29 16" fill="none" stroke="#F1F3EE" stroke-width="2.2" stroke-linecap="round"/>
-              <path d="M7 25 C 14 19, 23 19, 28 22" fill="none" stroke="#94A9B4" stroke-width="1.8" stroke-linecap="round"/>
-              <ellipse cx="26" cy="12" rx="4.6" ry="1.8" fill="#F1F3EE"/>
-            </svg>
-            <span class="wordmark">DiscNW</span>
+            <img src="assets/discnw-logo-transparent-april2021.png" alt="DiscNW — Coast Salish-style twin-bird mark and wordmark" width="1446" height="616">
           </div>
           <div class="mock-links" aria-hidden="true">
             <span>Events</span><span>Youth</span><span>Adult Leagues</span><span>Coaching</span><span>About</span>
@@ -874,8 +887,11 @@
 
     <div class="paths">
       <article class="path-card">
-        <div class="ph" role="img" aria-label="Duotone photo placeholder: a layout catch at dusk"><span class="ph-disc"></span></div>
-        <p class="ph-cap">Photo: layout catch at dusk, Magnuson Park, floodlights through drizzle.</p>
+        <div class="ph">
+          <img class="ph-img" src="assets/ycc-tryouts-2015-4.jpg" style="object-position:50% 24%" alt="Two youth players at YCC tryouts: one snaps a forehand past her defender, the white disc frozen mid-air between them.">
+          <span class="ph-tone" aria-hidden="true"></span>
+        </div>
+        <p class="ph-cap">Photo (duotone treatment): a forehand thrown past tight defense at YCC tryouts — real disc mid-flight, firs on the ridge behind.</p>
         <p class="path-tag">Players</p>
         <h3>Your next team is one signup away.</h3>
         <p>Hat league, team league, pickup, or a beach weekend at Sea Plastic — year-round, rec to competitive. Tell us the season and how you like to play; we'll show you where you fit.</p>
@@ -883,8 +899,11 @@
       </article>
 
       <article class="path-card">
-        <div class="ph" role="img" aria-label="Duotone photo placeholder: a coach in a huddle of middle schoolers"></div>
-        <p class="ph-cap">Photo: coach kneeling in a huddle of middle schoolers, breath visible, February practice.</p>
+        <div class="ph">
+          <img class="ph-img" src="assets/coaching-2.jpg" style="object-position:50% 40%" alt="A coach kneels facing a huddle of about ten youth players on a grass field, a white disc on the ground beside them.">
+          <span class="ph-tone" aria-hidden="true"></span>
+        </div>
+        <p class="ph-cap">Photo (duotone treatment): a coach kneeling into a youth huddle between points — disc down, everyone leaning in.</p>
         <p class="path-tag">Coaches &amp; volunteers</p>
         <h3>You don't have to be elite. You have to show up.</h3>
         <p>The Coaching Collective backs you with trainings, practice plans, and a bench of coaches to lean on — from your first background check to the season's last spirit circle.</p>
@@ -892,8 +911,11 @@
       </article>
 
       <article class="path-card">
-        <div class="ph" role="img" aria-label="Duotone photo placeholder: parents under umbrellas on a sideline"></div>
-        <p class="ph-cap">Photo: parents under umbrellas on the sideline, kid mid-throw in the foreground.</p>
+        <div class="ph">
+          <img class="ph-img" src="assets/sheila-camarena.jpg" style="object-position:50% 30%" alt="A woman in a pink jacket hugs a player in a white jersey on the field while two smiling teammates look on.">
+          <span class="ph-tone" aria-hidden="true"></span>
+        </div>
+        <p class="ph-cap">Photo (duotone treatment): a sideline hug after the last point — families are part of the team here.</p>
         <p class="path-tag">Parents &amp; families</p>
         <h3>New to ultimate? Most of our parents were.</h3>
         <p>Learn the game in five minutes, get the gear list, and hear the honest answer to "where are the referees?" — there aren't any, and it's the best thing about this sport.</p>
@@ -975,8 +997,11 @@
 
       <div class="story-grid">
         <article class="report">
-          <div class="ph" role="img" aria-label="Duotone photo placeholder: muddy hands holding a white disc under floodlights"><span class="ph-disc" style="top:20%; left:52%"></span></div>
-          <p class="ph-cap">Photo (duotone treatment): muddy hands and a white disc under floodlights, rain visible against the light, Magnuson Field 6.</p>
+          <div class="ph">
+            <img class="ph-img" src="assets/taylor-kanemori.jpg" style="object-position:50% 35%" alt="Youth teammates in green and black jerseys laugh, jump, and cheer on a grass tournament field as one player dances mid-celebration.">
+            <span class="ph-tone" aria-hidden="true"></span>
+          </div>
+          <p class="ph-cap">Photo (duotone treatment): both sidelines losing it — teammates mid-celebration under a flat grey tournament sky.</p>
           <p class="report-meta">
             <span>Field report · Fall MS Mixed Hat League</span>
             <span class="meta-weather">Magnuson Park · November · 43° and raining</span>
@@ -1044,12 +1069,17 @@
           <article class="event-card">
             <div class="chip-row">
               <span class="chip">Adult</span>
-              <span class="chip">Hat league</span>
+              <span class="chip">Summer league</span>
               <span class="chip chip-live">Registering now</span>
             </div>
-            <h4>Summer Mixed Hat League</h4>
-            <p class="event-meta">Jun 1 – Aug 10 · Monday evenings · Seattle</p>
-            <p class="event-desc">Individual signup — we draw teams from a hat. You'll know everyone's name by week two.</p>
+            <div class="event-head">
+              <div>
+                <h4>Summer Wonder League</h4>
+                <p class="event-meta">Jun 1 – Aug 10 · Monday evenings · Seattle</p>
+              </div>
+              <img class="event-logo" src="assets/2025-swl-logo.png" alt="Summer Wonder League logo: line-drawn orcas and salmon circling the league name" width="800" height="801">
+            </div>
+            <p class="event-desc">Individual signup — we draw balanced teams. You'll know everyone's name by week two.</p>
             <p class="event-fee">Sliding scale $33–$495 · pick the tier that fits your household. Every tier gets the same season.</p>
             <div class="event-foot">
               <span class="event-deadline">Registration open through May 30</span>
@@ -1057,6 +1087,7 @@
               <button type="button" class="btn btn-quiet">League details</button>
             </div>
           </article>
+          <p class="note">Real program mark, chip scale: the 2025 Summer Wonder League's orcas and salmon already speak Evergreen — program art keeps its color, the card stays quiet.</p>
         </div>
 
         <div class="ui-block">
