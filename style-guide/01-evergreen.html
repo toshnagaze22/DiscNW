@@ -10,6 +10,7 @@
 <style>
   :root{
     --fir:#14291F;
+    --fir-panel:#1E3A2B;
     --hemlock:#24513B;
     --grass:#3DAE54;
     --grass-dark:#2F9B46;
@@ -19,8 +20,11 @@
     --card:#FBFCFA;
     --slate:#44554D;
     --ink:#1F332A;
-    --line:#D5DCD1;
     --btn-ink:#0E241A;
+    --sky-top:#B3C4CB;
+    --sky-mid:#CFDAD7;
+    --sky-low:#E9EDE6;
+    --wrap:1200px;
   }
   *{ box-sizing:border-box; }
   html{ scroll-behavior:smooth; }
@@ -34,6 +38,7 @@
     -webkit-font-smoothing:antialiased;
   }
   ::selection{ background:var(--grass); color:var(--btn-ink); }
+  img{ max-width:100%; }
 
   a{ color:var(--hemlock); text-decoration:underline; text-underline-offset:3px; }
   a:hover{ color:var(--fir); }
@@ -42,118 +47,53 @@
     outline-offset:2px;
     border-radius:4px;
   }
-  .sec-dark a:focus-visible, .sec-dark button:focus-visible, .sec-dark select:focus-visible,
+  .sec-dark a:focus-visible, .sec-dark button:focus-visible,
   .site-foot a:focus-visible, .site-foot button:focus-visible{
     outline-color:var(--grass);
   }
 
-  /* ---------- layout scaffolding ---------- */
-  .sec{ max-width:1180px; margin:0 auto; padding:76px 32px; }
-  .sec-tight{ padding-top:56px; padding-bottom:56px; }
+  /* ---------- layout: one container, one rhythm ---------- */
+  .sec{ max-width:var(--wrap); margin:0 auto; padding:120px 32px; }
   .kicker{
     font-family:'Archivo',sans-serif;
-    font-weight:700; font-size:13px;
+    font-weight:700; font-size:12px;
     letter-spacing:.16em; text-transform:uppercase;
     color:var(--hemlock);
-    margin:0 0 10px;
+    margin:0 0 12px;
   }
   .sec-title{
     font-family:'Archivo',sans-serif;
     font-weight:800; font-stretch:112%;
-    font-size:clamp(30px, 3.6vw, 42px);
-    line-height:1.06; letter-spacing:-.01em;
+    font-size:clamp(30px, 3.6vw, 44px);
+    line-height:1.04; letter-spacing:-.01em;
     color:var(--fir);
-    margin:0 0 18px;
+    margin:0 0 16px;
+    text-wrap:balance;
   }
-  .sec-intro{ max-width:66ch; margin:0 0 34px; color:var(--slate); font-size:18px; }
+  .sec-intro{ max-width:64ch; margin:0 0 48px; color:var(--slate); font-size:18px; }
   .note{
-    font-size:12.5px; font-style:italic; color:var(--slate);
-    margin:10px 2px 0;
+    font-size:13px; font-style:italic; color:var(--slate);
+    margin:16px 2px 0; max-width:84ch;
   }
 
-  /* ---------- direction header (meta, quiet) ---------- */
-  .dhead{
-    background:#E6EBE2;
-    border-bottom:1px solid var(--line);
-  }
-  .dhead-in{
-    max-width:1180px; margin:0 auto; padding:26px 32px;
-    display:flex; flex-wrap:wrap; gap:20px 48px; align-items:baseline;
-  }
-  .dhead-id{ min-width:220px; }
-  .dhead-series{
-    margin:0 0 4px;
-    font-family:'Archivo',sans-serif; font-weight:600; font-size:12px;
-    letter-spacing:.18em; text-transform:uppercase; color:var(--slate);
-  }
-  .dhead-name{
-    margin:0;
-    font-family:'Archivo',sans-serif; font-weight:900; font-stretch:120%;
-    font-size:26px; line-height:1; color:var(--fir);
-  }
-  .dhead-name small{
-    display:block; font-weight:600; font-stretch:100%; font-size:12px;
-    letter-spacing:.14em; text-transform:uppercase; color:var(--hemlock); margin-top:6px;
-  }
-  .dhead-body{ flex:1; min-width:280px; }
-  .dhead-thesis{ margin:0 0 12px; font-size:16.5px; color:var(--ink); max-width:64ch; }
-  .dhead-tags{ display:flex; flex-wrap:wrap; gap:8px; margin:0; padding:0; list-style:none; }
-  .dhead-tags li{
-    font-family:'Archivo',sans-serif; font-weight:700; font-size:11.5px;
-    letter-spacing:.1em; text-transform:uppercase;
-    color:var(--hemlock);
-    border:1px solid #BECBBE; border-radius:999px;
-    padding:4px 12px; background:rgba(251,252,250,.6);
-  }
-
-  /* ---------- treeline signature ---------- */
-  .treeline{ display:block; width:100%; height:clamp(110px, 15vw, 185px); }
-  .tl-back{ fill:#A9BDBA; }
-  .tl-mid{ fill:#52705C; }
+  /* ---------- the signature: treeline horizon ---------- */
+  .treeline{ display:block; width:100%; height:clamp(120px, 10vw, 240px); }
+  .tl-far{ fill:#B9C8CD; }
+  .tl-mid{ fill:#71897A; }
+  .tl-near{ fill:#2E5843; }
   .tl-front{ fill:var(--fir); }
-  .tl-band{ background:linear-gradient(180deg,#AFC1C6 0%, #D5DED9 55%, #E9EDE5 100%); }
-  .tl-band .treeline{ margin-bottom:-1px; }
+  .skyband{ background:linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 52%, var(--sky-low) 100%); }
+  .skyband .treeline{ margin-bottom:-1px; }
 
-  /* ---------- photo slots (Evergreen grade: luminance-preserving fir tint, full detail) ---------- */
-  .ph{
-    position:relative; overflow:hidden; border-radius:10px; isolation:isolate;
-    background:linear-gradient(180deg, #8FA5A3 0%, #52705C 58%, #24513B 100%); /* loading fallback */
-  }
-  .ph-img{ /* the photo itself — kept sharp, gently seasoned */
-    position:absolute; inset:0; z-index:1;
-    width:100%; height:100%; object-fit:cover; display:block;
-    filter:saturate(1.06) contrast(1.08) brightness(1.02);
-  }
-  .ph-tone{ /* fir cast laid over the photo without touching its luminance */
-    position:absolute; inset:0; z-index:2; pointer-events:none;
-    background:linear-gradient(16deg, #14291F 0%, #24513B 48%, #52705C 78%, #94A9B4 100%);
-    mix-blend-mode:color; opacity:.56;
-  }
-  .ph::before{ /* fog band — thin enough that faces and jerseys still read */
-    content:""; position:absolute; z-index:3; left:-5%; right:-5%; bottom:16%; height:42%;
-    background:linear-gradient(180deg, rgba(241,243,238,0) 0%, rgba(241,243,238,.18) 50%, rgba(241,243,238,0) 100%);
-  }
-  .ph::after{ /* rain */
-    content:""; position:absolute; z-index:4; inset:0;
-    background:repeating-linear-gradient(112deg, rgba(241,243,238,0) 0 9px, rgba(241,243,238,.07) 9px 10px);
-  }
-  .ph-disc{
-    position:absolute; z-index:5; width:26px; height:8px; border-radius:50%;
-    background:#F4F7F2; top:23%; left:63%;
-    box-shadow:0 0 14px rgba(244,247,242,.65);
-  }
-  .ph-cap{
-    font-size:12.5px; font-style:italic; color:var(--slate);
-    margin:8px 2px 0;
-  }
-  .sec-dark .ph-cap{ color:#B9C7C0; }
-  .sec-dark .report .ph-cap{ color:var(--slate); }
+  /* ---------- photos: clean, full color, nothing on top ---------- */
+  .ph{ display:block; width:100%; object-fit:cover; filter:contrast(1.02) saturate(1.03); }
+  .ph-cap{ font-size:13px; font-style:italic; color:var(--slate); margin:10px 2px 0; }
 
   /* ---------- buttons ---------- */
   .btn{
     display:inline-block; border:0; cursor:pointer;
     font-family:'Source Sans 3',sans-serif; font-weight:700; font-size:16px; line-height:1;
-    padding:14px 24px; border-radius:10px;
+    padding:15px 26px; border-radius:8px;
     text-decoration:none;
     transition:background-color .15s ease, color .15s ease, transform .15s ease;
   }
@@ -165,24 +105,65 @@
   }
   .btn-secondary:hover, .btn-secondary.demo-hover{ background:var(--hemlock); color:var(--paper); }
   .btn-quiet{
-    background:none; padding:14px 4px;
+    background:none; padding:15px 4px;
     color:var(--hemlock); font-weight:700;
     text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1.5px;
     border-radius:4px;
   }
   .btn-quiet:hover, .btn-quiet.demo-hover{ color:var(--fir); text-decoration-thickness:3px; }
 
-  /* ---------- section 2: idea ---------- */
-  .idea-copy{ max-width:70ch; font-size:20px; line-height:1.65; color:var(--ink); margin:0; }
-
-  /* ---------- section 3: color ---------- */
-  .swatches{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin:0; padding:0; list-style:none; }
-  .swatch{ border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--card); }
-  .swatch-chip{ height:112px; }
-  .swatch-info{ padding:16px 18px 18px; }
-  .swatch-name{
-    margin:0 0 2px; font-family:'Archivo',sans-serif; font-weight:800; font-size:18px; color:var(--fir);
+  /* ---------- 1 · masthead (the page opens on the horizon) ---------- */
+  .masthead{
+    background:linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 46%, var(--sky-low) 100%);
   }
+  .masthead-in{
+    max-width:var(--wrap); margin:0 auto;
+    padding:96px 32px 56px;
+  }
+  .mast-series{
+    margin:0 0 20px;
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:.18em; text-transform:uppercase; color:var(--hemlock);
+  }
+  .mast-name{
+    margin:0 0 20px;
+    font-family:'Archivo',sans-serif; font-weight:900; font-stretch:120%;
+    font-size:clamp(48px, 6.5vw, 84px); line-height:.98; letter-spacing:-.02em;
+    color:var(--fir);
+  }
+  .mast-thesis{ margin:0 0 20px; font-size:19px; line-height:1.55; color:var(--ink); max-width:56ch; }
+  .mast-tags{
+    margin:0;
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--hemlock);
+  }
+  .mast-tags span{ color:var(--fog); padding:0 8px; }
+  .masthead .treeline{ height:clamp(140px, 13vw, 260px); margin-bottom:-1px; }
+
+  /* the page's one orchestrated moment: a quiet load sequence.
+     Base styles ARE the settled state — if animations never run
+     (reduced motion, print, old browsers) the page is simply sharp. */
+  @keyframes rise-in{ from{ opacity:0; transform:translateY(16px); } }
+  @keyframes drift-up{ from{ opacity:0; transform:translateY(12px); } }
+  .masthead-in > *{ animation:rise-in .7s cubic-bezier(.2,.7,.3,1) backwards; }
+  .masthead-in > :nth-child(2){ animation-delay:.06s; }
+  .masthead-in > :nth-child(3){ animation-delay:.12s; }
+  .masthead-in > :nth-child(4){ animation-delay:.18s; }
+  .masthead .treeline .tl-front{ animation:drift-up .8s .10s cubic-bezier(.2,.7,.3,1) backwards; }
+  .masthead .treeline .tl-near{ animation:drift-up .8s .22s cubic-bezier(.2,.7,.3,1) backwards; }
+  .masthead .treeline .tl-mid{ animation:drift-up .8s .34s cubic-bezier(.2,.7,.3,1) backwards; }
+  .masthead .treeline .tl-far{ animation:drift-up .8s .46s cubic-bezier(.2,.7,.3,1) backwards; }
+
+  /* ---------- 2 · idea ---------- */
+  .idea-copy{ max-width:68ch; font-size:21px; line-height:1.65; color:var(--ink); margin:0; }
+
+  /* ---------- 3 · color ---------- */
+  .swatches{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin:0; padding:0; list-style:none; }
+  .swatch{ border-radius:14px; overflow:hidden; background:var(--card); }
+  .swatch-chip{ height:120px; }
+  .swatch-chip.chip-outline{ box-shadow:inset 0 0 0 1px #D5DCD1; }
+  .swatch-info{ padding:18px 20px 20px; }
+  .swatch-name{ margin:0 0 2px; font-family:'Archivo',sans-serif; font-weight:800; font-size:18px; color:var(--fir); }
   .swatch-hex{
     display:inline-block; margin:0 0 8px;
     font-family:'Archivo',sans-serif; font-weight:600; font-size:13px; letter-spacing:.06em;
@@ -190,357 +171,287 @@
   }
   .swatch-use{ margin:0; font-size:14.5px; color:var(--slate); line-height:1.45; }
 
-  /* ---------- section 4: typography ---------- */
-  .type-cards{ display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-bottom:34px; }
-  .type-card{ border:1px solid var(--line); border-radius:14px; background:var(--card); padding:24px 26px; }
+  /* ---------- 4 · typography ---------- */
+  .type-cards{ display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:64px; }
+  .type-card{ border-radius:14px; background:var(--card); padding:28px 30px; }
   .type-card h3{ margin:0 0 6px; font-family:'Archivo',sans-serif; font-weight:800; font-size:22px; color:var(--fir); }
   .type-card .role{
-    font-family:'Archivo',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.14em;
-    text-transform:uppercase; color:var(--hemlock); margin:0 0 10px; display:block;
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--hemlock); margin:0 0 12px; display:block;
   }
   .type-card p{ margin:0; color:var(--slate); font-size:15.5px; }
-  .type-card .glyphs{
-    margin:14px 0 0; font-size:20px; color:var(--ink); word-break:break-all;
-  }
+  .type-card .glyphs{ margin:16px 0 0; font-size:20px; color:var(--ink); word-break:break-all; }
   .type-card.tc-display .glyphs{ font-family:'Archivo',sans-serif; font-weight:900; font-stretch:118%; }
   .specimen{
-    margin:0 0 8px;
+    margin:0 0 12px;
     font-family:'Archivo',sans-serif; font-weight:900; font-stretch:118%;
-    font-size:clamp(42px, 6.4vw, 76px); line-height:1.0; letter-spacing:-.015em;
-    color:var(--fir);
+    font-size:clamp(44px, 6vw, 84px); line-height:.98; letter-spacing:-.02em;
+    color:var(--fir); text-wrap:balance;
   }
   .specimen-sub{
-    margin:0 0 30px;
+    margin:0 0 32px;
     font-family:'Archivo',sans-serif; font-weight:700; font-size:clamp(20px,2.4vw,26px);
-    line-height:1.25; color:var(--hemlock); max-width:30ch;
+    line-height:1.25; color:var(--hemlock); max-width:32ch;
   }
-  .specimen-body{ max-width:62ch; font-size:17px; margin:0 0 38px; }
-  .scale{ border-top:1px solid var(--line); }
+  .specimen-body{ max-width:62ch; font-size:17px; margin:0 0 64px; }
+  .scale{ border-top:1px solid #D5DCD1; }
   .scale-row{
     display:flex; align-items:baseline; justify-content:space-between; gap:24px;
-    padding:16px 2px; border-bottom:1px solid var(--line);
+    padding:18px 2px; border-bottom:1px solid #D5DCD1;
   }
   .scale-sample{ margin:0; color:var(--fir); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .s-display{ font-family:'Archivo',sans-serif; font-weight:900; font-stretch:115%; font-size:clamp(34px,4.6vw,64px); line-height:1.02; }
-  .s-h2{ font-family:'Archivo',sans-serif; font-weight:800; font-stretch:110%; font-size:clamp(28px,3vw,40px); line-height:1.08; }
-  .s-h3{ font-family:'Archivo',sans-serif; font-weight:700; font-size:24px; line-height:1.25; }
+  .s-display{ font-family:'Archivo',sans-serif; font-weight:900; font-stretch:118%; font-size:clamp(36px,4.6vw,64px); line-height:1; letter-spacing:-.02em; }
+  .s-h2{ font-family:'Archivo',sans-serif; font-weight:800; font-stretch:112%; font-size:clamp(28px,3vw,40px); line-height:1.08; }
+  .s-h3{ font-family:'Archivo',sans-serif; font-weight:700; font-size:23px; line-height:1.25; }
   .s-body{ font-size:17px; }
   .s-caption{
-    font-family:'Archivo',sans-serif; font-weight:700; font-size:12.5px;
-    letter-spacing:.14em; text-transform:uppercase; color:var(--slate);
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--slate);
   }
   .scale-spec{
     flex-shrink:0; font-size:13.5px; color:var(--slate);
     font-family:'Archivo',sans-serif; font-weight:600; letter-spacing:.04em; text-align:right;
   }
 
-  /* ---------- section 5: signature ---------- */
-  .sig-frame{ border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--card); }
-  .sig-sky{ background:linear-gradient(180deg,#A7BBC1 0%, #CBD6D3 52%, #E7EBE2 100%); position:relative; }
+  /* ---------- 5 · signature specimen ---------- */
+  .sig-frame{ border-radius:16px; overflow:hidden; background:var(--card); box-shadow:0 24px 48px -32px rgba(20,41,31,.35); }
+  .sig-sky{ background:linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 52%, var(--sky-low) 100%); padding-top:56px; }
+  .sig-sky .treeline{ height:clamp(150px, 14vw, 240px); margin-bottom:-1px; }
   .sig-base{
     background:var(--fir); color:#D9E3DA;
-    padding:18px 26px 20px;
-    display:flex; flex-wrap:wrap; gap:8px 28px; align-items:baseline; justify-content:space-between;
+    padding:22px 30px 24px;
+    display:flex; flex-wrap:wrap; gap:8px 32px; align-items:baseline; justify-content:space-between;
     font-size:14.5px;
   }
   .sig-base strong{ color:var(--paper); font-family:'Archivo',sans-serif; font-weight:700; }
-  .sig-uses{ display:flex; flex-wrap:wrap; gap:8px; margin:22px 0 0; padding:0; list-style:none; }
-  .sig-uses li{
-    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; text-transform:uppercase;
-    color:var(--hemlock); border:1px solid #BECBBE; border-radius:999px; padding:5px 13px; background:var(--card);
+  .sig-uses{
+    margin:24px 0 0;
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--hemlock);
   }
+  .sig-uses span{ color:var(--fog); padding:0 8px; }
 
-  /* ---------- section 6: hero mockup ---------- */
-  .sec-hero{ max-width:1280px; }
+  /* ---------- 6 · homepage hero mockup (the money shot) ---------- */
   .browser{
-    border:1px solid #C6CFC5; border-radius:14px; overflow:hidden;
-    box-shadow:0 22px 50px -28px rgba(20,41,31,.4);
+    border-radius:14px; overflow:hidden;
+    box-shadow:0 32px 64px -36px rgba(20,41,31,.45);
     background:var(--card);
   }
   .browser-bar{
     display:flex; align-items:center; gap:14px;
-    background:#DDE3DA; padding:10px 16px; border-bottom:1px solid #C6CFC5;
+    background:#DDE3DA; padding:11px 18px;
   }
   .browser-dots{ display:flex; gap:6px; }
-  .browser-dots span{ width:11px; height:11px; border-radius:50%; background:#B4BFB2; display:block; }
+  .browser-dots span{ width:10px; height:10px; border-radius:50%; background:#B4BFB2; display:block; }
   .browser-url{
-    flex:1; max-width:360px; background:var(--card);
-    border:1px solid #C6CFC5; border-radius:999px;
-    font-size:13px; color:var(--slate); padding:4px 16px;
+    flex:1; max-width:340px; background:var(--card); border-radius:999px;
+    font-size:13px; color:var(--slate); padding:5px 16px;
     font-family:'Archivo',sans-serif; font-weight:600; letter-spacing:.03em;
   }
   .mock-nav{
     background:var(--fir);
-    display:flex; align-items:center; gap:30px;
-    padding:16px 36px;
+    display:flex; align-items:center; gap:32px;
+    padding:18px 40px;
   }
-  .mock-logo{ display:flex; align-items:center; gap:10px; }
   .mock-logo img{
-    display:block; width:132px; height:auto;
-    filter:brightness(0) invert(1); opacity:.97; /* black lockup → paper-white on Old Fir */
+    display:block; width:140px; height:auto;
+    filter:brightness(0) invert(1); opacity:.97;
   }
-  .mock-links{ display:flex; gap:26px; margin-left:auto; }
-  .mock-links span{
-    color:#DCE5DC; font-weight:600; font-size:15.5px; cursor:default;
-  }
+  .mock-links{ display:flex; gap:28px; margin-left:auto; }
+  .mock-links span{ color:#DCE5DC; font-weight:600; font-size:15.5px; }
   .mock-register{
     background:var(--grass); color:var(--btn-ink);
-    font-family:'Source Sans 3',sans-serif; font-weight:700; font-size:15px;
-    padding:10px 20px; border-radius:9px;
+    font-weight:700; font-size:15px;
+    padding:11px 22px; border-radius:8px;
   }
   .mock-burger{ display:none; margin-left:auto; }
   .mock-burger span{ display:block; width:22px; height:2.5px; background:#DCE5DC; margin:4px 0; border-radius:2px; }
 
+  .mock-conditions{
+    background:#EAEFE7;
+    display:flex; flex-wrap:wrap; align-items:center; gap:6px 28px;
+    padding:11px 40px;
+    font-family:'Archivo',sans-serif; font-weight:600; font-size:13px; letter-spacing:.02em;
+    color:var(--slate);
+  }
+  .mock-conditions .cond-label{
+    font-weight:700; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--hemlock);
+  }
+  .mock-conditions .dot{
+    display:inline-block; width:7px; height:7px; border-radius:50%;
+    background:var(--grass-dark); margin-right:7px; vertical-align:1px;
+  }
+  .mock-conditions .cond-right{ margin-left:auto; }
+
   .mock-hero{
-    position:relative;
-    background:linear-gradient(180deg,#A7BBC1 0%, #C9D5D2 44%, #E7EBE2 78%, #EDF0E8 100%);
-    overflow:hidden;
+    background:linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 48%, var(--sky-low) 100%);
   }
   .mock-hero-inner{
-    position:relative; z-index:2;
-    max-width:1180px; margin:0 auto;
-    padding:74px 48px 30px;
+    max-width:1040px; margin:0 auto;
+    padding:88px 48px 40px;
+    text-align:center;
   }
   .mock-eyebrow{
-    margin:0 0 14px;
+    margin:0 0 20px;
     font-family:'Archivo',sans-serif; font-weight:700; font-size:13px;
     letter-spacing:.16em; text-transform:uppercase; color:var(--hemlock);
   }
   .mock-h1{
-    margin:0 0 18px;
+    margin:0 auto 24px;
     font-family:'Archivo',sans-serif; font-weight:900; font-stretch:118%;
-    font-size:clamp(40px, 5.6vw, 72px); line-height:1.0; letter-spacing:-.015em;
-    color:var(--fir); max-width:14ch;
+    font-size:clamp(64px, 9vw, 120px); line-height:.96; letter-spacing:-.025em;
+    color:var(--fir); max-width:11ch; text-wrap:balance;
   }
   .mock-sub{
-    margin:0 0 28px; max-width:52ch;
+    margin:0 auto 36px; max-width:52ch;
     font-size:19px; line-height:1.55; color:var(--ink);
   }
-  .mock-ctas{ display:flex; flex-wrap:wrap; gap:10px 22px; align-items:center; margin-bottom:26px; }
+  .mock-ctas{ display:flex; flex-wrap:wrap; gap:12px 28px; align-items:center; justify-content:center; margin:0 0 8px; }
   .mock-cta-quiet{
     color:var(--hemlock); font-weight:700; font-size:16px;
-    text-decoration:underline; text-underline-offset:4px; cursor:default;
+    text-decoration:underline; text-underline-offset:4px;
   }
-  .mock .btn{ cursor:default; } /* mockup is illustrative (role="img"), not interactive */
-  .mock-weather{
-    display:inline-flex; align-items:center; gap:9px;
-    margin:0 0 26px;
-    background:rgba(251,252,250,.72); border:1px solid #C4CFC6; border-radius:999px;
-    padding:7px 16px; font-size:14px; font-weight:600; color:var(--ink);
+  .mock-hero .treeline{ height:clamp(120px, 13vw, 220px); margin-bottom:-1px; display:block; }
+  .mock-photo{
+    display:block; width:100%;
+    height:clamp(300px, 34vw, 460px);
+    object-fit:cover; object-position:50% 15%;
+    filter:contrast(1.02) saturate(1.03);
   }
-  .mock-weather::before{
-    content:""; width:9px; height:9px; border-radius:50%; background:var(--hemlock); flex-shrink:0;
-    animation:live-pulse 2.4s ease-out infinite;
-  }
-  .disc-flight{
-    position:absolute; z-index:1; top:26px; right:0;
-    width:min(62%, 780px); height:auto; pointer-events:none;
-  }
-  .mock-hero .treeline{ position:relative; z-index:1; }
-  .mock-ticker{
+  .mock-reg{
     background:var(--fir); color:#D9E3DA;
-    display:flex; align-items:center; gap:16px;
-    padding:15px 36px 17px;
-    font-size:14.5px; line-height:1.6;
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 24px;
+    padding:22px 40px 24px;
+    font-size:15px; line-height:1.6;
   }
-  .mock-ticker strong{
+  .mock-reg strong{
     flex-shrink:0;
     color:var(--grass-light);
     font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
-    letter-spacing:.14em; text-transform:uppercase;
+    letter-spacing:.16em; text-transform:uppercase;
   }
-  .tick-viewport{
-    flex:1; min-width:0; overflow:hidden;
-    -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
-    mask-image:linear-gradient(90deg, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
-  }
-  .tick-track{
-    display:inline-flex; white-space:nowrap;
-    animation:tick-scroll 46s linear infinite;
-  }
-  .mock-ticker:hover .tick-track{ animation-play-state:paused; }
-  .tick-run{ display:inline-block; white-space:nowrap; }
-  .mock-ticker .tick-sep{ color:var(--fog); margin:0 11px; }
-  @keyframes tick-scroll{
-    from{ transform:translateX(0); }
-    to{ transform:translateX(-50%); }
-  }
-  @keyframes live-pulse{
-    0%{ box-shadow:0 0 0 0 rgba(36,81,59,.4); }
-    70%{ box-shadow:0 0 0 8px rgba(36,81,59,0); }
-    100%{ box-shadow:0 0 0 0 rgba(36,81,59,0); }
-  }
-  @keyframes live-pulse-dark{
-    0%{ box-shadow:0 0 0 0 rgba(14,36,26,.4); }
-    70%{ box-shadow:0 0 0 6px rgba(14,36,26,0); }
-    100%{ box-shadow:0 0 0 0 rgba(14,36,26,0); }
-  }
+  .mock-reg ul{ margin:0; padding:0; list-style:none; display:flex; flex-wrap:wrap; gap:4px 0; }
+  .mock-reg li{ white-space:nowrap; }
+  .mock-reg li + li::before{ content:"·"; color:var(--fog); padding:0 12px; }
+  .mock-reg .reg-more{ margin-left:auto; color:var(--grass-light); font-weight:700; font-size:14px; }
 
-  /* ---------- section 7: pathways ---------- */
+  /* ---------- 7 · pathways ---------- */
   .paths{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
   .path-card{
-    background:var(--card); border:1px solid var(--line); border-radius:16px;
-    padding:18px 18px 24px; display:flex; flex-direction:column;
+    background:var(--card); border-radius:14px; overflow:hidden;
+    display:flex; flex-direction:column;
   }
-  .path-card .ph{ height:190px; }
+  .path-card .ph{ height:210px; }
+  .path-body{ padding:24px 26px 28px; display:flex; flex-direction:column; flex:1; align-items:flex-start; }
   .path-tag{
-    margin:16px 0 8px;
+    margin:0 0 10px;
     font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
-    letter-spacing:.15em; text-transform:uppercase; color:var(--hemlock);
+    letter-spacing:.16em; text-transform:uppercase; color:var(--hemlock);
   }
   .path-card h3{
     margin:0 0 10px;
-    font-family:'Archivo',sans-serif; font-weight:800; font-size:23px; line-height:1.18; color:var(--fir);
+    font-family:'Archivo',sans-serif; font-weight:800; font-size:23px; line-height:1.15; color:var(--fir);
+    text-wrap:balance;
   }
-  .path-card p{ margin:0 0 20px; font-size:15.5px; color:var(--slate); flex:1; }
-  .path-card .btn{ align-self:flex-start; }
+  .path-card p{ margin:0 0 24px; font-size:15.5px; color:var(--slate); flex:1; }
 
-  /* ---------- section 8: storytelling (dark) ---------- */
+  /* ---------- 8 · storytelling (dark) ---------- */
   .sec-dark{ background:var(--fir); color:#E5ECE4; }
   .sec-dark .kicker{ color:var(--grass); }
   .sec-dark .sec-title{ color:var(--paper); }
   .sec-dark .sec-intro{ color:#B9C7C0; }
-  .story-grid{ display:grid; grid-template-columns:1.15fr .85fr; gap:34px; align-items:start; }
-  .report{
-    background:var(--card); color:var(--ink);
-    border-radius:16px; padding:20px 20px 26px;
-  }
-  .report .ph{ height:230px; }
+  .sec-dark .note{ color:#A9BBAF; }
+  .story-grid{ display:grid; grid-template-columns:1.15fr .85fr; gap:32px; align-items:start; }
+  .report{ background:var(--card); color:var(--ink); border-radius:16px; overflow:hidden; }
+  .report .ph{ height:280px; object-position:50% 28%; }
+  .report-body{ padding:26px 30px 30px; }
   .report-meta{
-    display:flex; flex-wrap:wrap; gap:6px 18px;
-    margin:16px 0 10px;
+    display:flex; flex-wrap:wrap; gap:6px 20px;
+    margin:0 0 12px;
     font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
-    letter-spacing:.12em; text-transform:uppercase; color:var(--hemlock);
+    letter-spacing:.14em; text-transform:uppercase; color:var(--hemlock);
   }
   .report-meta .meta-weather{ color:var(--slate); }
   .report h3{
-    margin:0 0 12px;
-    font-family:'Archivo',sans-serif; font-weight:800; font-stretch:108%;
-    font-size:30px; line-height:1.1; color:var(--fir);
+    margin:0 0 14px;
+    font-family:'Archivo',sans-serif; font-weight:800; font-stretch:110%;
+    font-size:30px; line-height:1.08; color:var(--fir);
   }
   .report blockquote{
-    margin:0 0 14px; padding:2px 0 2px 18px;
+    margin:0 0 16px; padding:2px 0 2px 20px;
     border-left:4px solid var(--grass);
     font-size:18.5px; line-height:1.55; color:var(--ink);
   }
   .report .byline{ margin:0; font-size:14.5px; color:var(--slate); }
-  .stats{ display:grid; gap:14px; margin:0; padding:0; list-style:none; }
-  .stat{
-    border:1px solid #2C4A3A; border-radius:14px;
-    background:#1A3327;
-    padding:18px 22px;
-  }
+  .stats{ display:grid; gap:16px; margin:0; padding:0; list-style:none; }
+  .stat{ border-radius:14px; background:var(--fir-panel); padding:22px 26px; }
   .stat .num{
     display:block;
     font-family:'Archivo',sans-serif; font-weight:900; font-stretch:112%;
     font-size:clamp(28px,3vw,38px); line-height:1.05; color:var(--grass);
-    margin-bottom:4px;
+    margin-bottom:6px;
   }
   .stat .why{ margin:0; font-size:15px; color:#C7D4CB; line-height:1.5; }
-  .sec-dark .note{ color:#A9BBAF; }
 
-  /* ---------- field-check vista (full-bleed photo, signature treeline in front) ---------- */
-  .vista{ position:relative; margin:0; background:var(--fir); overflow:hidden; }
-  .vista-media{ position:relative; isolation:isolate; }
-  .vista-img{
-    display:block; width:100%; height:clamp(380px, 46vw, 600px);
-    object-fit:cover; object-position:50% 30%;
-    filter:saturate(1.06) contrast(1.08) brightness(1.02);
+  /* ---------- field check vista: one clean photograph, captioned below ---------- */
+  .vista{ margin:0; background:var(--fir); }
+  .vista .ph{
+    max-width:1920px; margin:0 auto;
+    height:clamp(360px, 44vw, 720px);
+    object-position:50% 22%;
   }
-  .vista-tone{
-    position:absolute; inset:0; z-index:1; pointer-events:none;
-    background:linear-gradient(16deg, #14291F 0%, #24513B 52%, #52705C 100%);
-    mix-blend-mode:color; opacity:.46;
-  }
-  .vista-scrim{ /* localized legibility scrim under the caption only — the frame stays crisp */
-    position:absolute; left:0; right:0; bottom:0; height:72%; z-index:2; pointer-events:none;
-    background:linear-gradient(180deg, rgba(20,41,31,0) 0%, rgba(20,41,31,.56) 48%, rgba(20,41,31,.9) 100%);
-  }
-  .vista-trees{
-    position:absolute; z-index:3; left:0; right:0; bottom:-1px;
-    width:100%; height:clamp(64px, 9vw, 112px);
-  }
-  .vista-cap{
-    position:absolute; z-index:4; left:0; right:0; bottom:0;
-    max-width:1280px; margin:0 auto;
-    padding:0 48px clamp(30px, 4.5vw, 58px);
-    text-shadow:0 1px 4px rgba(20,41,31,.45);
+  .vista-plate{ background:var(--fir); }
+  .vista-plate-in{
+    max-width:var(--wrap); margin:0 auto;
+    padding:48px 32px 56px;
   }
   .vista-kicker{
-    display:inline-block; margin:0 0 10px;
-    font-family:'Archivo',sans-serif; font-weight:700; font-size:13px;
+    margin:0 0 12px;
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
     letter-spacing:.16em; text-transform:uppercase; color:var(--grass-light);
-    background:rgba(20,41,31,.82); /* local chip keeps AA where the scrim is still thin */
-    padding:5px 13px 4px; border-radius:999px;
   }
   .vista-line{
     margin:0 0 12px;
     font-family:'Archivo',sans-serif; font-weight:900; font-stretch:118%;
-    font-size:clamp(30px, 4.4vw, 56px); line-height:1.02; letter-spacing:-.012em;
-    color:var(--paper); max-width:22ch;
+    font-size:clamp(30px, 4vw, 52px); line-height:1.02; letter-spacing:-.015em;
+    color:var(--paper); max-width:24ch; text-wrap:balance;
   }
-  .vista-meta{ margin:0; font-size:15px; color:#C9D6CD; max-width:64ch; }
+  .vista-meta{ margin:0; font-size:15.5px; color:#C9D6CD; max-width:70ch; }
 
-  /* ---------- fog-lift reveal (JS adds .js-reveal; photos sharpen as they enter view) ---------- */
-  .fx-fog .ph-img, .fx-fog .vista-img{ transition:filter 1.05s ease; }
-  .js-reveal .fx-fog:not(.is-clear) .ph-img,
-  .js-reveal .fx-fog:not(.is-clear) .vista-img{
-    filter:saturate(.55) contrast(.86) brightness(1.16) blur(9px);
-  }
-  .fx-rise{ transition:opacity .65s ease, transform .65s ease; }
-  .js-reveal .fx-rise:not(.is-clear){ opacity:0; transform:translateY(16px); }
-  .stats .fx-rise:nth-child(2){ transition-delay:.09s; }
-  .stats .fx-rise:nth-child(3){ transition-delay:.18s; }
-  .stats .fx-rise:nth-child(4){ transition-delay:.27s; }
-
-  /* ---------- section 9: UI components ---------- */
-  .ui-grid{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:24px; align-items:start; }
-  .ui-block{
-    background:var(--card); border:1px solid var(--line); border-radius:16px;
-    padding:24px 26px;
-  }
-  .ui-block h3{
-    margin:0 0 18px;
-    font-family:'Archivo',sans-serif; font-weight:800; font-size:19px; color:var(--fir);
-  }
-  .btn-row{ display:flex; flex-wrap:wrap; gap:12px 14px; align-items:center; margin-bottom:6px; }
+  /* ---------- 9 · UI components ---------- */
+  .ui-grid{ display:grid; grid-template-columns:.9fr 1.1fr; gap:24px; align-items:start; }
+  .ui-block{ background:var(--card); border-radius:16px; padding:28px 30px; }
+  .ui-block h3{ margin:0 0 20px; font-family:'Archivo',sans-serif; font-weight:800; font-size:19px; color:var(--fir); }
+  .btn-row{ display:flex; flex-wrap:wrap; gap:12px 14px; align-items:center; margin-bottom:8px; }
   .btn-label{
-    display:block; margin:14px 0 8px;
-    font-family:'Archivo',sans-serif; font-weight:700; font-size:11.5px;
-    letter-spacing:.13em; text-transform:uppercase; color:var(--slate);
+    display:block; margin:16px 0 10px;
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--slate);
   }
-  .event-card{ border:1px solid var(--line); border-radius:14px; padding:22px 24px; background:var(--paper); }
+  .event-card{ border-radius:12px; padding:24px 26px; background:var(--paper); }
   .event-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
   .event-logo{
     width:64px; height:64px; flex-shrink:0;
-    border-radius:50%; border:1px solid var(--line); background:#FFF;
-    object-fit:cover;
+    border-radius:50%; background:#FFF; object-fit:cover;
   }
-  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
   .chip{
-    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
-    border-radius:999px; padding:4px 12px;
-    color:var(--slate); border:1px solid #C4CFC6; background:var(--card);
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+    border-radius:999px; padding:5px 13px;
+    color:var(--slate); background:#E4EAE0;
   }
-  .chip-live{
-    background:var(--grass); color:var(--btn-ink); border-color:var(--grass);
-    display:inline-flex; align-items:center; gap:7px;
-  }
-  .chip-live::before{
-    content:""; width:7px; height:7px; border-radius:50%; background:var(--btn-ink); flex-shrink:0;
-    animation:live-pulse-dark 2.4s ease-out infinite;
-  }
+  .chip-live{ background:var(--grass); color:var(--btn-ink); }
   .event-card h4{
     margin:0 0 6px;
-    font-family:'Archivo',sans-serif; font-weight:800; font-stretch:106%;
+    font-family:'Archivo',sans-serif; font-weight:800; font-stretch:108%;
     font-size:24px; line-height:1.15; color:var(--fir);
   }
   .event-meta{ margin:0 0 10px; font-size:15px; font-weight:600; color:var(--slate); }
   .event-desc{ margin:0 0 8px; font-size:15.5px; color:var(--ink); }
-  .event-fee{ margin:0 0 18px; font-size:14.5px; color:var(--slate); }
+  .event-fee{ margin:0 0 20px; font-size:14.5px; color:var(--slate); }
   .event-foot{
     display:flex; flex-wrap:wrap; gap:12px 20px; align-items:center;
-    border-top:1px solid var(--line); padding-top:16px;
+    border-top:1px solid #D5DCD1; padding-top:18px;
   }
   .event-deadline{
     font-family:'Archivo',sans-serif; font-weight:700; font-size:13px;
@@ -550,19 +461,19 @@
   .filter label{ display:flex; flex-direction:column; gap:6px; font-weight:600; font-size:14px; color:var(--slate); }
   .filter select{
     font-family:'Source Sans 3',sans-serif; font-size:15.5px; color:var(--ink);
-    background:var(--card); border:1.5px solid #B7C3B7; border-radius:9px;
-    padding:10px 12px; min-width:190px;
+    background:var(--card); border:1.5px solid #B7C3B7; border-radius:8px;
+    padding:11px 12px; min-width:190px;
   }
-  .filter .check{ flex-direction:row; align-items:center; gap:9px; padding-bottom:11px; font-size:15px; color:var(--ink); }
+  .filter .check{ flex-direction:row; align-items:center; gap:9px; padding-bottom:12px; font-size:15px; color:var(--ink); }
   .filter input[type="checkbox"]{ width:18px; height:18px; accent-color:var(--hemlock); }
 
-  /* ---------- section 10: voice ---------- */
-  .voice-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
-  .voice-card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 24px; }
+  /* ---------- 10 · voice ---------- */
+  .voice-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .voice-card{ background:var(--card); border-radius:14px; padding:26px 28px; }
   .voice-card .vlabel{
-    display:block; margin:0 0 12px;
+    display:block; margin:0 0 14px;
     font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
-    letter-spacing:.14em; text-transform:uppercase; color:var(--hemlock);
+    letter-spacing:.16em; text-transform:uppercase; color:var(--hemlock);
   }
   .voice-card .vhero{
     margin:0; font-family:'Archivo',sans-serif; font-weight:900; font-stretch:114%;
@@ -570,19 +481,19 @@
   }
   .voice-card p{ margin:0; font-size:16.5px; color:var(--ink); }
 
-  /* ---------- footer ---------- */
+  /* ---------- 11 · footer ---------- */
   .site-foot{ background:var(--fir); color:#D9E3DA; }
-  .site-foot .foot-in{ max-width:1180px; margin:0 auto; padding:64px 32px 46px; }
-  .verdicts{ display:grid; grid-template-columns:1fr 1fr; gap:26px; margin-bottom:44px; }
-  .verdict{ border:1px solid #2C4A3A; border-radius:14px; background:#1A3327; padding:22px 26px; }
+  .site-foot .foot-in{ max-width:var(--wrap); margin:0 auto; padding:88px 32px 56px; }
+  .verdicts{ display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:56px; }
+  .verdict{ border-radius:14px; background:var(--fir-panel); padding:26px 30px; }
   .verdict h2{
-    margin:0 0 8px;
+    margin:0 0 10px;
     font-family:'Archivo',sans-serif; font-weight:800; font-size:17px; color:var(--grass-light);
   }
   .verdict p{ margin:0; font-size:16px; line-height:1.55; color:#D9E3DA; }
   .foot-nav{
     display:flex; flex-wrap:wrap; gap:14px 30px; align-items:center; justify-content:space-between;
-    border-top:1px solid #2C4A3A; padding-top:26px;
+    border-top:1px solid #2C4A3A; padding-top:28px;
   }
   .foot-nav a{ color:var(--grass-light); font-weight:700; font-size:16px; }
   .foot-nav a:hover{ color:var(--paper); }
@@ -592,7 +503,7 @@
   @media (max-width: 980px){
     .swatches{ grid-template-columns:repeat(2,1fr); }
     .paths{ grid-template-columns:1fr; }
-    .path-card{ width:100%; max-width:540px; margin:0 auto; } /* keeps card photos at/near native size */
+    .path-card{ width:100%; max-width:440px; margin:0 auto; }
     .story-grid{ grid-template-columns:1fr; }
     .ui-grid{ grid-template-columns:1fr; }
     .voice-grid{ grid-template-columns:1fr; }
@@ -602,25 +513,29 @@
   @media (max-width: 880px){
     .mock-links{ display:none; }
     .mock-register{ margin-left:auto; }
-    .mock-burger{ display:block; margin-left:12px; }
-    .mock-hero-inner{ padding:56px 28px 20px; }
-    .mock-nav{ padding:14px 22px; }
-    .mock-ticker{ padding:14px 22px 16px; }
+    .mock-burger{ display:block; margin-left:16px; }
+    .mock-nav{ padding:14px 24px; }
+    .mock-conditions{ padding:10px 24px; }
+    .mock-conditions .cond-right{ display:none; }
+    .mock-hero-inner{ padding:64px 28px 32px; }
+    .mock-reg{ padding:18px 24px 20px; }
+    .mock-reg .reg-more{ margin-left:0; }
   }
   @media (max-width: 560px){
-    .sec{ padding:56px 20px; }
+    .sec{ padding:72px 20px; }
+    .masthead-in{ padding:64px 20px 40px; }
     .swatches{ grid-template-columns:1fr; }
-    .vista-cap{ padding:0 20px 26px; }
-    .vista-scrim{ height:88%; background:linear-gradient(180deg, rgba(20,41,31,0) 0%, rgba(20,41,31,.55) 42%, rgba(20,41,31,.92) 100%); }
-    .mock-ticker{ gap:12px; }
-    .mock-nav{ gap:14px; padding:12px 16px; }
-    .mock-logo img{ width:100px; }
-    .mock-burger{ margin-left:4px; }
-    .dhead-in{ padding:22px 20px; }
+    .mock-nav{ gap:14px; padding:12px 18px; }
+    .mock-logo img{ width:104px; }
+    .mock-h1{ font-stretch:100%; letter-spacing:-.03em; }
+    .mock-hero-inner{ padding:56px 18px 28px; }
+    .mock-reg li{ white-space:normal; }
     .scale-row{ flex-direction:column; gap:4px; }
     .scale-sample{ white-space:normal; }
     .scale-spec{ text-align:left; }
-    .site-foot .foot-in{ padding:52px 20px 40px; }
+    .site-foot .foot-in{ padding:64px 20px 44px; }
+    .report-body{ padding:22px 20px 26px; }
+    .vista-plate-in{ padding:36px 20px 44px; }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -631,34 +546,47 @@
 </head>
 <body>
 
-<!-- shared SVG defs: one fir, drawn once, used everywhere -->
+<!-- The signature, drawn once: three fir silhouettes, four grove layers, two fog bands.
+     Every horizon on this page is a <use> of these symbols. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
-    <symbol id="fir" viewBox="0 0 60 100">
-      <path d="M30 0 L39 21 L33 18 L45 43 L37 39 L52 68 L43 64 L58 91 L33 91 L33 100 L27 100 L27 91 L2 91 L17 64 L8 68 L23 39 L15 43 L27 18 L21 21 Z"/>
-    </symbol>
-    <linearGradient id="fogGrad" x1="0" y1="0" x2="0" y2="1">
+    <symbol id="fir-a" viewBox="0 0 44 110"><path d="M22 0 L22 4.4 Q25.5 28.8 30.3 28.3 L25.5 29.6 Q28.3 43.4 32.2 43.2 L26.3 44.5 Q30.3 55 35.8 54.8 L27.8 56.1 Q32.3 71.5 38.5 71.2 L28.9 72.5 Q33.4 82.9 39.4 82.7 L29.3 84 Q34.8 98 42.3 97.7 L30.5 99 L24.2 101.2 L24.2 110 L19.8 110 L19.8 101.2 L13.5 99 L1.7 97.7 Q9.2 98 14.7 84 L4.6 82.7 Q10.6 82.9 15.1 72.5 L5.5 71.2 Q11.7 71.5 16.2 56.1 L8.2 54.8 Q13.7 55 17.7 44.5 L11.8 43.2 Q15.7 43.4 18.5 29.6 L13.7 28.3 Q18.5 28.8 22 4.4 Z"/></symbol>
+    <symbol id="fir-b" viewBox="0 0 52 104"><path d="M26 0 L26 4.2 Q30.8 31.9 37.4 30.4 L30.8 31.6 Q34.7 46 40.1 45.2 L31.9 46.4 Q36.9 61.9 43.7 61 L33.4 62.3 Q39.1 78.5 46.9 77.5 L34.8 78.8 Q41.1 91.4 49.8 90.7 L36 91.9 L28.6 94 L28.6 104 L23.4 104 L23.4 94 L16 91.9 L2.2 90.7 Q10.9 91.4 17.2 78.8 L5.1 77.5 Q12.9 78.5 18.6 62.3 L8.3 61 Q15.1 61.9 20.1 46.4 L11.9 45.2 Q17.3 46 21.2 31.6 L14.6 30.4 Q21.2 31.9 26 4.2 Z"/></symbol>
+    <symbol id="fir-c" viewBox="0 0 40 112"><path d="M20 0 L20 4.5 Q22.7 29.2 26.4 29.2 L22.7 30.5 Q25.1 40.8 28.5 40.8 L23.6 42.1 Q26.4 50.8 30.4 50.8 L24.4 52.1 Q27.5 62 31.8 62 L24.9 63.3 Q28.9 76 34.4 76 L26 77.4 Q30.4 88.2 36.5 88.2 L26.9 89.6 Q31.9 97.5 38.7 97.5 L27.9 98.8 L22 101.1 L22 112 L18 112 L18 101.1 L12.1 98.8 L1.3 97.5 Q8.1 97.5 13.1 89.6 L3.5 88.2 Q9.6 88.2 14 77.4 L5.6 76 Q11.1 76 15.1 63.3 L8.2 62 Q12.5 62 15.6 52.1 L9.6 50.8 Q13.6 50.8 16.4 42.1 L11.5 40.8 Q14.9 40.8 17.3 30.5 L13.6 29.2 Q17.3 29.2 20 4.5 Z"/></symbol>
+    <linearGradient id="fogGradA" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#F1F3EE" stop-opacity="0"/>
-      <stop offset=".55" stop-color="#F1F3EE" stop-opacity=".8"/>
+      <stop offset=".55" stop-color="#F1F3EE" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#F1F3EE" stop-opacity=".1"/>
+    </linearGradient>
+    <linearGradient id="fogGradB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F1F3EE" stop-opacity="0"/>
+      <stop offset=".6" stop-color="#F1F3EE" stop-opacity=".55"/>
       <stop offset="1" stop-color="#F1F3EE" stop-opacity="0"/>
     </linearGradient>
+    <symbol id="ridge-far" viewBox="0 0 2000 200" overflow="visible"><path d="M-80 200 L-80 111 Q-40 111 -10 116 Q20 120 50 123 Q80 126 110 125 Q140 125 170 121 Q200 118 230 113 Q260 108 290 103 Q320 98 350 95 Q380 91 410 91 Q440 90 470 91 Q500 92 530 95 Q560 97 590 98 Q620 99 650 99 Q680 98 710 95 Q740 92 770 88 Q800 84 830 81 Q860 77 890 76 Q920 74 950 76 Q980 77 1010 81 Q1040 85 1070 91 Q1100 97 1130 102 Q1160 108 1190 111 Q1220 114 1250 115 Q1280 116 1310 114 Q1340 112 1370 109 Q1400 107 1430 105 Q1460 103 1490 102 Q1520 102 1550 104 Q1580 106 1610 109 Q1640 112 1670 115 Q1700 117 1730 118 Q1760 119 1790 117 Q1820 115 1850 110 Q1880 105 1910 99 Q1940 93 1970 88 Q2000 83 2030 80 L2080 77 L2080 200 Z"/></symbol>
+<symbol id="fog-hi" viewBox="0 0 2000 200" overflow="visible"><rect x="-80" y="46" width="2160" height="132" fill="url(#fogGradA)"/></symbol><symbol id="fog-lo" viewBox="0 0 2000 200" overflow="visible"><rect x="-80" y="98" width="2160" height="102" fill="url(#fogGradB)"/></symbol>
+<symbol id="grove-mid" viewBox="0 0 2000 200" overflow="visible"><rect x="-80" y="144" width="2160" height="86"/><use href="#fir-c" x="-36" y="123" width="11" height="30"/><use href="#fir-b" x="-12" y="116" width="18" height="37"/><use href="#fir-b" x="8" y="108" width="19" height="39"/><use href="#fir-b" x="30" y="104" width="23" height="46"/><use href="#fir-a" x="56" y="118" width="16" height="37"/><use href="#fir-b" x="79" y="109" width="20" height="42"/><use href="#fir-c" x="114" y="113" width="13" height="35"/><use href="#fir-a" x="130" y="127" width="10" height="27"/><use href="#fir-c" x="158" y="126" width="10" height="26"/><use href="#fir-c" x="192" y="109" width="15" height="40"/><use href="#fir-a" x="218" y="105" width="19" height="44"/><use href="#fir-b" x="244" y="111" width="19" height="37"/><use href="#fir-c" x="264" y="113" width="12" height="36"/><use href="#fir-a" x="289" y="120" width="12" height="30"/><use href="#fir-a" x="321" y="114" width="13" height="32"/><use href="#fir-b" x="352" y="118" width="17" height="32"/><use href="#fir-b" x="369" y="104" width="21" height="43"/><use href="#fir-c" x="397" y="109" width="14" height="40"/><use href="#fir-b" x="430" y="119" width="13" height="30"/><use href="#fir-a" x="454" y="101" width="19" height="46"/><use href="#fir-c" x="476" y="120" width="9" height="30"/><use href="#fir-c" x="504" y="116" width="11" height="36"/><use href="#fir-c" x="520" y="116" width="10" height="31"/><use href="#fir-b" x="557" y="113" width="19" height="41"/><use href="#fir-c" x="574" y="108" width="15" height="40"/><use href="#fir-c" x="600" y="123" width="10" height="29"/><use href="#fir-c" x="633" y="121" width="9" height="26"/><use href="#fir-a" x="653" y="119" width="13" height="35"/><use href="#fir-c" x="676" y="125" width="11" height="30"/><use href="#fir-b" x="700" y="120" width="17" height="32"/><use href="#fir-b" x="731" y="108" width="21" height="45"/><use href="#fir-a" x="764" y="117" width="14" height="36"/><use href="#fir-b" x="781" y="102" width="20" height="45"/><use href="#fir-a" x="808" y="108" width="16" height="39"/><use href="#fir-c" x="832" y="107" width="15" height="46"/><use href="#fir-a" x="861" y="117" width="12" height="33"/><use href="#fir-a" x="880" y="107" width="16" height="40"/><use href="#fir-a" x="903" y="119" width="12" height="34"/><use href="#fir-c" x="927" y="111" width="11" height="35"/><use href="#fir-a" x="961" y="119" width="12" height="29"/><use href="#fir-b" x="985" y="121" width="17" height="33"/><use href="#fir-c" x="1012" y="111" width="14" height="40"/><use href="#fir-a" x="1032" y="116" width="11" height="30"/><use href="#fir-c" x="1069" y="121" width="11" height="29"/><use href="#fir-c" x="1097" y="116" width="11" height="34"/><use href="#fir-c" x="1118" y="120" width="13" height="35"/><use href="#fir-a" x="1149" y="119" width="11" height="29"/><use href="#fir-b" x="1171" y="109" width="21" height="42"/><use href="#fir-c" x="1188" y="109" width="15" height="45"/><use href="#fir-b" x="1214" y="125" width="13" height="29"/><use href="#fir-a" x="1241" y="105" width="18" height="46"/><use href="#fir-b" x="1259" y="113" width="17" height="32"/><use href="#fir-c" x="1283" y="126" width="10" height="28"/><use href="#fir-a" x="1305" y="104" width="17" height="45"/><use href="#fir-c" x="1323" y="114" width="12" height="37"/><use href="#fir-b" x="1351" y="128" width="12" height="26"/><use href="#fir-c" x="1381" y="107" width="13" height="39"/><use href="#fir-b" x="1412" y="114" width="20" height="37"/><use href="#fir-a" x="1441" y="112" width="15" height="41"/><use href="#fir-c" x="1466" y="113" width="13" height="35"/><use href="#fir-a" x="1499" y="113" width="13" height="36"/><use href="#fir-a" x="1537" y="110" width="17" height="42"/><use href="#fir-a" x="1556" y="115" width="12" height="31"/><use href="#fir-a" x="1589" y="111" width="14" height="39"/><use href="#fir-b" x="1616" y="110" width="22" height="43"/><use href="#fir-b" x="1641" y="114" width="16" height="35"/><use href="#fir-b" x="1668" y="112" width="21" height="40"/><use href="#fir-b" x="1685" y="117" width="17" height="35"/><use href="#fir-c" x="1723" y="114" width="14" height="41"/><use href="#fir-c" x="1746" y="115" width="11" height="35"/><use href="#fir-c" x="1766" y="117" width="10" height="29"/><use href="#fir-b" x="1801" y="116" width="17" height="38"/><use href="#fir-c" x="1836" y="105" width="15" height="44"/><use href="#fir-c" x="1860" y="112" width="14" height="37"/><use href="#fir-c" x="1898" y="119" width="11" height="30"/><use href="#fir-c" x="1934" y="116" width="11" height="32"/><use href="#fir-a" x="1967" y="117" width="13" height="37"/><use href="#fir-c" x="1986" y="113" width="16" height="42"/><use href="#fir-b" x="2008" y="112" width="15" height="34"/></symbol>
+<symbol id="grove-near" viewBox="0 0 2000 200" overflow="visible"><rect x="-80" y="168" width="2160" height="62"/><use href="#fir-a" x="-44" y="115" width="25" height="65"/><use href="#fir-a" x="9" y="118" width="26" height="61"/><use href="#fir-a" x="36" y="100" width="27" height="74"/><use href="#fir-c" x="71" y="109" width="23" height="69"/><use href="#fir-a" x="112" y="108" width="27" height="72"/><use href="#fir-c" x="168" y="113" width="22" height="68"/><use href="#fir-a" x="200" y="121" width="20" height="54"/><use href="#fir-c" x="253" y="117" width="21" height="65"/><use href="#fir-c" x="282" y="125" width="19" height="56"/><use href="#fir-b" x="338" y="110" width="33" height="70"/><use href="#fir-a" x="395" y="107" width="29" height="69"/><use href="#fir-b" x="452" y="113" width="27" height="59"/><use href="#fir-c" x="509" y="108" width="24" height="73"/><use href="#fir-b" x="553" y="118" width="31" height="57"/><use href="#fir-b" x="586" y="126" width="25" height="48"/><use href="#fir-b" x="620" y="114" width="36" height="67"/><use href="#fir-c" x="648" y="130" width="17" height="50"/><use href="#fir-a" x="705" y="116" width="23" height="61"/><use href="#fir-b" x="743" y="111" width="36" height="69"/><use href="#fir-a" x="777" y="114" width="24" height="62"/><use href="#fir-b" x="807" y="105" width="31" height="69"/><use href="#fir-b" x="864" y="107" width="34" height="73"/><use href="#fir-c" x="918" y="135" width="16" height="47"/><use href="#fir-a" x="957" y="121" width="23" height="56"/><use href="#fir-b" x="1007" y="123" width="26" height="57"/><use href="#fir-a" x="1037" y="122" width="23" height="59"/><use href="#fir-c" x="1081" y="121" width="20" height="61"/><use href="#fir-b" x="1139" y="119" width="27" height="55"/><use href="#fir-c" x="1173" y="111" width="23" height="67"/><use href="#fir-a" x="1226" y="103" width="29" height="68"/><use href="#fir-c" x="1277" y="104" width="23" height="70"/><use href="#fir-a" x="1310" y="123" width="23" height="56"/><use href="#fir-a" x="1344" y="135" width="18" height="48"/><use href="#fir-a" x="1387" y="132" width="20" height="49"/><use href="#fir-a" x="1414" y="127" width="20" height="50"/><use href="#fir-b" x="1454" y="108" width="33" height="75"/><use href="#fir-b" x="1487" y="99" width="34" height="76"/><use href="#fir-a" x="1545" y="130" width="20" height="52"/><use href="#fir-c" x="1603" y="106" width="24" height="75"/><use href="#fir-b" x="1651" y="99" width="38" height="77"/><use href="#fir-b" x="1708" y="116" width="27" height="61"/><use href="#fir-c" x="1756" y="109" width="24" height="71"/><use href="#fir-c" x="1787" y="124" width="18" height="49"/><use href="#fir-c" x="1828" y="122" width="19" height="53"/><use href="#fir-a" x="1878" y="122" width="21" height="60"/><use href="#fir-c" x="1935" y="110" width="22" height="69"/><use href="#fir-c" x="1977" y="112" width="21" height="63"/><use href="#fir-b" x="2033" y="119" width="32" height="64"/></symbol>
+<symbol id="grove-front" viewBox="0 0 2000 200" overflow="visible"><rect x="-80" y="193" width="2160" height="37"/><use href="#fir-a" x="-60" y="98" width="39" height="107"/><use href="#fir-c" x="-7" y="74" width="41" height="126"/><use href="#fir-c" x="31" y="84" width="46" height="122"/><use href="#fir-b" x="69" y="89" width="57" height="119"/><use href="#fir-a" x="129" y="76" width="54" height="128"/><use href="#fir-b" x="168" y="94" width="50" height="109"/><use href="#fir-a" x="224" y="105" width="38" height="95"/><use href="#fir-b" x="279" y="62" width="64" height="139"/><use href="#fir-b" x="420" y="84" width="64" height="124"/><use href="#fir-c" x="467" y="97" width="35" height="105"/><use href="#fir-c" x="536" y="89" width="42" height="115"/><use href="#fir-a" x="577" y="71" width="51" height="132"/><use href="#fir-c" x="621" y="62" width="53" height="144"/><use href="#fir-c" x="676" y="76" width="43" height="125"/><use href="#fir-b" x="880" y="95" width="58" height="108"/><use href="#fir-c" x="944" y="68" width="44" height="132"/><use href="#fir-a" x="991" y="95" width="42" height="109"/><use href="#fir-c" x="1032" y="74" width="46" height="135"/><use href="#fir-a" x="1098" y="83" width="48" height="125"/><use href="#fir-a" x="1135" y="89" width="43" height="112"/><use href="#fir-a" x="1310" y="81" width="49" height="123"/><use href="#fir-b" x="1364" y="84" width="55" height="117"/><use href="#fir-b" x="1399" y="67" width="59" height="133"/><use href="#fir-a" x="1445" y="97" width="41" height="105"/><use href="#fir-a" x="1516" y="93" width="42" height="113"/><use href="#fir-c" x="1690" y="94" width="36" height="113"/><use href="#fir-b" x="1754" y="90" width="60" height="116"/><use href="#fir-b" x="1809" y="104" width="50" height="103"/><use href="#fir-c" x="1880" y="62" width="52" height="142"/><use href="#fir-b" x="1926" y="106" width="48" height="97"/><use href="#fir-a" x="1971" y="78" width="53" height="128"/><use href="#fir-a" x="2007" y="108" width="42" height="97"/></symbol>
   </defs>
 </svg>
 
-<!-- 1 · DIRECTION HEADER -->
-<header class="dhead">
-  <div class="dhead-in">
-    <div class="dhead-id">
-      <p class="dhead-series">DiscNW website redesign · Direction 1 of 5</p>
-      <p class="dhead-name">Evergreen<small>Pacific Northwest place-identity</small></p>
-    </div>
-    <div class="dhead-body">
-      <p class="dhead-thesis">Ultimate as the Pacific Northwest plays it — the brand is rooted in where the game happens: wet grass, fog, firs, and long June light, year-round.</p>
-      <ul class="dhead-tags">
-        <li>Rooted</li><li>Weatherproof</li><li>Local</li><li>Year-round</li><li>Welcoming</li>
-      </ul>
-    </div>
+<!-- 1 · DIRECTION HEADER — the page opens on the horizon -->
+<header class="masthead">
+  <div class="masthead-in">
+    <p class="mast-series">DiscNW website redesign · Direction 1 of 5</p>
+    <h1 class="mast-name">Evergreen</h1>
+    <p class="mast-thesis">Pacific Northwest place-identity. Ultimate as this region plays it — the brand is rooted in where the game happens: wet grass, fog, firs, and long June light, year-round.</p>
+    <p class="mast-tags">Rooted<span>·</span>Weatherproof<span>·</span>Local<span>·</span>Year-round<span>·</span>Welcoming</p>
   </div>
+  <svg class="treeline" viewBox="0 0 2000 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+      <use href="#ridge-far" class="tl-far"/>
+      <use href="#fog-hi"/>
+      <use href="#grove-mid" class="tl-mid"/>
+      <use href="#fog-lo"/>
+      <use href="#grove-near" class="tl-near"/>
+      <use href="#grove-front" class="tl-front"/>
+    </svg>
 </header>
 
 <main>
@@ -667,21 +595,21 @@
   <section class="sec" aria-labelledby="idea-title">
     <p class="kicker">02 — The idea</p>
     <h2 class="sec-title" id="idea-title">Belonging to a place</h2>
-    <p class="idea-copy">Most league sites could be anywhere. DiscNW couldn't: this game lives at Magnuson Park, in fog at a 9&nbsp;a.m. jamboree, in June light that holds until the last point. Evergreen makes that the brand — fir green and fog grey doing the everyday work, one vivid wet-grass green marking every action, and a drawn treeline putting every page somewhere real. The bet is simple: people don't just sign up for a league, they join a place.</p>
+    <p class="idea-copy">Most league sites could be anywhere. DiscNW couldn&rsquo;t: this game lives at Magnuson Park, in fog at a 9&nbsp;a.m. jamboree, in June light that holds until the last point. Evergreen makes that the brand — fir green and fog grey doing the everyday work, one vivid wet-grass green marking every action, and a drawn treeline putting every page somewhere real. The photographs stay untouched, because the place is already in them. The bet is simple: people don&rsquo;t just sign up for a league, they join a place.</p>
   </section>
 
   <!-- 3 · COLOR -->
   <section class="sec" aria-labelledby="color-title">
     <p class="kicker">03 — Color</p>
     <h2 class="sec-title" id="color-title">A palette pulled from a wet field</h2>
-    <p class="sec-intro">Two working greens, two weathers, one ground. Nothing pastel, nothing sage-and-cream — these are the colors of a March practice you were glad you went to.</p>
+    <p class="sec-intro">Two working greens, two weathers, one ground — on panels, buttons, and type only. Photography keeps its own color; the palette frames it and never sits on it.</p>
     <ul class="swatches">
       <li class="swatch">
         <div class="swatch-chip" style="background:#14291F"></div>
         <div class="swatch-info">
           <h3 class="swatch-name">Old Fir</h3>
           <span class="swatch-hex">#14291F</span>
-          <p class="swatch-use">Darkest ground — hero and footer bands, headline ink on light.</p>
+          <p class="swatch-use">Darkest ground — nav, footer, and story bands; headline ink on light.</p>
         </div>
       </li>
       <li class="swatch">
@@ -705,11 +633,11 @@
         <div class="swatch-info">
           <h3 class="swatch-name">Fog Bank</h3>
           <span class="swatch-hex">#94A9B4</span>
-          <p class="swatch-use">Weather layers, borders on dark, captions on Old Fir. Decorative on light.</p>
+          <p class="swatch-use">Skies behind the treeline, separators on dark, quiet metadata.</p>
         </div>
       </li>
       <li class="swatch">
-        <div class="swatch-chip" style="background:#F1F3EE; border-bottom:1px solid #D5DCD1"></div>
+        <div class="swatch-chip chip-outline" style="background:#F1F3EE"></div>
         <div class="swatch-info">
           <h3 class="swatch-name">Morning Fog</h3>
           <span class="swatch-hex">#F1F3EE</span>
@@ -731,13 +659,13 @@
   <section class="sec" aria-labelledby="type-title">
     <p class="kicker">04 — Typography</p>
     <h2 class="sec-title" id="type-title">Sturdy over slick</h2>
-    <p class="sec-intro">Display type with outdoors-gear confidence, body type warm enough for a waiver form. Both load from Google Fonts; both hold up soaked.</p>
+    <p class="sec-intro">Display type with trailhead-sign confidence, body type warm enough for a waiver form. Both load from Google Fonts; both hold up soaked.</p>
 
     <div class="type-cards">
       <div class="type-card tc-display">
         <span class="role">Display · headings</span>
         <h3>Archivo</h3>
-        <p>A sturdy grotesque we run wide (expanded width) and heavy — trailhead-sign energy, not tech-startup energy. Weights 700–900.</p>
+        <p>A sturdy grotesque we run wide (expanded width) and heavy — national-park-sign energy, not tech-startup energy. Weights 700–900.</p>
         <p class="glyphs" aria-hidden="true">AaBbGgRr 0123456789 →</p>
       </div>
       <div class="type-card">
@@ -755,7 +683,7 @@
     <div class="scale">
       <div class="scale-row">
         <p class="scale-sample s-display">Ultimate grows here</p>
-        <span class="scale-spec">Display · Archivo 900 wide · 64/66</span>
+        <span class="scale-spec">Display · Archivo 900 wide · 64–120px</span>
       </div>
       <div class="scale-row">
         <p class="scale-sample s-h2">Three front doors</p>
@@ -763,7 +691,7 @@
       </div>
       <div class="scale-row">
         <p class="scale-sample s-h3">Summer Wonder League</p>
-        <span class="scale-spec">H3 · Archivo 700 · 24/30</span>
+        <span class="scale-spec">H3 · Archivo 700 · 23/29</span>
       </div>
       <div class="scale-row">
         <p class="scale-sample s-body">Bring cleats, a rain shell, and 64–96 ounces of water for tournament days.</p>
@@ -771,7 +699,7 @@
       </div>
       <div class="scale-row">
         <p class="scale-sample s-caption">Field status · updated 4:12 pm</p>
-        <span class="scale-spec">Caption · Archivo 700 caps · 12.5/16</span>
+        <span class="scale-spec">Caption · Archivo 700 caps · 12/16</span>
       </div>
     </div>
   </section>
@@ -780,87 +708,33 @@
   <section class="sec" aria-labelledby="sig-title">
     <p class="kicker">05 — Signature element</p>
     <h2 class="sec-title" id="sig-title">The horizon line</h2>
-    <p class="sec-intro">One device, drawn once, used everywhere: a layered horizon of firs, fog, and field. It grounds the hero, divides sections, closes the footer — and stands in silhouette in front of the page's one full-bleed photograph. The fog layer drifts a few pixels as you scroll; if your system asks for reduced motion, it holds perfectly still.</p>
+    <p class="sec-intro">One device, drawn once, used everywhere: four grove layers and two banks of fog, built from three fir silhouettes. It opens the page, grounds the hero, divides the light sections from the dark, and closes the footer. It is drawn — never printed over a photograph.</p>
 
     <div class="sig-frame">
       <div class="sig-sky">
-        <svg class="treeline" viewBox="0 0 1440 180" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
-          <g class="tl-back" data-depth="5">
-            <rect x="-60" y="118" width="1560" height="100"/>
-            <use href="#fir" x="-24" y="74" width="32" height="50"/>
-            <use href="#fir" x="16" y="82" width="28" height="42"/>
-            <use href="#fir" x="58" y="70" width="34" height="54"/>
-            <use href="#fir" x="104" y="84" width="26" height="40"/>
-            <use href="#fir" x="150" y="74" width="32" height="50"/>
-            <use href="#fir" x="210" y="80" width="28" height="44"/>
-            <use href="#fir" x="270" y="68" width="34" height="56"/>
-            <use href="#fir" x="330" y="84" width="26" height="40"/>
-            <use href="#fir" x="382" y="74" width="32" height="50"/>
-            <use href="#fir" x="452" y="80" width="28" height="44"/>
-            <use href="#fir" x="520" y="70" width="34" height="54"/>
-            <use href="#fir" x="584" y="84" width="26" height="40"/>
-            <use href="#fir" x="642" y="74" width="32" height="50"/>
-            <use href="#fir" x="710" y="80" width="28" height="44"/>
-            <use href="#fir" x="775" y="68" width="34" height="56"/>
-            <use href="#fir" x="840" y="84" width="26" height="40"/>
-            <use href="#fir" x="900" y="74" width="32" height="50"/>
-            <use href="#fir" x="965" y="82" width="28" height="42"/>
-            <use href="#fir" x="1030" y="70" width="34" height="54"/>
-            <use href="#fir" x="1095" y="84" width="26" height="40"/>
-            <use href="#fir" x="1150" y="74" width="32" height="50"/>
-            <use href="#fir" x="1215" y="80" width="28" height="44"/>
-            <use href="#fir" x="1280" y="68" width="34" height="56"/>
-            <use href="#fir" x="1345" y="84" width="26" height="40"/>
-            <use href="#fir" x="1400" y="74" width="32" height="50"/>
-          </g>
-          <rect class="tl-fog" data-depth="30" x="-60" y="66" width="1560" height="96" fill="url(#fogGrad)"/>
-          <g class="tl-mid" data-depth="12">
-            <rect x="-60" y="136" width="1560" height="90"/>
-            <use href="#fir" x="-36" y="64" width="50" height="80"/>
-            <use href="#fir" x="40" y="80" width="42" height="64"/>
-            <use href="#fir" x="120" y="56" width="54" height="88"/>
-            <use href="#fir" x="250" y="74" width="46" height="70"/>
-            <use href="#fir" x="345" y="84" width="40" height="60"/>
-            <use href="#fir" x="470" y="60" width="52" height="84"/>
-            <use href="#fir" x="640" y="78" width="44" height="66"/>
-            <use href="#fir" x="760" y="54" width="54" height="90"/>
-            <use href="#fir" x="880" y="82" width="42" height="62"/>
-            <use href="#fir" x="1000" y="64" width="50" height="80"/>
-            <use href="#fir" x="1140" y="76" width="44" height="68"/>
-            <use href="#fir" x="1264" y="58" width="54" height="86"/>
-            <use href="#fir" x="1390" y="78" width="44" height="66"/>
-          </g>
-          <g class="tl-front" data-depth="20">
-            <rect x="-60" y="154" width="1560" height="90"/>
-            <use href="#fir" x="-44" y="54" width="66" height="108"/>
-            <use href="#fir" x="40" y="76" width="54" height="86"/>
-            <use href="#fir" x="128" y="62" width="62" height="100"/>
-            <use href="#fir" x="330" y="72" width="56" height="90"/>
-            <use href="#fir" x="425" y="50" width="68" height="112"/>
-            <use href="#fir" x="980" y="74" width="56" height="88"/>
-            <use href="#fir" x="1075" y="48" width="68" height="114"/>
-            <use href="#fir" x="1180" y="76" width="56" height="86"/>
-            <use href="#fir" x="1295" y="58" width="64" height="104"/>
-            <use href="#fir" x="1396" y="78" width="54" height="84"/>
-          </g>
-        </svg>
+        <svg class="treeline" viewBox="0 0 2000 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+      <use href="#ridge-far" class="tl-far"/>
+      <use href="#fog-hi"/>
+      <use href="#grove-mid" class="tl-mid"/>
+      <use href="#fog-lo"/>
+      <use href="#grove-near" class="tl-near"/>
+      <use href="#grove-front" class="tl-front"/>
+    </svg>
       </div>
       <div class="sig-base">
-        <span><strong>Drawn, not photographed.</strong> Fir, fog, field — three layers, one shared SVG symbol.</span>
-        <span>Fog drifts on scroll · holds still under reduced motion</span>
+        <span><strong>Drawn, not photographed.</strong> Far ridge, fog, mid grove, fog, near grove, front grove — one shared set of SVG symbols.</span>
+        <span>Static by design · the weather does the moving</span>
       </div>
     </div>
 
-    <ul class="sig-uses">
-      <li>Hero grounding</li><li>Section divider</li><li>Photo foreground</li><li>Footer horizon</li>
-    </ul>
+    <p class="sig-uses">Page opening<span>·</span>Hero grounding<span>·</span>Section divider<span>·</span>Footer horizon</p>
   </section>
 
   <!-- 6 · HOMEPAGE HERO MOCKUP -->
-  <section class="sec sec-hero" aria-labelledby="hero-title">
+  <section class="sec" aria-labelledby="hero-title">
     <p class="kicker">06 — Homepage hero</p>
     <h2 class="sec-title" id="hero-title">discnw.org, redesigned</h2>
-    <p class="sec-intro">The top of the new homepage: weather report, treeline, one clear action. It should feel like standing at the edge of the field at 5:55 on a league night.</p>
+    <p class="sec-intro">The top of the new homepage: field conditions, one clear action, the horizon, and the sport in full color. It should feel like standing at the edge of the field at 5:55 on a league night.</p>
 
     <div class="browser">
       <div class="browser-bar">
@@ -868,10 +742,10 @@
         <div class="browser-url">discnw.org</div>
       </div>
 
-      <div class="mock" role="img" aria-label="Mockup of the redesigned DiscNW homepage hero: dark green navigation bar with the DiscNW twin-bird logo in white, a fog-grey sky with a disc in flight, the headline 'Ultimate grows here.' above a fir treeline, and a registration ticker.">
+      <div class="mock" role="img" aria-label="Mockup of the redesigned DiscNW homepage: dark green navigation with the DiscNW twin-bird logo in white, a field-conditions strip, the headline 'Ultimate grows here.' over a fog sky, a drawn fir treeline, a full-color photograph of players celebrating an overhead catch, and a static list of programs registering now.">
         <div class="mock-nav">
           <div class="mock-logo">
-            <img src="assets/discnw-logo-transparent-april2021.png" alt="DiscNW — Coast Salish-style twin-bird mark and wordmark" width="1446" height="616">
+            <img src="assets/discnw-logo-transparent-april2021.png" alt="" width="1446" height="616">
           </div>
           <div class="mock-links" aria-hidden="true">
             <span>Events</span><span>Youth</span><span>Adult Leagues</span><span>Coaching</span><span>About</span>
@@ -880,248 +754,139 @@
           <div class="mock-burger" aria-hidden="true"><span></span><span></span><span></span></div>
         </div>
 
-        <div class="mock-hero">
-          <svg class="disc-flight" viewBox="0 0 900 260" aria-hidden="true" focusable="false">
-            <path d="M-10 244 C 180 80, 470 22, 872 98" fill="none" stroke="#FBFDFA" stroke-width="2.5" stroke-dasharray="2 11" stroke-linecap="round" opacity=".9"/>
-            <ellipse cx="866" cy="99" rx="18" ry="6" fill="#FDFEFC"/>
-            <ellipse cx="866" cy="102" rx="18" ry="6" fill="#94A9B4" opacity=".45"/>
-          </svg>
+        <div class="mock-conditions" aria-hidden="true">
+          <span class="cond-label">Fields today</span>
+          <span><span class="dot"></span>Magnuson — open</span>
+          <span><span class="dot"></span>Marymoor — open</span>
+          <span><span class="dot"></span>Lower Woodland turf — open</span>
+          <span class="cond-right">Rainout hotline (206) 781-5840 · Sunset 9:05 pm</span>
+        </div>
 
+        <div class="mock-hero">
           <div class="mock-hero-inner">
             <p class="mock-eyebrow">The home for ultimate in the Puget Sound region</p>
             <p class="mock-h1">Ultimate grows here.</p>
-            <p class="mock-sub">Leagues, camps, and tournaments for 10,000+ players a year — on wet grass, under grey skies, in the long light of June. Wherever you're starting, there's a field waiting.</p>
+            <p class="mock-sub">Leagues, camps, and tournaments for 10,000+ players a year — on wet grass, under grey skies, in the long light of June. Wherever you&rsquo;re starting, there&rsquo;s a field waiting.</p>
             <div class="mock-ctas">
               <span class="btn btn-primary">Find your league</span>
               <span class="mock-cta-quiet">New to ultimate? Start here</span>
             </div>
-            <p class="mock-weather">Fields today: open · rainout hotline (206) 781-5840</p>
           </div>
-
-          <svg class="treeline" viewBox="0 0 1440 180" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
-            <g class="tl-back" data-depth="5">
-              <rect x="-60" y="118" width="1560" height="100"/>
-              <use href="#fir" x="-24" y="74" width="32" height="50"/>
-              <use href="#fir" x="16" y="82" width="28" height="42"/>
-              <use href="#fir" x="58" y="70" width="34" height="54"/>
-              <use href="#fir" x="104" y="84" width="26" height="40"/>
-              <use href="#fir" x="150" y="74" width="32" height="50"/>
-              <use href="#fir" x="210" y="80" width="28" height="44"/>
-              <use href="#fir" x="270" y="68" width="34" height="56"/>
-              <use href="#fir" x="330" y="84" width="26" height="40"/>
-              <use href="#fir" x="382" y="74" width="32" height="50"/>
-              <use href="#fir" x="452" y="80" width="28" height="44"/>
-              <use href="#fir" x="520" y="70" width="34" height="54"/>
-              <use href="#fir" x="584" y="84" width="26" height="40"/>
-              <use href="#fir" x="642" y="74" width="32" height="50"/>
-              <use href="#fir" x="710" y="80" width="28" height="44"/>
-              <use href="#fir" x="775" y="68" width="34" height="56"/>
-              <use href="#fir" x="840" y="84" width="26" height="40"/>
-              <use href="#fir" x="900" y="74" width="32" height="50"/>
-              <use href="#fir" x="965" y="82" width="28" height="42"/>
-              <use href="#fir" x="1030" y="70" width="34" height="54"/>
-              <use href="#fir" x="1095" y="84" width="26" height="40"/>
-              <use href="#fir" x="1150" y="74" width="32" height="50"/>
-              <use href="#fir" x="1215" y="80" width="28" height="44"/>
-              <use href="#fir" x="1280" y="68" width="34" height="56"/>
-              <use href="#fir" x="1345" y="84" width="26" height="40"/>
-              <use href="#fir" x="1400" y="74" width="32" height="50"/>
-            </g>
-            <rect class="tl-fog" data-depth="30" x="-60" y="66" width="1560" height="96" fill="url(#fogGrad)"/>
-            <g class="tl-mid" data-depth="12">
-              <rect x="-60" y="136" width="1560" height="90"/>
-              <use href="#fir" x="-36" y="64" width="50" height="80"/>
-              <use href="#fir" x="40" y="80" width="42" height="64"/>
-              <use href="#fir" x="120" y="56" width="54" height="88"/>
-              <use href="#fir" x="250" y="74" width="46" height="70"/>
-              <use href="#fir" x="345" y="84" width="40" height="60"/>
-              <use href="#fir" x="470" y="60" width="52" height="84"/>
-              <use href="#fir" x="640" y="78" width="44" height="66"/>
-              <use href="#fir" x="760" y="54" width="54" height="90"/>
-              <use href="#fir" x="880" y="82" width="42" height="62"/>
-              <use href="#fir" x="1000" y="64" width="50" height="80"/>
-              <use href="#fir" x="1140" y="76" width="44" height="68"/>
-              <use href="#fir" x="1264" y="58" width="54" height="86"/>
-              <use href="#fir" x="1390" y="78" width="44" height="66"/>
-            </g>
-            <g class="tl-front" data-depth="20">
-              <rect x="-60" y="154" width="1560" height="90"/>
-              <use href="#fir" x="-44" y="54" width="66" height="108"/>
-              <use href="#fir" x="40" y="76" width="54" height="86"/>
-              <use href="#fir" x="128" y="62" width="62" height="100"/>
-              <use href="#fir" x="330" y="72" width="56" height="90"/>
-              <use href="#fir" x="425" y="50" width="68" height="112"/>
-              <use href="#fir" x="980" y="74" width="56" height="88"/>
-              <use href="#fir" x="1075" y="48" width="68" height="114"/>
-              <use href="#fir" x="1180" y="76" width="56" height="86"/>
-              <use href="#fir" x="1295" y="58" width="64" height="104"/>
-              <use href="#fir" x="1396" y="78" width="54" height="84"/>
-            </g>
-          </svg>
+          <svg class="treeline" viewBox="0 0 2000 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+      <use href="#ridge-far" class="tl-far"/>
+      <use href="#fog-hi"/>
+      <use href="#grove-mid" class="tl-mid"/>
+      <use href="#fog-lo"/>
+      <use href="#grove-near" class="tl-near"/>
+      <use href="#grove-front" class="tl-front"/>
+    </svg>
         </div>
 
-        <div class="mock-ticker">
+        <img class="mock-photo" src="assets/sr26-catch-celebration.jpg" width="1920" height="1080" alt="">
+
+        <div class="mock-reg">
           <strong>Registering now</strong>
-          <div class="tick-viewport" aria-hidden="true">
-            <div class="tick-track">
-              <span class="tick-run">Summer Mixed Team League<span class="tick-sep">·</span>Summer Youth Ultimate Camps (grades 3–12)<span class="tick-sep">·</span>Summer Wonder League<span class="tick-sep">·</span>Sea Plastic — Ocean Shores, Jul 18–19<span class="tick-sep">·</span>Summer Youth Hat League<span class="tick-sep">·</span>Summer Masters Mixed Hat League<span class="tick-sep">·</span>Summer Men's Hat League<span class="tick-sep">·</span>Summer Mixed Corporate Team League<span class="tick-sep">·</span></span>
-              <span class="tick-run">Summer Mixed Team League<span class="tick-sep">·</span>Summer Youth Ultimate Camps (grades 3–12)<span class="tick-sep">·</span>Summer Wonder League<span class="tick-sep">·</span>Sea Plastic — Ocean Shores, Jul 18–19<span class="tick-sep">·</span>Summer Youth Hat League<span class="tick-sep">·</span>Summer Masters Mixed Hat League<span class="tick-sep">·</span>Summer Men's Hat League<span class="tick-sep">·</span>Summer Mixed Corporate Team League<span class="tick-sep">·</span></span>
-            </div>
-          </div>
+          <ul>
+            <li>Summer Mixed Hat League</li>
+            <li>Summer Youth Ultimate Camps (grades 3–12)</li>
+            <li>Summer Wonder League</li>
+            <li>Sea Plastic — Ocean Shores, Jul 18–19</li>
+          </ul>
+          <span class="reg-more">See all programs →</span>
         </div>
       </div>
     </div>
-    <p class="note">Component note: the field-status line is real utility — DiscNW already runs a rainout hotline, and the pulsing dot means "checked today." The registration wire below scrolls the live 2026 calendar like a scoreboard ticker; it pauses on hover and sits still under reduced motion.</p>
+    <p class="note">Component note: the conditions strip is real utility — DiscNW already runs a rainout hotline, and players check field status daily. Registration is a calm, current list, not a ticker. The photograph runs clean and full color; the trees, not the pixels, carry the brand.</p>
   </section>
 
   <!-- 7 · AUDIENCE PATHWAYS -->
   <section class="sec" aria-labelledby="paths-title">
     <p class="kicker">07 — Audience pathways</p>
     <h2 class="sec-title" id="paths-title">Three front doors</h2>
-    <p class="sec-intro">Players, coaches, parents — each gets their own door, in their own language, three seconds after the page loads. This is the storytelling core of the redesign.</p>
+    <p class="sec-intro">Players, coaches, parents — each gets their own door, in their own language, three seconds after the page loads. Photography above, words below; the two never fight.</p>
 
     <div class="paths">
       <article class="path-card">
-        <div class="ph fx-fog">
-          <img class="ph-img" src="assets/ycc-tryouts-2015-4.jpg" style="object-position:50% 24%" alt="Two youth players at YCC tryouts: one snaps a forehand past her defender, the white disc frozen mid-air between them.">
-          <span class="ph-tone" aria-hidden="true"></span>
+        <img class="ph" src="assets/ycc-tryouts-2015-4.jpg" style="object-position:50% 24%" alt="Two youth players at YCC tryouts: one snaps a forehand past her defender, the white disc frozen mid-air between them.">
+        <div class="path-body">
+          <p class="path-tag">Players</p>
+          <h3>Your next team is one signup away.</h3>
+          <p>Hat league, team league, pickup, or a beach weekend at Sea Plastic — year-round, rec to competitive. Tell us the season and how you like to play; we&rsquo;ll show you where you fit.</p>
+          <button type="button" class="btn btn-primary">See what&rsquo;s registering now</button>
         </div>
-        <p class="ph-cap">Photo (Evergreen grade): a forehand thrown past tight defense at YCC tryouts — full detail kept, cast toward fir and fog.</p>
-        <p class="path-tag">Players</p>
-        <h3>Your next team is one signup away.</h3>
-        <p>Hat league, team league, pickup, or a beach weekend at Sea Plastic — year-round, rec to competitive. Tell us the season and how you like to play; we'll show you where you fit.</p>
-        <button type="button" class="btn btn-primary">See what's registering now</button>
       </article>
 
       <article class="path-card">
-        <div class="ph fx-fog">
-          <img class="ph-img" src="assets/coaching-2.jpg" style="object-position:50% 40%" alt="A coach kneels facing a huddle of about ten youth players on a grass field, a white disc on the ground beside them.">
-          <span class="ph-tone" aria-hidden="true"></span>
+        <img class="ph" src="assets/coaching-2.jpg" style="object-position:50% 40%" alt="A coach kneels facing a huddle of about ten youth players on a grass field, a white disc on the ground beside them.">
+        <div class="path-body">
+          <p class="path-tag">Coaches &amp; volunteers</p>
+          <h3>You don&rsquo;t have to be elite. You have to show up.</h3>
+          <p>The Coaching Collective backs you with trainings, practice plans, and a bench of coaches to lean on — from your first background check to the season&rsquo;s last spirit circle.</p>
+          <button type="button" class="btn btn-secondary">Start the coaching checklist</button>
         </div>
-        <p class="ph-cap">Photo (Evergreen grade): a coach kneeling into a youth huddle between points — disc down, everyone leaning in.</p>
-        <p class="path-tag">Coaches &amp; volunteers</p>
-        <h3>You don't have to be elite. You have to show up.</h3>
-        <p>The Coaching Collective backs you with trainings, practice plans, and a bench of coaches to lean on — from your first background check to the season's last spirit circle.</p>
-        <button type="button" class="btn btn-secondary">Start the coaching checklist</button>
       </article>
 
       <article class="path-card">
-        <div class="ph fx-fog">
-          <img class="ph-img" src="assets/sheila-camarena.jpg" style="object-position:50% 30%" alt="A woman in a pink jacket hugs a player in a white jersey on the field while two smiling teammates look on.">
-          <span class="ph-tone" aria-hidden="true"></span>
+        <img class="ph" src="assets/sheila-camarena.jpg" style="object-position:50% 30%" alt="A woman in a pink jacket hugs a player in a white jersey on the field while two smiling teammates look on.">
+        <div class="path-body">
+          <p class="path-tag">Parents &amp; families</p>
+          <h3>New to ultimate? Most of our parents were.</h3>
+          <p>Learn the game in five minutes, get the gear list, and hear the honest answer to &ldquo;where are the referees?&rdquo; — there aren&rsquo;t any, and it&rsquo;s the best thing about this sport.</p>
+          <button type="button" class="btn btn-secondary">Read the parents&rsquo; guide</button>
         </div>
-        <p class="ph-cap">Photo (Evergreen grade): a sideline hug after the last point — families are part of the team here.</p>
-        <p class="path-tag">Parents &amp; families</p>
-        <h3>New to ultimate? Most of our parents were.</h3>
-        <p>Learn the game in five minutes, get the gear list, and hear the honest answer to "where are the referees?" — there aren't any, and it's the best thing about this sport.</p>
-        <button type="button" class="btn btn-secondary">Read the parents' guide</button>
       </article>
     </div>
   </section>
 
-  <!-- treeline divider into dark storytelling section -->
-  <div class="tl-band" aria-hidden="true">
-    <svg class="treeline" viewBox="0 0 1440 180" preserveAspectRatio="xMidYMax slice" focusable="false">
-      <g class="tl-back" data-depth="5">
-        <rect x="-60" y="118" width="1560" height="100"/>
-        <use href="#fir" x="-24" y="74" width="32" height="50"/>
-        <use href="#fir" x="16" y="82" width="28" height="42"/>
-        <use href="#fir" x="58" y="70" width="34" height="54"/>
-        <use href="#fir" x="104" y="84" width="26" height="40"/>
-        <use href="#fir" x="150" y="74" width="32" height="50"/>
-        <use href="#fir" x="210" y="80" width="28" height="44"/>
-        <use href="#fir" x="270" y="68" width="34" height="56"/>
-        <use href="#fir" x="330" y="84" width="26" height="40"/>
-        <use href="#fir" x="382" y="74" width="32" height="50"/>
-        <use href="#fir" x="452" y="80" width="28" height="44"/>
-        <use href="#fir" x="520" y="70" width="34" height="54"/>
-        <use href="#fir" x="584" y="84" width="26" height="40"/>
-        <use href="#fir" x="642" y="74" width="32" height="50"/>
-        <use href="#fir" x="710" y="80" width="28" height="44"/>
-        <use href="#fir" x="775" y="68" width="34" height="56"/>
-        <use href="#fir" x="840" y="84" width="26" height="40"/>
-        <use href="#fir" x="900" y="74" width="32" height="50"/>
-        <use href="#fir" x="965" y="82" width="28" height="42"/>
-        <use href="#fir" x="1030" y="70" width="34" height="54"/>
-        <use href="#fir" x="1095" y="84" width="26" height="40"/>
-        <use href="#fir" x="1150" y="74" width="32" height="50"/>
-        <use href="#fir" x="1215" y="80" width="28" height="44"/>
-        <use href="#fir" x="1280" y="68" width="34" height="56"/>
-        <use href="#fir" x="1345" y="84" width="26" height="40"/>
-        <use href="#fir" x="1400" y="74" width="32" height="50"/>
-      </g>
-      <rect class="tl-fog" data-depth="30" x="-60" y="66" width="1560" height="96" fill="url(#fogGrad)"/>
-      <g class="tl-mid" data-depth="12">
-        <rect x="-60" y="136" width="1560" height="90"/>
-        <use href="#fir" x="-36" y="64" width="50" height="80"/>
-        <use href="#fir" x="40" y="80" width="42" height="64"/>
-        <use href="#fir" x="120" y="56" width="54" height="88"/>
-        <use href="#fir" x="250" y="74" width="46" height="70"/>
-        <use href="#fir" x="345" y="84" width="40" height="60"/>
-        <use href="#fir" x="470" y="60" width="52" height="84"/>
-        <use href="#fir" x="640" y="78" width="44" height="66"/>
-        <use href="#fir" x="760" y="54" width="54" height="90"/>
-        <use href="#fir" x="880" y="82" width="42" height="62"/>
-        <use href="#fir" x="1000" y="64" width="50" height="80"/>
-        <use href="#fir" x="1140" y="76" width="44" height="68"/>
-        <use href="#fir" x="1264" y="58" width="54" height="86"/>
-        <use href="#fir" x="1390" y="78" width="44" height="66"/>
-      </g>
-      <g class="tl-front" data-depth="20">
-        <rect x="-60" y="154" width="1560" height="90"/>
-        <use href="#fir" x="-44" y="54" width="66" height="108"/>
-        <use href="#fir" x="40" y="76" width="54" height="86"/>
-        <use href="#fir" x="128" y="62" width="62" height="100"/>
-        <use href="#fir" x="330" y="72" width="56" height="90"/>
-        <use href="#fir" x="425" y="50" width="68" height="112"/>
-        <use href="#fir" x="980" y="74" width="56" height="88"/>
-        <use href="#fir" x="1075" y="48" width="68" height="114"/>
-        <use href="#fir" x="1180" y="76" width="56" height="86"/>
-        <use href="#fir" x="1295" y="58" width="64" height="104"/>
-        <use href="#fir" x="1396" y="78" width="54" height="84"/>
-      </g>
+  <!-- treeline divider: the horizon carries the page from light into dark -->
+  <div class="skyband" aria-hidden="true">
+    <svg class="treeline" viewBox="0 0 2000 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+      <use href="#ridge-far" class="tl-far"/>
+      <use href="#fog-hi"/>
+      <use href="#grove-mid" class="tl-mid"/>
+      <use href="#fog-lo"/>
+      <use href="#grove-near" class="tl-near"/>
+      <use href="#grove-front" class="tl-front"/>
     </svg>
   </div>
 
-  <!-- 8 · STORYTELLING COMPONENT (dark) -->
+  <!-- 8 · STORYTELLING (dark) -->
   <section class="sec-dark" aria-labelledby="story-title">
-    <div class="sec sec-tight">
+    <div class="sec">
       <p class="kicker">08 — Storytelling</p>
       <h2 class="sec-title" id="story-title">Stories from the field</h2>
-      <p class="sec-intro">Evergreen's story unit is the field report: every story is tagged by park, season, and weather, so the archive slowly becomes a map of where this community plays.</p>
+      <p class="sec-intro">Evergreen&rsquo;s story unit is the field report: every story is tagged by park, season, and weather, so the archive slowly becomes a map of where this community plays.</p>
 
       <div class="story-grid">
         <article class="report">
-          <div class="ph fx-fog">
-            <img class="ph-img" src="assets/taylor-kanemori.jpg" style="object-position:50% 35%" alt="Youth teammates in green and black jerseys laugh, jump, and cheer on a grass tournament field as one player dances mid-celebration.">
-            <span class="ph-tone" aria-hidden="true"></span>
+          <img class="ph" src="assets/sr26-spirit-huddle.jpg" alt="High school players stand arm in arm in a tight post-game huddle at Spring Reign, a few fists raised in celebration.">
+          <div class="report-body">
+            <p class="report-meta">
+              <span>Field report · Spring Reign 2026</span>
+              <span class="meta-weather">Burlington · April · 52° and raining</span>
+            </p>
+            <h3>Arms up, rain down</h3>
+            <blockquote>
+              <p style="margin:0">&ldquo;Six hundred kids played through showers all weekend, and nobody asked me when it would stop. At the last huddle every arm went up before I said a word. That&rsquo;s the part I can&rsquo;t coach — they learn it from each other.&rdquo;</p>
+            </blockquote>
+            <p class="byline">— Dana R., second-year coach · DiscNW Coaching Collective</p>
           </div>
-          <p class="ph-cap">Photo (Evergreen grade): both sidelines losing it — teammates mid-celebration under a flat grey tournament sky.</p>
-          <p class="report-meta">
-            <span>Field report · Fall MS Mixed Hat League</span>
-            <span class="meta-weather">Magnuson Park · November · 43° and raining</span>
-          </p>
-          <h3>Her first layout</h3>
-          <blockquote>
-            <p style="margin:0">"It was raining sideways, the disc was drifting away from her, and she just went. Mud from wrist to ankle, disc in hand. Both sidelines lost it. She's retold it every day since — and honestly, so have I."</p>
-          </blockquote>
-          <p class="byline">— Dana R., second-year coach · DiscNW Coaching Collective</p>
         </article>
 
         <ul class="stats">
-          <li class="stat fx-rise">
+          <li class="stat">
             <span class="num">10,000+</span>
             <p class="why">players a year — third-grade campers to masters hat leaguers, on the same fields.</p>
           </li>
-          <li class="stat fx-rise">
+          <li class="stat">
             <span class="num">#3</span>
-            <p class="why">ultimate's rank among organized youth sports in King County.</p>
+            <p class="why">ultimate&rsquo;s rank among organized youth sports in King County.</p>
           </li>
-          <li class="stat fx-rise">
+          <li class="stat">
             <span class="num">$33</span>
             <p class="why">the lowest Community Supported Ultimate tier — same season, same fields, same disc as every tier.</p>
           </li>
-          <li class="stat fx-rise">
+          <li class="stat">
             <span class="num">(206) 781-5840</span>
             <p class="why">the rainout hotline — because almost nothing else stops play here.</p>
           </li>
@@ -1131,32 +896,15 @@
     </div>
   </section>
 
-  <!-- field-check vista: the signature treeline standing in front of the real thing -->
+  <!-- field check: one clean photograph, full color, captioned below — never on top -->
   <figure class="vista">
-    <div class="vista-media fx-fog">
-      <img class="vista-img" src="assets/sr26-thrower-mountains.jpg" width="1920" height="1080" alt="A youth player squares up a throw on open tournament grass at Spring Reign, sideline crowds and a dark treeline under a storm sky behind her.">
-      <span class="vista-tone" aria-hidden="true"></span>
-      <span class="vista-scrim" aria-hidden="true"></span>
-      <svg class="treeline vista-trees" viewBox="0 0 1440 180" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
-        <g class="tl-front" data-depth="10">
-          <rect x="-60" y="154" width="1560" height="90"/>
-          <use href="#fir" x="-44" y="54" width="66" height="108"/>
-          <use href="#fir" x="40" y="76" width="54" height="86"/>
-          <use href="#fir" x="128" y="62" width="62" height="100"/>
-          <use href="#fir" x="330" y="72" width="56" height="90"/>
-          <use href="#fir" x="425" y="50" width="68" height="112"/>
-          <use href="#fir" x="980" y="74" width="56" height="88"/>
-          <use href="#fir" x="1075" y="48" width="68" height="114"/>
-          <use href="#fir" x="1180" y="76" width="56" height="86"/>
-          <use href="#fir" x="1295" y="58" width="64" height="104"/>
-          <use href="#fir" x="1396" y="78" width="54" height="84"/>
-        </g>
-      </svg>
-    </div>
-    <figcaption class="vista-cap">
-      <p class="vista-kicker">Field check</p>
-      <p class="vista-line">The palette isn't a metaphor.</p>
-      <p class="vista-meta">Spring Reign 2026, Burlington — one frame from the tournament film: wet grass, storm light, a treeline for a backstop.</p>
+    <img class="ph" src="assets/sr26-thrower-mountains.jpg" width="1920" height="1080" alt="A player lines up a throw on open tournament grass at Spring Reign, sideline tents and Cascade foothills under a storm sky behind her.">
+    <figcaption class="vista-plate">
+      <div class="vista-plate-in">
+        <p class="vista-kicker">Field check · Spring Reign 2026, Burlington</p>
+        <p class="vista-line">The palette isn&rsquo;t a metaphor.</p>
+        <p class="vista-meta">One frame from the tournament film, untouched: wet grass, storm light, a treeline for a backstop. The interface borrows these colors; the photographs just keep them.</p>
+      </div>
     </figcaption>
   </figure>
 
@@ -1164,7 +912,7 @@
   <section class="sec" aria-labelledby="ui-title">
     <p class="kicker">09 — UI components</p>
     <h2 class="sec-title" id="ui-title">The working parts</h2>
-    <p class="sec-intro">Registration is the site's day job. These pieces keep it fast — Wet Grass means "this does something," everything else stays out of the way.</p>
+    <p class="sec-intro">Registration is the site&rsquo;s day job. These pieces keep it fast — Wet Grass means &ldquo;this does something,&rdquo; everything else stays out of the way.</p>
 
     <div class="ui-grid">
       <div class="ui-block">
@@ -1203,7 +951,7 @@
               </div>
               <img class="event-logo" src="assets/2025-swl-logo.png" alt="Summer Wonder League logo: line-drawn orcas and salmon circling the league name" width="800" height="801">
             </div>
-            <p class="event-desc">Individual signup — we draw balanced teams. You'll know everyone's name by week two.</p>
+            <p class="event-desc">Individual signup — we draw balanced teams. You&rsquo;ll know everyone&rsquo;s name by week two.</p>
             <p class="event-fee">Sliding scale $33–$495 · pick the tier that fits your household. Every tier gets the same season.</p>
             <div class="event-foot">
               <span class="event-deadline">Registration open through May 30</span>
@@ -1211,7 +959,7 @@
               <button type="button" class="btn btn-quiet">League details</button>
             </div>
           </article>
-          <p class="note">Real program mark, chip scale: the 2025 Summer Wonder League's orcas and salmon already speak Evergreen — program art keeps its color, the card stays quiet.</p>
+          <p class="note">Real program mark: the Summer Wonder League&rsquo;s orcas and salmon already speak Evergreen — program art keeps its color, the card stays quiet.</p>
         </div>
 
         <div class="ui-block">
@@ -1225,7 +973,7 @@
                 <option>Spring</option>
               </select>
             </label>
-            <label>Who's playing
+            <label>Who&rsquo;s playing
               <select>
                 <option>Adults</option>
                 <option>Youth — grades 3–12</option>
@@ -1256,79 +1004,27 @@
       </div>
       <div class="voice-card">
         <span class="vlabel">Registration confirmation</span>
-        <p>You're in — Summer Wonder League, starting June 1. We'll email your team after draft night. Bring cleats: the grass will be wet, and that's the point.</p>
+        <p>You&rsquo;re in — Summer Wonder League, starting June 1. We&rsquo;ll email your team after draft night. Bring cleats: the grass will be wet, and that&rsquo;s the point.</p>
       </div>
       <div class="voice-card">
         <span class="vlabel">To a nervous first-time parent</span>
-        <p>You don't need to know what a huck is yet. Bring a rain jacket and a camp chair; your kid's coach handles the rest, and the sideline will save you a spot.</p>
+        <p>You don&rsquo;t need to know what a huck is yet. Bring a rain jacket and a camp chair; your kid&rsquo;s coach handles the rest, and the sideline will save you a spot.</p>
       </div>
     </div>
   </section>
 
 </main>
 
-<!-- treeline divider into footer -->
-<div class="tl-band" aria-hidden="true">
-  <svg class="treeline" viewBox="0 0 1440 180" preserveAspectRatio="xMidYMax slice" focusable="false">
-    <g class="tl-back" data-depth="5">
-      <rect x="-60" y="118" width="1560" height="100"/>
-      <use href="#fir" x="-24" y="74" width="32" height="50"/>
-      <use href="#fir" x="16" y="82" width="28" height="42"/>
-      <use href="#fir" x="58" y="70" width="34" height="54"/>
-      <use href="#fir" x="104" y="84" width="26" height="40"/>
-      <use href="#fir" x="150" y="74" width="32" height="50"/>
-      <use href="#fir" x="210" y="80" width="28" height="44"/>
-      <use href="#fir" x="270" y="68" width="34" height="56"/>
-      <use href="#fir" x="330" y="84" width="26" height="40"/>
-      <use href="#fir" x="382" y="74" width="32" height="50"/>
-      <use href="#fir" x="452" y="80" width="28" height="44"/>
-      <use href="#fir" x="520" y="70" width="34" height="54"/>
-      <use href="#fir" x="584" y="84" width="26" height="40"/>
-      <use href="#fir" x="642" y="74" width="32" height="50"/>
-      <use href="#fir" x="710" y="80" width="28" height="44"/>
-      <use href="#fir" x="775" y="68" width="34" height="56"/>
-      <use href="#fir" x="840" y="84" width="26" height="40"/>
-      <use href="#fir" x="900" y="74" width="32" height="50"/>
-      <use href="#fir" x="965" y="82" width="28" height="42"/>
-      <use href="#fir" x="1030" y="70" width="34" height="54"/>
-      <use href="#fir" x="1095" y="84" width="26" height="40"/>
-      <use href="#fir" x="1150" y="74" width="32" height="50"/>
-      <use href="#fir" x="1215" y="80" width="28" height="44"/>
-      <use href="#fir" x="1280" y="68" width="34" height="56"/>
-      <use href="#fir" x="1345" y="84" width="26" height="40"/>
-      <use href="#fir" x="1400" y="74" width="32" height="50"/>
-    </g>
-    <rect class="tl-fog" data-depth="30" x="-60" y="66" width="1560" height="96" fill="url(#fogGrad)"/>
-    <g class="tl-mid" data-depth="12">
-      <rect x="-60" y="136" width="1560" height="90"/>
-      <use href="#fir" x="-36" y="64" width="50" height="80"/>
-      <use href="#fir" x="40" y="80" width="42" height="64"/>
-      <use href="#fir" x="120" y="56" width="54" height="88"/>
-      <use href="#fir" x="250" y="74" width="46" height="70"/>
-      <use href="#fir" x="345" y="84" width="40" height="60"/>
-      <use href="#fir" x="470" y="60" width="52" height="84"/>
-      <use href="#fir" x="640" y="78" width="44" height="66"/>
-      <use href="#fir" x="760" y="54" width="54" height="90"/>
-      <use href="#fir" x="880" y="82" width="42" height="62"/>
-      <use href="#fir" x="1000" y="64" width="50" height="80"/>
-      <use href="#fir" x="1140" y="76" width="44" height="68"/>
-      <use href="#fir" x="1264" y="58" width="54" height="86"/>
-      <use href="#fir" x="1390" y="78" width="44" height="66"/>
-    </g>
-    <g class="tl-front" data-depth="20">
-      <rect x="-60" y="154" width="1560" height="90"/>
-      <use href="#fir" x="-44" y="54" width="66" height="108"/>
-      <use href="#fir" x="40" y="76" width="54" height="86"/>
-      <use href="#fir" x="128" y="62" width="62" height="100"/>
-      <use href="#fir" x="330" y="72" width="56" height="90"/>
-      <use href="#fir" x="425" y="50" width="68" height="112"/>
-      <use href="#fir" x="980" y="74" width="56" height="88"/>
-      <use href="#fir" x="1075" y="48" width="68" height="114"/>
-      <use href="#fir" x="1180" y="76" width="56" height="86"/>
-      <use href="#fir" x="1295" y="58" width="64" height="104"/>
-      <use href="#fir" x="1396" y="78" width="54" height="84"/>
-    </g>
-  </svg>
+<!-- the horizon closes the page -->
+<div class="skyband" aria-hidden="true">
+  <svg class="treeline" viewBox="0 0 2000 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+      <use href="#ridge-far" class="tl-far"/>
+      <use href="#fog-hi"/>
+      <use href="#grove-mid" class="tl-mid"/>
+      <use href="#fog-lo"/>
+      <use href="#grove-near" class="tl-near"/>
+      <use href="#grove-front" class="tl-front"/>
+    </svg>
 </div>
 
 <!-- 11 · FOOTER -->
@@ -1337,7 +1033,7 @@
     <div class="verdicts">
       <div class="verdict">
         <h2>Choose this direction if…</h2>
-        <p>You want a brand that could only belong to Puget Sound ultimate — instantly familiar to anyone who's played a March game in the rain, and warm enough to hand a nervous parent.</p>
+        <p>You want a brand that could only belong to Puget Sound ultimate — instantly familiar to anyone who&rsquo;s played a March game in the rain, and warm enough to hand a nervous parent.</p>
       </div>
       <div class="verdict">
         <h2>Think twice if…</h2>
@@ -1351,66 +1047,6 @@
     </nav>
   </div>
 </footer>
-
-<script>
-(function(){
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var svgs = Array.prototype.slice.call(document.querySelectorAll('.treeline'));
-  if (!svgs.length) return;
-  var ticking = false;
-  function update(){
-    ticking = false;
-    var vh = window.innerHeight;
-    for (var s = 0; s < svgs.length; s++){
-      var svg = svgs[s];
-      var r = svg.getBoundingClientRect();
-      if (r.bottom < -80 || r.top > vh + 80) continue;
-      var p = ((r.top + r.height / 2) - vh / 2) / vh;
-      p = Math.max(-0.6, Math.min(0.6, p));
-      var layers = svg.querySelectorAll('[data-depth]');
-      for (var i = 0; i < layers.length; i++){
-        var d = parseFloat(layers[i].getAttribute('data-depth'));
-        layers[i].style.transform = 'translateY(' + (p * d).toFixed(1) + 'px)';
-      }
-    }
-  }
-  function onScroll(){
-    if (!ticking){ ticking = true; window.requestAnimationFrame(update); }
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
-  update();
-})();
-
-/* fog-lift reveal: photos sharpen and stats rise as they enter the viewport.
-   Without JS (or without IntersectionObserver, or with reduced motion) nothing
-   is ever fogged or hidden — the .js-reveal class is simply never added. */
-(function(){
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (!('IntersectionObserver' in window)) return;
-  var els = Array.prototype.slice.call(document.querySelectorAll('.fx-fog, .fx-rise'));
-  if (!els.length) return;
-  document.documentElement.classList.add('js-reveal');
-  var io = new IntersectionObserver(function(entries){
-    for (var i = 0; i < entries.length; i++){
-      if (entries[i].isIntersecting){
-        entries[i].target.classList.add('is-clear');
-        io.unobserve(entries[i].target);
-      }
-    }
-  }, { threshold: 0.16, rootMargin: '0px 0px -6% 0px' });
-  for (var i = 0; i < els.length; i++) io.observe(els[i]);
-  /* fail-safe: probe proves the observer actually fires; if it hasn't by 3.2s,
-     everything sharpens. Hidden stat cards always appear by then regardless. */
-  var probeOK = false;
-  var probe = new IntersectionObserver(function(entries, o){ probeOK = true; o.disconnect(); });
-  probe.observe(document.body);
-  setTimeout(function(){
-    /* unconditional: photos must never stay fogged (print, screenshots, no-scroll) */
-    for (var j = 0; j < els.length; j++) els[j].classList.add('is-clear');
-  }, 3200);
-})();
-</script>
 
 </body>
 </html>
