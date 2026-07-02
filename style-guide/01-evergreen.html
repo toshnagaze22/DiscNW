@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction 1 · Evergreen — DiscNW redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900&family=Source+Sans+3:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fir:#14291F;
+    --hemlock:#24513B;
+    --grass:#3DAE54;
+    --grass-dark:#2F9B46;
+    --grass-light:#9FD8AB;
+    --fog:#94A9B4;
+    --paper:#F1F3EE;
+    --card:#FBFCFA;
+    --slate:#44554D;
+    --ink:#1F332A;
+    --line:#D5DCD1;
+    --btn-ink:#0E241A;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Sans 3', system-ui, -apple-system, sans-serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--grass); color:var(--btn-ink); }
+
+  a{ color:var(--hemlock); text-decoration:underline; text-underline-offset:3px; }
+  a:hover{ color:var(--fir); }
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible{
+    outline:3px solid var(--hemlock);
+    outline-offset:2px;
+    border-radius:4px;
+  }
+  .sec-dark a:focus-visible, .sec-dark button:focus-visible, .sec-dark select:focus-visible,
+  .site-foot a:focus-visible, .site-foot button:focus-visible{
+    outline-color:var(--grass);
+  }
+
+  /* ---------- layout scaffolding ---------- */
+  .sec{ max-width:1180px; margin:0 auto; padding:76px 32px; }
+  .sec-tight{ padding-top:56px; padding-bottom:56px; }
+  .kicker{
+    font-family:'Archivo',sans-serif;
+    font-weight:700; font-size:13px;
+    letter-spacing:.16em; text-transform:uppercase;
+    color:var(--hemlock);
+    margin:0 0 10px;
+  }
+  .sec-title{
+    font-family:'Archivo',sans-serif;
+    font-weight:800; font-stretch:112%;
+    font-size:clamp(30px, 3.6vw, 42px);
+    line-height:1.06; letter-spacing:-.01em;
+    color:var(--fir);
+    margin:0 0 18px;
+  }
+  .sec-intro{ max-width:66ch; margin:0 0 34px; color:var(--slate); font-size:18px; }
+  .note{
+    font-size:12.5px; font-style:italic; color:var(--slate);
+    margin:10px 2px 0;
+  }
+
+  /* ---------- direction header (meta, quiet) ---------- */
+  .dhead{
+    background:#E6EBE2;
+    border-bottom:1px solid var(--line);
+  }
+  .dhead-in{
+    max-width:1180px; margin:0 auto; padding:26px 32px;
+    display:flex; flex-wrap:wrap; gap:20px 48px; align-items:baseline;
+  }
+  .dhead-id{ min-width:220px; }
+  .dhead-series{
+    margin:0 0 4px;
+    font-family:'Archivo',sans-serif; font-weight:600; font-size:12px;
+    letter-spacing:.18em; text-transform:uppercase; color:var(--slate);
+  }
+  .dhead-name{
+    margin:0;
+    font-family:'Archivo',sans-serif; font-weight:900; font-stretch:120%;
+    font-size:26px; line-height:1; color:var(--fir);
+  }
+  .dhead-name small{
+    display:block; font-weight:600; font-stretch:100%; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--hemlock); margin-top:6px;
+  }
+  .dhead-body{ flex:1; min-width:280px; }
+  .dhead-thesis{ margin:0 0 12px; font-size:16.5px; color:var(--ink); max-width:64ch; }
+  .dhead-tags{ display:flex; flex-wrap:wrap; gap:8px; margin:0; padding:0; list-style:none; }
+  .dhead-tags li{
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:11.5px;
+    letter-spacing:.1em; text-transform:uppercase;
+    color:var(--hemlock);
+    border:1px solid #BECBBE; border-radius:999px;
+    padding:4px 12px; background:rgba(251,252,250,.6);
+  }
+
+  /* ---------- treeline signature ---------- */
+  .treeline{ display:block; width:100%; height:clamp(110px, 15vw, 185px); }
+  .tl-back{ fill:#A9BDBA; }
+  .tl-mid{ fill:#52705C; }
+  .tl-front{ fill:var(--fir); }
+  .tl-band{ background:linear-gradient(180deg,#AFC1C6 0%, #D5DED9 55%, #E9EDE5 100%); }
+  .tl-band .treeline{ margin-bottom:-1px; }
+
+  /* ---------- photo placeholders (duotone treatment) ---------- */
+  .ph{
+    position:relative; overflow:hidden; border-radius:10px;
+    background:
+      linear-gradient(16deg, rgba(20,41,31,.95) 0%, rgba(36,81,59,.72) 46%, rgba(82,112,92,.42) 72%, rgba(148,169,180,.34) 100%),
+      linear-gradient(180deg, #8FA5A3 0%, #52705C 58%, #24513B 100%);
+  }
+  .ph::before{ /* fog band */
+    content:""; position:absolute; left:-5%; right:-5%; bottom:16%; height:42%;
+    background:linear-gradient(180deg, rgba(241,243,238,0) 0%, rgba(241,243,238,.36) 50%, rgba(241,243,238,0) 100%);
+  }
+  .ph::after{ /* rain */
+    content:""; position:absolute; inset:0;
+    background:repeating-linear-gradient(112deg, rgba(241,243,238,0) 0 9px, rgba(241,243,238,.12) 9px 10px);
+  }
+  .ph-disc{
+    position:absolute; width:26px; height:8px; border-radius:50%;
+    background:#F4F7F2; top:23%; left:63%;
+    box-shadow:0 0 14px rgba(244,247,242,.65);
+  }
+  .ph-cap{
+    font-size:12.5px; font-style:italic; color:var(--slate);
+    margin:8px 2px 0;
+  }
+  .sec-dark .ph-cap{ color:#B9C7C0; }
+  .sec-dark .report .ph-cap{ color:var(--slate); }
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-block; border:0; cursor:pointer;
+    font-family:'Source Sans 3',sans-serif; font-weight:700; font-size:16px; line-height:1;
+    padding:14px 24px; border-radius:10px;
+    text-decoration:none;
+    transition:background-color .15s ease, color .15s ease, transform .15s ease;
+  }
+  .btn-primary{ background:var(--grass); color:var(--btn-ink); }
+  .btn-primary:hover, .btn-primary.demo-hover{ background:var(--grass-dark); transform:translateY(-1px); }
+  .btn-secondary{
+    background:transparent; color:var(--hemlock);
+    box-shadow:inset 0 0 0 2px var(--hemlock);
+  }
+  .btn-secondary:hover, .btn-secondary.demo-hover{ background:var(--hemlock); color:var(--paper); }
+  .btn-quiet{
+    background:none; padding:14px 4px;
+    color:var(--hemlock); font-weight:700;
+    text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1.5px;
+    border-radius:4px;
+  }
+  .btn-quiet:hover, .btn-quiet.demo-hover{ color:var(--fir); text-decoration-thickness:3px; }
+
+  /* ---------- section 2: idea ---------- */
+  .idea-copy{ max-width:70ch; font-size:20px; line-height:1.65; color:var(--ink); margin:0; }
+
+  /* ---------- section 3: color ---------- */
+  .swatches{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin:0; padding:0; list-style:none; }
+  .swatch{ border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--card); }
+  .swatch-chip{ height:112px; }
+  .swatch-info{ padding:16px 18px 18px; }
+  .swatch-name{
+    margin:0 0 2px; font-family:'Archivo',sans-serif; font-weight:800; font-size:18px; color:var(--fir);
+  }
+  .swatch-hex{
+    display:inline-block; margin:0 0 8px;
+    font-family:'Archivo',sans-serif; font-weight:600; font-size:13px; letter-spacing:.06em;
+    color:var(--slate);
+  }
+  .swatch-use{ margin:0; font-size:14.5px; color:var(--slate); line-height:1.45; }
+
+  /* ---------- section 4: typography ---------- */
+  .type-cards{ display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-bottom:34px; }
+  .type-card{ border:1px solid var(--line); border-radius:14px; background:var(--card); padding:24px 26px; }
+  .type-card h3{ margin:0 0 6px; font-family:'Archivo',sans-serif; font-weight:800; font-size:22px; color:var(--fir); }
+  .type-card .role{
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--hemlock); margin:0 0 10px; display:block;
+  }
+  .type-card p{ margin:0; color:var(--slate); font-size:15.5px; }
+  .type-card .glyphs{
+    margin:14px 0 0; font-size:20px; color:var(--ink); word-break:break-all;
+  }
+  .type-card.tc-display .glyphs{ font-family:'Archivo',sans-serif; font-weight:900; font-stretch:118%; }
+  .specimen{
+    margin:0 0 8px;
+    font-family:'Archivo',sans-serif; font-weight:900; font-stretch:118%;
+    font-size:clamp(42px, 6.4vw, 76px); line-height:1.0; letter-spacing:-.015em;
+    color:var(--fir);
+  }
+  .specimen-sub{
+    margin:0 0 30px;
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:clamp(20px,2.4vw,26px);
+    line-height:1.25; color:var(--hemlock); max-width:30ch;
+  }
+  .specimen-body{ max-width:62ch; font-size:17px; margin:0 0 38px; }
+  .scale{ border-top:1px solid var(--line); }
+  .scale-row{
+    display:flex; align-items:baseline; justify-content:space-between; gap:24px;
+    padding:16px 2px; border-bottom:1px solid var(--line);
+  }
+  .scale-sample{ margin:0; color:var(--fir); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .s-display{ font-family:'Archivo',sans-serif; font-weight:900; font-stretch:115%; font-size:clamp(34px,4.6vw,64px); line-height:1.02; }
+  .s-h2{ font-family:'Archivo',sans-serif; font-weight:800; font-stretch:110%; font-size:clamp(28px,3vw,40px); line-height:1.08; }
+  .s-h3{ font-family:'Archivo',sans-serif; font-weight:700; font-size:24px; line-height:1.25; }
+  .s-body{ font-size:17px; }
+  .s-caption{
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12.5px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--slate);
+  }
+  .scale-spec{
+    flex-shrink:0; font-size:13.5px; color:var(--slate);
+    font-family:'Archivo',sans-serif; font-weight:600; letter-spacing:.04em; text-align:right;
+  }
+
+  /* ---------- section 5: signature ---------- */
+  .sig-frame{ border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--card); }
+  .sig-sky{ background:linear-gradient(180deg,#A7BBC1 0%, #CBD6D3 52%, #E7EBE2 100%); position:relative; }
+  .sig-base{
+    background:var(--fir); color:#D9E3DA;
+    padding:18px 26px 20px;
+    display:flex; flex-wrap:wrap; gap:8px 28px; align-items:baseline; justify-content:space-between;
+    font-size:14.5px;
+  }
+  .sig-base strong{ color:var(--paper); font-family:'Archivo',sans-serif; font-weight:700; }
+  .sig-uses{ display:flex; flex-wrap:wrap; gap:8px; margin:22px 0 0; padding:0; list-style:none; }
+  .sig-uses li{
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--hemlock); border:1px solid #BECBBE; border-radius:999px; padding:5px 13px; background:var(--card);
+  }
+
+  /* ---------- section 6: hero mockup ---------- */
+  .sec-hero{ max-width:1280px; }
+  .browser{
+    border:1px solid #C6CFC5; border-radius:14px; overflow:hidden;
+    box-shadow:0 22px 50px -28px rgba(20,41,31,.4);
+    background:var(--card);
+  }
+  .browser-bar{
+    display:flex; align-items:center; gap:14px;
+    background:#DDE3DA; padding:10px 16px; border-bottom:1px solid #C6CFC5;
+  }
+  .browser-dots{ display:flex; gap:6px; }
+  .browser-dots span{ width:11px; height:11px; border-radius:50%; background:#B4BFB2; display:block; }
+  .browser-url{
+    flex:1; max-width:360px; background:var(--card);
+    border:1px solid #C6CFC5; border-radius:999px;
+    font-size:13px; color:var(--slate); padding:4px 16px;
+    font-family:'Archivo',sans-serif; font-weight:600; letter-spacing:.03em;
+  }
+  .mock-nav{
+    background:var(--fir);
+    display:flex; align-items:center; gap:30px;
+    padding:16px 36px;
+  }
+  .mock-logo{ display:flex; align-items:center; gap:10px; }
+  .mock-logo svg{ display:block; }
+  .mock-logo .wordmark{
+    font-family:'Archivo',sans-serif; font-weight:900; font-stretch:112%;
+    font-size:21px; color:var(--paper); letter-spacing:.01em;
+  }
+  .mock-links{ display:flex; gap:26px; margin-left:auto; }
+  .mock-links span{
+    color:#DCE5DC; font-weight:600; font-size:15.5px; cursor:default;
+  }
+  .mock-register{
+    background:var(--grass); color:var(--btn-ink);
+    font-family:'Source Sans 3',sans-serif; font-weight:700; font-size:15px;
+    padding:10px 20px; border-radius:9px;
+  }
+  .mock-burger{ display:none; margin-left:auto; }
+  .mock-burger span{ display:block; width:22px; height:2.5px; background:#DCE5DC; margin:4px 0; border-radius:2px; }
+
+  .mock-hero{
+    position:relative;
+    background:linear-gradient(180deg,#A7BBC1 0%, #C9D5D2 44%, #E7EBE2 78%, #EDF0E8 100%);
+    overflow:hidden;
+  }
+  .mock-hero-inner{
+    position:relative; z-index:2;
+    max-width:1180px; margin:0 auto;
+    padding:74px 48px 30px;
+  }
+  .mock-eyebrow{
+    margin:0 0 14px;
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:13px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--hemlock);
+  }
+  .mock-h1{
+    margin:0 0 18px;
+    font-family:'Archivo',sans-serif; font-weight:900; font-stretch:118%;
+    font-size:clamp(40px, 5.6vw, 72px); line-height:1.0; letter-spacing:-.015em;
+    color:var(--fir); max-width:14ch;
+  }
+  .mock-sub{
+    margin:0 0 28px; max-width:52ch;
+    font-size:19px; line-height:1.55; color:var(--ink);
+  }
+  .mock-ctas{ display:flex; flex-wrap:wrap; gap:10px 22px; align-items:center; margin-bottom:26px; }
+  .mock-cta-quiet{
+    color:var(--hemlock); font-weight:700; font-size:16px;
+    text-decoration:underline; text-underline-offset:4px; cursor:default;
+  }
+  .mock-weather{
+    display:inline-flex; align-items:center; gap:9px;
+    margin:0 0 26px;
+    background:rgba(251,252,250,.72); border:1px solid #C4CFC6; border-radius:999px;
+    padding:7px 16px; font-size:14px; font-weight:600; color:var(--ink);
+  }
+  .mock-weather::before{
+    content:""; width:9px; height:9px; border-radius:50%; background:var(--hemlock); flex-shrink:0;
+  }
+  .disc-flight{
+    position:absolute; z-index:1; top:26px; right:0;
+    width:min(62%, 780px); height:auto; pointer-events:none;
+  }
+  .mock-hero .treeline{ position:relative; z-index:1; }
+  .mock-ticker{
+    background:var(--fir); color:#D9E3DA;
+    padding:15px 36px 17px;
+    font-size:14.5px; line-height:1.6;
+  }
+  .mock-ticker strong{
+    color:var(--grass-light);
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase;
+    margin-right:10px;
+  }
+  .mock-ticker .tick-sep{ color:var(--fog); margin:0 7px; }
+
+  /* ---------- section 7: pathways ---------- */
+  .paths{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .path-card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:18px 18px 24px; display:flex; flex-direction:column;
+  }
+  .path-card .ph{ height:168px; }
+  .path-tag{
+    margin:16px 0 8px;
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:.15em; text-transform:uppercase; color:var(--hemlock);
+  }
+  .path-card h3{
+    margin:0 0 10px;
+    font-family:'Archivo',sans-serif; font-weight:800; font-size:23px; line-height:1.18; color:var(--fir);
+  }
+  .path-card p{ margin:0 0 20px; font-size:15.5px; color:var(--slate); flex:1; }
+  .path-card .btn{ align-self:flex-start; }
+
+  /* ---------- section 8: storytelling (dark) ---------- */
+  .sec-dark{ background:var(--fir); color:#E5ECE4; }
+  .sec-dark .kicker{ color:var(--grass); }
+  .sec-dark .sec-title{ color:var(--paper); }
+  .sec-dark .sec-intro{ color:#B9C7C0; }
+  .story-grid{ display:grid; grid-template-columns:1.15fr .85fr; gap:34px; align-items:start; }
+  .report{
+    background:var(--card); color:var(--ink);
+    border-radius:16px; padding:20px 20px 26px;
+  }
+  .report .ph{ height:230px; }
+  .report-meta{
+    display:flex; flex-wrap:wrap; gap:6px 18px;
+    margin:16px 0 10px;
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--hemlock);
+  }
+  .report-meta .meta-weather{ color:var(--slate); }
+  .report h3{
+    margin:0 0 12px;
+    font-family:'Archivo',sans-serif; font-weight:800; font-stretch:108%;
+    font-size:30px; line-height:1.1; color:var(--fir);
+  }
+  .report blockquote{
+    margin:0 0 14px; padding:2px 0 2px 18px;
+    border-left:4px solid var(--grass);
+    font-size:18.5px; line-height:1.55; color:var(--ink);
+  }
+  .report .byline{ margin:0; font-size:14.5px; color:var(--slate); }
+  .stats{ display:grid; gap:14px; margin:0; padding:0; list-style:none; }
+  .stat{
+    border:1px solid #2C4A3A; border-radius:14px;
+    background:#1A3327;
+    padding:18px 22px;
+  }
+  .stat .num{
+    display:block;
+    font-family:'Archivo',sans-serif; font-weight:900; font-stretch:112%;
+    font-size:clamp(28px,3vw,38px); line-height:1.05; color:var(--grass);
+    margin-bottom:4px;
+  }
+  .stat .why{ margin:0; font-size:15px; color:#C7D4CB; line-height:1.5; }
+  .sec-dark .note{ color:#A9BBAF; }
+
+  /* ---------- section 9: UI components ---------- */
+  .ui-grid{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:24px; align-items:start; }
+  .ui-block{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:24px 26px;
+  }
+  .ui-block h3{
+    margin:0 0 18px;
+    font-family:'Archivo',sans-serif; font-weight:800; font-size:19px; color:var(--fir);
+  }
+  .btn-row{ display:flex; flex-wrap:wrap; gap:12px 14px; align-items:center; margin-bottom:6px; }
+  .btn-label{
+    display:block; margin:14px 0 8px;
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:11.5px;
+    letter-spacing:.13em; text-transform:uppercase; color:var(--slate);
+  }
+  .event-card{ border:1px solid var(--line); border-radius:14px; padding:22px 24px; background:var(--paper); }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+  .chip{
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+    border-radius:999px; padding:4px 12px;
+    color:var(--slate); border:1px solid #C4CFC6; background:var(--card);
+  }
+  .chip-live{ background:var(--grass); color:var(--btn-ink); border-color:var(--grass); }
+  .event-card h4{
+    margin:0 0 6px;
+    font-family:'Archivo',sans-serif; font-weight:800; font-stretch:106%;
+    font-size:24px; line-height:1.15; color:var(--fir);
+  }
+  .event-meta{ margin:0 0 10px; font-size:15px; font-weight:600; color:var(--slate); }
+  .event-desc{ margin:0 0 8px; font-size:15.5px; color:var(--ink); }
+  .event-fee{ margin:0 0 18px; font-size:14.5px; color:var(--slate); }
+  .event-foot{
+    display:flex; flex-wrap:wrap; gap:12px 20px; align-items:center;
+    border-top:1px solid var(--line); padding-top:16px;
+  }
+  .event-deadline{
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:13px;
+    letter-spacing:.06em; color:var(--hemlock); margin-right:auto;
+  }
+  .filter{ display:flex; flex-wrap:wrap; gap:16px 18px; align-items:end; }
+  .filter label{ display:flex; flex-direction:column; gap:6px; font-weight:600; font-size:14px; color:var(--slate); }
+  .filter select{
+    font-family:'Source Sans 3',sans-serif; font-size:15.5px; color:var(--ink);
+    background:var(--card); border:1.5px solid #B7C3B7; border-radius:9px;
+    padding:10px 12px; min-width:190px;
+  }
+  .filter .check{ flex-direction:row; align-items:center; gap:9px; padding-bottom:11px; font-size:15px; color:var(--ink); }
+  .filter input[type="checkbox"]{ width:18px; height:18px; accent-color:var(--hemlock); }
+
+  /* ---------- section 10: voice ---------- */
+  .voice-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  .voice-card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 24px; }
+  .voice-card .vlabel{
+    display:block; margin:0 0 12px;
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--hemlock);
+  }
+  .voice-card .vhero{
+    margin:0; font-family:'Archivo',sans-serif; font-weight:900; font-stretch:114%;
+    font-size:30px; line-height:1.05; color:var(--fir);
+  }
+  .voice-card p{ margin:0; font-size:16.5px; color:var(--ink); }
+
+  /* ---------- footer ---------- */
+  .site-foot{ background:var(--fir); color:#D9E3DA; }
+  .site-foot .foot-in{ max-width:1180px; margin:0 auto; padding:64px 32px 46px; }
+  .verdicts{ display:grid; grid-template-columns:1fr 1fr; gap:26px; margin-bottom:44px; }
+  .verdict{ border:1px solid #2C4A3A; border-radius:14px; background:#1A3327; padding:22px 26px; }
+  .verdict h2{
+    margin:0 0 8px;
+    font-family:'Archivo',sans-serif; font-weight:800; font-size:17px; color:var(--grass-light);
+  }
+  .verdict p{ margin:0; font-size:16px; line-height:1.55; color:#D9E3DA; }
+  .foot-nav{
+    display:flex; flex-wrap:wrap; gap:14px 30px; align-items:center; justify-content:space-between;
+    border-top:1px solid #2C4A3A; padding-top:26px;
+  }
+  .foot-nav a{ color:var(--grass-light); font-weight:700; font-size:16px; }
+  .foot-nav a:hover{ color:var(--paper); }
+  .foot-meta{ font-size:13px; color:var(--fog); font-family:'Archivo',sans-serif; font-weight:600; letter-spacing:.06em; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 980px){
+    .swatches{ grid-template-columns:repeat(2,1fr); }
+    .paths{ grid-template-columns:1fr; }
+    .story-grid{ grid-template-columns:1fr; }
+    .ui-grid{ grid-template-columns:1fr; }
+    .voice-grid{ grid-template-columns:1fr; }
+    .type-cards{ grid-template-columns:1fr; }
+    .verdicts{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 880px){
+    .mock-links{ display:none; }
+    .mock-register{ margin-left:auto; }
+    .mock-burger{ display:block; margin-left:12px; }
+    .mock-hero-inner{ padding:56px 28px 20px; }
+    .mock-nav{ padding:14px 22px; }
+    .mock-ticker{ padding:14px 22px 16px; }
+  }
+  @media (max-width: 560px){
+    .sec{ padding:56px 20px; }
+    .swatches{ grid-template-columns:1fr; }
+    .dhead-in{ padding:22px 20px; }
+    .scale-row{ flex-direction:column; gap:4px; }
+    .scale-sample{ white-space:normal; }
+    .scale-spec{ text-align:left; }
+    .site-foot .foot-in{ padding:52px 20px 40px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- shared SVG defs: one fir, drawn once, used everywhere -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="fir" viewBox="0 0 60 100">
+      <path d="M30 0 L39 21 L33 18 L45 43 L37 39 L52 68 L43 64 L58 91 L33 91 L33 100 L27 100 L27 91 L2 91 L17 64 L8 68 L23 39 L15 43 L27 18 L21 21 Z"/>
+    </symbol>
+    <linearGradient id="fogGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F1F3EE" stop-opacity="0"/>
+      <stop offset=".55" stop-color="#F1F3EE" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#F1F3EE" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- 1 · DIRECTION HEADER -->
+<header class="dhead">
+  <div class="dhead-in">
+    <div class="dhead-id">
+      <p class="dhead-series">DiscNW website redesign · Direction 1 of 5</p>
+      <p class="dhead-name">Evergreen<small>Pacific Northwest place-identity</small></p>
+    </div>
+    <div class="dhead-body">
+      <p class="dhead-thesis">Ultimate as the Pacific Northwest plays it — the brand is rooted in where the game happens: wet grass, fog, firs, and long June light, year-round.</p>
+      <ul class="dhead-tags">
+        <li>Rooted</li><li>Weatherproof</li><li>Local</li><li>Year-round</li><li>Welcoming</li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- 2 · THE IDEA -->
+  <section class="sec" aria-labelledby="idea-title">
+    <p class="kicker">02 — The idea</p>
+    <h2 class="sec-title" id="idea-title">Belonging to a place</h2>
+    <p class="idea-copy">Most league sites could be anywhere. DiscNW couldn't: this game lives at Magnuson Park, in fog at a 9&nbsp;a.m. jamboree, in June light that holds until the last point. Evergreen makes that the brand — fir green and fog grey doing the everyday work, one vivid wet-grass green marking every action, and a drawn treeline putting every page somewhere real. The bet is simple: people don't just sign up for a league, they join a place.</p>
+  </section>
+
+  <!-- 3 · COLOR -->
+  <section class="sec" aria-labelledby="color-title">
+    <p class="kicker">03 — Color</p>
+    <h2 class="sec-title" id="color-title">A palette pulled from a wet field</h2>
+    <p class="sec-intro">Two working greens, two weathers, one ground. Nothing pastel, nothing sage-and-cream — these are the colors of a March practice you were glad you went to.</p>
+    <ul class="swatches">
+      <li class="swatch">
+        <div class="swatch-chip" style="background:#14291F"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Old Fir</h3>
+          <span class="swatch-hex">#14291F</span>
+          <p class="swatch-use">Darkest ground — hero and footer bands, headline ink on light.</p>
+        </div>
+      </li>
+      <li class="swatch">
+        <div class="swatch-chip" style="background:#24513B"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Hemlock</h3>
+          <span class="swatch-hex">#24513B</span>
+          <p class="swatch-use">Headings, links, secondary buttons — the everyday brand green.</p>
+        </div>
+      </li>
+      <li class="swatch">
+        <div class="swatch-chip" style="background:#3DAE54"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Wet Grass</h3>
+          <span class="swatch-hex">#3DAE54</span>
+          <p class="swatch-use">Primary actions only — register, join, give. Always with dark fir text.</p>
+        </div>
+      </li>
+      <li class="swatch">
+        <div class="swatch-chip" style="background:#94A9B4"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Fog Bank</h3>
+          <span class="swatch-hex">#94A9B4</span>
+          <p class="swatch-use">Weather layers, borders on dark, captions on Old Fir. Decorative on light.</p>
+        </div>
+      </li>
+      <li class="swatch">
+        <div class="swatch-chip" style="background:#F1F3EE; border-bottom:1px solid #D5DCD1"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Morning Fog</h3>
+          <span class="swatch-hex">#F1F3EE</span>
+          <p class="swatch-use">Page backgrounds — the grey-green white of a low sky, not cream.</p>
+        </div>
+      </li>
+      <li class="swatch">
+        <div class="swatch-chip" style="background:#44554D"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Rain Slate</h3>
+          <span class="swatch-hex">#44554D</span>
+          <p class="swatch-use">Supporting text, metadata, photo captions — quiet but legible.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- 4 · TYPOGRAPHY -->
+  <section class="sec" aria-labelledby="type-title">
+    <p class="kicker">04 — Typography</p>
+    <h2 class="sec-title" id="type-title">Sturdy over slick</h2>
+    <p class="sec-intro">Display type with outdoors-gear confidence, body type warm enough for a waiver form. Both load from Google Fonts; both hold up soaked.</p>
+
+    <div class="type-cards">
+      <div class="type-card tc-display">
+        <span class="role">Display · headings</span>
+        <h3>Archivo</h3>
+        <p>A sturdy grotesque we run wide (expanded width) and heavy — trailhead-sign energy, not tech-startup energy. Weights 700–900.</p>
+        <p class="glyphs" aria-hidden="true">AaBbGgRr 0123456789 →</p>
+      </div>
+      <div class="type-card">
+        <span class="role">Body · UI</span>
+        <h3>Source Sans 3</h3>
+        <p>A warm humanist sans that stays friendly at schedule-table and waiver-form sizes. Weights 400–700, true italics.</p>
+        <p class="glyphs" aria-hidden="true">AaBbGgRr 0123456789 — huck, layout, pull</p>
+      </div>
+    </div>
+
+    <p class="specimen">Rain is not a cancellation.</p>
+    <p class="specimen-sub">Third-most popular youth sport in King County — and climbing.</p>
+    <p class="specimen-body">Every fall, more than a thousand middle schoolers pull on cleats for their first season. Some have thrown a disc since kindergarten; plenty have never seen one fly. By November they all know the same things — how to cut hard, how to call their own fouls, and how to stand in a spirit circle while the rain comes down.</p>
+
+    <div class="scale">
+      <div class="scale-row">
+        <p class="scale-sample s-display">Ultimate grows here</p>
+        <span class="scale-spec">Display · Archivo 900 wide · 64/66</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-h2">Three front doors</p>
+        <span class="scale-spec">H2 · Archivo 800 · 40/44</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-h3">Summer Wonder League</p>
+        <span class="scale-spec">H3 · Archivo 700 · 24/30</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-body">Bring cleats, a rain shell, and 64–96 ounces of water for tournament days.</p>
+        <span class="scale-spec">Body · Source Sans 3 400 · 17/27</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-caption">Field status · updated 4:12 pm</p>
+        <span class="scale-spec">Caption · Archivo 700 caps · 12.5/16</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · SIGNATURE ELEMENT -->
+  <section class="sec" aria-labelledby="sig-title">
+    <p class="kicker">05 — Signature element</p>
+    <h2 class="sec-title" id="sig-title">The horizon line</h2>
+    <p class="sec-intro">One device, drawn once, used everywhere: a layered horizon of firs, fog, and field. It grounds the hero, divides sections, and closes the footer — and the fog layer drifts a few pixels as you scroll. If your system asks for reduced motion, it holds perfectly still.</p>
+
+    <div class="sig-frame">
+      <div class="sig-sky">
+        <svg class="treeline" viewBox="0 0 1440 180" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+          <g class="tl-back" data-depth="5">
+            <rect x="-60" y="118" width="1560" height="100"/>
+            <use href="#fir" x="-24" y="74" width="32" height="50"/>
+            <use href="#fir" x="16" y="82" width="28" height="42"/>
+            <use href="#fir" x="58" y="70" width="34" height="54"/>
+            <use href="#fir" x="104" y="84" width="26" height="40"/>
+            <use href="#fir" x="150" y="74" width="32" height="50"/>
+            <use href="#fir" x="210" y="80" width="28" height="44"/>
+            <use href="#fir" x="270" y="68" width="34" height="56"/>
+            <use href="#fir" x="330" y="84" width="26" height="40"/>
+            <use href="#fir" x="382" y="74" width="32" height="50"/>
+            <use href="#fir" x="452" y="80" width="28" height="44"/>
+            <use href="#fir" x="520" y="70" width="34" height="54"/>
+            <use href="#fir" x="584" y="84" width="26" height="40"/>
+            <use href="#fir" x="642" y="74" width="32" height="50"/>
+            <use href="#fir" x="710" y="80" width="28" height="44"/>
+            <use href="#fir" x="775" y="68" width="34" height="56"/>
+            <use href="#fir" x="840" y="84" width="26" height="40"/>
+            <use href="#fir" x="900" y="74" width="32" height="50"/>
+            <use href="#fir" x="965" y="82" width="28" height="42"/>
+            <use href="#fir" x="1030" y="70" width="34" height="54"/>
+            <use href="#fir" x="1095" y="84" width="26" height="40"/>
+            <use href="#fir" x="1150" y="74" width="32" height="50"/>
+            <use href="#fir" x="1215" y="80" width="28" height="44"/>
+            <use href="#fir" x="1280" y="68" width="34" height="56"/>
+            <use href="#fir" x="1345" y="84" width="26" height="40"/>
+            <use href="#fir" x="1400" y="74" width="32" height="50"/>
+          </g>
+          <rect class="tl-fog" data-depth="30" x="-60" y="66" width="1560" height="96" fill="url(#fogGrad)"/>
+          <g class="tl-mid" data-depth="12">
+            <rect x="-60" y="136" width="1560" height="90"/>
+            <use href="#fir" x="-36" y="64" width="50" height="80"/>
+            <use href="#fir" x="40" y="80" width="42" height="64"/>
+            <use href="#fir" x="120" y="56" width="54" height="88"/>
+            <use href="#fir" x="250" y="74" width="46" height="70"/>
+            <use href="#fir" x="345" y="84" width="40" height="60"/>
+            <use href="#fir" x="470" y="60" width="52" height="84"/>
+            <use href="#fir" x="640" y="78" width="44" height="66"/>
+            <use href="#fir" x="760" y="54" width="54" height="90"/>
+            <use href="#fir" x="880" y="82" width="42" height="62"/>
+            <use href="#fir" x="1000" y="64" width="50" height="80"/>
+            <use href="#fir" x="1140" y="76" width="44" height="68"/>
+            <use href="#fir" x="1264" y="58" width="54" height="86"/>
+            <use href="#fir" x="1390" y="78" width="44" height="66"/>
+          </g>
+          <g class="tl-front" data-depth="20">
+            <rect x="-60" y="154" width="1560" height="90"/>
+            <use href="#fir" x="-44" y="54" width="66" height="108"/>
+            <use href="#fir" x="40" y="76" width="54" height="86"/>
+            <use href="#fir" x="128" y="62" width="62" height="100"/>
+            <use href="#fir" x="330" y="72" width="56" height="90"/>
+            <use href="#fir" x="425" y="50" width="68" height="112"/>
+            <use href="#fir" x="980" y="74" width="56" height="88"/>
+            <use href="#fir" x="1075" y="48" width="68" height="114"/>
+            <use href="#fir" x="1180" y="76" width="56" height="86"/>
+            <use href="#fir" x="1295" y="58" width="64" height="104"/>
+            <use href="#fir" x="1396" y="78" width="54" height="84"/>
+          </g>
+        </svg>
+      </div>
+      <div class="sig-base">
+        <span><strong>Drawn, not photographed.</strong> Fir, fog, field — three layers, one shared SVG symbol.</span>
+        <span>Fog drifts on scroll · holds still under reduced motion</span>
+      </div>
+    </div>
+
+    <ul class="sig-uses">
+      <li>Hero grounding</li><li>Section divider</li><li>Footer horizon</li>
+    </ul>
+  </section>
+
+  <!-- 6 · HOMEPAGE HERO MOCKUP -->
+  <section class="sec sec-hero" aria-labelledby="hero-title">
+    <p class="kicker">06 — Homepage hero</p>
+    <h2 class="sec-title" id="hero-title">discnw.org, redesigned</h2>
+    <p class="sec-intro">The top of the new homepage: weather report, treeline, one clear action. It should feel like standing at the edge of the field at 5:55 on a league night.</p>
+
+    <div class="browser">
+      <div class="browser-bar">
+        <div class="browser-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="browser-url">discnw.org</div>
+      </div>
+
+      <div class="mock" role="img" aria-label="Mockup of the redesigned DiscNW homepage hero: dark green navigation bar, a fog-grey sky with a disc in flight, the headline 'Ultimate grows here.' above a fir treeline, and a registration ticker.">
+        <div class="mock-nav">
+          <div class="mock-logo">
+            <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+              <circle cx="17" cy="17" r="15" fill="none" stroke="#3DAE54" stroke-width="2.4"/>
+              <path d="M5 20 C 12 12, 22 12, 29 16" fill="none" stroke="#F1F3EE" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M7 25 C 14 19, 23 19, 28 22" fill="none" stroke="#94A9B4" stroke-width="1.8" stroke-linecap="round"/>
+              <ellipse cx="26" cy="12" rx="4.6" ry="1.8" fill="#F1F3EE"/>
+            </svg>
+            <span class="wordmark">DiscNW</span>
+          </div>
+          <div class="mock-links" aria-hidden="true">
+            <span>Events</span><span>Youth</span><span>Adult Leagues</span><span>Coaching</span><span>About</span>
+          </div>
+          <span class="mock-register">Register</span>
+          <div class="mock-burger" aria-hidden="true"><span></span><span></span><span></span></div>
+        </div>
+
+        <div class="mock-hero">
+          <svg class="disc-flight" viewBox="0 0 900 260" aria-hidden="true" focusable="false">
+            <path d="M-10 244 C 180 80, 470 22, 872 98" fill="none" stroke="#FBFDFA" stroke-width="2.5" stroke-dasharray="2 11" stroke-linecap="round" opacity=".9"/>
+            <ellipse cx="866" cy="99" rx="18" ry="6" fill="#FDFEFC"/>
+            <ellipse cx="866" cy="102" rx="18" ry="6" fill="#94A9B4" opacity=".45"/>
+          </svg>
+
+          <div class="mock-hero-inner">
+            <p class="mock-eyebrow">The home for ultimate in the Puget Sound region</p>
+            <p class="mock-h1">Ultimate grows here.</p>
+            <p class="mock-sub">Leagues, camps, and tournaments for 10,000+ players a year — on wet grass, under grey skies, in the long light of June. Wherever you're starting, there's a field waiting.</p>
+            <div class="mock-ctas">
+              <button type="button" class="btn btn-primary">Find your league</button>
+              <span class="mock-cta-quiet">New to ultimate? Start here</span>
+            </div>
+            <p class="mock-weather">Fields today: open · rainout hotline (206) 781-5840</p>
+          </div>
+
+          <svg class="treeline" viewBox="0 0 1440 180" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+            <g class="tl-back" data-depth="5">
+              <rect x="-60" y="118" width="1560" height="100"/>
+              <use href="#fir" x="-24" y="74" width="32" height="50"/>
+              <use href="#fir" x="16" y="82" width="28" height="42"/>
+              <use href="#fir" x="58" y="70" width="34" height="54"/>
+              <use href="#fir" x="104" y="84" width="26" height="40"/>
+              <use href="#fir" x="150" y="74" width="32" height="50"/>
+              <use href="#fir" x="210" y="80" width="28" height="44"/>
+              <use href="#fir" x="270" y="68" width="34" height="56"/>
+              <use href="#fir" x="330" y="84" width="26" height="40"/>
+              <use href="#fir" x="382" y="74" width="32" height="50"/>
+              <use href="#fir" x="452" y="80" width="28" height="44"/>
+              <use href="#fir" x="520" y="70" width="34" height="54"/>
+              <use href="#fir" x="584" y="84" width="26" height="40"/>
+              <use href="#fir" x="642" y="74" width="32" height="50"/>
+              <use href="#fir" x="710" y="80" width="28" height="44"/>
+              <use href="#fir" x="775" y="68" width="34" height="56"/>
+              <use href="#fir" x="840" y="84" width="26" height="40"/>
+              <use href="#fir" x="900" y="74" width="32" height="50"/>
+              <use href="#fir" x="965" y="82" width="28" height="42"/>
+              <use href="#fir" x="1030" y="70" width="34" height="54"/>
+              <use href="#fir" x="1095" y="84" width="26" height="40"/>
+              <use href="#fir" x="1150" y="74" width="32" height="50"/>
+              <use href="#fir" x="1215" y="80" width="28" height="44"/>
+              <use href="#fir" x="1280" y="68" width="34" height="56"/>
+              <use href="#fir" x="1345" y="84" width="26" height="40"/>
+              <use href="#fir" x="1400" y="74" width="32" height="50"/>
+            </g>
+            <rect class="tl-fog" data-depth="30" x="-60" y="66" width="1560" height="96" fill="url(#fogGrad)"/>
+            <g class="tl-mid" data-depth="12">
+              <rect x="-60" y="136" width="1560" height="90"/>
+              <use href="#fir" x="-36" y="64" width="50" height="80"/>
+              <use href="#fir" x="40" y="80" width="42" height="64"/>
+              <use href="#fir" x="120" y="56" width="54" height="88"/>
+              <use href="#fir" x="250" y="74" width="46" height="70"/>
+              <use href="#fir" x="345" y="84" width="40" height="60"/>
+              <use href="#fir" x="470" y="60" width="52" height="84"/>
+              <use href="#fir" x="640" y="78" width="44" height="66"/>
+              <use href="#fir" x="760" y="54" width="54" height="90"/>
+              <use href="#fir" x="880" y="82" width="42" height="62"/>
+              <use href="#fir" x="1000" y="64" width="50" height="80"/>
+              <use href="#fir" x="1140" y="76" width="44" height="68"/>
+              <use href="#fir" x="1264" y="58" width="54" height="86"/>
+              <use href="#fir" x="1390" y="78" width="44" height="66"/>
+            </g>
+            <g class="tl-front" data-depth="20">
+              <rect x="-60" y="154" width="1560" height="90"/>
+              <use href="#fir" x="-44" y="54" width="66" height="108"/>
+              <use href="#fir" x="40" y="76" width="54" height="86"/>
+              <use href="#fir" x="128" y="62" width="62" height="100"/>
+              <use href="#fir" x="330" y="72" width="56" height="90"/>
+              <use href="#fir" x="425" y="50" width="68" height="112"/>
+              <use href="#fir" x="980" y="74" width="56" height="88"/>
+              <use href="#fir" x="1075" y="48" width="68" height="114"/>
+              <use href="#fir" x="1180" y="76" width="56" height="86"/>
+              <use href="#fir" x="1295" y="58" width="64" height="104"/>
+              <use href="#fir" x="1396" y="78" width="54" height="84"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="mock-ticker">
+          <strong>Registering now</strong>
+          Summer Mixed Hat League<span class="tick-sep">·</span>Summer Youth Ultimate Camps (grades 3–12)<span class="tick-sep">·</span>Summer Wonder League<span class="tick-sep">·</span>Sea Plastic — Ocean Shores, Jul 18–19
+        </div>
+      </div>
+    </div>
+    <p class="note">Component note: the field-status line is real utility — DiscNW already runs a rainout hotline. Evergreen promotes the weather from FAQ trivia to front-door welcome.</p>
+  </section>
+
+  <!-- 7 · AUDIENCE PATHWAYS -->
+  <section class="sec" aria-labelledby="paths-title">
+    <p class="kicker">07 — Audience pathways</p>
+    <h2 class="sec-title" id="paths-title">Three front doors</h2>
+    <p class="sec-intro">Players, coaches, parents — each gets their own door, in their own language, three seconds after the page loads. This is the storytelling core of the redesign.</p>
+
+    <div class="paths">
+      <article class="path-card">
+        <div class="ph" role="img" aria-label="Duotone photo placeholder: a layout catch at dusk"><span class="ph-disc"></span></div>
+        <p class="ph-cap">Photo: layout catch at dusk, Magnuson Park, floodlights through drizzle.</p>
+        <p class="path-tag">Players</p>
+        <h3>Your next team is one signup away.</h3>
+        <p>Hat league, team league, pickup, or a beach weekend at Sea Plastic — year-round, rec to competitive. Tell us the season and how you like to play; we'll show you where you fit.</p>
+        <button type="button" class="btn btn-primary">See what's registering now</button>
+      </article>
+
+      <article class="path-card">
+        <div class="ph" role="img" aria-label="Duotone photo placeholder: a coach in a huddle of middle schoolers"></div>
+        <p class="ph-cap">Photo: coach kneeling in a huddle of middle schoolers, breath visible, February practice.</p>
+        <p class="path-tag">Coaches &amp; volunteers</p>
+        <h3>You don't have to be elite. You have to show up.</h3>
+        <p>The Coaching Collective backs you with trainings, practice plans, and a bench of coaches to lean on — from your first background check to the season's last spirit circle.</p>
+        <button type="button" class="btn btn-secondary">Start the coaching checklist</button>
+      </article>
+
+      <article class="path-card">
+        <div class="ph" role="img" aria-label="Duotone photo placeholder: parents under umbrellas on a sideline"></div>
+        <p class="ph-cap">Photo: parents under umbrellas on the sideline, kid mid-throw in the foreground.</p>
+        <p class="path-tag">Parents &amp; families</p>
+        <h3>New to ultimate? Most of our parents were.</h3>
+        <p>Learn the game in five minutes, get the gear list, and hear the honest answer to "where are the referees?" — there aren't any, and it's the best thing about this sport.</p>
+        <button type="button" class="btn btn-secondary">Read the parents' guide</button>
+      </article>
+    </div>
+  </section>
+
+  <!-- treeline divider into dark storytelling section -->
+  <div class="tl-band" aria-hidden="true">
+    <svg class="treeline" viewBox="0 0 1440 180" preserveAspectRatio="xMidYMax slice" focusable="false">
+      <g class="tl-back" data-depth="5">
+        <rect x="-60" y="118" width="1560" height="100"/>
+        <use href="#fir" x="-24" y="74" width="32" height="50"/>
+        <use href="#fir" x="16" y="82" width="28" height="42"/>
+        <use href="#fir" x="58" y="70" width="34" height="54"/>
+        <use href="#fir" x="104" y="84" width="26" height="40"/>
+        <use href="#fir" x="150" y="74" width="32" height="50"/>
+        <use href="#fir" x="210" y="80" width="28" height="44"/>
+        <use href="#fir" x="270" y="68" width="34" height="56"/>
+        <use href="#fir" x="330" y="84" width="26" height="40"/>
+        <use href="#fir" x="382" y="74" width="32" height="50"/>
+        <use href="#fir" x="452" y="80" width="28" height="44"/>
+        <use href="#fir" x="520" y="70" width="34" height="54"/>
+        <use href="#fir" x="584" y="84" width="26" height="40"/>
+        <use href="#fir" x="642" y="74" width="32" height="50"/>
+        <use href="#fir" x="710" y="80" width="28" height="44"/>
+        <use href="#fir" x="775" y="68" width="34" height="56"/>
+        <use href="#fir" x="840" y="84" width="26" height="40"/>
+        <use href="#fir" x="900" y="74" width="32" height="50"/>
+        <use href="#fir" x="965" y="82" width="28" height="42"/>
+        <use href="#fir" x="1030" y="70" width="34" height="54"/>
+        <use href="#fir" x="1095" y="84" width="26" height="40"/>
+        <use href="#fir" x="1150" y="74" width="32" height="50"/>
+        <use href="#fir" x="1215" y="80" width="28" height="44"/>
+        <use href="#fir" x="1280" y="68" width="34" height="56"/>
+        <use href="#fir" x="1345" y="84" width="26" height="40"/>
+        <use href="#fir" x="1400" y="74" width="32" height="50"/>
+      </g>
+      <rect class="tl-fog" data-depth="30" x="-60" y="66" width="1560" height="96" fill="url(#fogGrad)"/>
+      <g class="tl-mid" data-depth="12">
+        <rect x="-60" y="136" width="1560" height="90"/>
+        <use href="#fir" x="-36" y="64" width="50" height="80"/>
+        <use href="#fir" x="40" y="80" width="42" height="64"/>
+        <use href="#fir" x="120" y="56" width="54" height="88"/>
+        <use href="#fir" x="250" y="74" width="46" height="70"/>
+        <use href="#fir" x="345" y="84" width="40" height="60"/>
+        <use href="#fir" x="470" y="60" width="52" height="84"/>
+        <use href="#fir" x="640" y="78" width="44" height="66"/>
+        <use href="#fir" x="760" y="54" width="54" height="90"/>
+        <use href="#fir" x="880" y="82" width="42" height="62"/>
+        <use href="#fir" x="1000" y="64" width="50" height="80"/>
+        <use href="#fir" x="1140" y="76" width="44" height="68"/>
+        <use href="#fir" x="1264" y="58" width="54" height="86"/>
+        <use href="#fir" x="1390" y="78" width="44" height="66"/>
+      </g>
+      <g class="tl-front" data-depth="20">
+        <rect x="-60" y="154" width="1560" height="90"/>
+        <use href="#fir" x="-44" y="54" width="66" height="108"/>
+        <use href="#fir" x="40" y="76" width="54" height="86"/>
+        <use href="#fir" x="128" y="62" width="62" height="100"/>
+        <use href="#fir" x="330" y="72" width="56" height="90"/>
+        <use href="#fir" x="425" y="50" width="68" height="112"/>
+        <use href="#fir" x="980" y="74" width="56" height="88"/>
+        <use href="#fir" x="1075" y="48" width="68" height="114"/>
+        <use href="#fir" x="1180" y="76" width="56" height="86"/>
+        <use href="#fir" x="1295" y="58" width="64" height="104"/>
+        <use href="#fir" x="1396" y="78" width="54" height="84"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- 8 · STORYTELLING COMPONENT (dark) -->
+  <section class="sec-dark" aria-labelledby="story-title">
+    <div class="sec sec-tight">
+      <p class="kicker">08 — Storytelling</p>
+      <h2 class="sec-title" id="story-title">Stories from the field</h2>
+      <p class="sec-intro">Evergreen's story unit is the field report: every story is tagged by park, season, and weather, so the archive slowly becomes a map of where this community plays.</p>
+
+      <div class="story-grid">
+        <article class="report">
+          <div class="ph" role="img" aria-label="Duotone photo placeholder: muddy hands holding a white disc under floodlights"><span class="ph-disc" style="top:20%; left:52%"></span></div>
+          <p class="ph-cap">Photo (duotone treatment): muddy hands and a white disc under floodlights, rain visible against the light, Magnuson Field 6.</p>
+          <p class="report-meta">
+            <span>Field report · Fall MS Mixed Hat League</span>
+            <span class="meta-weather">Magnuson Park · November · 43° and raining</span>
+          </p>
+          <h3>Her first layout</h3>
+          <blockquote>
+            <p style="margin:0">"It was raining sideways, the disc was drifting away from her, and she just went. Mud from wrist to ankle, disc in hand. Both sidelines lost it. She's retold it every day since — and honestly, so have I."</p>
+          </blockquote>
+          <p class="byline">— Dana R., second-year coach · DiscNW Coaching Collective</p>
+        </article>
+
+        <ul class="stats">
+          <li class="stat">
+            <span class="num">10,000+</span>
+            <p class="why">players a year — third-grade campers to masters hat leaguers, on the same fields.</p>
+          </li>
+          <li class="stat">
+            <span class="num">#3</span>
+            <p class="why">ultimate's rank among organized youth sports in King County.</p>
+          </li>
+          <li class="stat">
+            <span class="num">$33</span>
+            <p class="why">the lowest Community Supported Ultimate tier — same season, same fields, same disc as every tier.</p>
+          </li>
+          <li class="stat">
+            <span class="num">(206) 781-5840</span>
+            <p class="why">the rainout hotline — because almost nothing else stops play here.</p>
+          </li>
+        </ul>
+      </div>
+      <p class="note">Component note: field reports are 400–600 words with one photo, submitted by the community through a story form — a sustainable pipeline, not a staff burden.</p>
+    </div>
+  </section>
+
+  <!-- 9 · UI COMPONENTS -->
+  <section class="sec" aria-labelledby="ui-title">
+    <p class="kicker">09 — UI components</p>
+    <h2 class="sec-title" id="ui-title">The working parts</h2>
+    <p class="sec-intro">Registration is the site's day job. These pieces keep it fast — Wet Grass means "this does something," everything else stays out of the way.</p>
+
+    <div class="ui-grid">
+      <div class="ui-block">
+        <h3>Buttons</h3>
+        <span class="btn-label">Primary — rest / hover</span>
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary">Register for summer league</button>
+          <button type="button" class="btn btn-primary demo-hover">Register for summer league</button>
+        </div>
+        <span class="btn-label">Secondary — rest / hover</span>
+        <div class="btn-row">
+          <button type="button" class="btn btn-secondary">See the schedule</button>
+          <button type="button" class="btn btn-secondary demo-hover">See the schedule</button>
+        </div>
+        <span class="btn-label">Quiet — rest / hover</span>
+        <div class="btn-row">
+          <button type="button" class="btn btn-quiet">Read the full rules</button>
+          <button type="button" class="btn btn-quiet demo-hover">Read the full rules</button>
+        </div>
+        <p class="note">Keyboard focus draws a 3px Hemlock ring (Wet Grass on dark grounds).</p>
+      </div>
+
+      <div>
+        <div class="ui-block" style="margin-bottom:24px">
+          <h3>Event card</h3>
+          <article class="event-card">
+            <div class="chip-row">
+              <span class="chip">Adult</span>
+              <span class="chip">Hat league</span>
+              <span class="chip chip-live">Registering now</span>
+            </div>
+            <h4>Summer Mixed Hat League</h4>
+            <p class="event-meta">Jun 1 – Aug 10 · Monday evenings · Seattle</p>
+            <p class="event-desc">Individual signup — we draw teams from a hat. You'll know everyone's name by week two.</p>
+            <p class="event-fee">Sliding scale $33–$495 · pick the tier that fits your household. Every tier gets the same season.</p>
+            <div class="event-foot">
+              <span class="event-deadline">Registration open through May 30</span>
+              <button type="button" class="btn btn-primary">Register</button>
+              <button type="button" class="btn btn-quiet">League details</button>
+            </div>
+          </article>
+        </div>
+
+        <div class="ui-block">
+          <h3>Find your league</h3>
+          <form class="filter">
+            <label>Season
+              <select>
+                <option>Summer — registering now</option>
+                <option>Fall</option>
+                <option>Winter</option>
+                <option>Spring</option>
+              </select>
+            </label>
+            <label>Who's playing
+              <select>
+                <option>Adults</option>
+                <option>Youth — grades 3–12</option>
+                <option>Everyone</option>
+              </select>
+            </label>
+            <label class="check">
+              <input type="checkbox" checked>
+              Individual signup (hat) — no team needed
+            </label>
+            <button type="button" class="btn btn-secondary">Show leagues</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · VOICE & TONE -->
+  <section class="sec" aria-labelledby="voice-title">
+    <p class="kicker">10 — Voice &amp; tone</p>
+    <h2 class="sec-title" id="voice-title">How Evergreen sounds</h2>
+    <p class="sec-intro">Plainspoken, weatherproof, a little wry. It talks like a longtime captain welcoming you to the sideline — never like league-management software.</p>
+
+    <div class="voice-grid">
+      <div class="voice-card">
+        <span class="vlabel">Hero headline</span>
+        <p class="vhero">Ultimate grows here.</p>
+      </div>
+      <div class="voice-card">
+        <span class="vlabel">Registration confirmation</span>
+        <p>You're in — Summer Mixed Hat League, starting June 1. We'll email your team after draft night. Bring cleats: the grass will be wet, and that's the point.</p>
+      </div>
+      <div class="voice-card">
+        <span class="vlabel">To a nervous first-time parent</span>
+        <p>You don't need to know what a huck is yet. Bring a rain jacket and a camp chair; your kid's coach handles the rest, and the sideline will save you a spot.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- treeline divider into footer -->
+<div class="tl-band" aria-hidden="true">
+  <svg class="treeline" viewBox="0 0 1440 180" preserveAspectRatio="xMidYMax slice" focusable="false">
+    <g class="tl-back" data-depth="5">
+      <rect x="-60" y="118" width="1560" height="100"/>
+      <use href="#fir" x="-24" y="74" width="32" height="50"/>
+      <use href="#fir" x="16" y="82" width="28" height="42"/>
+      <use href="#fir" x="58" y="70" width="34" height="54"/>
+      <use href="#fir" x="104" y="84" width="26" height="40"/>
+      <use href="#fir" x="150" y="74" width="32" height="50"/>
+      <use href="#fir" x="210" y="80" width="28" height="44"/>
+      <use href="#fir" x="270" y="68" width="34" height="56"/>
+      <use href="#fir" x="330" y="84" width="26" height="40"/>
+      <use href="#fir" x="382" y="74" width="32" height="50"/>
+      <use href="#fir" x="452" y="80" width="28" height="44"/>
+      <use href="#fir" x="520" y="70" width="34" height="54"/>
+      <use href="#fir" x="584" y="84" width="26" height="40"/>
+      <use href="#fir" x="642" y="74" width="32" height="50"/>
+      <use href="#fir" x="710" y="80" width="28" height="44"/>
+      <use href="#fir" x="775" y="68" width="34" height="56"/>
+      <use href="#fir" x="840" y="84" width="26" height="40"/>
+      <use href="#fir" x="900" y="74" width="32" height="50"/>
+      <use href="#fir" x="965" y="82" width="28" height="42"/>
+      <use href="#fir" x="1030" y="70" width="34" height="54"/>
+      <use href="#fir" x="1095" y="84" width="26" height="40"/>
+      <use href="#fir" x="1150" y="74" width="32" height="50"/>
+      <use href="#fir" x="1215" y="80" width="28" height="44"/>
+      <use href="#fir" x="1280" y="68" width="34" height="56"/>
+      <use href="#fir" x="1345" y="84" width="26" height="40"/>
+      <use href="#fir" x="1400" y="74" width="32" height="50"/>
+    </g>
+    <rect class="tl-fog" data-depth="30" x="-60" y="66" width="1560" height="96" fill="url(#fogGrad)"/>
+    <g class="tl-mid" data-depth="12">
+      <rect x="-60" y="136" width="1560" height="90"/>
+      <use href="#fir" x="-36" y="64" width="50" height="80"/>
+      <use href="#fir" x="40" y="80" width="42" height="64"/>
+      <use href="#fir" x="120" y="56" width="54" height="88"/>
+      <use href="#fir" x="250" y="74" width="46" height="70"/>
+      <use href="#fir" x="345" y="84" width="40" height="60"/>
+      <use href="#fir" x="470" y="60" width="52" height="84"/>
+      <use href="#fir" x="640" y="78" width="44" height="66"/>
+      <use href="#fir" x="760" y="54" width="54" height="90"/>
+      <use href="#fir" x="880" y="82" width="42" height="62"/>
+      <use href="#fir" x="1000" y="64" width="50" height="80"/>
+      <use href="#fir" x="1140" y="76" width="44" height="68"/>
+      <use href="#fir" x="1264" y="58" width="54" height="86"/>
+      <use href="#fir" x="1390" y="78" width="44" height="66"/>
+    </g>
+    <g class="tl-front" data-depth="20">
+      <rect x="-60" y="154" width="1560" height="90"/>
+      <use href="#fir" x="-44" y="54" width="66" height="108"/>
+      <use href="#fir" x="40" y="76" width="54" height="86"/>
+      <use href="#fir" x="128" y="62" width="62" height="100"/>
+      <use href="#fir" x="330" y="72" width="56" height="90"/>
+      <use href="#fir" x="425" y="50" width="68" height="112"/>
+      <use href="#fir" x="980" y="74" width="56" height="88"/>
+      <use href="#fir" x="1075" y="48" width="68" height="114"/>
+      <use href="#fir" x="1180" y="76" width="56" height="86"/>
+      <use href="#fir" x="1295" y="58" width="64" height="104"/>
+      <use href="#fir" x="1396" y="78" width="54" height="84"/>
+    </g>
+  </svg>
+</div>
+
+<!-- 11 · FOOTER -->
+<footer class="site-foot">
+  <div class="foot-in">
+    <div class="verdicts">
+      <div class="verdict">
+        <h2>Choose this direction if…</h2>
+        <p>You want a brand that could only belong to Puget Sound ultimate — instantly familiar to anyone who's played a March game in the rain, and warm enough to hand a nervous parent.</p>
+      </div>
+      <div class="verdict">
+        <h2>Think twice if…</h2>
+        <p>You want the site to lead with scores, speed, and sports-tech energy — Evergreen leads with place and belonging, and it will always feel more forest than stadium.</p>
+      </div>
+    </div>
+    <nav class="foot-nav" aria-label="Direction navigation">
+      <a href="index.html">← All directions</a>
+      <span class="foot-meta">Direction 1 of 5 · Evergreen · prepared for DiscNW</span>
+      <a href="02-game-film.html">Next direction →</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var svgs = Array.prototype.slice.call(document.querySelectorAll('.treeline'));
+  if (!svgs.length) return;
+  var ticking = false;
+  function update(){
+    ticking = false;
+    var vh = window.innerHeight;
+    for (var s = 0; s < svgs.length; s++){
+      var svg = svgs[s];
+      var r = svg.getBoundingClientRect();
+      if (r.bottom < -80 || r.top > vh + 80) continue;
+      var p = ((r.top + r.height / 2) - vh / 2) / vh;
+      p = Math.max(-0.6, Math.min(0.6, p));
+      var layers = svg.querySelectorAll('[data-depth]');
+      for (var i = 0; i < layers.length; i++){
+        var d = parseFloat(layers[i].getAttribute('data-depth'));
+        layers[i].style.transform = 'translateY(' + (p * d).toFixed(1) + 'px)';
+      }
+    }
+  }
+  function onScroll(){
+    if (!ticking){ ticking = true; window.requestAnimationFrame(update); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+
+</body>
+</html>

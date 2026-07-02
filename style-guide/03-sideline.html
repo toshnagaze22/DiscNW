@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction 3 · Sideline Day — DiscNW website redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ================= TOKENS ================= */
+:root{
+  --green:#1F7A33;        /* Field Green — primary action */
+  --green-deep:#176128;   /* hover state */
+  --green-bright:#3FA24C; /* large accents only */
+  --sky:#1D6FB5;          /* Clear Sky — secondary action, links */
+  --sky-deep:#175E9A;
+  --marigold:#FFB61E;     /* Marigold — register CTA, stickers */
+  --marigold-deep:#F0A400;
+  --ink:#1B3022;          /* Evergreen Ink — all text */
+  --muted:#44554A;        /* secondary text */
+  --white:#FFFFFF;
+  --wash-sky:#EAF4FC;     /* Morning Sky — section washes */
+  --wash-grass:#E7F4E3;   /* Field Green tint — soft panels */
+  --line:#DCE5DC;
+  --r-lg:20px;
+  --r-md:14px;
+  --shadow:0 8px 24px rgba(27,48,34,.10);
+  --disp:'Baloo 2', 'Trebuchet MS', sans-serif;
+  --body:'Atkinson Hyperlegible', 'Verdana', sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+body{
+  margin:0; background:var(--white); color:var(--ink);
+  font-family:var(--body); font-size:18px; line-height:1.65;
+  overflow-x:clip;
+}
+img,svg{display:block}
+a{color:var(--sky)}
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focus-visible{
+  outline:3px solid var(--sky); outline-offset:2px; border-radius:6px;
+}
+h1,h2,h3,h4{font-family:var(--disp); line-height:1.12; margin:0 0 .4em; font-weight:700; letter-spacing:.005em}
+p{margin:0 0 1em}
+.wrap{max-width:1120px; margin:0 auto; padding:0 24px}
+
+/* ================= SHARED PROPOSAL CHROME ================= */
+.sec{padding:76px 0}
+.sec--wash-sky{background:var(--wash-sky)}
+.sec--wash-grass{background:var(--wash-grass)}
+.overline{
+  font:700 13px/1 var(--body); letter-spacing:.16em; text-transform:uppercase;
+  color:var(--green); margin:0 0 12px;
+}
+.sec-title{font-size:clamp(30px,3.4vw,38px); font-weight:700}
+.sec-note{max-width:62ch; color:var(--muted)}
+
+/* doodle underline */
+.doodle{width:216px; max-width:64%; height:28px; color:var(--green); margin:6px 0 0}
+.doodle--sky{color:var(--sky)}
+.doodle--center{margin-left:auto; margin-right:auto}
+
+/* stickers */
+.stkr{
+  display:inline-flex; align-items:center; gap:7px;
+  font-family:var(--disp); font-weight:700; font-size:15px; line-height:1;
+  letter-spacing:.04em; text-transform:uppercase;
+  background:var(--white); color:var(--ink);
+  border:2.5px solid var(--ink); border-radius:999px; padding:9px 16px 10px;
+  box-shadow:0 0 0 4px var(--white), 0 5px 12px rgba(27,48,34,.18);
+  transform:rotate(var(--rot,-3deg));
+}
+.stkr--marigold{background:var(--marigold)}
+.stkr--green{background:var(--green); color:var(--white)}
+.stkr--sky{background:var(--sky); color:var(--white)}
+.stkr-svg{transform:rotate(var(--rot,-4deg)); filter:drop-shadow(0 5px 10px rgba(27,48,34,.20))}
+@media (prefers-reduced-motion:no-preference){
+  .stkr:hover, .stkr-svg:hover{transition:transform .18s ease; transform:rotate(0deg) scale(1.04)}
+}
+
+/* photo-treatment placeholder */
+.photo{
+  position:relative; overflow:hidden; border-radius:var(--r-lg);
+  box-shadow:var(--shadow);
+  background:
+    radial-gradient(circle at 80% 12%, #FFE9AE 0%, rgba(255,233,174,.7) 9%, rgba(255,233,174,0) 32%),
+    linear-gradient(180deg, #7FBCEC 0%, #A9D5F4 36%, #D9EDFB 54%, #A9D178 54.6%, #6FB35C 74%, #4E9B49 100%);
+}
+.photo--tall{aspect-ratio:4/3.4}
+.photo--wide{aspect-ratio:16/8.5}
+.photo--card{aspect-ratio:16/9; border-radius:var(--r-md) var(--r-md) 0 0; box-shadow:none}
+.photo--dusk{background:
+    radial-gradient(circle at 18% 16%, #FFE9AE 0%, rgba(255,233,174,.7) 10%, rgba(255,233,174,0) 34%),
+    linear-gradient(180deg, #8CC3EE 0%, #BCDDF6 40%, #E2F1FC 57%, #96C46E 57.6%, #63A954 78%, #4A9445 100%)}
+.photo--grassy{background:
+    radial-gradient(circle at 70% 10%, #FFE9AE 0%, rgba(255,233,174,.6) 8%, rgba(255,233,174,0) 30%),
+    linear-gradient(180deg, #8CC3EE 0%, #C9E4F8 40%, #9FCB72 40.6%, #6FB35C 66%, #4E9B49 100%)}
+.photo-cap{
+  position:absolute; left:12px; bottom:12px; max-width:calc(100% - 24px);
+  background:rgba(255,255,255,.94); color:var(--ink);
+  font:400 13px/1.45 var(--body); padding:6px 13px; border-radius:12px;
+}
+.photo-cap b{font-weight:700}
+
+/* buttons */
+.btn{
+  display:inline-block; font-family:var(--disp); font-weight:700; font-size:17px; line-height:1;
+  border-radius:999px; padding:14px 26px 15px; border:2.5px solid transparent;
+  cursor:pointer; text-decoration:none; text-align:center;
+  transition:background-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+@media (prefers-reduced-motion:reduce){ .btn{transition:none} }
+.btn-primary{background:var(--green); color:var(--white)}
+.btn-primary:hover, .btn-primary.is-hover{background:var(--green-deep); transform:translateY(-1px); box-shadow:0 6px 14px rgba(23,97,40,.28)}
+.btn-marigold{background:var(--marigold); color:var(--ink); border-color:var(--ink)}
+.btn-marigold:hover, .btn-marigold.is-hover{background:var(--marigold-deep); transform:translateY(-1px); box-shadow:0 6px 14px rgba(27,48,34,.22)}
+.btn-secondary{background:var(--white); color:var(--sky); border-color:var(--sky)}
+.btn-secondary:hover, .btn-secondary.is-hover{background:var(--wash-sky); color:var(--sky-deep); border-color:var(--sky-deep)}
+.btn-quiet{background:none; color:var(--green); padding-left:8px; padding-right:8px}
+.btn-quiet:hover, .btn-quiet.is-hover{text-decoration:underline 2.5px var(--green); text-decoration-style:wavy; text-underline-offset:6px}
+
+/* ================= 1 · DIRECTION HEADER (meta) ================= */
+.meta{
+  background:#F4F7F4; border-bottom:2px dashed var(--line); padding:26px 0 30px;
+}
+.meta-kicker{font:700 12px/1 var(--body); letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin:0 0 10px}
+.meta-name{font-family:var(--disp); font-weight:800; font-size:30px; margin:0 0 6px}
+.meta-thesis{font-size:16.5px; color:var(--muted); max-width:72ch; margin:0 0 14px}
+.meta-tags{display:flex; flex-wrap:wrap; gap:8px; padding:0; margin:0; list-style:none}
+.meta-tags li{
+  font:700 12.5px/1 var(--body); letter-spacing:.06em; text-transform:uppercase;
+  color:var(--ink); background:var(--white); border:1.5px solid var(--line);
+  border-radius:999px; padding:7px 13px;
+}
+
+/* ================= 2 · THE IDEA ================= */
+.idea-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:56px; align-items:center}
+.idea-copy{font-size:20px; line-height:1.7}
+.idea-copy p{margin-bottom:1.1em}
+.idea-aside{position:relative; display:flex; flex-direction:column; gap:18px; align-items:center}
+
+/* ================= 3 · COLOR ================= */
+.swatches{display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:36px}
+.swatch{
+  border:1.5px solid var(--line); border-radius:var(--r-md); overflow:hidden;
+  background:var(--white); box-shadow:0 3px 10px rgba(27,48,34,.05);
+}
+.swatch-chip{height:110px}
+.swatch-info{padding:16px 18px 18px}
+.swatch-name{font-family:var(--disp); font-weight:700; font-size:19px; margin:0}
+.swatch-hex{font:700 13px/1 var(--body); letter-spacing:.08em; color:var(--muted); text-transform:uppercase; margin:4px 0 8px}
+.swatch-use{font-size:14.5px; color:var(--muted); margin:0; line-height:1.5}
+
+/* ================= 4 · TYPOGRAPHY ================= */
+.type-grid{display:grid; grid-template-columns:1fr 1fr; gap:26px; margin-top:36px}
+.type-card{
+  background:var(--white); border:1.5px solid var(--line); border-radius:var(--r-md);
+  padding:30px 32px; box-shadow:0 3px 10px rgba(27,48,34,.05);
+}
+.type-label{font:700 13px/1 var(--body); letter-spacing:.14em; text-transform:uppercase; color:var(--sky); margin:0 0 14px}
+.type-facename{font-family:var(--disp); font-weight:800; font-size:26px; margin:0 0 4px}
+.type-facenote{font-size:15px; color:var(--muted); margin:0 0 22px}
+.type-specimen-h{font-family:var(--disp); font-weight:800; font-size:clamp(34px,4.6vw,52px); line-height:1.06; margin:0}
+.type-specimen-b{font-size:18px; margin:0}
+.type-scale{
+  margin:30px 0 0; padding:0; list-style:none;
+  border-top:1.5px solid var(--line);
+}
+.type-scale li{
+  display:flex; justify-content:space-between; gap:16px; align-items:baseline;
+  padding:11px 2px; border-bottom:1.5px solid var(--line); font-size:15px;
+}
+.type-scale .ts-sample{font-family:var(--disp); font-weight:700}
+.type-scale .ts-spec{color:var(--muted); font-size:13.5px; white-space:nowrap}
+.ts-h1{font-size:30px}.ts-h2{font-size:24px}.ts-h3{font-size:19px}
+.ts-body{font-family:var(--body)!important; font-weight:400!important; font-size:18px}
+.ts-cap{font-family:var(--body)!important; font-size:14px}
+
+/* ================= 5 · SIGNATURE ================= */
+.sig-sheet{
+  margin-top:36px; background:var(--white); border:1.5px solid var(--line);
+  border-radius:var(--r-lg); box-shadow:var(--shadow); padding:44px 36px 40px;
+  display:flex; flex-wrap:wrap; gap:34px 40px; align-items:center; justify-content:center;
+  background-image:radial-gradient(rgba(27,48,34,.055) 1.3px, transparent 1.3px);
+  background-size:22px 22px;
+}
+.sig-caption{margin:18px auto 0; text-align:center; max-width:60ch; color:var(--muted); font-size:15.5px}
+.sig-doodle-demo{margin-top:34px; text-align:center}
+.sig-doodle-demo h3{font-size:clamp(26px,3vw,34px); font-weight:800; margin-bottom:0}
+.sig-doodle-demo .doodle{margin:8px auto 0}
+
+/* ================= 6 · HERO MOCKUP ================= */
+.mock-frame{
+  margin-top:36px; border-radius:16px; overflow:hidden;
+  border:1.5px solid #C9D4CB; box-shadow:0 18px 48px rgba(27,48,34,.16);
+  background:var(--white);
+}
+.mock-chrome{
+  display:flex; align-items:center; gap:14px;
+  background:#E8EEE9; padding:10px 16px; border-bottom:1.5px solid #C9D4CB;
+}
+.mock-dots{display:flex; gap:6px}
+.mock-dots span{width:11px; height:11px; border-radius:50%; background:#C2CFC4}
+.mock-url{
+  flex:1; max-width:320px; background:var(--white); border-radius:999px;
+  font:400 13px/1 var(--body); color:var(--muted); padding:7px 16px;
+  border:1.5px solid #D7E0D8;
+}
+.mock-announce{
+  background:var(--green); color:var(--white); text-align:center;
+  font:700 14px/1.45 var(--body); padding:9px 18px;
+}
+.mock-announce a{color:var(--white); text-underline-offset:3px}
+.mock-nav{
+  display:flex; align-items:center; gap:26px; flex-wrap:wrap;
+  padding:16px 34px; border-bottom:1.5px solid var(--line); background:var(--white);
+}
+.mock-logo{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink); margin-right:6px}
+.mock-logo-word{font-family:var(--disp); font-weight:800; font-size:24px; letter-spacing:.01em}
+.mock-links{display:flex; gap:24px; flex-wrap:wrap; margin:0 auto 0 0; padding:0; list-style:none}
+.mock-links a{
+  font:700 16px/1 var(--body); color:var(--ink); text-decoration:none; padding:6px 2px;
+}
+.mock-links a:hover{color:var(--green); text-decoration:underline 2.5px; text-decoration-style:wavy; text-underline-offset:6px}
+.mock-hero{
+  display:grid; grid-template-columns:1.05fr .95fr; gap:44px; align-items:center;
+  padding:58px 34px 50px; background:
+    radial-gradient(circle at 8% 0%, rgba(255,214,102,.22), rgba(255,214,102,0) 42%),
+    var(--white);
+}
+.mock-h1{font-size:clamp(38px,4.6vw,58px); font-weight:800; line-height:1.04; margin:0 0 8px}
+.mock-sub{font-size:19px; color:var(--muted); max-width:52ch; margin:18px 0 26px}
+.mock-ctas{display:flex; gap:14px; flex-wrap:wrap; align-items:center}
+.mock-reassure{font:400 15px/1.5 var(--body); color:var(--muted); margin:18px 0 0}
+.mock-reassure b{color:var(--green)}
+.mock-photo-wrap{position:relative; padding:10px 8px 8px 0}
+.mock-photo-wrap .stkr-svg--corner{position:absolute; top:-26px; right:-10px; z-index:2}
+.mock-photo-wrap .stkr--onphoto{position:absolute; top:26px; left:-14px; z-index:2}
+.mock-trust{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:0;
+  border-top:1.5px solid var(--line); background:var(--wash-grass);
+}
+.mock-trust-item{display:flex; gap:12px; padding:22px 26px; align-items:flex-start}
+.mock-trust-item + .mock-trust-item{border-left:1.5px solid rgba(27,48,34,.12)}
+.mock-trust-item svg{flex:none; margin-top:2px}
+.mock-trust-item p{margin:0; font-size:15px; line-height:1.5}
+.mock-trust-item b{font-family:var(--disp); font-weight:700; font-size:16px; display:block}
+.mock-note{margin:16px 4px 0; font-size:14.5px; color:var(--muted)}
+
+/* ================= 7 · AUDIENCE PATHWAYS ================= */
+.path-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:26px; margin-top:40px}
+.path-card{
+  background:var(--white); border:1.5px solid var(--line); border-radius:var(--r-md);
+  overflow:visible; box-shadow:var(--shadow); display:flex; flex-direction:column; position:relative;
+}
+.path-card .photo--card{border:0; border-bottom:1.5px solid var(--line)}
+.path-body{padding:26px 26px 28px; display:flex; flex-direction:column; flex:1}
+.path-body h3{font-size:25px; font-weight:800; margin:0 0 8px}
+.path-body p{font-size:16.5px; color:var(--muted); margin:0 0 20px}
+.path-cta{margin-top:auto}
+.path-stkr{position:absolute; top:-16px; left:18px; z-index:2; font-size:13px; padding:8px 14px 9px}
+
+/* ================= 8 · STORYTELLING ================= */
+.story-card{
+  margin-top:40px; background:var(--white); border:1.5px solid var(--line);
+  border-radius:var(--r-lg); box-shadow:var(--shadow); overflow:hidden;
+  display:grid; grid-template-columns:.9fr 1.1fr;
+}
+.story-photo{border-radius:0; box-shadow:none; min-height:340px}
+.story-body{padding:44px 46px 40px; position:relative}
+.story-eyebrow{font:700 13px/1 var(--body); letter-spacing:.14em; text-transform:uppercase; color:var(--sky); margin:0 0 18px}
+.story-quote{
+  font-family:var(--disp); font-weight:600; font-size:clamp(21px,2.3vw,26px);
+  line-height:1.38; margin:0 0 20px; text-wrap:pretty;
+}
+.story-quote .hl{background:linear-gradient(transparent 62%, rgba(255,182,30,.55) 62%)}
+.story-byline{font-size:15.5px; color:var(--muted); margin:0 0 22px}
+.story-byline b{color:var(--ink)}
+.story-stkr-row{display:flex; gap:14px; flex-wrap:wrap; align-items:center}
+
+/* season timeline */
+.tl{margin-top:56px}
+.tl h3{font-size:26px; font-weight:800}
+.tl-track{list-style:none; display:grid; grid-template-columns:repeat(5,1fr); gap:18px; padding:14px 0 0; margin:26px 0 0; counter-reset:step}
+.tl-track li{position:relative; padding-top:50px; counter-increment:step}
+.tl-track li::before{
+  content:counter(step); position:absolute; top:0; left:0;
+  width:38px; height:38px; border-radius:50%;
+  background:var(--green); color:var(--white);
+  font:800 18px/38px var(--disp); text-align:center;
+  border:2.5px solid var(--ink); box-shadow:0 0 0 4px var(--white);
+}
+.tl-track li::after{
+  content:""; position:absolute; top:18px; left:52px; right:-6px;
+  border-top:3px dashed #A9C9AE;
+}
+.tl-track li:last-child::after{display:none}
+.tl-track b{font-family:var(--disp); font-weight:700; font-size:17.5px; display:block; margin-bottom:3px}
+.tl-track span{font-size:14.5px; color:var(--muted); line-height:1.5; display:block}
+
+/* ================= 9 · UI COMPONENTS ================= */
+.ui-grid{display:grid; grid-template-columns:1fr 1.1fr .9fr; gap:26px; margin-top:40px; align-items:start}
+.ui-panel{
+  background:var(--white); border:1.5px solid var(--line); border-radius:var(--r-md);
+  padding:26px; box-shadow:0 3px 10px rgba(27,48,34,.05);
+}
+.ui-panel > h3{font-size:20px; margin-bottom:18px}
+.ui-btnrow{display:flex; flex-wrap:wrap; gap:14px 16px; align-items:center; margin-bottom:8px}
+.ui-btnlabel{font:700 12px/1 var(--body); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:14px 0 8px}
+/* event card */
+.event-card{border:2px solid var(--ink); border-radius:var(--r-md); overflow:visible; position:relative; background:var(--white)}
+.event-card .photo{border-radius:12px 12px 0 0; box-shadow:none; aspect-ratio:16/6.5}
+.event-stkr{position:absolute; top:-15px; right:14px; z-index:2; font-size:13px; padding:8px 14px 9px}
+.event-body{padding:20px 22px 22px}
+.event-body h4{font-size:23px; font-weight:800; margin:0 0 10px}
+.event-meta{list-style:none; margin:0 0 14px; padding:0}
+.event-meta li{display:flex; gap:9px; align-items:flex-start; font-size:15px; color:var(--muted); padding:3px 0}
+.event-meta svg{flex:none; margin-top:4px}
+.event-deadline{
+  background:var(--wash-grass); border-radius:9px; padding:9px 14px;
+  font:700 14.5px/1.4 var(--body); color:var(--green-deep); margin:0 0 16px;
+}
+.event-actions{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+/* filter form */
+.filter-form fieldset{border:0; margin:0 0 18px; padding:0}
+.filter-form legend{font-family:var(--disp); font-weight:700; font-size:17.5px; padding:0; margin-bottom:10px}
+.chip{position:relative; display:inline-block; margin:0 8px 10px 0}
+.chip input{position:absolute; opacity:0; width:100%; height:100%; inset:0; cursor:pointer}
+.chip span{
+  display:inline-block; font:700 15px/1 var(--body); color:var(--ink);
+  border:2px solid var(--ink); border-radius:999px; padding:10px 16px 11px; background:var(--white);
+  transition:background-color .12s ease;
+}
+.chip input:checked + span{background:var(--marigold)}
+.chip input:hover + span{background:var(--wash-grass)}
+.chip input:checked:hover + span{background:var(--marigold-deep)}
+.chip input:focus-visible + span{outline:3px solid var(--sky); outline-offset:2px}
+.filter-form label.sel-label{display:block; font-family:var(--disp); font-weight:700; font-size:17.5px; margin-bottom:8px}
+.filter-form select{
+  width:100%; font:400 16px/1.3 var(--body); color:var(--ink);
+  border:2px solid var(--ink); border-radius:12px; padding:11px 14px; background:var(--white);
+  margin-bottom:18px;
+}
+
+/* ================= 10 · VOICE ================= */
+.voice-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:26px; margin-top:40px}
+.voice-card{
+  background:var(--white); border:1.5px solid var(--line); border-radius:var(--r-md);
+  padding:26px 28px 28px; box-shadow:0 3px 10px rgba(27,48,34,.05);
+}
+.voice-label{font:700 13px/1.3 var(--body); letter-spacing:.12em; text-transform:uppercase; color:var(--sky); margin:0 0 14px}
+.voice-sample{font-family:var(--disp); font-weight:600; font-size:20px; line-height:1.42; margin:0}
+.voice-sample--h{font-weight:800; font-size:26px; line-height:1.15}
+
+/* ================= 11 · FOOTER ================= */
+.pfoot{background:var(--ink); color:#EAF2EA; padding:64px 0 46px}
+.pfoot h2{color:var(--white); font-size:28px}
+.pfoot-grid{display:grid; grid-template-columns:1fr 1fr; gap:34px; margin:30px 0 44px}
+.pfoot-card{background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.18); border-radius:var(--r-md); padding:26px 28px}
+.pfoot-card h3{font-size:20px; color:var(--marigold); margin-bottom:8px}
+.pfoot-card p{margin:0; font-size:16.5px; line-height:1.6; color:#DCE8DC}
+.pfoot-nav{display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap; border-top:1.5px solid rgba(255,255,255,.18); padding-top:26px}
+.pfoot-nav a{color:var(--white); font:700 17px/1 var(--disp); text-decoration:none; padding:8px 2px}
+.pfoot-nav a:hover{color:var(--marigold); text-decoration:underline 2.5px; text-decoration-style:wavy; text-underline-offset:6px}
+.pfoot-meta{font-size:13.5px; color:#9DB3A0; margin-top:26px}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width:960px){
+  .idea-grid{grid-template-columns:1fr; gap:40px}
+  .swatches{grid-template-columns:repeat(2,1fr)}
+  .type-grid{grid-template-columns:1fr}
+  .mock-hero{grid-template-columns:1fr; gap:36px; padding:44px 26px 40px}
+  .mock-trust{grid-template-columns:1fr}
+  .mock-trust-item + .mock-trust-item{border-left:0; border-top:1.5px solid rgba(27,48,34,.12)}
+  .path-grid{grid-template-columns:1fr; gap:34px}
+  .story-card{grid-template-columns:1fr}
+  .story-photo{min-height:240px}
+  .ui-grid{grid-template-columns:1fr}
+  .voice-grid{grid-template-columns:1fr}
+  .pfoot-grid{grid-template-columns:1fr}
+  .tl-track{grid-template-columns:1fr; gap:8px; padding-left:2px}
+  .tl-track li{padding:2px 0 20px 58px; min-height:60px}
+  .tl-track li::after{top:42px; left:18px; right:auto; bottom:-4px; border-top:0; border-left:3px dashed #A9C9AE}
+}
+@media (max-width:520px){
+  body{font-size:17px}
+  .sec{padding:56px 0}
+  .swatches{grid-template-columns:1fr}
+  .type-scale li{flex-wrap:wrap; gap:2px 16px}
+  .type-scale .ts-spec{white-space:normal}
+  .mock-nav{padding:14px 18px; gap:16px}
+  .mock-links{gap:14px}
+  .story-body{padding:30px 24px 30px}
+  .mock-photo-wrap .stkr-svg--corner{top:-18px; right:-4px; transform:scale(.8) rotate(var(--rot,-4deg))}
+}
+</style>
+</head>
+<body>
+
+<!-- SVG defs: disc-flight doodle, reused via <use> -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="flightline" viewBox="0 0 240 30">
+    <path d="M8 26 C 56 12, 100 8, 140 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".32"/>
+    <path d="M6 24 C 54 8, 102 4, 142 8 C 166 10.5, 182 15.5, 196 14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M196 5 l8 -3 M198 10 l9 -2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+    <ellipse cx="220" cy="10" rx="13" ry="4.8" fill="#FFB61E" stroke="currentColor" stroke-width="2.5"/>
+  </symbol>
+  <symbol id="checkdisc" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10.5" fill="#1F7A33" stroke="#1B3022" stroke-width="1.6"/>
+    <path d="M7.2 12.4l3.2 3.2 6.2-7" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+</svg>
+
+<!-- ============ 1 · DIRECTION HEADER ============ -->
+<header class="meta">
+  <div class="wrap">
+    <p class="meta-kicker">DiscNW website redesign · design direction 3 of 5 · prepared for Matt &amp; the DiscNW team</p>
+    <h1 class="meta-name">Sideline Day</h1>
+    <p class="meta-thesis">The truest picture of DiscNW isn’t a highlight reel — it’s a Saturday at the fields: camp chairs, orange slices, a first layout, a spirit circle. The site should feel like being welcomed onto that sideline.</p>
+    <ul class="meta-tags" aria-label="Personality keywords">
+      <li>Sunny</li><li>Welcoming</li><li>Candid</li><li>Plainspoken</li><li>Legible</li><li>Reassuring</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 2 · THE IDEA ============ -->
+<section class="sec" aria-labelledby="idea-h">
+  <div class="wrap idea-grid">
+    <div class="idea-copy">
+      <p class="overline">01 · The idea</p>
+      <h2 class="sec-title" id="idea-h">Design the site for the family who found you last night</h2>
+      <svg class="doodle" aria-hidden="true"><use href="#flightline"/></svg>
+      <p style="margin-top:26px">Most sports sites talk to people who already play. This direction talks to the family googling “ultimate frisbee Seattle kids” on a Tuesday night — and to the adult who hasn’t played anything since college. It looks like the thing itself: a bright Saturday at the fields, in full daylight, with nothing to decode.</p>
+      <p style="margin-bottom:0">Your mission says “an Ultimate community without barriers.” Here, that’s a design decision: big readable type, plain words, sliding-scale fees up front, and a sticker-badge system that answers a nervous parent’s questions (“ages 7–18”, “no experience needed”) before they even scroll. The competitive programs are all still here — they just stop being the front door.</p>
+    </div>
+    <div class="idea-aside" aria-hidden="true">
+      <svg class="stkr-svg" style="--rot:-5deg" width="176" height="176" viewBox="0 0 190 190">
+        <polygon points="95.0,2.0 112.4,19.0 135.4,11.2 143.6,34.0 167.7,37.0 165.3,61.2 185.7,74.3 173.0,95.0 185.7,115.7 165.3,128.8 167.7,153.0 143.6,156.0 135.4,178.8 112.4,171.0 95.0,188.0 77.6,171.0 54.6,178.8 46.4,156.0 22.3,153.0 24.7,128.8 4.3,115.7 17.0,95.0 4.3,74.3 24.7,61.2 22.3,37.0 46.4,34.0 54.6,11.2 77.6,19.0" fill="#fff"/>
+        <polygon points="95.0,9.0 111.0,24.8 132.3,17.5 139.9,38.7 162.2,41.4 159.9,63.8 178.8,75.9 167.0,95.0 178.8,114.1 159.9,126.2 162.2,148.6 139.9,151.3 132.3,172.5 111.0,165.2 95.0,181.0 79.0,165.2 57.7,172.5 50.1,151.3 27.8,148.6 30.1,126.2 11.2,114.1 23.0,95.0 11.2,75.9 30.1,63.8 27.8,41.4 50.1,38.7 57.7,17.5 79.0,24.8" fill="#FFB61E" stroke="#1B3022" stroke-width="3"/>
+        <text x="95" y="82" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="17" fill="#1B3022">NO</text>
+        <text x="95" y="103" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="16.5" letter-spacing=".5" fill="#1B3022">EXPERIENCE</text>
+        <text x="95" y="124" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="16.5" letter-spacing=".5" fill="#1B3022">NEEDED</text>
+      </svg>
+      <span class="stkr stkr--green" style="--rot:3deg">Ages 7–18 &amp; adults</span>
+      <span class="stkr" style="--rot:-2deg">Rain or shine</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3 · COLOR ============ -->
+<section class="sec sec--wash-sky" aria-labelledby="color-h">
+  <div class="wrap">
+    <p class="overline">02 · Color</p>
+    <h2 class="sec-title" id="color-h">Full daylight on a white page</h2>
+    <p class="sec-note">Grass, sky, and sun — the colors already on the field every Saturday. Everything sits on crisp white so photos of real kids and real weather do the talking. Friendly, but calibrated for teenagers and adult rec players too: the ink is deep evergreen, not black, and nothing is pastel.</p>
+    <div class="swatches">
+      <div class="swatch">
+        <div class="swatch-chip" style="background:#1F7A33"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Field Green</h3>
+          <p class="swatch-hex">#1F7A33</p>
+          <p class="swatch-use">Primary actions, links, section accents. Tints to #E7F4E3 for soft panels.</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-chip" style="background:#1D6FB5"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Clear Sky</h3>
+          <p class="swatch-hex">#1D6FB5</p>
+          <p class="swatch-use">Secondary buttons, informational labels, focus rings.</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-chip" style="background:#FFB61E"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Marigold</h3>
+          <p class="swatch-hex">#FFB61E</p>
+          <p class="swatch-use">The Register button, sticker badges, highlights. Always carries evergreen ink text.</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-chip" style="background:#1B3022"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Evergreen Ink</h3>
+          <p class="swatch-hex">#1B3022</p>
+          <p class="swatch-use">All text and sticker outlines — a deep fir green instead of black.</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-chip" style="background:#FFFFFF; border-bottom:1.5px solid var(--line)"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Daylight White</h3>
+          <p class="swatch-hex">#FFFFFF</p>
+          <p class="swatch-use">Page and card backgrounds — the site’s “clear morning” default.</p>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-chip" style="background:#EAF4FC"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Morning Sky</h3>
+          <p class="swatch-hex">#EAF4FC</p>
+          <p class="swatch-use">Section washes and quiet panels — a five-percent tint of sky, never gray.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4 · TYPOGRAPHY ============ -->
+<section class="sec" aria-labelledby="type-h">
+  <div class="wrap">
+    <p class="overline">03 · Typography</p>
+    <h2 class="sec-title" id="type-h">Rounded where it welcomes, rigorous where it informs</h2>
+    <p class="sec-note">One size up from typical everywhere. This site gets read on phones, at arm’s length, on a sunny sideline — clarity beats flair.</p>
+    <div class="type-grid">
+      <div class="type-card">
+        <p class="type-label">Display · Baloo 2</p>
+        <p class="type-facename" style="font-family:var(--disp)">Baloo 2</p>
+        <p class="type-facenote">Rounded and sturdy, like vinyl-sticker lettering. Friendly at every weight without ever going preschool.</p>
+        <p class="type-specimen-h">Saturday, 9am, Magnuson Park.</p>
+        <svg class="doodle" aria-hidden="true"><use href="#flightline"/></svg>
+      </div>
+      <div class="type-card">
+        <p class="type-label">Body · Atkinson Hyperlegible</p>
+        <p class="type-facename" style="font-family:var(--body); font-weight:700">Atkinson Hyperlegible</p>
+        <p class="type-facenote">Designed by the Braille Institute for maximum legibility — a body face that takes “a community without barriers” literally.</p>
+        <p class="type-specimen-b">Ultimate is a non-contact sport played with a flying disc and officiated by the players themselves — even the 12-year-olds. Games run rain or shine (this is Seattle), and every DiscNW program uses sliding-scale fees, so the price fits your household — not the other way around.</p>
+      </div>
+    </div>
+    <ul class="type-scale" aria-label="Type scale">
+      <li><span class="ts-sample ts-h1">H1 — Come play</span><span class="ts-spec">Baloo 2 ExtraBold · 56px / 1.05 (40px mobile)</span></li>
+      <li><span class="ts-sample ts-h2">H2 — Find your league</span><span class="ts-spec">Baloo 2 Bold · 36px / 1.1</span></li>
+      <li><span class="ts-sample ts-h3">H3 — This weekend</span><span class="ts-spec">Baloo 2 Bold · 23px / 1.2</span></li>
+      <li><span class="ts-sample ts-body">Body — Bring cleats, water, and a warm layer.</span><span class="ts-spec">Atkinson Hyperlegible · 18px / 1.65</span></li>
+      <li><span class="ts-sample ts-cap">Caption — Photo: spirit circle, week 6</span><span class="ts-spec">Atkinson Hyperlegible · 14px / 1.45</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 5 · SIGNATURE ELEMENT ============ -->
+<section class="sec sec--wash-grass" aria-labelledby="sig-h">
+  <div class="wrap">
+    <p class="overline">04 · Signature element</p>
+    <h2 class="sec-title" id="sig-h">The water-bottle sticker system</h2>
+    <p class="sec-note">Program and age-group badges styled like the vinyl stickers on a player’s water bottle — slightly rotated, die-cut white edges, bold evergreen outlines — plus a hand-drawn disc-flight doodle that underlines headlines and carries the eye between sections.</p>
+
+    <div class="sig-sheet" role="img" aria-label="A sticker sheet showing the badge system: a marigold starburst reading no experience needed, a circular Puget Sound Ultimate evergreen badge, a blue flying-disc sticker reading Spirit of the Game, and pill stickers for age groups and programs">
+      <svg class="stkr-svg" style="--rot:-6deg" width="150" height="150" viewBox="0 0 190 190" aria-hidden="true">
+        <polygon points="95.0,2.0 112.4,19.0 135.4,11.2 143.6,34.0 167.7,37.0 165.3,61.2 185.7,74.3 173.0,95.0 185.7,115.7 165.3,128.8 167.7,153.0 143.6,156.0 135.4,178.8 112.4,171.0 95.0,188.0 77.6,171.0 54.6,178.8 46.4,156.0 22.3,153.0 24.7,128.8 4.3,115.7 17.0,95.0 4.3,74.3 24.7,61.2 22.3,37.0 46.4,34.0 54.6,11.2 77.6,19.0" fill="#fff"/>
+        <polygon points="95.0,9.0 111.0,24.8 132.3,17.5 139.9,38.7 162.2,41.4 159.9,63.8 178.8,75.9 167.0,95.0 178.8,114.1 159.9,126.2 162.2,148.6 139.9,151.3 132.3,172.5 111.0,165.2 95.0,181.0 79.0,165.2 57.7,172.5 50.1,151.3 27.8,148.6 30.1,126.2 11.2,114.1 23.0,95.0 11.2,75.9 30.1,63.8 27.8,41.4 50.1,38.7 57.7,17.5 79.0,24.8" fill="#FFB61E" stroke="#1B3022" stroke-width="3"/>
+        <text x="95" y="82" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="17" fill="#1B3022">NO</text>
+        <text x="95" y="103" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="16.5" letter-spacing=".5" fill="#1B3022">EXPERIENCE</text>
+        <text x="95" y="124" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="16.5" letter-spacing=".5" fill="#1B3022">NEEDED</text>
+      </svg>
+
+      <svg class="stkr-svg" style="--rot:4deg" width="150" height="150" viewBox="0 0 150 150" aria-hidden="true">
+        <circle cx="75" cy="75" r="73" fill="#fff"/>
+        <circle cx="75" cy="75" r="67" fill="#fff" stroke="#1B3022" stroke-width="3"/>
+        <path id="badgearc" d="M21,75 A54,54 0 0 1 129,75" fill="none"/>
+        <text font-family="'Baloo 2',sans-serif" font-weight="800" font-size="11" letter-spacing="1.4" fill="#1B3022">
+          <textPath href="#badgearc" startOffset="50%" text-anchor="middle">PUGET SOUND ULTIMATE</textPath>
+        </text>
+        <g stroke="#1B3022" stroke-width="2.4" stroke-linejoin="round">
+          <polygon points="75,42 89,61 61,61" fill="#1F7A33"/>
+          <polygon points="75,53 93,76 57,76" fill="#1F7A33"/>
+          <polygon points="75,64 97,91 53,91" fill="#1F7A33"/>
+          <rect x="71" y="91" width="8" height="9" rx="2" fill="#1B3022" stroke="none"/>
+        </g>
+        <ellipse cx="44" cy="49" rx="9.5" ry="3.4" fill="#FFB61E" stroke="#1B3022" stroke-width="2"/>
+        <path d="M26 52 l8 -2 M28 57 l7 -1" stroke="#1B3022" stroke-width="1.8" stroke-linecap="round" opacity=".55"/>
+        <text x="75" y="121" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="10.5" letter-spacing="1.4" fill="#1B3022">RAIN OR SHINE</text>
+      </svg>
+
+      <svg class="stkr-svg" style="--rot:-3deg" width="180" height="85" viewBox="0 0 170 80" aria-hidden="true">
+        <ellipse cx="85" cy="40" rx="83" ry="38" fill="#fff"/>
+        <ellipse cx="85" cy="40" rx="78" ry="33" fill="#1D6FB5" stroke="#1B3022" stroke-width="3"/>
+        <ellipse cx="85" cy="40" rx="59" ry="21" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2.5"/>
+        <text x="85" y="37" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="13.5" letter-spacing=".8" fill="#fff">SPIRIT OF</text>
+        <text x="85" y="53" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="13.5" letter-spacing=".8" fill="#fff">THE GAME</text>
+      </svg>
+
+      <span class="stkr stkr--green" style="--rot:3deg">Ages 7–18</span>
+      <span class="stkr stkr--marigold" style="--rot:-4deg">Free pickup · year-round</span>
+      <span class="stkr" style="--rot:2deg">Hat league = instant team</span>
+    </div>
+    <p class="sig-caption">Stickers tag every program card with the answers newcomers actually need — age range, experience level, format — so reassurance travels with the content instead of living on a buried FAQ page.</p>
+
+    <div class="sig-doodle-demo">
+      <h3>…and every big headline gets a throw</h3>
+      <svg class="doodle doodle--center" aria-hidden="true"><use href="#flightline"/></svg>
+      <p class="sig-caption" style="margin-top:14px">The disc-flight doodle: a hand-drawn underline and section divider, drawn once, used everywhere. It’s the site’s handwriting.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6 · HOMEPAGE HERO MOCKUP ============ -->
+<section class="sec" aria-labelledby="mock-h">
+  <div class="wrap">
+    <p class="overline">05 · Homepage hero</p>
+    <h2 class="sec-title" id="mock-h">The redesigned discnw.org, top of page</h2>
+    <div class="mock-frame" role="group" aria-label="Homepage mockup in a browser window">
+      <div class="mock-chrome" aria-hidden="true">
+        <div class="mock-dots"><span></span><span></span><span></span></div>
+        <div class="mock-url">discnw.org</div>
+      </div>
+      <p class="mock-announce">Summer registration is open — youth camps, hat leagues, and Wonder League. <a href="#mock-h">See what’s registering now</a></p>
+      <nav class="mock-nav" aria-label="Mockup site navigation">
+        <a class="mock-logo" href="#mock-h" aria-label="DiscNW home">
+          <svg width="38" height="38" viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="20" cy="20" r="18.5" fill="#1F7A33" stroke="#1B3022" stroke-width="2"/>
+            <path d="M6 24 C 14 16, 26 16, 34 22" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
+            <path d="M8 15 C 16 10, 26 10, 33 14" fill="none" stroke="#FFB61E" stroke-width="2.6" stroke-linecap="round"/>
+            <circle cx="27" cy="27" r="2.6" fill="#fff"/>
+            <circle cx="13" cy="28" r="2.6" fill="#fff"/>
+          </svg>
+          <span class="mock-logo-word">DiscNW</span>
+        </a>
+        <ul class="mock-links">
+          <li><a href="#mock-h">Events</a></li>
+          <li><a href="#mock-h">Youth</a></li>
+          <li><a href="#mock-h">Adult Leagues</a></li>
+          <li><a href="#mock-h">Coaching</a></li>
+          <li><a href="#mock-h">About</a></li>
+        </ul>
+        <a class="btn btn-marigold" href="#mock-h">Register</a>
+      </nav>
+      <div class="mock-hero">
+        <div>
+          <h3 class="mock-h1" style="margin-top:0">Come play. We’ll teach you everything.</h3>
+          <svg class="doodle" aria-hidden="true"><use href="#flightline"/></svg>
+          <p class="mock-sub">DiscNW runs ultimate frisbee leagues, camps, and tournaments for more than 10,000 players across Puget Sound — ages 7 to adult, brand-new to competitive. No tryouts required to find your place here.</p>
+          <div class="mock-ctas">
+            <a class="btn btn-primary" href="#mock-h">Find a summer program</a>
+            <a class="btn btn-secondary" href="#mock-h">How ultimate works</a>
+          </div>
+          <p class="mock-reassure"><b>Sliding-scale fees on every program</b> · free pickup games year-round · waivers in English, Spanish &amp; Vietnamese</p>
+        </div>
+        <div class="mock-photo-wrap">
+          <svg class="stkr-svg stkr-svg--corner" style="--rot:7deg" width="128" height="128" viewBox="0 0 190 190" aria-hidden="true">
+            <polygon points="95.0,2.0 112.4,19.0 135.4,11.2 143.6,34.0 167.7,37.0 165.3,61.2 185.7,74.3 173.0,95.0 185.7,115.7 165.3,128.8 167.7,153.0 143.6,156.0 135.4,178.8 112.4,171.0 95.0,188.0 77.6,171.0 54.6,178.8 46.4,156.0 22.3,153.0 24.7,128.8 4.3,115.7 17.0,95.0 4.3,74.3 24.7,61.2 22.3,37.0 46.4,34.0 54.6,11.2 77.6,19.0" fill="#fff"/>
+            <polygon points="95.0,9.0 111.0,24.8 132.3,17.5 139.9,38.7 162.2,41.4 159.9,63.8 178.8,75.9 167.0,95.0 178.8,114.1 159.9,126.2 162.2,148.6 139.9,151.3 132.3,172.5 111.0,165.2 95.0,181.0 79.0,165.2 57.7,172.5 50.1,151.3 27.8,148.6 30.1,126.2 11.2,114.1 23.0,95.0 11.2,75.9 30.1,63.8 27.8,41.4 50.1,38.7 57.7,17.5 79.0,24.8" fill="#FFB61E" stroke="#1B3022" stroke-width="3"/>
+            <text x="95" y="82" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="17" fill="#1B3022">NO</text>
+            <text x="95" y="103" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="16.5" letter-spacing=".5" fill="#1B3022">EXPERIENCE</text>
+            <text x="95" y="124" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="16.5" letter-spacing=".5" fill="#1B3022">NEEDED</text>
+          </svg>
+          <div class="photo photo--tall" role="img" aria-label="Placeholder for a photograph: Saturday morning at Magnuson Park, a camp counselor high-fives the third-through-fifth-grade group after warm-ups, bright natural daylight, full color">
+            <svg aria-hidden="true" style="position:absolute; left:6%; bottom:24%; width:88%; height:auto" viewBox="0 0 400 60">
+              <polygon points="40,52 52,28 64,52" fill="#FFB61E" stroke="#1B3022" stroke-width="2"/>
+              <polygon points="330,54 342,30 354,54" fill="#FFB61E" stroke="#1B3022" stroke-width="2"/>
+              <ellipse cx="196" cy="16" rx="17" ry="5.5" fill="#fff" stroke="#1B3022" stroke-width="2"/>
+            </svg>
+            <p class="photo-cap"><b>Photo:</b> Saturday 9am at Magnuson Park — a counselor high-fives the 3rd–5th grade camp group after warm-ups.</p>
+          </div>
+          <span class="stkr stkr--green stkr--onphoto" style="--rot:-3deg">Ages 7–18</span>
+        </div>
+      </div>
+      <div class="mock-trust">
+        <div class="mock-trust-item">
+          <svg width="26" height="26" aria-hidden="true"><use href="#checkdisc"/></svg>
+          <p><b>Kids own the calls</b> Ultimate is non-contact and self-officiated — players resolve their own fouls, guided by Spirit of the Game.</p>
+        </div>
+        <div class="mock-trust-item">
+          <svg width="26" height="26" aria-hidden="true"><use href="#checkdisc"/></svg>
+          <p><b>Vetted coaches</b> Every youth coach is background-checked, SafeSport-certified, and First Aid &amp; CPR trained.</p>
+        </div>
+        <div class="mock-trust-item">
+          <svg width="26" height="26" aria-hidden="true"><use href="#checkdisc"/></svg>
+          <p><b>Pay what fits</b> Sliding-scale fees from $33 on every program — same high-quality experience at every tier.</p>
+        </div>
+      </div>
+    </div>
+    <p class="mock-note">Voice check: the headline promises teaching, not glory. The register button is the only marigold object on the page, so the eye lands on it from anywhere — including a phone in one hand on a sideline.</p>
+  </div>
+</section>
+
+<!-- ============ 7 · AUDIENCE PATHWAYS ============ -->
+<section class="sec sec--wash-sky" aria-labelledby="path-h">
+  <div class="wrap">
+    <p class="overline">06 · Audience pathways</p>
+    <h2 class="sec-title" id="path-h">Three front doors, each in its own words</h2>
+    <p class="sec-note">Straight from the homepage: players, coaches, and parents each get a door labeled in their language — not the organization’s.</p>
+    <div class="path-grid">
+      <article class="path-card">
+        <span class="stkr stkr--sky path-stkr" style="--rot:-3deg">Players</span>
+        <div class="photo photo--card photo--grassy" role="img" aria-label="Placeholder for a photograph: hat-league teammates comparing cleat tans between points at Magnuson Park in July, candid, full color">
+          <p class="photo-cap"><b>Photo:</b> hat-league teammates between points, Magnuson Park, July.</p>
+        </div>
+        <div class="path-body">
+          <h3>Never played? Perfect.</h3>
+          <p>Start at free pickup — no commitment, no experience, no gear beyond sneakers. When you’re ready, a hat league puts you on a team the moment you sign up.</p>
+          <a class="btn btn-primary path-cta" href="#path-h">Find pickup near you</a>
+        </div>
+      </article>
+      <article class="path-card">
+        <span class="stkr stkr--sky path-stkr" style="--rot:2deg">Coaches &amp; volunteers</span>
+        <div class="photo photo--card photo--dusk" role="img" aria-label="Placeholder for a photograph: a Coaching Collective gathering on the field, clipboards, coffee, and a bag of cones, morning light">
+          <p class="photo-cap"><b>Photo:</b> Coaching Collective meetup — clipboards, coffee, a bag of cones.</p>
+        </div>
+        <div class="path-body">
+          <h3>You don’t have to be a star player to coach.</h3>
+          <p>The Coaching Collective hands you practice plans, season curriculum, and a community of coaches on Discord — and we walk you through every certification step.</p>
+          <a class="btn btn-primary path-cta" href="#path-h">See what coaching takes</a>
+        </div>
+      </article>
+      <article class="path-card">
+        <span class="stkr stkr--sky path-stkr" style="--rot:-2deg">Parents &amp; families</span>
+        <div class="photo photo--card" role="img" aria-label="Placeholder for a photograph: the sideline at Spring Reign youth tournament, camp chairs, orange slices, one very loud cowbell, bright daylight">
+          <p class="photo-cap"><b>Photo:</b> the sideline at Spring Reign — camp chairs, orange slices, one loud cowbell.</p>
+        </div>
+        <div class="path-body">
+          <h3>Learn the game from your camp chair.</h3>
+          <p>The rules in five minutes, the gear in one list, waivers in English, Spanish, and Vietnamese. We’re here to help you have a blast watching them play.</p>
+          <a class="btn btn-primary path-cta" href="#path-h">Read the parent guide</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8 · STORYTELLING COMPONENT ============ -->
+<section class="sec" aria-labelledby="story-h">
+  <div class="wrap">
+    <p class="overline">07 · Storytelling components</p>
+    <h2 class="sec-title" id="story-h">Stories from the sideline</h2>
+    <p class="sec-note">The community story card — one great photo, one real voice, tagged with the program it happened in. Parents trust other parents more than they trust any brochure.</p>
+
+    <article class="story-card">
+      <div class="photo story-photo" role="img" aria-label="Placeholder for a photograph: Theo’s first layout in week six, muddy and grinning and completely fine, bright fall daylight, full color">
+        <p class="photo-cap"><b>Photo:</b> Theo’s first layout, week 6 — muddy, grinning, completely fine.</p>
+      </div>
+      <div class="story-body">
+        <p class="story-eyebrow">From the sideline · a first season</p>
+        <blockquote class="story-quote" style="margin:0">
+          <p style="margin-bottom:0">“In September I didn’t know a huck from a hat league. By November I was the parent explaining the <span class="hl">spirit circle</span> to the new families — and Theo taught me the rest in the car on the way home.”</p>
+        </blockquote>
+        <svg class="doodle doodle--sky" aria-hidden="true" style="margin:14px 0 18px"><use href="#flightline"/></svg>
+        <p class="story-byline"><b>Renee C.</b>, first-season parent · her son plays in the Fall Middle School Mixed Hat League</p>
+        <div class="story-stkr-row">
+          <span class="stkr" style="--rot:-2deg; font-size:12.5px; padding:7px 13px 8px">Fall MS Hat League</span>
+          <a class="btn btn-quiet" href="#story-h">Share your first-season story</a>
+        </div>
+      </div>
+    </article>
+
+    <div class="tl">
+      <h3>A first season, at a glance</h3>
+      <p class="sec-note" style="margin-bottom:0">The season timeline strip sits under every league page — so a family knows exactly what they’re saying yes to.</p>
+      <ol class="tl-track">
+        <li><b>Sign up</b><span>10 minutes online. Sliding scale from $33 — pick the tier that fits.</span></li>
+        <li><b>First practice</b><span>Cleats help, sneakers work. Coaches teach everything from “this is a disc.”</span></li>
+        <li><b>First game day</b><span>Parents get the 5-minute rules cheat sheet. Bring a camp chair.</span></li>
+        <li><b>First layout</b><span>It happens. Grass stains wash out; the grin lasts a week.</span></li>
+        <li><b>Spirit circle</b><span>Both teams, one circle, high fives. Season party to close it out.</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9 · UI COMPONENTS ============ -->
+<section class="sec sec--wash-grass" aria-labelledby="ui-h">
+  <div class="wrap">
+    <p class="overline">08 · UI components</p>
+    <h2 class="sec-title" id="ui-h">The working parts</h2>
+    <div class="ui-grid">
+
+      <div class="ui-panel">
+        <h3>Buttons</h3>
+        <p class="ui-btnlabel">Primary · Field Green</p>
+        <div class="ui-btnrow">
+          <button class="btn btn-primary" type="button">Register for summer camp</button>
+          <button class="btn btn-primary is-hover" type="button" aria-label="Register for summer camp, hover state shown">Hover</button>
+        </div>
+        <p class="ui-btnlabel">Register CTA · Marigold (nav &amp; hero only)</p>
+        <div class="ui-btnrow">
+          <button class="btn btn-marigold" type="button">Register</button>
+          <button class="btn btn-marigold is-hover" type="button" aria-label="Register, hover state shown">Hover</button>
+        </div>
+        <p class="ui-btnlabel">Secondary · Clear Sky outline</p>
+        <div class="ui-btnrow">
+          <button class="btn btn-secondary" type="button">See the full schedule</button>
+          <button class="btn btn-secondary is-hover" type="button" aria-label="See the full schedule, hover state shown">Hover</button>
+        </div>
+        <p class="ui-btnlabel">Quiet · wavy underline on hover</p>
+        <div class="ui-btnrow">
+          <button class="btn btn-quiet" type="button">Read the league FAQ</button>
+          <button class="btn btn-quiet is-hover" type="button" aria-label="Read the league FAQ, hover state shown">Hover</button>
+        </div>
+      </div>
+
+      <article class="ui-panel" style="padding:0; overflow:visible; border:0; background:none; box-shadow:none">
+        <h3 style="padding:26px 26px 0; margin-bottom:28px; font-family:var(--disp); font-size:20px">Event / registration card</h3>
+        <div class="event-card">
+          <span class="stkr stkr--marigold event-stkr" style="--rot:4deg">Registering now</span>
+          <div class="photo" style="aspect-ratio:16/6.5; border-radius:12px 12px 0 0; box-shadow:none" role="img" aria-label="Placeholder for a photograph: a mixed hat league huddle at dusk on a summer Monday, full color">
+            <p class="photo-cap"><b>Photo:</b> hat-league huddle, Monday evening, Woodland Park.</p>
+          </div>
+          <div class="event-body">
+            <h4>Summer Mixed Hat League</h4>
+            <ul class="event-meta">
+              <li>
+                <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="#1F7A33" stroke-width="2.4"/><path d="M12 6.5V12l3.8 2.4" fill="none" stroke="#1F7A33" stroke-width="2.4" stroke-linecap="round"/></svg>
+                Monday evenings, June–August · Seattle fields
+              </li>
+              <li>
+                <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="#1F7A33" stroke-width="2.4"/><path d="M4.5 20c1.4-3.8 4.2-5.5 7.5-5.5s6.1 1.7 7.5 5.5" fill="none" stroke="#1F7A33" stroke-width="2.4" stroke-linecap="round"/></svg>
+                Adults · all experience levels · individual signup — teams drawn from a hat
+              </li>
+              <li>
+                <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M6.5 7.5h8.5a3 3 0 010 6H9a3 3 0 000 6h9" fill="none" stroke="#1F7A33" stroke-width="2.4" stroke-linecap="round"/></svg>
+                Sliding scale $33–$495 — self-select the tier that fits your situation
+              </li>
+            </ul>
+            <p class="event-deadline">Registration open through May 30 · rosters announced at draft night</p>
+            <div class="event-actions">
+              <a class="btn btn-primary" href="#ui-h">Register for this league</a>
+              <a class="btn btn-quiet" href="#ui-h">League details</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <div class="ui-panel">
+        <h3>Program finder</h3>
+        <form class="filter-form" action="#ui-h" method="get">
+          <fieldset>
+            <legend>Who’s playing?</legend>
+            <label class="chip">
+              <input type="radio" name="who" value="kid" checked>
+              <span>My kid (grades 3–12)</span>
+            </label>
+            <label class="chip">
+              <input type="radio" name="who" value="me">
+              <span>Me (adult)</span>
+            </label>
+            <label class="chip">
+              <input type="radio" name="who" value="both">
+              <span>Both of us</span>
+            </label>
+          </fieldset>
+          <label class="sel-label" for="season-select">Which season?</label>
+          <select id="season-select" name="season">
+            <option>Summer 2026 — camps, hat leagues, Wonder League</option>
+            <option>Fall 2026 — middle &amp; high school leagues</option>
+            <option>Anytime — free pickup</option>
+          </select>
+          <button class="btn btn-primary" type="submit">Show matching programs</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 · VOICE & TONE ============ -->
+<section class="sec" aria-labelledby="voice-h">
+  <div class="wrap">
+    <p class="overline">09 · Voice &amp; tone</p>
+    <h2 class="sec-title" id="voice-h">How this direction talks</h2>
+    <p class="sec-note">Plain verbs, second person, zero jargon until we’ve taught the word first. It sounds like the friendliest parent on the sideline — the one who waves you over and lends you a chair.</p>
+    <div class="voice-grid">
+      <div class="voice-card">
+        <p class="voice-label">Hero headline</p>
+        <p class="voice-sample voice-sample--h">Come play. We’ll teach you everything.</p>
+      </div>
+      <div class="voice-card">
+        <p class="voice-label">Registration confirmation</p>
+        <p class="voice-sample">“You’re in! Maya is registered for Summer Youth Ultimate Camps at Magnuson Park, 9am–3pm. We’ve emailed the details — pack cleats, water, lunch, and a warm layer for Seattle mornings.”</p>
+      </div>
+      <div class="voice-card">
+        <p class="voice-label">To a nervous first-time parent</p>
+        <p class="voice-sample">“You don’t need to know a single rule yet. Most of our parents learned the game from a camp chair on the sideline, and the kids love explaining it. Bring a chair — we’ll handle the rest.”</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ 11 · FOOTER ============ -->
+<footer class="pfoot">
+  <div class="wrap">
+    <h2>Is Sideline Day the right call?</h2>
+    <div class="pfoot-grid">
+      <div class="pfoot-card">
+        <h3>Choose this direction if…</h3>
+        <p>Growing the community is the job — you want the site that recruits new families and first-time players hardest, and makes “no barriers” something a visitor can feel in the first five seconds.</p>
+      </div>
+      <div class="pfoot-card">
+        <h3>Think twice if…</h3>
+        <p>Your competitive club players and tournament veterans need to see themselves first — this direction leads with newcomers, and elite intensity deliberately rides in the back seat.</p>
+      </div>
+    </div>
+    <nav class="pfoot-nav" aria-label="Direction navigation">
+      <a href="index.html">← All directions</a>
+      <a href="04-spirit-editorial.html">Next direction →</a>
+    </nav>
+    <p class="pfoot-meta">Direction 3 of 5 · “Sideline Day” · DiscNW website redesign · All program names, dates, and policies are drawn from discnw.org; photography placeholders describe the intended shoot.</p>
+  </div>
+</footer>
+
+</body>
+</html>

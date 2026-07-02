@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction 4 of 5 — Spirit &amp; Story · DiscNW redesign</title>
+<meta name="description" content="Design direction 4 for the DiscNW website redesign: the community magazine. Real voices at headline scale, documentary photography, Spirit of the Game as the editorial voice.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=Public+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --paper:#FAFAF7;      /* Pull-Sky Paper */
+  --ink:#10192B;        /* Puget Ink */
+  --green:#0E5F41;      /* Spirit Green */
+  --green-deep:#0A4530; /* pressed / hover */
+  --green-lift:#8FD0AF; /* Spirit Green on ink */
+  --grey:#5E635A;       /* Sideline Grey */
+  --tint:#E9F0E9;       /* Grass Tint */
+  --line:#DBDED6;
+  --serif:"Newsreader", Georgia, "Times New Roman", serif;
+  --sans:"Public Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --wrap:1160px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none !important;transition:none !important}
+}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{display:block;max-width:100%}
+a{color:var(--green)}
+:focus-visible{outline:3px solid var(--green);outline-offset:3px;border-radius:2px}
+.on-ink :focus-visible{outline-color:var(--green-lift)}
+.skip{
+  position:absolute;left:-9999px;top:0;background:var(--ink);color:var(--paper);
+  padding:10px 18px;z-index:99;font-weight:700;text-decoration:none;
+}
+.skip:focus-visible{left:12px;top:12px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 32px}
+@media (max-width:600px){.wrap{padding:0 20px}}
+
+/* shared kicker + captions */
+.kicker{
+  font-family:var(--sans);font-size:12px;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--green);
+}
+.cap{
+  font-size:13px;line-height:1.55;color:var(--grey);
+  padding-left:14px;position:relative;
+}
+.cap::before{
+  content:"";position:absolute;left:0;top:7px;width:6px;height:6px;background:var(--green);
+}
+
+/* scroll reveal — JS adds .js to <html>; without JS everything stays visible */
+html.js .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+html.js .reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){
+  html.js .reveal{opacity:1;transform:none}
+}
+
+/* ============ SECTION CHROME (proposal meta) ============ */
+.sect{padding:88px 0 0}
+.shead{max-width:640px;margin-bottom:44px}
+.snum{
+  display:inline-block;font-size:12px;font-weight:700;letter-spacing:.16em;
+  color:var(--grey);border:1px solid var(--line);border-radius:999px;
+  padding:4px 12px;margin-bottom:16px;
+}
+.stitle{font-family:var(--serif);font-weight:500;font-size:40px;line-height:1.1;letter-spacing:-0.01em}
+.ssub{margin-top:12px;color:var(--grey);font-size:16px}
+
+/* ============ 01 DIRECTION HEADER ============ */
+.dh{
+  background:var(--tint);
+  border-bottom:1px solid var(--line);
+  padding:40px 0 44px;
+}
+.dh-meta{
+  display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
+  font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--grey);
+}
+.dh-meta strong{color:var(--green);font-weight:700}
+.dh-name{
+  font-family:var(--serif);font-weight:500;font-size:clamp(36px,4.5vw,52px);
+  line-height:1.05;letter-spacing:-0.01em;margin-top:14px;
+}
+.dh-thesis{max-width:720px;margin-top:12px;font-size:17px;color:var(--ink)}
+.dh-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;list-style:none}
+.dh-tags li{
+  font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--ink);
+  background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 14px;
+}
+
+/* ============ 02 THE IDEA ============ */
+.idea-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.idea-copy p{font-size:19px;line-height:1.7;max-width:52ch}
+.idea-copy p + p{margin-top:18px}
+.idea-note{
+  background:var(--tint);border-radius:12px;padding:28px 30px;font-size:15px;color:var(--ink);
+}
+.idea-note .kicker{display:block;margin-bottom:10px}
+@media (max-width:860px){.idea-grid{grid-template-columns:1fr}}
+
+/* ============ 03 COLOR ============ */
+.col-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+@media (max-width:1000px){.col-grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:620px){.col-grid{grid-template-columns:1fr 1fr}}
+.swatch{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.swatch-chip{height:120px}
+.swatch-body{padding:16px 16px 18px}
+.swatch-name{font-family:var(--serif);font-size:19px;font-weight:600;line-height:1.2}
+.swatch-hex{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--grey);margin:4px 0 8px;text-transform:uppercase}
+.swatch-use{font-size:13px;line-height:1.5;color:var(--grey)}
+
+/* ============ 04 TYPOGRAPHY ============ */
+.type-cards{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;margin-bottom:24px}
+@media (max-width:900px){.type-cards{grid-template-columns:1fr}}
+.type-card{border:1px solid var(--line);border-radius:12px;padding:36px;background:#fff}
+.type-card .kicker{display:block;margin-bottom:18px;color:var(--grey)}
+.type-display{
+  font-family:var(--serif);font-weight:450;font-size:clamp(38px,5vw,64px);
+  line-height:1.05;letter-spacing:-0.015em;font-optical-sizing:auto;
+}
+.type-display em{font-style:italic;font-weight:400}
+.type-fontname{margin-top:22px;font-size:14px;color:var(--grey)}
+.type-fontname strong{color:var(--ink)}
+.type-body p{max-width:46ch}
+.type-body p + p{margin-top:14px}
+.type-scale{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+.type-row{
+  display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:baseline;
+  padding:22px 36px;border-top:1px solid var(--line);
+}
+.type-row:first-child{border-top:none}
+.type-row-label{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--grey)}
+.t-pull{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(34px,4.6vw,60px);line-height:1.05}
+.t-h1{font-family:var(--serif);font-weight:500;font-size:clamp(32px,4vw,52px);line-height:1.05;letter-spacing:-0.01em}
+.t-h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3vw,36px);line-height:1.15}
+.t-h3{font-family:var(--sans);font-weight:700;font-size:21px;line-height:1.3}
+.t-body{font-size:17px;line-height:1.65;max-width:56ch}
+.t-cap{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--grey)}
+@media (max-width:700px){.type-row{grid-template-columns:1fr;gap:8px;padding:18px 20px}}
+
+/* ============ 05 SIGNATURE / PULL QUOTE ============ */
+.sig-stage{
+  border:1px solid var(--line);border-radius:14px;background:#fff;
+  padding:clamp(40px,7vw,96px) clamp(24px,7vw,110px);position:relative;overflow:hidden;
+}
+.pullquote{position:relative}
+.pullquote-mark{
+  font-family:var(--serif);font-weight:600;font-style:italic;color:var(--green);
+  font-size:clamp(80px,10vw,140px);line-height:0;display:block;height:.42em;margin-bottom:.1em;
+  user-select:none;
+}
+.pullquote-text{
+  font-family:var(--serif);font-style:italic;font-weight:380;
+  font-size:clamp(38px,6.4vw,84px);line-height:1.06;letter-spacing:-0.015em;
+  font-optical-sizing:auto;text-wrap:balance;max-width:17ch;
+}
+.pullquote-attr{
+  display:flex;align-items:center;gap:14px;margin-top:30px;
+  font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--grey);font-style:normal;
+}
+.pullquote-attr::before{content:"";width:44px;height:2px;background:var(--green);flex:none}
+.sig-note{margin-top:26px;max-width:62ch;color:var(--grey);font-size:15px}
+
+/* ============ MOCK CANVASES ============ */
+.canvas-label{
+  display:flex;align-items:center;gap:12px;margin:0 0 14px;
+  font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);
+}
+.canvas-label::after{content:"";height:1px;background:var(--line);flex:1}
+.browser{
+  border:1px solid #C9CCC3;border-radius:14px;overflow:hidden;background:#fff;
+  box-shadow:0 24px 60px -30px rgba(16,25,43,.35);
+}
+.browser-bar{
+  display:flex;align-items:center;gap:14px;background:#EDEEE9;
+  border-bottom:1px solid #DDDFD7;padding:10px 16px;
+}
+.browser-dots{display:flex;gap:6px}
+.browser-dots span{width:10px;height:10px;border-radius:50%;background:#C9CCC3;display:block}
+.browser-url{
+  flex:1;max-width:420px;background:#fff;border:1px solid #DDDFD7;border-radius:999px;
+  font-size:12px;color:var(--grey);padding:5px 16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.mockpane{
+  border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;
+}
+
+/* --- mock nav --- */
+.mock-nav{
+  display:flex;align-items:center;gap:28px;
+  padding:18px 36px;background:var(--paper);border-bottom:1px solid var(--line);
+}
+.mock-logo{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none}
+.mock-logo svg{width:34px;height:34px;color:var(--ink)}
+.mock-logo b{font-family:var(--sans);font-weight:800;font-size:19px;letter-spacing:-0.01em}
+.mock-links{display:flex;gap:26px;margin-left:auto;list-style:none}
+.mock-links a{
+  font-size:15px;font-weight:600;color:var(--ink);text-decoration:none;
+  padding-bottom:3px;border-bottom:2px solid transparent;
+}
+.mock-links a:hover{border-bottom-color:var(--green);color:var(--green)}
+.mock-nav .btn{margin-left:8px}
+@media (max-width:880px){
+  .mock-links{display:none}
+  .mock-nav{gap:14px}
+  .mock-nav .btn{margin-left:auto}
+}
+
+/* --- photo treatment --- */
+.photo{position:relative;overflow:hidden;background:#8C949C}
+.photo::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.3;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+.photo-note{
+  position:absolute;z-index:2;font-size:11.5px;line-height:1.4;color:var(--ink);
+  background:rgba(250,250,247,.88);border-radius:6px;padding:6px 10px;max-width:300px;
+}
+
+/* --- mock hero --- */
+.mock-hero{
+  position:relative;min-height:640px;display:flex;align-items:flex-end;
+  background:
+    radial-gradient(ellipse 110px 30px at 66% 24%, rgba(250,250,247,.97) 0 57%, rgba(250,250,247,0) 63%),
+    radial-gradient(ellipse 460px 280px at 10% 106%, rgba(8,12,20,.92), rgba(8,12,20,0) 63%),
+    radial-gradient(ellipse 330px 230px at 40% 110%, rgba(8,12,20,.75), rgba(8,12,20,0) 60%),
+    radial-gradient(ellipse 560px 320px at 92% 114%, rgba(8,12,20,.62), rgba(8,12,20,0) 66%),
+    linear-gradient(180deg,#CDD1D4 0%, #B4BABF 32%, #8C949C 56%, #59626C 76%, #262E39 100%);
+}
+.mock-hero::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 1000px 700px at 14% 78%, rgba(16,25,43,.6), rgba(16,25,43,0) 72%),
+    linear-gradient(180deg, rgba(16,25,43,.04) 0%, rgba(16,25,43,.4) 33%, rgba(16,25,43,.72) 56%, rgba(16,25,43,.95) 100%);
+}
+.mock-hero::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.28;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+.mock-hero .photo-note{top:18px;right:18px;text-align:left}
+.mock-hero-inner{
+  position:relative;z-index:2;width:100%;padding:150px 56px 52px;color:var(--paper);
+}
+.mock-hero-kicker{
+  font-size:12.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--paper);
+}
+.mock-hero-kicker b{color:var(--green-lift);font-weight:700}
+.mock-hero-quote{
+  font-family:var(--serif);font-style:italic;font-weight:360;font-optical-sizing:auto;
+  font-size:clamp(34px,5.4vw,72px);line-height:1.06;letter-spacing:-0.015em;
+  max-width:20ch;margin-top:18px;text-wrap:balance;
+}
+.mock-hero-attr{
+  display:flex;align-items:center;gap:14px;margin-top:22px;
+  font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C7CDC2;font-style:normal;
+}
+.mock-hero-attr::before{content:"";width:40px;height:2px;background:var(--green-lift);flex:none}
+.mock-hero-deck{max-width:56ch;margin-top:22px;font-size:16.5px;line-height:1.6;color:#DFE2DA}
+.mock-hero-ctas{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:28px}
+@media (max-width:700px){.mock-hero-inner{padding:110px 24px 36px}.mock-hero{min-height:560px}}
+
+/* --- in this issue strip --- */
+.mock-issue{
+  display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:28px;align-items:center;
+  padding:20px 36px;background:var(--ink);color:var(--paper);
+}
+.mock-issue-label{
+  font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--green-lift);
+  border-right:1px solid rgba(250,250,247,.2);padding-right:28px;
+}
+.mock-issue a{color:var(--paper);text-decoration:none;font-size:14.5px;line-height:1.45;display:block}
+.mock-issue a:hover .mi-t{text-decoration:underline;text-decoration-color:var(--green-lift);text-underline-offset:3px}
+.mock-issue .mi-n{color:var(--green-lift);font-weight:700;font-size:12px;letter-spacing:.1em;display:block;margin-bottom:2px}
+.mock-issue .mi-t{font-weight:600}
+.mock-issue .mi-s{color:#AEB4A9;font-size:12.5px;display:block}
+@media (max-width:880px){
+  .mock-issue{grid-template-columns:1fr;gap:14px;padding:20px 24px}
+  .mock-issue-label{border-right:none;border-bottom:1px solid rgba(250,250,247,.2);padding:0 0 10px}
+}
+
+/* ============ 07 PATHWAYS ============ */
+.paths-head{padding:44px 36px 6px}
+.paths-head h3{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3vw,36px);line-height:1.1;margin-top:10px}
+.paths-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:28px 36px 44px}
+@media (max-width:900px){.paths-grid{grid-template-columns:1fr;padding:24px 24px 36px}.paths-head{padding:36px 24px 0}}
+.path-card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.path-photo{height:190px}
+.ph-players{
+  background:
+    radial-gradient(ellipse 70px 20px at 58% 30%, rgba(250,250,247,.95) 0 55%, rgba(250,250,247,0) 62%),
+    radial-gradient(ellipse 150px 130px at 26% 108%, rgba(8,12,20,.9), rgba(8,12,20,0) 62%),
+    radial-gradient(ellipse 130px 110px at 74% 112%, rgba(8,12,20,.7), rgba(8,12,20,0) 60%),
+    linear-gradient(180deg,#C7CBCF 0%, #9AA1A9 55%, #4E5761 100%);
+}
+.ph-coaches{
+  background:
+    radial-gradient(circle 70px at 50% 40%, rgba(250,250,247,.7), rgba(250,250,247,0) 75%),
+    radial-gradient(ellipse 120px 70px at 18% 108%, rgba(8,12,20,.85), rgba(8,12,20,0) 65%),
+    radial-gradient(ellipse 130px 80px at 50% 112%, rgba(8,12,20,.8), rgba(8,12,20,0) 65%),
+    radial-gradient(ellipse 120px 70px at 84% 108%, rgba(8,12,20,.85), rgba(8,12,20,0) 65%),
+    linear-gradient(180deg,#D4D7DA 0%, #A7ADB4 52%, #3E4650 100%);
+}
+.ph-parents{
+  background:
+    radial-gradient(ellipse 74px 20px at 64% 26%, rgba(250,250,247,.95) 0 55%, rgba(250,250,247,0) 62%),
+    radial-gradient(ellipse 160px 130px at 20% 110%, rgba(6,36,25,.92), rgba(6,36,25,0) 63%),
+    radial-gradient(ellipse 140px 110px at 78% 112%, rgba(6,36,25,.7), rgba(6,36,25,0) 62%),
+    linear-gradient(180deg,#DCEAE0 0%, #8FBCA4 48%, #14523A 100%);
+}
+.path-body{display:flex;flex-direction:column;gap:12px;padding:24px 26px 26px;flex:1}
+.path-body h4{font-family:var(--serif);font-weight:500;font-size:26px;line-height:1.12;letter-spacing:-0.005em}
+.path-body p{font-size:15px;line-height:1.6;color:#3A4150}
+.path-cap{padding:10px 26px 0}
+.path-body .btn{margin-top:auto;align-self:flex-start}
+
+/* ============ 08 STORYTELLING ============ */
+.comp-label{
+  font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);
+  margin:0 0 14px;
+}
+.story-spread{
+  display:grid;grid-template-columns:1.05fr .95fr;gap:0;
+  border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;
+}
+@media (max-width:900px){.story-spread{grid-template-columns:1fr}}
+.story-text{padding:clamp(28px,4vw,56px)}
+.story-text .kicker{display:block;margin-bottom:14px}
+.story-hed{font-family:var(--serif);font-weight:500;font-size:clamp(30px,3.6vw,44px);line-height:1.08;letter-spacing:-0.01em}
+.story-byline{
+  margin:16px 0 26px;font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);
+}
+.story-lede{font-size:17px;line-height:1.7;max-width:58ch}
+.story-lede::first-letter{
+  font-family:var(--serif);font-weight:600;font-size:64px;line-height:.85;
+  float:left;padding:6px 12px 0 0;color:var(--green);
+}
+.story-graf{margin-top:16px;font-size:17px;line-height:1.7;max-width:58ch}
+.story-pull{margin:30px 0;border-left:3px solid var(--green);padding-left:24px}
+.story-pull p{
+  font-family:var(--serif);font-style:italic;font-weight:400;
+  font-size:clamp(24px,2.6vw,32px);line-height:1.2;
+}
+.story-pull cite{
+  display:block;margin-top:10px;font-style:normal;font-size:12px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--grey);
+}
+.story-submit{
+  margin-top:30px;background:var(--tint);border-radius:10px;padding:18px 22px;font-size:14px;color:var(--ink);
+}
+.story-submit a{font-weight:700}
+.story-photos{background:var(--paper);border-left:1px solid var(--line);padding:clamp(24px,3vw,40px);display:flex;flex-direction:column;gap:26px}
+@media (max-width:900px){.story-photos{border-left:none;border-top:1px solid var(--line)}}
+.story-photos figure{display:flex;flex-direction:column;gap:10px}
+.ph-pull{
+  height:210px;border-radius:8px;
+  background:
+    radial-gradient(ellipse 64px 18px at 60% 22%, rgba(250,250,247,.96) 0 56%, rgba(250,250,247,0) 62%),
+    radial-gradient(ellipse 200px 150px at 16% 112%, rgba(8,12,20,.9), rgba(8,12,20,0) 60%),
+    radial-gradient(ellipse 170px 130px at 62% 114%, rgba(8,12,20,.68), rgba(8,12,20,0) 60%),
+    linear-gradient(180deg,#CFD3D6 0%, #A5ABB2 50%, #454E58 100%);
+}
+.ph-goldenhour{
+  height:210px;border-radius:8px;
+  background:
+    radial-gradient(circle 90px at 50% 38%, rgba(250,250,247,.9), rgba(250,250,247,0) 74%),
+    radial-gradient(ellipse 90px 60px at 12% 106%, rgba(8,12,20,.85), rgba(8,12,20,0) 68%),
+    radial-gradient(ellipse 100px 66px at 38% 110%, rgba(8,12,20,.8), rgba(8,12,20,0) 68%),
+    radial-gradient(ellipse 100px 66px at 64% 108%, rgba(8,12,20,.82), rgba(8,12,20,0) 68%),
+    radial-gradient(ellipse 90px 60px at 90% 106%, rgba(8,12,20,.85), rgba(8,12,20,0) 68%),
+    linear-gradient(180deg,#E2E4E6 0%, #B0B6BC 46%, #2E353F 100%);
+}
+.ph-seq{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;height:150px;border-radius:8px;overflow:hidden;background:var(--ink)}
+.ph-seq span{display:block}
+.ph-seq span:nth-child(1){background:radial-gradient(ellipse 70px 46px at 50% 92%, rgba(6,36,25,.95), rgba(6,36,25,0) 66%),linear-gradient(165deg,#DCEAE0 0%, #7FB093 55%, #175C40 100%)}
+.ph-seq span:nth-child(2){background:radial-gradient(ellipse 88px 40px at 52% 78%, rgba(6,36,25,.95), rgba(6,36,25,0) 66%),linear-gradient(165deg,#D3E5D9 0%, #6FA98B 55%, #124F37 100%)}
+.ph-seq span:nth-child(3){background:radial-gradient(ellipse 110px 30px at 50% 88%, rgba(6,36,25,.97), rgba(6,36,25,0) 68%),radial-gradient(ellipse 40px 12px at 74% 40%, rgba(250,250,247,.9) 0 55%, rgba(250,250,247,0) 62%),linear-gradient(165deg,#C9DFD1 0%, #5F9E7F 55%, #0E4530 100%)}
+
+/* impact band */
+.impact{
+  margin-top:28px;background:var(--ink);border-radius:14px;color:var(--paper);
+  padding:clamp(36px,5vw,60px) clamp(28px,5vw,64px);
+}
+.impact-kicker{color:var(--green-lift)}
+.impact h4{font-family:var(--serif);font-weight:450;font-size:clamp(26px,3vw,36px);line-height:1.1;margin-top:12px;max-width:24ch}
+.impact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:40px}
+@media (max-width:860px){.impact-grid{grid-template-columns:1fr;gap:28px}}
+.impact-stat b{
+  display:block;font-family:var(--serif);font-weight:450;font-size:clamp(40px,4.4vw,56px);
+  line-height:1;color:var(--green-lift);letter-spacing:-0.01em;white-space:nowrap;
+}
+.impact-stat i{
+  display:block;font-style:normal;font-size:13px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:#AEB4A9;margin:12px 0 10px;
+}
+.impact-stat p{font-size:15px;line-height:1.6;color:#DFE2DA;max-width:32ch}
+
+/* ============ 09 UI COMPONENTS ============ */
+.ui-grid{display:grid;grid-template-columns:1fr 1.15fr .95fr;gap:24px;align-items:start}
+@media (max-width:1000px){.ui-grid{grid-template-columns:1fr}}
+.ui-panel{border:1px solid var(--line);border-radius:12px;background:#fff;padding:28px}
+.ui-panel > .comp-label{margin-bottom:20px}
+.btn{
+  display:inline-block;font-family:var(--sans);font-size:15px;font-weight:700;line-height:1;
+  padding:14px 24px;border-radius:8px;text-decoration:none;cursor:pointer;border:1.5px solid transparent;
+  transition:background-color .15s ease,color .15s ease,border-color .15s ease,transform .15s ease;
+}
+.btn-primary{background:var(--green);color:var(--paper)}
+.btn-primary:hover,.btn-primary.is-hover{background:var(--green-deep);transform:translateY(-1px)}
+.btn-secondary{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn-secondary:hover,.btn-secondary.is-hover{background:var(--ink);color:var(--paper)}
+.btn-quiet{
+  background:transparent;color:var(--green);padding:14px 4px;border-radius:4px;
+  text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px;
+}
+.btn-quiet:hover,.btn-quiet.is-hover{text-decoration-color:var(--green)}
+.on-ink .btn-secondary{color:var(--paper);border-color:var(--paper)}
+.on-ink .btn-secondary:hover{background:var(--paper);color:var(--ink)}
+.btn-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:8px}
+.btn-hint{font-size:12px;color:var(--grey);margin:2px 0 18px}
+
+/* event card */
+.event-card{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.event-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 24px 0}
+.tag-open{
+  font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);
+  background:var(--tint);border-radius:999px;padding:5px 12px;white-space:nowrap;
+}
+.event-dates{font-size:13px;font-weight:600;color:var(--grey)}
+.event-body{padding:14px 24px 22px}
+.event-body h4{font-family:var(--serif);font-weight:500;font-size:28px;line-height:1.1}
+.event-meta{margin-top:6px;font-size:14px;color:var(--grey)}
+.event-voice{
+  margin:16px 0;border-left:3px solid var(--green);padding:2px 0 2px 16px;
+}
+.event-voice p{font-family:var(--serif);font-style:italic;font-size:18px;line-height:1.35}
+.event-voice cite{display:block;margin-top:6px;font-style:normal;font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--grey)}
+.event-foot{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  border-top:1px solid var(--line);background:var(--paper);padding:16px 24px;
+}
+.event-scale{font-size:13px;line-height:1.5;color:var(--grey);max-width:30ch}
+
+/* filter */
+.filter fieldset{border:none}
+.filter legend{font-family:var(--serif);font-weight:500;font-size:24px;margin-bottom:6px}
+.filter-sub{font-size:13.5px;color:var(--grey);margin-bottom:18px}
+.filter label{display:block;font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--grey);margin:14px 0 6px}
+.filter select{
+  width:100%;font-family:var(--sans);font-size:15px;color:var(--ink);
+  padding:12px 40px 12px 14px;border:1.5px solid var(--line);border-radius:8px;background-color:#fff;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%230E5F41' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+}
+.filter select:hover{border-color:var(--green)}
+.filter .btn{margin-top:20px;width:100%;text-align:center}
+
+/* ============ 10 VOICE ============ */
+.voice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media (max-width:900px){.voice-grid{grid-template-columns:1fr}}
+.voice-card{background:var(--tint);border-radius:12px;padding:30px;display:flex;flex-direction:column;gap:14px}
+.voice-card .kicker{color:var(--grey)}
+.voice-hed{font-family:var(--serif);font-weight:500;font-size:clamp(24px,2.4vw,30px);line-height:1.12}
+.voice-body{font-size:15.5px;line-height:1.65}
+.voice-why{margin-top:auto;font-size:12.5px;color:var(--grey);border-top:1px solid #D5DDD3;padding-top:12px}
+
+/* ============ 11 FOOTER ============ */
+.ft{margin-top:96px;background:var(--ink);color:var(--paper);padding:72px 0 44px}
+.ft-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+@media (max-width:800px){.ft-grid{grid-template-columns:1fr}}
+.ft h2{font-family:var(--serif);font-weight:450;font-size:24px;line-height:1.2;margin-bottom:12px}
+.ft h2 span{color:var(--green-lift)}
+.ft p{font-size:15.5px;line-height:1.65;color:#DFE2DA;max-width:52ch}
+.ft-nav{
+  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center;
+  border-top:1px solid rgba(250,250,247,.18);margin-top:52px;padding-top:26px;
+}
+.ft-nav a{color:var(--paper);font-weight:700;font-size:15px;text-decoration:none;border-bottom:2px solid var(--green-lift);padding-bottom:2px}
+.ft-nav a:hover{color:var(--green-lift)}
+.ft-meta{width:100%;margin-top:20px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8B9188}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ============ 01 DIRECTION HEADER ============ -->
+<header class="dh">
+  <div class="wrap">
+    <p class="dh-meta"><strong>Direction 4 of 5</strong><span>DiscNW website redesign · design direction proposal</span></p>
+    <h1 class="dh-name">Spirit &amp; Story</h1>
+    <p class="dh-thesis">The site reads like a beautifully edited community magazine: every program is a person's story, and Spirit of the Game is the editorial voice.</p>
+    <ul class="dh-tags" aria-label="Personality keywords">
+      <li>Editorial</li><li>Documentary</li><li>Proud</li><li>Warm</li><li>Literary</li><li>Human</li>
+    </ul>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ 02 THE IDEA ============ -->
+  <section class="sect" aria-labelledby="t-idea">
+    <div class="wrap">
+      <div class="shead">
+        <span class="snum">02 · The idea</span>
+        <h2 class="stitle" id="t-idea">Take the storytelling goal literally</h2>
+      </div>
+      <div class="idea-grid">
+        <div class="idea-copy reveal">
+          <p>You said the current site works like league software and you want it to tell stories. This direction takes that at face value: we design discnw.org as a community magazine, where a parent's sentence carries the hero, features have bylines, and photography is documentary — real Saturdays under real grey skies.</p>
+          <p>Registration stays one click away on every screen, but the reason to register is always a person. For coaches, alumni, and donors it reads as pride; for a parent, it's the deepest possible answer to "what will this give my kid?"</p>
+        </div>
+        <aside class="idea-note reveal">
+          <span class="kicker">Why it fits DiscNW</span>
+          Ultimate is the sport that referees itself — the stories already exist in every spirit circle. With 10,000+ players a season, the community writes this magazine; the site just gives their voices headline scale.
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 COLOR ============ -->
+  <section class="sect" aria-labelledby="t-color">
+    <div class="wrap">
+      <div class="shead">
+        <span class="snum">03 · Color</span>
+        <h2 class="stitle" id="t-color">Paper, ink, and one spirit green</h2>
+        <p class="ssub">Restraint is the magazine move: black-and-white photography, quiet greys — and a single saturated green that belongs to the fields this club plays on.</p>
+      </div>
+      <div class="col-grid reveal">
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#FAFAF7;border-bottom:1px solid var(--line)"></div>
+          <div class="swatch-body">
+            <p class="swatch-name">Pull-Sky Paper</p>
+            <p class="swatch-hex">#FAFAF7</p>
+            <p class="swatch-use">Page background — the white of the disc and of the page.</p>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#10192B"></div>
+          <div class="swatch-body">
+            <p class="swatch-name">Puget Ink</p>
+            <p class="swatch-hex">#10192B</p>
+            <p class="swatch-use">Display type, hero overlays, footer. A near-black that keeps the current navy's warmth.</p>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#0E5F41"></div>
+          <div class="swatch-body">
+            <p class="swatch-name">Spirit Green</p>
+            <p class="swatch-hex">#0E5F41</p>
+            <p class="swatch-use">The one editorial accent: quote marks, links, primary buttons, the tinted feature image. Lifts to #8FD0AF on ink.</p>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#5E635A"></div>
+          <div class="swatch-body">
+            <p class="swatch-name">Sideline Grey</p>
+            <p class="swatch-hex">#5E635A</p>
+            <p class="swatch-use">Captions, bylines, rules — the quiet voice of a wet sideline.</p>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#E9F0E9;border-bottom:1px solid var(--line)"></div>
+          <div class="swatch-body">
+            <p class="swatch-name">Grass Tint</p>
+            <p class="swatch-hex">#E9F0E9</p>
+            <p class="swatch-use">Tinted panels, callout boxes, quote backgrounds.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 TYPOGRAPHY ============ -->
+  <section class="sect" aria-labelledby="t-type">
+    <div class="wrap">
+      <div class="shead">
+        <span class="snum">04 · Typography</span>
+        <h2 class="stitle" id="t-type">A serif that sounds spoken</h2>
+        <p class="ssub">Newsreader was drawn for on-screen editorial reading; its italic makes a quotation sound like a voice. Public Sans keeps body copy, captions, and UI plain-spoken and civic.</p>
+      </div>
+      <div class="type-cards reveal">
+        <div class="type-card">
+          <span class="kicker">Display · Newsreader</span>
+          <p class="type-display">The season turns on a <em>Tuesday in the rain.</em></p>
+          <p class="type-fontname"><strong>Newsreader</strong> — variable optical size, weights 300–800, true italics. Used for headlines, features, and pull quotes.</p>
+        </div>
+        <div class="type-card type-body">
+          <span class="kicker">Body · Public Sans</span>
+          <p>Hat leagues accept individual registrations — you sign up alone, and we draw teams from a hat. It's how most people meet this community: one summer, one roster of strangers, one season of Mondays.</p>
+          <p class="type-fontname"><strong>Public Sans</strong> — weights 300–800. Used for body text, captions, bylines, navigation, and buttons.</p>
+        </div>
+      </div>
+      <div class="type-scale reveal">
+        <div class="type-row">
+          <span class="type-row-label">Pull quote · 60–88px</span>
+          <p class="t-pull">"He came home with a second family."</p>
+        </div>
+        <div class="type-row">
+          <span class="type-row-label">H1 · 52px</span>
+          <p class="t-h1">Fall leagues are open</p>
+        </div>
+        <div class="type-row">
+          <span class="type-row-label">H2 · 36px</span>
+          <p class="t-h2">Saturday at Spring Reign</p>
+        </div>
+        <div class="type-row">
+          <span class="type-row-label">H3 · 21px</span>
+          <p class="t-h3">What to bring to your first practice</p>
+        </div>
+        <div class="type-row">
+          <span class="type-row-label">Body · 17px</span>
+          <p class="t-body">DiscNW organizes leagues, tournaments, camps, and clinics across the greater Puget Sound region, serving over 10,000 players every year.</p>
+        </div>
+        <div class="type-row">
+          <span class="type-row-label">Caption · 13px</span>
+          <p class="t-cap">— Maya R., Fall Middle School League parent</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 SIGNATURE ELEMENT ============ -->
+  <section class="sect" aria-labelledby="t-sig">
+    <div class="wrap">
+      <div class="shead">
+        <span class="snum">05 · Signature element</span>
+        <h2 class="stitle" id="t-sig">The oversized attributed pull quote</h2>
+      </div>
+      <figure class="sig-stage reveal">
+        <blockquote class="pullquote">
+          <span class="pullquote-mark" aria-hidden="true">"</span>
+          <p class="pullquote-text">We drove home from Spring Reign and she talked the whole way. She never talks the whole way.</p>
+        </blockquote>
+        <figcaption class="pullquote-attr">— Priya S., Spring Reign parent</figcaption>
+      </figure>
+      <p class="sig-note">A real community voice set at 60–90px with a byline, replacing the slogan everywhere a slogan would normally go — starting with the homepage hero. The attribution convention never changes: an em dash, a first name, and where they belong in this community.</p>
+    </div>
+  </section>
+
+  <!-- ============ 06 HOMEPAGE HERO MOCKUP ============ -->
+  <section class="sect" aria-labelledby="t-hero">
+    <div class="wrap">
+      <div class="shead">
+        <span class="snum">06 · Homepage hero</span>
+        <h2 class="stitle" id="t-hero">The hero is a story, not a slogan</h2>
+        <p class="ssub">The top of the redesigned discnw.org. One parent's sentence carries the page; registration stays one click away.</p>
+      </div>
+      <p class="canvas-label">Mockup · discnw.org at 1440px</p>
+      <div class="browser reveal">
+        <div class="browser-bar">
+          <span class="browser-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span class="browser-url">discnw.org — DiscNW · The home for Ultimate in the Puget Sound region</span>
+        </div>
+        <nav class="mock-nav" aria-label="Mockup site navigation">
+          <a class="mock-logo" href="#t-hero" aria-label="DiscNW home">
+            <svg viewBox="0 0 40 40" aria-hidden="true" fill="none">
+              <circle cx="20" cy="20" r="16.5" stroke="currentColor" stroke-width="2.4"/>
+              <path d="M6 24.5 C 15 16, 27 15, 35.5 20.5" stroke="currentColor" stroke-width="2"/>
+              <path d="M7.5 13.5 C 15 20.5, 26 23, 33 27.5" stroke="currentColor" stroke-width="2" opacity=".5"/>
+              <ellipse cx="25.5" cy="11.5" rx="4.4" ry="1.8" fill="currentColor"/>
+            </svg>
+            <b>DiscNW</b>
+          </a>
+          <ul class="mock-links">
+            <li><a href="#t-hero">Events</a></li>
+            <li><a href="#t-hero">Youth</a></li>
+            <li><a href="#t-hero">Adult leagues</a></li>
+            <li><a href="#t-hero">Coaching</a></li>
+            <li><a href="#t-hero">About</a></li>
+          </ul>
+          <a class="btn btn-primary" href="#t-hero">Register</a>
+        </nav>
+        <div class="mock-hero on-ink">
+          <p class="photo-note">Intended photo: full-bleed black-and-white — middle-school game at Magnuson Park, white disc mid-flight against a grey Seattle sky, sideline parents blurred in the foreground.</p>
+          <div class="mock-hero-inner">
+            <p class="mock-hero-kicker">From the sideline · Fall Middle School Leagues</p><!-- kicker sits on the darkened scrim for AA contrast -->
+            <blockquote>
+              <p class="mock-hero-quote">"I signed him up for a frisbee league. He came home with a second family."</p>
+              <footer class="mock-hero-attr">— Maya R., Fall Middle School League parent</footer>
+            </blockquote>
+            <p class="mock-hero-deck">Stories from the 10,000 players, coaches, and families who make DiscNW — and every league, camp, and tournament you can join this fall.</p>
+            <div class="mock-hero-ctas">
+              <a class="btn btn-primary" href="#t-hero">Register for fall leagues</a>
+              <a class="btn btn-secondary" href="#t-hero">Read Maya's story</a>
+            </div>
+          </div>
+        </div>
+        <nav class="mock-issue on-ink" aria-label="In this issue">
+          <p class="mock-issue-label">In this issue</p>
+          <a href="#t-story"><span class="mi-n">01</span><span class="mi-t">My first layout</span><span class="mi-s">Theo N., 7th grade, at Spring Reign</span></a>
+          <a href="#t-story"><span class="mi-n">02</span><span class="mi-t">Why there are no referees</span><span class="mi-s">A disputed call, resolved by 12-year-olds</span></a>
+          <a href="#t-story"><span class="mi-n">03</span><span class="mi-t">Saturday at Spring Reign</span><span class="mi-s">A photo essay from the biggest youth weekend</span></a>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 07 AUDIENCE PATHWAYS ============ -->
+  <section class="sect" aria-labelledby="t-paths">
+    <div class="wrap">
+      <div class="shead">
+        <span class="snum">07 · Audience pathways</span>
+        <h2 class="stitle" id="t-paths">Three doors, each opened by a person</h2>
+        <p class="ssub">The storytelling core: players, coaches, and parents each get a headline in their own language — and a photo treatment to match. One image per view carries the Spirit Green tint.</p>
+      </div>
+      <p class="canvas-label">Mockup · homepage, continued</p>
+      <div class="mockpane reveal">
+        <div class="paths-head">
+          <p class="kicker">Find your way in</p>
+          <h3>Where do you fit in this community?</h3>
+        </div>
+        <div class="paths-grid">
+          <article class="path-card">
+            <div class="path-photo photo ph-players" role="img" aria-label="Placeholder for a black-and-white photo of adult league players under a grey sky"></div>
+            <p class="cap path-cap">Photo — layout on a wet field, week one of Summer Mixed Hat League.</p>
+            <div class="path-body">
+              <p class="kicker">Players</p>
+              <h4>Your story starts with a hat draw.</h4>
+              <p>Rec or competitive, 7 or 47 — hat leagues take individual signups and we draw the teams. Adult league runs year-round; youth leagues fill every fall.</p>
+              <a class="btn btn-quiet" href="#t-ui">Find your league →</a>
+            </div>
+          </article>
+          <article class="path-card">
+            <div class="path-photo photo ph-coaches" role="img" aria-label="Placeholder for a black-and-white photo of a spirit circle seen from a coach's shoulder"></div>
+            <p class="cap path-cap">Photo — a coach kneels in the spirit circle, both teams in one ring.</p>
+            <div class="path-body">
+              <p class="kicker">Coaches &amp; volunteers</p>
+              <h4>The most important adult on the sideline isn't a referee.</h4>
+              <p>In a self-officiated sport, coaching is a relationship-centered role. The Coaching Collective backs you with training, season plans, and a community that shares what works.</p>
+              <a class="btn btn-quiet" href="#t-ui">Join the Coaching Collective →</a>
+            </div>
+          </article>
+          <article class="path-card">
+            <div class="path-photo photo ph-parents" role="img" aria-label="Placeholder for the Spirit Green tinted photo of a parent and child leaving the field"></div>
+            <p class="cap path-cap">Photo — cleats over one shoulder, walking to the car. The page's single green-tinted image.</p>
+            <div class="path-body">
+              <p class="kicker">Parents &amp; families</p>
+              <h4>What will this give your kid? Ask a parent who watched it happen.</h4>
+              <p>Non-contact, self-officiated, built on Spirit of the Game. Sliding-scale fees mean every family pays what fits — and every kid gets the same season.</p>
+              <a class="btn btn-quiet" href="#t-ui">Read the parents' guide →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 08 STORYTELLING COMPONENTS ============ -->
+  <section class="sect" aria-labelledby="t-story" id="t-story-anchor">
+    <div class="wrap">
+      <div class="shead">
+        <span class="snum">08 · Storytelling components</span>
+        <h2 class="stitle" id="t-story">The feature spread and the numbers that carry stories</h2>
+        <p class="ssub">Two live components: a community-submitted feature with photo essay, and an impact band where every stat is anchored by a human line.</p>
+      </div>
+
+      <p class="comp-label">Component A — community feature: "My first…" series</p>
+      <article class="story-spread reveal">
+        <div class="story-text">
+          <span class="kicker">My first… · No. 3 in a community series</span>
+          <h3 class="story-hed">The first layout costs you a clean jersey</h3>
+          <p class="story-byline">As told by Theo N., 7th grade, Fall MS Mixed Hat League · Photographs from the sideline</p>
+          <p class="story-lede">The huck went up in the second half of Theo's fourth-ever game, at Spring Reign, on a field still wet from the morning. He'd spent three practices learning to cut — go when the disc goes up, not after. He went. The disc floated the way a white disc floats against a grey April sky, and for one long second the whole sideline held its breath with him.</p>
+          <p class="story-graf">He left his feet. He caught it. The spirit circle afterward ran ten minutes long, because both teams wanted to talk about it.</p>
+          <blockquote class="story-pull">
+            <p>"My knees were green until Thursday. Completely worth it."</p>
+            <cite>— Theo N., 7th grade</cite>
+          </blockquote>
+          <div class="story-submit">
+            <strong>Have a first worth telling?</strong> Community-submitted, 400–600 words, one great photo. We edit gently. <a href="#t-ui">Submit your story</a>
+          </div>
+        </div>
+        <div class="story-photos">
+          <figure>
+            <div class="photo ph-pull" role="img" aria-label="Placeholder for a black-and-white photo of the pull going up at Magnuson Park"></div>
+            <figcaption class="cap">Photo — the pull goes up: opening Saturday of the Fall Middle School League, Magnuson Park.</figcaption>
+          </figure>
+          <figure>
+            <div class="photo ph-goldenhour" role="img" aria-label="Placeholder for a black-and-white photo of a spirit circle at golden hour"></div>
+            <figcaption class="cap">Photo — spirit circle after a middle-school jamboree, golden hour, both teams in one ring.</figcaption>
+          </figure>
+          <figure>
+            <div class="ph-seq" role="img" aria-label="Placeholder for a three-frame Spirit Green tinted sequence of Theo's layout">
+              <span></span><span></span><span></span>
+            </div>
+            <figcaption class="cap">Photo — the layout, frame by frame, shot from grass level. The spread's single accent-tinted image.</figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <p class="comp-label" style="margin-top:36px">Component B — impact stats with narrative framing</p>
+      <div class="impact on-ink reveal">
+        <p class="kicker impact-kicker">The season in numbers</p>
+        <h4>The numbers are stories too.</h4>
+        <div class="impact-grid">
+          <div class="impact-stat">
+            <b>10,000+</b>
+            <i>players every year</i>
+            <p>And every single one of them had a first game, a first drop, and a first spirit circle.</p>
+          </div>
+          <div class="impact-stat">
+            <b>3rd</b>
+            <i>most popular organized youth sport in King County</i>
+            <p>And the only one where the kids referee themselves — that's the part parents don't forget.</p>
+          </div>
+          <div class="impact-stat">
+            <b>$33–$495</b>
+            <i>one league, eight sliding-scale tiers</i>
+            <p>Community Supported Ultimate: every family self-selects a tier, and everyone plays the same season.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 09 UI COMPONENTS ============ -->
+  <section class="sect" aria-labelledby="t-ui-heading" id="t-ui">
+    <div class="wrap">
+      <div class="shead">
+        <span class="snum">09 · UI components</span>
+        <h2 class="stitle" id="t-ui-heading">Utility, in the magazine's voice</h2>
+        <p class="ssub">Registration stays fast — buttons say exactly what happens, and even an event card carries one community voice.</p>
+      </div>
+      <div class="ui-grid reveal">
+        <div class="ui-panel">
+          <p class="comp-label">Buttons</p>
+          <div class="btn-row">
+            <button class="btn btn-primary" type="button">Register for summer league</button>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary is-hover" type="button">Register for summer league</button>
+          </div>
+          <p class="btn-hint">Primary · rest, then hover — deepens to Green #0A4530 and lifts 1px.</p>
+          <div class="btn-row">
+            <button class="btn btn-secondary" type="button">See the full schedule</button>
+            <button class="btn btn-secondary is-hover" type="button">See the full schedule</button>
+          </div>
+          <p class="btn-hint">Secondary · rest, then hover — fills with Puget Ink.</p>
+          <div class="btn-row">
+            <button class="btn btn-quiet" type="button">Read the parents' guide →</button>
+            <button class="btn btn-quiet is-hover" type="button">Read the parents' guide →</button>
+          </div>
+          <p class="btn-hint">Quiet · rest, then hover — the underline arrives.</p>
+        </div>
+        <div class="ui-panel">
+          <p class="comp-label">Event card · real program</p>
+          <article class="event-card">
+            <div class="event-top">
+              <span class="tag-open">Registering now</span>
+              <span class="event-dates">Mondays · Jun 1 – Aug 3</span>
+            </div>
+            <div class="event-body">
+              <h4>Summer Wonder League</h4>
+              <p class="event-meta">Women's hat league · individual signup · Seattle</p>
+              <blockquote class="event-voice">
+                <p>"I signed up alone. By week two I had a carpool."</p>
+                <cite>— Jess T., Wonder League</cite>
+              </blockquote>
+            </div>
+            <div class="event-foot">
+              <p class="event-scale">Community Supported Ultimate: choose the tier that fits your household, A–H.</p>
+              <a class="btn btn-primary" href="#t-ui">Register for Wonder League</a>
+            </div>
+          </article>
+        </div>
+        <div class="ui-panel filter">
+          <form action="#" method="get">
+            <fieldset>
+              <legend>Find your league</legend>
+              <p class="filter-sub">Filter the season's 20+ events down to yours.</p>
+              <label for="f-season">Season</label>
+              <select id="f-season" name="season">
+                <option>Summer 2026</option>
+                <option>Fall 2026</option>
+              </select>
+              <label for="f-who">Who's playing</label>
+              <select id="f-who" name="who">
+                <option>Youth · grades 3–12</option>
+                <option>Adults</option>
+                <option>Masters</option>
+              </select>
+              <label for="f-format">Format</label>
+              <select id="f-format" name="format">
+                <option>Hat league — sign up solo</option>
+                <option>Team league — bring your team</option>
+                <option>Pickup — free, no commitment</option>
+              </select>
+              <button class="btn btn-secondary" type="submit">Show leagues</button>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10 VOICE & TONE ============ -->
+  <section class="sect" aria-labelledby="t-voice">
+    <div class="wrap">
+      <div class="shead">
+        <span class="snum">10 · Voice &amp; tone</span>
+        <h2 class="stitle" id="t-voice">Plain verbs, real details, quiet pride</h2>
+      </div>
+      <div class="voice-grid reveal">
+        <div class="voice-card">
+          <p class="kicker">Hero headline</p>
+          <p class="voice-hed">Nobody referees this sport. That's the point.</p>
+          <p class="voice-why">Leads with the sport's strangest fact and lets it stand as the proudest one.</p>
+        </div>
+        <div class="voice-card">
+          <p class="kicker">Registration confirmation</p>
+          <p class="voice-body">You're on the roster. Week one is Monday, June 1 — your team and field location land in your inbox this week. Bring cleats, water, a light shirt and a dark shirt. Rainouts: (206) 781-5840.</p>
+          <p class="voice-why">A confirmation that reads like a teammate texting you, down to the real weather hotline.</p>
+        </div>
+        <div class="voice-card">
+          <p class="kicker">To a nervous first-time parent</p>
+          <p class="voice-body">Nobody's kid shows up knowing how to throw a forehand. Coaches teach that in week one. Here's what to bring, what it costs — you choose the tier — and why both teams stand in one circle when it's over.</p>
+          <p class="voice-why">Removes the barrier first, then answers "why this sport" with its best ritual.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ 11 FOOTER ============ -->
+<footer class="ft on-ink">
+  <div class="wrap">
+    <div class="ft-grid">
+      <div>
+        <h2><span>Choose this direction if…</span></h2>
+        <p>You want the site itself to prove the storytelling goal — every program introduced by a person who lived it — and you can commit to gathering a handful of real photos and quotes each season to keep the magazine honest.</p>
+      </div>
+      <div>
+        <h2><span>Think twice if…</span></h2>
+        <p>Registration throughput is the whole job this year: an editorial site needs a steady trickle of fresh stories, and a magazine with stale features reads worse than a plain catalog.</p>
+      </div>
+    </div>
+    <nav class="ft-nav" aria-label="Direction navigation">
+      <a href="index.html">← All directions</a>
+      <a href="05-flight-path.html">Next direction →</a>
+      <p class="ft-meta">Direction 4 of 5 · Spirit &amp; Story · Prepared for DiscNW and Matt</p>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    /* fail-safe: nothing stays hidden if the observer never fires (print, screenshots) */
+    setTimeout(function(){ document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); }); }, 1200);
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+</body>
+</html>
