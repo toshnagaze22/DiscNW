@@ -204,6 +204,31 @@ a{color:var(--cascade)}
 }
 .m-cta:hover{background:var(--gold-deep);transform:translateY(-1px)}
 
+/* ---- field-status strip: the league-day answer, above the fold ---- */
+.m-status{
+  display:flex;flex-wrap:wrap;align-items:center;gap:6px 22px;
+  background:var(--night);color:#c6d8ec;
+  font-size:12.5px;font-weight:600;line-height:1.5;
+  padding:8px clamp(18px,3vw,36px);
+}
+.m-status .lbl{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8fb0d4;
+}
+.m-status .lbl::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.m-status b{color:#fff;font-weight:700}
+.m-status .open{color:var(--gold);font-weight:700}
+.m-status a{
+  margin-left:auto;color:#fff;font-weight:700;text-decoration:none;white-space:nowrap;
+  padding-bottom:6px;background:no-repeat left bottom/0 6px;background-image:var(--arc-gold);
+  transition:background-size .2s ease;
+}
+.m-status a:hover{background-size:44px 6px}
+@media (prefers-reduced-motion: no-preference){
+  .m-status .lbl::before{animation:statuspulse 2.6s ease-out infinite}
+}
+@keyframes statuspulse{0%,100%{box-shadow:0 0 0 0 rgba(255,180,58,.55)}70%{box-shadow:0 0 0 6px rgba(255,180,58,0)}}
+
 /* ---- mock hero ---- */
 .m-hero{
   position:relative;overflow:hidden;
@@ -240,31 +265,52 @@ a{color:var(--cascade)}
 .m-trust li{display:flex;align-items:center;gap:9px}
 .m-trust li::before{content:"";flex:none;width:14px;height:7px;background:var(--arc-gold) no-repeat center/14px 4px}
 
-/* ---- photo treatment: real photo, full color, Night Flight navy-tint scrim ---- */
+/* ---- photo treatment: full color, gentle pop, luminance-preserving Night Flight tint ---- */
 .ph{
-  position:relative;border-radius:var(--radius);overflow:hidden;
+  position:relative;border-radius:var(--radius);overflow:hidden;isolation:isolate;
   background:linear-gradient(178deg,#d9eafa 0%,#a8ccec 34%,var(--sky) 68%,var(--cascade) 100%); /* fallback while the photo loads */
   box-shadow:0 18px 44px rgba(17,36,61,.18);
 }
 .ph .ph-img{
   position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  filter:saturate(.94) contrast(1.03); /* one notch calmer — product-grade, not postcard */
+  filter:saturate(1.06) contrast(1.05); /* gentle pop — grass reads green, jerseys read like jerseys */
 }
-.ph::after{ /* the treatment: full color under a Night Flight (#11243d) tint that deepens into a legibility scrim */
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(17,36,61,.18) 0%,rgba(17,36,61,.08) 36%,rgba(17,36,61,.42) 58%,rgba(17,36,61,.75) 78%,rgba(17,36,61,.92) 100%);
+.ph::before{ /* the tint: Anchor Navy through an overlay blend at partial opacity — cools the light, keeps the luminance */
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:var(--navy);mix-blend-mode:overlay;opacity:.3;
+}
+.ph::after{ /* the legibility scrim now lives only at the caption's feet, not across the frame */
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(17,36,61,.14) 0%,rgba(17,36,61,0) 34%,rgba(17,36,61,0) 62%,rgba(17,36,61,.5) 100%);
 }
 .ph .ph-cap{
-  position:absolute;left:12px;right:12px;bottom:12px;z-index:1;
+  position:absolute;left:12px;right:12px;bottom:12px;z-index:2;
   font-size:12.5px;line-height:1.45;color:#eaf3fc;font-weight:500;
-  padding:8px 11px 9px;border-radius:9px;background:rgba(17,36,61,.6);
+  padding:8px 11px 9px;border-radius:9px;background:rgba(17,36,61,.72);
   -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
 }
 .ph .ph-cap b{display:block;font-weight:700;color:#fff;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px}
+.ph-play{
+  position:absolute;top:10px;right:10px;z-index:3;
+  width:38px;height:38px;border-radius:50%;border:1px solid rgba(234,243,252,.5);
+  background:rgba(17,36,61,.68);color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;padding:0;
+  transition:background .15s ease;
+}
+.ph-play[hidden]{display:none}
+.ph-play:hover{background:rgba(17,36,61,.9)}
+.ph-play:focus-visible{outline-color:var(--gold)}
+.ph-play svg{width:12px;height:14px}
+.ph-play .ico-play{display:none}
+.ph-play.is-paused .ico-pause{display:none}
+.ph-play.is-paused .ico-play{display:block}
 .ph-hero{aspect-ratio:4/3.4}
-.ph-hero .ph-img{height:114%;top:auto;bottom:0;object-position:38% 50%} /* trims the parking strip off the top of the frame */
 .ph-wide{aspect-ratio:16/9;border-radius:var(--radius) var(--radius) 0 0;box-shadow:none}
 .ph-tall{aspect-ratio:4/4.6;height:100%}
+@media (prefers-reduced-motion: no-preference){
+  .path-card .ph-img{transition:transform .5s cubic-bezier(.2,.65,.25,1)}
+  .path-card:hover .ph-img,.path-card:focus-within .ph-img{transform:scale(1.045)}
+}
 
 /* ============ 07 PATHWAYS (mock) ============ */
 .m-paths{background:var(--sky-mist);border-top:1px solid var(--line);padding:clamp(44px,5vw,68px) clamp(18px,3vw,36px)}
@@ -344,6 +390,8 @@ a{color:var(--cascade)}
 .timeline > p{font-size:15px;color:var(--ink-soft);margin-top:8px;max-width:60ch}
 .timeline-svg{margin-top:8px}
 .timeline-svg svg{width:100%;height:auto;overflow:visible}
+.timeline-svg .tl-name{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;fill:#1c3b65}
+.timeline-svg .tl-when{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;fill:#52657f}
 .timeline-list{list-style:none;margin-top:22px;position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
 .timeline-list li{position:relative;padding:0 0 22px 32px;border-left:2px solid var(--line-soft);margin-left:8px}
 .timeline-list li:last-child{padding-bottom:0;border-left-color:transparent}
@@ -458,6 +506,19 @@ a{color:var(--cascade)}
   .js .sig-anim.in-view .arc-draw{animation:arcdraw 1.6s cubic-bezier(.45,0,.2,1) .1s forwards}
   .js .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
   .js .reveal.in-view{opacity:1;transform:none}
+  /* season timeline: the arc draws left to right, each stop lands as the line passes */
+  .js .timeline .tl-draw{stroke-dasharray:1;stroke-dashoffset:1}
+  .js .timeline.in-view .tl-draw{animation:arcdraw 1.8s cubic-bezier(.45,0,.2,1) .15s forwards}
+  .js .timeline .tl-stop{opacity:0;transform:translateY(8px);transition:opacity .5s ease,transform .5s ease}
+  .js .timeline.in-view .tl-stop{opacity:1;transform:none}
+  .js .timeline.in-view .tl-stop:nth-of-type(1){transition-delay:.25s}
+  .js .timeline.in-view .tl-stop:nth-of-type(2){transition-delay:.6s}
+  .js .timeline.in-view .tl-stop:nth-of-type(3){transition-delay:1s}
+  .js .timeline.in-view .tl-stop:nth-of-type(4){transition-delay:1.4s}
+  .js .timeline.in-view .tl-stop:nth-of-type(5){transition-delay:1.75s}
+  /* capacity meters: the gold arc fills to its value when it enters view */
+  .js .reveal .meter-fill{stroke-dasharray:0 100}
+  .js .reveal.in-view .meter-fill{stroke-dasharray:79 21;transition:stroke-dasharray 1.4s cubic-bezier(.45,0,.2,1) .4s}
 }
 @keyframes arcdraw{to{stroke-dashoffset:0}}
 @keyframes arcride{from{offset-distance:0%}to{offset-distance:100%}}
@@ -485,9 +546,19 @@ a{color:var(--cascade)}
   .verdict{grid-template-columns:1fr}
   .type-scale li{grid-template-columns:1fr;gap:6px;padding:14px 20px}
 }
-@media (max-width:720px){
+@media (max-width:960px){
+  /* below ~960px the frame scales the timeline SVG's labels under ~9px — swap to the readable list instead */
   .timeline-svg{display:none}
   .timeline-list{position:static;width:auto;height:auto;overflow:visible;clip:auto;clip-path:none;white-space:normal}
+}
+@media (max-width:560px){
+  /* small screens: the caption leaves the frame and becomes a solid band below the media — nothing covers the photo */
+  .ph,.ph-hero,.ph-wide,.ph-tall{aspect-ratio:auto;height:auto}
+  .ph .ph-img{position:static;height:auto;aspect-ratio:16/9}
+  .ph .ph-cap{
+    position:static;left:auto;right:auto;bottom:auto;margin:0;border-radius:0;
+    background:var(--night);-webkit-backdrop-filter:none;backdrop-filter:none;
+  }
 }
 @media (max-width:460px){
   .swatches{grid-template-columns:1fr}
@@ -614,7 +685,7 @@ a{color:var(--cascade)}
   <div class="wrap">
     <p class="spec-label">05 · Signature element</p>
     <h2 class="spec-title" id="sig-h">The flight path</h2>
-    <p class="spec-note">One drawn line — the long, smooth hyzer arc of a thrown disc — repeated at every scale: traced across the hero on page load, tucked under headings as an underline, stretched between sections as a divider, and bent into progress meters.</p>
+    <p class="spec-note">One drawn line — the long, smooth hyzer arc of a thrown disc — repeated at every scale: traced across the hero on page load, tucked under headings as an underline, stretched between sections as a divider, and bent into progress meters that fill to their value as they enter view.</p>
 
     <div class="sig-stage sig-anim reveal">
       <svg viewBox="0 0 1100 190" role="img" aria-label="A long arc rising from the lower left and landing at a gold dot on the right, like a disc in flight">
@@ -625,7 +696,7 @@ a{color:var(--cascade)}
       </svg>
     </div>
 
-    <div class="sig-scales">
+    <div class="sig-scales reveal">
       <div class="sig-cell">
         <h3>Small — the underline</h3>
         <span class="sig-underline-demo">Spring Reign</span>
@@ -643,11 +714,11 @@ a{color:var(--cascade)}
         <div class="sig-meter-demo">
           <svg viewBox="0 0 100 56" aria-hidden="true">
             <path d="M8 50 Q50 -4 92 50" fill="none" stroke="rgba(156,196,232,.35)" stroke-width="5" stroke-linecap="round" pathLength="100"/>
-            <path d="M8 50 Q50 -4 92 50" fill="none" stroke="#ffb43a" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="79 21"/>
+            <path class="meter-fill" d="M8 50 Q50 -4 92 50" fill="none" stroke="#ffb43a" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="79 21"/>
           </svg>
           <strong>142 of 180 spots filled</strong>
         </div>
-        <p>Bent into a gauge, the arc shows league capacity, season progress, or fundraising — utility wearing the brand.</p>
+        <p>Bent into a gauge, the arc shows league capacity, season progress, or fundraising — utility wearing the brand. On scroll it fills to its value: broadcast-graphic energy, product restraint.</p>
       </div>
     </div>
   </div>
@@ -659,7 +730,7 @@ a{color:var(--cascade)}
     <div class="mock-intro">
       <p class="spec-label">06 · Homepage hero</p>
       <h2 class="spec-title" id="hero-h">discnw.org, evolved — not replaced.</h2>
-      <p class="spec-note">On load, a gold dot traces the flight path across the hero once, then rests. Members land on a page they already recognize — the same navy, the same "register" verb — just with air under it.</p>
+      <p class="spec-note">On load, a gold dot traces the flight path once while a muted seven-second Spring Reign loop plays under the same navy tint — pausable, paused entirely for anyone who prefers reduced motion. Members still land on a page they recognize: the same navy, the same "register" verb, just with air under it.</p>
     </div>
 
     <div class="frame" role="group" aria-label="Mockup of the redesigned discnw.org homepage">
@@ -667,6 +738,8 @@ a{color:var(--cascade)}
         <span class="dots"><i></i><i></i><i></i></span>
         <span class="url">discnw.org</span>
       </div>
+
+      <p class="m-status dark"><span class="lbl">Field status · Mon Jun 1</span><span><b>Magnuson Park</b> — <span class="open">open, games on</span></span><a href="tel:+12067815840">Weather hotline (206)&nbsp;781-5840</a></p>
 
       <div class="m-nav">
         <span class="m-logo">
@@ -702,15 +775,23 @@ a{color:var(--cascade)}
               <a class="btn btn-quiet" href="#hero-h">See the full events calendar</a>
             </div>
             <ul class="m-chips">
-              <li class="lbl" aria-hidden="true">Registering now</li>
+              <li class="lbl">Registering now</li>
               <li><a href="#hero-h">Summer Men's Hat League</a></li>
               <li><a href="#hero-h">Summer Mixed Corporate Team League</a></li>
               <li><a href="#hero-h">Summer Youth Ultimate Camps</a></li>
             </ul>
           </div>
           <figure class="ph ph-hero">
-            <img class="ph-img" src="assets/dsc03420-edit-1.jpg" alt="An adult league player in a pink cap releases a backhand on a sunny grass field, the white disc just leaving her hand.">
-            <figcaption class="ph-cap"><b>Photo treatment · full color + navy scrim</b>A backhand leaves the hand at summer adult league — real play, full color, the Night Flight gradient carrying legibility.</figcaption>
+            <video class="ph-img ph-video" muted loop playsinline preload="metadata"
+              poster="assets/sr26-catch-celebration.jpg"
+              aria-label="Muted highlight loop from the Spring Reign 2026 high school finals: a sprint downfield, an overhead catch, and the celebration after.">
+              <source src="assets/video/loop-hs-catch.mp4" type="video/mp4">
+            </video>
+            <button class="ph-play" type="button" hidden aria-label="Pause the highlight loop">
+              <svg class="ico-pause" viewBox="0 0 12 14" aria-hidden="true"><path d="M2 1h3v12H2zM7 1h3v12H7z" fill="currentColor"/></svg>
+              <svg class="ico-play" viewBox="0 0 12 14" aria-hidden="true"><path d="M2 1l9 6-9 6z" fill="currentColor"/></svg>
+            </button>
+            <figcaption class="ph-cap"><b>Motion treatment · video under the same navy tint</b>Spring Reign 2026 HS finals on a muted seven-second loop — sprint, catch, celebration. Stills and motion share one treatment.</figcaption>
           </figure>
         </div>
 
@@ -732,7 +813,7 @@ a{color:var(--cascade)}
           <article class="path-card reveal">
             <figure class="ph ph-wide">
               <img class="ph-img" src="assets/lili-gu.jpg" alt="A laughing club player in a red, white, and blue BFG jersey celebrates with a water bottle in each hand, arms spread wide, teammates blurred behind her." style="object-position:50% 30%">
-              <figcaption class="ph-cap"><b>Photo</b>Mid-celebration between points, bottles aloft — club play, full color.</figcaption>
+              <figcaption class="ph-cap"><b>Photo treatment · navy tint</b>Mid-celebration between points, bottles aloft — club play, full color.</figcaption>
             </figure>
             <div class="path-body">
               <span class="path-tag">Players</span>
@@ -816,30 +897,35 @@ a{color:var(--cascade)}
 
         <div class="timeline reveal">
           <h4>One season, at a glance</h4>
-          <p>Summer Mixed Hat League — the whole arc, from signup to spirit circle, so new players and parents know exactly what they're stepping into.</p>
+          <p>Summer Mixed Hat League — the whole arc, from signup to spirit circle, so new players and parents know exactly what they're stepping into. On scroll the line draws itself and each stop lands in order, like a throw finding its receiver.</p>
           <div class="timeline-svg" aria-hidden="true">
             <svg viewBox="0 0 1200 260">
               <path d="M 40 200 C 320 60, 880 60, 1160 200" fill="none" stroke="#c9dcf0" stroke-width="2.5"/>
-              <g fill="#ffb43a">
-                <circle cx="40" cy="200" r="8"/>
-                <circle cx="294" cy="121" r="8"/>
-                <circle cx="600" cy="95" r="8"/>
-                <circle cx="906" cy="121" r="8"/>
-                <circle cx="1160" cy="200" r="8"/>
+              <path class="tl-draw" d="M 40 200 C 320 60, 880 60, 1160 200" fill="none" stroke="#5b93d1" stroke-width="2.5" stroke-linecap="round" pathLength="1"/>
+              <g class="tl-stop" text-anchor="middle">
+                <circle cx="40" cy="200" r="8" fill="#ffb43a"/>
+                <text class="tl-name" x="52" y="234">Register</text>
+                <text class="tl-when" x="52" y="254">by May 30</text>
               </g>
-              <g font-family="Sora,sans-serif" font-size="16" font-weight="700" fill="#1c3b65" text-anchor="middle">
-                <text x="52" y="234">Register</text>
-                <text x="294" y="155">Hat draft</text>
-                <text x="600" y="129">First pull</text>
-                <text x="906" y="155">Midseason</text>
-                <text x="1180" y="234" text-anchor="end">Playoffs</text>
+              <g class="tl-stop" text-anchor="middle">
+                <circle cx="294" cy="121" r="8" fill="#ffb43a"/>
+                <text class="tl-name" x="294" y="155">Hat draft</text>
+                <text class="tl-when" x="294" y="175">teams drawn from a hat</text>
               </g>
-              <g font-family="Inter,sans-serif" font-size="13" font-weight="500" fill="#52657f" text-anchor="middle">
-                <text x="52" y="254">by May 30</text>
-                <text x="294" y="175">teams drawn from a hat</text>
-                <text x="600" y="149">Mon Jun 1, Magnuson Park</text>
-                <text x="906" y="175">week-5 mixer</text>
-                <text x="1180" y="254" text-anchor="end">+ spirit circle, Aug 10</text>
+              <g class="tl-stop" text-anchor="middle">
+                <circle cx="600" cy="95" r="8" fill="#ffb43a"/>
+                <text class="tl-name" x="600" y="129">First pull</text>
+                <text class="tl-when" x="600" y="149">Mon Jun 1, Magnuson Park</text>
+              </g>
+              <g class="tl-stop" text-anchor="middle">
+                <circle cx="906" cy="121" r="8" fill="#ffb43a"/>
+                <text class="tl-name" x="906" y="155">Midseason</text>
+                <text class="tl-when" x="906" y="175">week-5 mixer</text>
+              </g>
+              <g class="tl-stop" text-anchor="end">
+                <circle cx="1160" cy="200" r="8" fill="#ffb43a"/>
+                <text class="tl-name" x="1180" y="234">Playoffs</text>
+                <text class="tl-when" x="1180" y="254">+ spirit circle, Aug 10</text>
               </g>
             </svg>
           </div>
@@ -896,7 +982,7 @@ a{color:var(--cascade)}
 
       <div class="ui-cell">
         <h3>Event card</h3>
-        <article class="ev-card">
+        <article class="ev-card reveal">
           <div class="ev-top">
             <span class="ev-open">Registering now</span>
             <span class="ev-tags">#adult · #hat · #mixed</span>
@@ -910,7 +996,7 @@ a{color:var(--cascade)}
           <div class="ev-fill">
             <svg viewBox="0 0 100 56" aria-hidden="true">
               <path d="M8 50 Q50 -4 92 50" fill="none" stroke="#d8e5f2" stroke-width="5" stroke-linecap="round" pathLength="100"/>
-              <path d="M8 50 Q50 -4 92 50" fill="none" stroke="#ffb43a" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="79 21"/>
+              <path class="meter-fill" d="M8 50 Q50 -4 92 50" fill="none" stroke="#ffb43a" stroke-width="5" stroke-linecap="round" pathLength="100" stroke-dasharray="79 21"/>
             </svg>
             <span><b>142 of 180 spots filled</b>Registration open through May 30 — waitlist after that.</span>
           </div>
@@ -1002,9 +1088,33 @@ a{color:var(--cascade)}
 
 <script>
 (function(){
+  var root=document.documentElement;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* hero highlight loop: playback is JS-initiated, so no-JS and reduced-motion both get a crisp still */
   try{
-    var root=document.documentElement;
-    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var vid=document.querySelector('.ph-video'),btn=document.querySelector('.ph-play');
+    if(vid&&btn&&!reduce&&vid.canPlayType&&vid.canPlayType('video/mp4')){
+      var userPaused=false;
+      var tryPlay=function(){if(!userPaused){var p=vid.play();if(p&&p.catch){p.catch(function(){});}}};
+      vid.muted=true;
+      btn.hidden=false;
+      btn.addEventListener('click',function(){
+        userPaused=!userPaused;
+        btn.classList.toggle('is-paused',userPaused);
+        btn.setAttribute('aria-label',userPaused?'Play the highlight loop':'Pause the highlight loop');
+        if(userPaused){vid.pause();}else{tryPlay();}
+      });
+      if('IntersectionObserver' in window){
+        new IntersectionObserver(function(entries){
+          entries.forEach(function(en){if(en.isIntersecting){tryPlay();}else{vid.pause();}});
+        },{threshold:.2}).observe(vid);
+      }else{tryPlay();}
+    }
+  }catch(e){}
+
+  /* scroll reveals — meters fill and the season timeline draws when they enter view */
+  try{
     var els=document.querySelectorAll('.reveal');
     if(reduce||!('IntersectionObserver' in window)){return;}
     root.classList.add('js');

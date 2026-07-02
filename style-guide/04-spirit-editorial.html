@@ -175,6 +175,16 @@ html.js .reveal.in{opacity:1;transform:none}
 }
 .pullquote-attr::before{content:"";width:44px;height:2px;background:var(--green);flex:none}
 .sig-note{margin-top:26px;max-width:62ch;color:var(--grey);font-size:15px}
+/* the signature quote inks in word by word as it scrolls through the viewport.
+   JS wraps the words in spans; without JS (or with reduced motion) the quote
+   simply sits fully inked. Sideline Grey keeps AA at every resting state. */
+html.js .pq-w{color:var(--grey);transition:color .3s ease}
+html.js .pq-w.on{color:var(--ink)}
+@media (prefers-reduced-motion: reduce){
+  html.js .pq-w{color:inherit;transition:none}
+}
+/* magazine micro-craft: opening quote marks hang into the margin */
+.mock-hero-quote,.t-pull,.story-pull p,.event-voice p{text-indent:-.42ch}
 
 /* ============ MOCK CANVASES ============ */
 .canvas-label{
@@ -224,22 +234,28 @@ html.js .reveal.in{opacity:1;transform:none}
 /* --- photo treatment --- */
 .photo{position:relative;overflow:hidden;background:#8C949C}
 .photo::after{
-  content:"";position:absolute;inset:0;pointer-events:none;opacity:.3;mix-blend-mode:overlay;
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.12;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
 }
 .photo-note{
   position:absolute;z-index:2;font-size:11.5px;line-height:1.4;color:var(--ink);
   background:rgba(250,250,247,.88);border-radius:6px;padding:6px 10px;max-width:300px;
 }
-/* real photography, treated per the direction: documentary B&W + grain,
-   and exactly one Spirit Green duotone image per view (.img-green) */
+/* real photography, treated per the direction: documentary B&W with a whisper of
+   grain — luminance kept true, only gentle contrast, no dimming */
 .photo>img{
   position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  filter:grayscale(1) contrast(1.06) brightness(.98);
+  filter:grayscale(1) contrast(1.08) brightness(1.02);
 }
-.photo>img.img-green{
-  filter:grayscale(1) sepia(1) hue-rotate(102deg) saturate(1.5) brightness(.84) contrast(1.06);
+/* exactly one Spirit Green duotone image per view (.duo-green on the frame):
+   a luminance-preserving tint — grayscale base + green color-blend overlay —
+   so faces and jerseys keep their full tonal range instead of a crushed filter stack */
+.duo-green{isolation:isolate}
+.duo-green::before{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:var(--green);mix-blend-mode:color;
 }
+.duo-green>img{filter:grayscale(1) contrast(1.07) brightness(1.04)}
 
 /* --- mock hero --- */
 .mock-hero{
@@ -253,16 +269,16 @@ html.js .reveal.in{opacity:1;transform:none}
 }
 .mock-hero-img{
   position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 26%;
-  filter:grayscale(1) contrast(1.07) brightness(.94);
+  filter:grayscale(1) contrast(1.08) brightness(1);
 }
 .mock-hero::before{
   content:"";position:absolute;inset:0;z-index:1;
   background:
-    radial-gradient(ellipse 1000px 700px at 14% 78%, rgba(16,25,43,.6), rgba(16,25,43,0) 72%),
-    linear-gradient(180deg, rgba(16,25,43,.04) 0%, rgba(16,25,43,.48) 33%, rgba(16,25,43,.76) 56%, rgba(16,25,43,.95) 100%);
+    radial-gradient(ellipse 1000px 700px at 14% 78%, rgba(16,25,43,.56), rgba(16,25,43,0) 72%),
+    linear-gradient(180deg, rgba(16,25,43,0) 0%, rgba(16,25,43,.42) 33%, rgba(16,25,43,.74) 56%, rgba(16,25,43,.95) 100%);
 }
 .mock-hero::after{
-  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.28;mix-blend-mode:overlay;
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.12;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
 }
 .mock-hero .photo-note{top:18px;right:18px;text-align:left}
@@ -271,6 +287,10 @@ html.js .reveal.in{opacity:1;transform:none}
 }
 .mock-hero-kicker{
   font-size:12.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--paper);
+  /* the kicker is the one small line that can meet the photo's bright sky/house band,
+     where the gradient scrim is still light — a snug Puget Ink halo guarantees AA
+     without thickening the scrim over the players */
+  text-shadow:0 0 2px rgba(16,25,43,.9),0 1px 3px rgba(16,25,43,.85),0 0 16px rgba(16,25,43,.6);
 }
 .mock-hero-kicker b{color:var(--green-lift);font-weight:700}
 .mock-hero-quote{
@@ -285,7 +305,8 @@ html.js .reveal.in{opacity:1;transform:none}
 .mock-hero-attr::before{content:"";width:40px;height:2px;background:var(--green-lift);flex:none}
 .mock-hero-deck{max-width:56ch;margin-top:22px;font-size:16.5px;line-height:1.6;color:#DFE2DA}
 .mock-hero-ctas{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:28px}
-@media (max-width:700px){.mock-hero-inner{padding:110px 24px 36px}.mock-hero{min-height:560px}}
+/* 180px top clearance keeps the photo-note (≈130px tall at narrow widths) off the kicker */
+@media (max-width:700px){.mock-hero-inner{padding:180px 24px 36px}.mock-hero{min-height:560px}}
 
 /* --- in this issue strip --- */
 .mock-issue{
@@ -310,7 +331,12 @@ html.js .reveal.in{opacity:1;transform:none}
 .paths-head{padding:44px 36px 6px}
 .paths-head h3{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3vw,36px);line-height:1.1;margin-top:10px}
 .paths-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:28px 36px 44px}
-@media (max-width:900px){.paths-grid{grid-template-columns:1fr;padding:24px 24px 36px}.paths-head{padding:36px 24px 0}}
+@media (max-width:900px){
+  .paths-grid{grid-template-columns:1fr;padding:24px 24px 36px}
+  .paths-head{padding:36px 24px 0}
+  /* stacked cards stay near the photos' native widths (coaching frame is a 400px source) */
+  .paths-grid .path-card{width:100%;max-width:520px;margin:0 auto}
+}
 .path-card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
 .path-photo{height:190px}
 .ph-players{
@@ -400,11 +426,11 @@ html.js .reveal.in{opacity:1;transform:none}
 .ph-seq{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:150px 62px;gap:4px;border-radius:8px;overflow:hidden;background:var(--ink)}
 .ph-seq img{
   display:block;width:100%;height:100%;object-fit:cover;
-  filter:grayscale(1) sepia(1) hue-rotate(102deg) saturate(1.5) brightness(.84) contrast(1.06);
+  filter:grayscale(1) contrast(1.07) brightness(1.04); /* the green arrives via the .duo-green overlay, not a crushing filter */
 }
 .ph-seq img:last-child{grid-column:1 / -1} /* the 1920×180 spirit-line panorama gets the full-width strip its aspect needs */
 .ph-seq::after{
-  content:"";position:absolute;inset:0;pointer-events:none;opacity:.3;mix-blend-mode:overlay;
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.12;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
 }
 
@@ -420,12 +446,35 @@ html.js .reveal.in{opacity:1;transform:none}
 .impact-stat b{
   display:block;font-family:var(--serif);font-weight:450;font-size:clamp(40px,4.4vw,56px);
   line-height:1;color:var(--green-lift);letter-spacing:-0.01em;white-space:nowrap;
+  font-variant-numeric:tabular-nums; /* steady while the count-up settles */
 }
 .impact-stat i{
   display:block;font-style:normal;font-size:13px;font-weight:700;letter-spacing:.12em;
   text-transform:uppercase;color:#AEB4A9;margin:12px 0 10px;
 }
 .impact-stat p{font-size:15px;line-height:1.6;color:#DFE2DA;max-width:32ch}
+
+/* photo essay — the full-bleed editorial spread (Component B) */
+.essay{margin-top:44px}
+.essay-head{max-width:640px;margin:0 0 24px}
+.essay-hed{font-family:var(--serif);font-weight:500;font-size:clamp(30px,3.6vw,44px);line-height:1.08;letter-spacing:-0.01em;margin-top:10px}
+.essay-standfirst{margin-top:10px;font-size:16px;line-height:1.6;color:var(--grey);max-width:56ch}
+.essay-frames{display:grid;grid-template-columns:repeat(5,1fr);gap:22px}
+.essay-frames figure{display:flex;flex-direction:column;gap:10px}
+.essay-frames .photo{border-radius:10px}
+.f-lead{grid-column:1 / -1}
+.f-lead .photo{height:clamp(260px,42vw,470px)}
+.f-race{grid-column:1 / 4}
+.f-friends{grid-column:4 / -1}
+.f-race .photo,.f-friends .photo{height:clamp(220px,30vw,330px)}
+.f-tunnel{grid-column:1 / -1}
+.f-tunnel .photo{height:clamp(240px,38vw,430px)}
+html.js .essay-frames .reveal:nth-child(2){transition-delay:.08s}
+html.js .essay-frames .reveal:nth-child(3){transition-delay:.16s}
+@media (max-width:760px){
+  .essay-frames{grid-template-columns:1fr;gap:18px}
+  .f-lead,.f-race,.f-friends,.f-tunnel{grid-column:auto}
+}
 
 /* ============ 09 UI COMPONENTS ============ */
 .ui-grid{display:grid;grid-template-columns:1fr 1.15fr .95fr;gap:24px;align-items:start}
@@ -671,7 +720,7 @@ html.js .reveal.in{opacity:1;transform:none}
         </blockquote>
         <figcaption class="pullquote-attr">— Priya S., Spring Reign parent</figcaption>
       </figure>
-      <p class="sig-note">A real community voice set at 60–90px with a byline, replacing the slogan everywhere a slogan would normally go — starting with the homepage hero. The attribution convention never changes: an em dash, a first name, and where they belong in this community.</p>
+      <p class="sig-note">A real community voice set at 60–90px with a byline, replacing the slogan everywhere a slogan would normally go — starting with the homepage hero. As you scroll, the words ink in one by one, so the quote arrives at reading pace — the way it was said. The attribution convention never changes: an em dash, a first name, and where they belong in this community.</p>
     </div>
   </section>
 
@@ -704,9 +753,9 @@ html.js .reveal.in{opacity:1;transform:none}
         </nav>
         <div class="mock-hero on-ink">
           <img class="mock-hero-img" src="assets/ycc-tryouts-2015-4.jpg" alt="A youth player throws a forehand past her defender's mark, the white disc frozen mid-air between them; bleachers, houses, and evergreens beyond the fence.">
-          <p class="photo-note">Real photo: YCC tryouts — a forehand thrown past the mark, the disc mid-air. Treatment: full-bleed black-and-white, film grain, Puget Ink scrim keeping the quote AA-legible.</p>
+          <p class="photo-note">Real photo: YCC tryouts — a forehand thrown past the mark, the disc mid-air. Treatment: full-bleed black-and-white with luminance kept true — gentle contrast, a whisper of grain — and a Puget Ink scrim holding the quote AA-legible.</p>
           <div class="mock-hero-inner">
-            <p class="mock-hero-kicker">From the sideline · Fall Middle School Leagues</p><!-- kicker sits on the darkened scrim for AA contrast -->
+            <p class="mock-hero-kicker">From the sideline · Fall Middle School Leagues</p><!-- kicker: gradient scrim + snug ink halo keep it AA even over the photo's bright sky band -->
             <blockquote>
               <p class="mock-hero-quote">"I signed him up for a frisbee league. He came home with a second family."</p>
               <footer class="mock-hero-attr">— Maya R., Fall Middle School League parent</footer>
@@ -722,7 +771,7 @@ html.js .reveal.in{opacity:1;transform:none}
           <p class="mock-issue-label">In this issue</p>
           <a href="#t-story"><span class="mi-n">01</span><span class="mi-t">My first layout</span><span class="mi-s">Theo N., 7th grade, at Spring Reign</span></a>
           <a href="#t-story"><span class="mi-n">02</span><span class="mi-t">Why there are no referees</span><span class="mi-s">A disputed call, resolved by 12-year-olds</span></a>
-          <a href="#t-story"><span class="mi-n">03</span><span class="mi-t">Saturday at Spring Reign</span><span class="mi-s">A photo essay from the biggest youth weekend</span></a>
+          <a href="#t-essay"><span class="mi-n">03</span><span class="mi-t">Saturday at Spring Reign</span><span class="mi-s">A photo essay from the biggest youth weekend</span></a>
         </nav>
       </div>
     </div>
@@ -768,8 +817,8 @@ html.js .reveal.in{opacity:1;transform:none}
             </div>
           </article>
           <article class="path-card">
-            <div class="path-photo photo ph-parents">
-              <img class="img-green" src="assets/sheila-camarena.jpg" alt="A gray-haired parent hugs a player in a white jersey on the field while two smiling teammates look on, rendered in Spirit Green duotone." style="object-position:50% 28%">
+            <div class="path-photo photo duo-green ph-parents">
+              <img src="assets/sheila-camarena.jpg" alt="A gray-haired parent hugs a player in a white jersey on the field while two smiling teammates look on, rendered in Spirit Green duotone." style="object-position:50% 28%">
             </div>
             <p class="cap path-cap">Photo — a sideline hug after the game, teammates waiting their turn. The page's single green-tinted image.</p>
             <div class="path-body">
@@ -790,7 +839,7 @@ html.js .reveal.in{opacity:1;transform:none}
       <div class="shead">
         <span class="snum">08 · Storytelling components</span>
         <h2 class="stitle" id="t-story">The feature spread and the numbers that carry stories</h2>
-        <p class="ssub">Two live components: a community-submitted feature with photo essay, and an impact band where every stat is anchored by a human line.</p>
+        <p class="ssub">Three live components: a community-submitted feature with bylines, a photo essay from the season's biggest weekend, and an impact band where every stat is anchored by a human line.</p>
       </div>
 
       <p class="comp-label">Component A — community feature: "My first…" series</p>
@@ -823,7 +872,7 @@ html.js .reveal.in{opacity:1;transform:none}
             <figcaption class="cap">Photo — the huddle at dusk, arms over shoulders, a storm-lit sky held to black-and-white.</figcaption>
           </figure>
           <figure>
-            <div class="ph-seq">
+            <div class="ph-seq duo-green">
               <img src="assets/taylor-kanemori.jpg" alt="Youth players jump and cheer as a teammate dances mid-celebration on the sideline." style="object-position:42% 30%">
               <img src="assets/mary-with-verge-002.jpg" alt="Masters teammates in matching shirts stand arm in arm, smiling in the sun." style="object-position:48% 22%">
               <img src="assets/banner-home-page-3.jpg" alt="Two youth teams trade high-fives in a post-game spirit line." style="object-position:50% 50%">
@@ -833,23 +882,58 @@ html.js .reveal.in{opacity:1;transform:none}
         </div>
       </article>
 
-      <p class="comp-label" style="margin-top:36px">Component B — impact stats with narrative framing</p>
+      <p class="comp-label" style="margin-top:36px">Component B — photo essay: one Saturday, told in four frames</p>
+      <article class="essay" id="t-essay" aria-labelledby="t-essay-hed">
+        <header class="essay-head reveal">
+          <p class="kicker">Photo essay · № 03 in this issue</p>
+          <h3 class="essay-hed" id="t-essay-hed">Saturday at Spring Reign</h3>
+          <p class="essay-standfirst">The biggest youth ultimate weekend in the Northwest, photographed the way the day actually goes — first pull to last spirit tunnel. The captions do the reporting; the frames do the rest.</p>
+        </header>
+        <div class="essay-frames">
+          <figure class="reveal f-lead">
+            <div class="photo">
+              <img src="assets/sr26-thrower-mountains.jpg" alt="A youth player lines up her throw on open grass, the far sideline and treeline stretching behind her." style="object-position:50% 32%">
+            </div>
+            <figcaption class="cap">9:04 a.m. — First game of the morning, the foothills still wearing last night's weather.</figcaption>
+          </figure>
+          <figure class="reveal f-race">
+            <div class="photo">
+              <img src="assets/sr26-sprint-race.jpg" alt="Two players sprint flat out after a floating disc, tents and spectators blurred along the sideline." style="object-position:50% 45%">
+            </div>
+            <figcaption class="cap">11:37 a.m. — Open grass, one floating disc, two players certain it's theirs.</figcaption>
+          </figure>
+          <figure class="reveal f-friends">
+            <div class="photo">
+              <img src="assets/sr26-sideline-friends.jpg" alt="Two middle schoolers stand close together on the sideline between points, the field soft-focus behind them." style="object-position:50% 30%">
+            </div>
+            <figcaption class="cap">2:15 p.m. — Between games. This is most of what a tournament is.</figcaption>
+          </figure>
+          <figure class="reveal f-tunnel">
+            <div class="photo duo-green">
+              <img src="assets/sr26-spirit-tunnel.jpg" alt="Both teams form a post-game spirit tunnel, players trading high fives down the line, rendered in Spirit Green duotone." style="object-position:50% 45%">
+            </div>
+            <figcaption class="cap">5:48 p.m. — Every game here ends the same way, win or lose. The essay's single green-tinted frame.</figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <p class="comp-label" style="margin-top:36px">Component C — impact stats with narrative framing</p>
       <div class="impact on-ink reveal">
         <p class="kicker impact-kicker">The season in numbers</p>
         <h4>The numbers are stories too.</h4>
         <div class="impact-grid">
           <div class="impact-stat">
-            <b>10,000+</b>
+            <b data-count="10000" data-suffix="+">10,000+</b>
             <i>players every year</i>
             <p>And every single one of them had a first game, a first drop, and a first spirit circle.</p>
           </div>
           <div class="impact-stat">
-            <b>3rd</b>
+            <b data-count="3" data-start="1" data-ordinal>3rd</b>
             <i>most popular organized youth sport in King County</i>
             <p>And the only one where the kids referee themselves — that's the part parents don't forget.</p>
           </div>
           <div class="impact-stat">
-            <b>$33–$495</b>
+            <b data-count="495" data-start="33" data-prefix="$33–$">$33–$495</b>
             <i>one league, eight sliding-scale tiers</i>
             <p>Community Supported Ultimate: every family self-selects a tier, and everyone plays the same season.</p>
           </div>
@@ -1009,6 +1093,66 @@ html.js .reveal.in{opacity:1;transform:none}
     document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
     /* fail-safe: nothing stays hidden if the observer never fires (print, screenshots) */
     setTimeout(function(){ document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); }); }, 1200);
+
+    /* signature pull quote — the words ink in at reading pace as the quote
+       scrolls through the viewport. Resting states are AA (Sideline Grey on paper);
+       without JS the spans are never created and the quote sits fully inked. */
+    var pq = document.querySelector('.pullquote-text');
+    if (pq) {
+      var words = pq.textContent.trim().split(/\s+/);
+      pq.textContent = '';
+      words.forEach(function(w, i){
+        var s = document.createElement('span');
+        s.className = 'pq-w';
+        s.textContent = w;
+        pq.appendChild(s);
+        if (i < words.length - 1) pq.appendChild(document.createTextNode(' '));
+      });
+      var spans = pq.querySelectorAll('.pq-w'), pqTick = false;
+      var inkQuote = function(){
+        pqTick = false;
+        var r = pq.getBoundingClientRect(), vh = window.innerHeight || 1;
+        /* 0 as the quote enters at the bottom; 1 once its last line clears 45% of the viewport */
+        var p = (vh - r.top) / (r.height + vh * 0.55);
+        var n = Math.round(Math.max(0, Math.min(1, p)) * spans.length);
+        for (var i = 0; i < spans.length; i++) spans[i].classList.toggle('on', i < n);
+      };
+      var pqQueue = function(){ if (!pqTick) { pqTick = true; requestAnimationFrame(inkQuote); } };
+      window.addEventListener('scroll', pqQueue, {passive:true});
+      window.addEventListener('resize', pqQueue, {passive:true});
+      inkQuote();
+    }
+
+    /* impact stats — count up once when the band arrives; the markup already
+       holds the final values, so no JS (and reduced motion) means no movement. */
+    var counters = document.querySelectorAll('[data-count]');
+    if (counters.length) {
+      var ord = function(n){ var s = ['th','st','nd','rd'], m = n % 100; return n + (s[(m - 20) % 10] || s[m] || s[0]); };
+      var render = function(el, v){
+        var n = Math.round(v);
+        var t = el.hasAttribute('data-ordinal') ? ord(n) : n.toLocaleString('en-US');
+        el.textContent = (el.getAttribute('data-prefix') || '') + t + (el.getAttribute('data-suffix') || '');
+      };
+      var runCount = function(el){
+        var to = parseFloat(el.getAttribute('data-count')) || 0;
+        var from = parseFloat(el.getAttribute('data-start')) || 0;
+        var t0 = null, dur = 1000;
+        var step = function(ts){
+          if (t0 === null) t0 = ts;
+          var k = Math.min(1, (ts - t0) / dur);
+          k = 1 - Math.pow(1 - k, 3);
+          render(el, from + (to - from) * k);
+          if (k < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      };
+      var cio = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting) { cio.unobserve(e.target); runCount(e.target); }
+        });
+      }, { threshold: .5 });
+      counters.forEach(function(el){ cio.observe(el); });
+    }
   } else {
     document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
   }

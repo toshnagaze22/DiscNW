@@ -820,6 +820,120 @@
    "sourcePages": [
     "volunteer"
    ]
+  },
+  {
+   "file": "sr26-spirit-huddle.jpg",
+   "url": "youtube zLzKRCbhIAg t=0",
+   "width": 1920,
+   "height": 1080,
+   "bytes": 298212,
+   "sourcePages": [
+    "spring-reign-2026-video: HS finals team huddle, arms raised"
+   ]
+  },
+  {
+   "file": "sr26-thrower-mountains.jpg",
+   "url": "youtube zLzKRCbhIAg t=125",
+   "width": 1920,
+   "height": 1080,
+   "bytes": 181903,
+   "sourcePages": [
+    "spring-reign-2026-video: girl lining up a throw, Cascade foothills behind"
+   ]
+  },
+  {
+   "file": "sr26-sprint-race.jpg",
+   "url": "youtube zLzKRCbhIAg t=195",
+   "width": 1920,
+   "height": 1080,
+   "bytes": 273216,
+   "sourcePages": [
+    "spring-reign-2026-video: two players sprinting for the disc, crowd and tents behind"
+   ]
+  },
+  {
+   "file": "sr26-catch-celebration.jpg",
+   "url": "youtube zLzKRCbhIAg t=205",
+   "width": 1920,
+   "height": 1080,
+   "bytes": 197541,
+   "sourcePages": [
+    "spring-reign-2026-video: overhead catch mid-celebration with teammates"
+   ]
+  },
+  {
+   "file": "sr26-sideline-friends.jpg",
+   "url": "youtube -vM_JH6IbDo t=15",
+   "width": 1920,
+   "height": 1080,
+   "bytes": 108514,
+   "sourcePages": [
+    "spring-reign-2026-video: two middle schoolers on the sideline, shallow depth of field"
+   ]
+  },
+  {
+   "file": "sr26-spirit-tunnel.jpg",
+   "url": "youtube -vM_JH6IbDo t=195",
+   "width": 1920,
+   "height": 1080,
+   "bytes": 289262,
+   "sourcePages": [
+    "spring-reign-2026-video: post-game spirit tunnel of high fives"
+   ]
+  },
+  {
+   "file": "sr26-open-field-chase.jpg",
+   "url": "youtube -vM_JH6IbDo t=65",
+   "width": 1920,
+   "height": 1080,
+   "bytes": 188902,
+   "sourcePages": [
+    "spring-reign-2026-video: middle schoolers chasing a disc on open grass"
+   ]
+  },
+  {
+   "file": "sr26-sky-battle-mountains.jpg",
+   "url": "youtube poster zLzKRCbhIAg",
+   "width": 1280,
+   "height": 720,
+   "bytes": 69453,
+   "sourcePages": [
+    "spring-reign-2026-video: three players skying for the disc, mountains and treeline"
+   ]
+  },
+  {
+   "file": "sr26-two-player-sky.jpg",
+   "url": "youtube poster -vM_JH6IbDo",
+   "width": 1280,
+   "height": 720,
+   "bytes": 95706,
+   "sourcePages": [
+    "spring-reign-2026-video: two players contesting a high catch, blue sky"
+   ]
+  }
+ ],
+ "videos": [
+  {
+   "file": "video/loop-hs-catch.mp4",
+   "desc": "muted 6.8s loop, 1280x720: sprint, overhead catch, celebration \u2014 Spring Reign 2026 HS finals",
+   "youtube": "zLzKRCbhIAg"
+  },
+  {
+   "file": "video/loop-ms-spirit-tunnel.mp4",
+   "desc": "muted 6.5s loop, 1280x720: post-game spirit high-five tunnel \u2014 Spring Reign 2026 MS finals",
+   "youtube": "-vM_JH6IbDo"
+  },
+  {
+   "file": "video/poster-zLzKRCbhIAg.jpg",
+   "desc": "poster for HS finals full video (lite-embed)",
+   "youtube": "zLzKRCbhIAg",
+   "title": "Spring Reign 2026 Highschool Finals"
+  },
+  {
+   "file": "video/poster--vM_JH6IbDo.jpg",
+   "desc": "poster for MS finals full video (lite-embed)",
+   "youtube": "-vM_JH6IbDo",
+   "title": "Spring Reign 2026 Middle School Finals"
   }
  ]
 }
