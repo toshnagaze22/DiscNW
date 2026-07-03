@@ -15,6 +15,7 @@
     --line: #e4e4e7;
     --line-strong: #d4d4d8;
     --wash: #fafafa;
+    --ease-out: cubic-bezier(.2,.7,.3,1);
   }
   * { box-sizing: border-box; }
   body {
@@ -56,14 +57,53 @@
   .tier-head p { margin: 0; color: var(--grey); font-size: 14.5px; max-width: 68ch; }
   .tier-head p strong { color: var(--ink); font-weight: 700; }
 
-  /* Cards */
+  /* Cards — hero preview beside the spec sheet */
   .card {
+    display: grid;
+    grid-template-columns: minmax(0, 42%) 1fr;
+    align-items: stretch;
     border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 28px 28px 24px;
+    border-radius: 10px;
     margin: 0 0 24px;
     background: #fff;
+    overflow: hidden;
+    transition: box-shadow .25s var(--ease-out), border-color .25s var(--ease-out);
   }
+  .card:hover { box-shadow: 0 12px 30px -14px rgba(0,0,0,0.22); border-color: var(--line-strong); }
+  .card-media {
+    position: relative;
+    display: block;
+    align-self: stretch;
+    min-height: 240px;
+    background: var(--wash);
+    border-right: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .card-media img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: 50% 0%;
+    display: block;
+  }
+  /* At rest the frame shows the hero (top of the page). Hovering slowly pans
+     the whole design past the frame — a preview of the full page. */
+  @media (prefers-reduced-motion: no-preference) {
+    .card-media img { transition: object-position 3.6s var(--ease-out); }
+    .card:hover .card-media img,
+    .card:focus-within .card-media img { object-position: 50% 100%; }
+  }
+  .card-media::after {
+    content: "View →";
+    position: absolute; left: 12px; bottom: 12px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+    color: #fff; background: rgba(20,20,22,0.82);
+    padding: 5px 10px; border-radius: 999px;
+    opacity: 0; transform: translateY(4px);
+    transition: opacity .25s var(--ease-out), transform .25s var(--ease-out);
+    pointer-events: none;
+  }
+  .card:hover .card-media::after { opacity: 1; transform: translateY(0); }
+  .card-body { padding: 28px 28px 24px; min-width: 0; }
   .card-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 0 0 4px; }
   .card-num {
     font-size: 13px; font-weight: 600; color: var(--grey-soft);
@@ -133,10 +173,19 @@
   footer.site p { margin: 0 0 10px; color: var(--grey); font-size: 14.5px; max-width: 68ch; }
   footer.site p:last-child { margin-bottom: 0; }
 
+  /* Stack the hero above the spec sheet on narrow screens */
+  @media (max-width: 720px) {
+    .card { grid-template-columns: 1fr; }
+    .card-media {
+      border-right: 0; border-bottom: 1px solid var(--line);
+      aspect-ratio: 16 / 10; min-height: 0;
+    }
+    .card-body { padding: 22px 20px 20px; }
+  }
   @media (max-width: 560px) {
     header.site { padding: 40px 0 28px; }
     header.site h1 { font-size: 24px; }
-    .card { padding: 20px 18px 18px; }
+    .card-body { padding: 20px 18px 18px; }
     .open-link { display: block; text-align: center; }
   }
 </style>
@@ -147,7 +196,7 @@
   <div class="wrap">
     <img class="brand" src="assets/brand/logo-full.png" alt="DiscNW — formline disc mark and wordmark" width="1446" height="616">
     <h1>DiscNW — Design directions</h1>
-    <p>Thirteen directions for the discnw.org redesign, each built around storytelling for players, coaches, and parents. They're sorted into four families — Place &amp; weather, Sport &amp; broadcast, People &amp; community, and System &amp; utility — each opening with the question it answers about how discnw.org should feel; read a family top to bottom, where a small badge marks every direction as either a grounded, shippable design system or an experimental, single-mechanism homepage. Every direction is built on real DiscNW photography and film, with the formline mark integrated throughout and motion choreography informed by Awwwards Site-of-the-Year winners. Open each one and react honestly — first impressions count. Nothing here is all-or-nothing: directions can be mixed, and a grounded system can adopt an experimental page's mechanism.</p>
+    <p>Thirteen directions for the discnw.org redesign, each built around storytelling for players, coaches, and parents. They're sorted into four families — Place &amp; weather, Sport &amp; broadcast, People &amp; community, and System &amp; utility — each opening with the question it answers about how discnw.org should feel; read a family top to bottom, where a small badge marks every direction as either a grounded, shippable design system or an experimental, single-mechanism homepage. Every direction is built on real DiscNW photography and film, with the formline mark integrated throughout and motion choreography informed by Awwwards Site-of-the-Year winners. Each card shows that direction's hero; hover a preview to pan down the whole page, or open it to explore live. Open each one and react honestly — first impressions count. Nothing here is all-or-nothing: directions can be mixed, and a grounded system can adopt an experimental page's mechanism.</p>
   </div>
 </header>
 
@@ -160,6 +209,8 @@
     </div>
 
     <article class="card">
+      <a class="card-media" href="01-evergreen.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/01-evergreen.jpeg" alt="" loading="lazy"></a>
+      <div class="card-body">
       <div class="card-head">
         <span class="card-num">DIRECTION 01</span>
         <h3>Evergreen</h3>
@@ -188,9 +239,12 @@
       </div>
 
       <a class="open-link" href="01-evergreen.html">Open 01 — Evergreen</a>
+    </div>
     </article>
 
     <article class="card">
+      <a class="card-media" href="07-understory.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/07-understory.jpeg" alt="" loading="lazy"></a>
+      <div class="card-body">
       <div class="card-head">
         <span class="card-num">DIRECTION 07</span>
         <h3>The Understory</h3>
@@ -219,9 +273,12 @@
       </div>
 
       <a class="open-link" href="07-understory.html">Open 07 — The Understory</a>
+    </div>
     </article>
 
     <article class="card">
+      <a class="card-media" href="09-rain-or-shine.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/09-rain-or-shine.jpeg" alt="" loading="lazy"></a>
+      <div class="card-body">
       <div class="card-head">
         <span class="card-num">DIRECTION 09</span>
         <h3>Rain or Shine</h3>
@@ -249,9 +306,12 @@
       </div>
 
       <a class="open-link" href="09-rain-or-shine.html">Open 09 — Rain or Shine</a>
+    </div>
     </article>
 
     <article class="card">
+      <a class="card-media" href="13-last-light.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/13-last-light.jpeg" alt="" loading="lazy"></a>
+      <div class="card-body">
       <div class="card-head">
         <span class="card-num">DIRECTION 13</span>
         <h3>Last Light</h3>
@@ -278,6 +338,7 @@
       </div>
 
       <a class="open-link" href="13-last-light.html">Open 13 — Last Light</a>
+    </div>
     </article>
 
   </section>
@@ -289,6 +350,8 @@
     </div>
 
     <article class="card">
+      <a class="card-media" href="02-game-film.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/02-game-film.jpeg" alt="" loading="lazy"></a>
+      <div class="card-body">
       <div class="card-head">
         <span class="card-num">DIRECTION 02</span>
         <h3>Game Film</h3>
@@ -317,9 +380,12 @@
       </div>
 
       <a class="open-link" href="02-game-film.html">Open 02 — Game Film</a>
+    </div>
     </article>
 
     <article class="card">
+      <a class="card-media" href="06-one-point.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/06-one-point.jpeg" alt="" loading="lazy"></a>
+      <div class="card-body">
       <div class="card-head">
         <span class="card-num">DIRECTION 06</span>
         <h3>One Point</h3>
@@ -348,9 +414,12 @@
       </div>
 
       <a class="open-link" href="06-one-point.html">Open 06 — One Point</a>
+    </div>
     </article>
 
     <article class="card">
+      <a class="card-media" href="08-game-to-15.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/08-game-to-15.jpeg" alt="" loading="lazy"></a>
+      <div class="card-body">
       <div class="card-head">
         <span class="card-num">DIRECTION 08</span>
         <h3>Game to 15</h3>
@@ -377,6 +446,7 @@
       </div>
 
       <a class="open-link" href="08-game-to-15.html">Open 08 — Game to 15</a>
+    </div>
     </article>
 
   </section>
@@ -388,6 +458,8 @@
     </div>
 
     <article class="card">
+      <a class="card-media" href="03-sideline.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/03-sideline.jpeg" alt="" loading="lazy"></a>
+      <div class="card-body">
       <div class="card-head">
         <span class="card-num">DIRECTION 03</span>
         <h3>Sideline Day</h3>
@@ -416,9 +488,12 @@
       </div>
 
       <a class="open-link" href="03-sideline.html">Open 03 — Sideline Day</a>
+    </div>
     </article>
 
     <article class="card">
+      <a class="card-media" href="04-spirit-editorial.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/04-spirit-editorial.jpeg" alt="" loading="lazy"></a>
+      <div class="card-body">
       <div class="card-head">
         <span class="card-num">DIRECTION 04</span>
         <h3>Spirit &amp; Story</h3>
@@ -446,9 +521,12 @@
       </div>
 
       <a class="open-link" href="04-spirit-editorial.html">Open 04 — Spirit &amp; Story</a>
+    </div>
     </article>
 
     <article class="card">
+      <a class="card-media" href="11-first-names.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/11-first-names.jpeg" alt="" loading="lazy"></a>
+      <div class="card-body">
       <div class="card-head">
         <span class="card-num">DIRECTION 11</span>
         <h3>First Names</h3>
@@ -475,6 +553,7 @@
       </div>
 
       <a class="open-link" href="11-first-names.html">Open 11 — First Names</a>
+    </div>
     </article>
 
   </section>
@@ -486,6 +565,8 @@
     </div>
 
     <article class="card">
+      <a class="card-media" href="05-flight-path.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/05-flight-path.jpeg" alt="" loading="lazy"></a>
+      <div class="card-body">
       <div class="card-head">
         <span class="card-num">DIRECTION 05</span>
         <h3>Flight Path</h3>
@@ -514,9 +595,12 @@
       </div>
 
       <a class="open-link" href="05-flight-path.html">Open 05 — Flight Path</a>
+    </div>
     </article>
 
     <article class="card">
+      <a class="card-media" href="10-route-map.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/10-route-map.jpeg" alt="" loading="lazy"></a>
+      <div class="card-body">
       <div class="card-head">
         <span class="card-num">DIRECTION 10</span>
         <h3>The Route Map</h3>
@@ -544,9 +628,12 @@
       </div>
 
       <a class="open-link" href="10-route-map.html">Open 10 — The Route Map</a>
+    </div>
     </article>
 
     <article class="card">
+      <a class="card-media" href="12-handbook.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/12-handbook.jpeg" alt="" loading="lazy"></a>
+      <div class="card-body">
       <div class="card-head">
         <span class="card-num">DIRECTION 12</span>
         <h3>The Handbook</h3>
@@ -574,6 +661,7 @@
       </div>
 
       <a class="open-link" href="12-handbook.html">Open 12 — The Handbook</a>
+    </div>
     </article>
 
   </section>
