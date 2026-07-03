@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Direction 5 — Flight Path · DiscNW redesign</title>
 <meta name="description" content="Flight Path: the current DiscNW brand, evolved. Navy anchored, sky-lifted, tied together by one gold arc — the flight of a disc.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%231c3b65'/%3E%3Cpath d='M5 20 C 11 9, 21 7, 28 14' fill='none' stroke='%23ffffff' stroke-width='2.4' stroke-linecap='round'/%3E%3Ccircle cx='26' cy='13' r='3' fill='%23ffb43a'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
@@ -26,12 +26,18 @@
   --line:#d8e5f2;
   --radius:14px;
   --radius-lg:18px;
+  /* house easing — two curves everywhere (micro snap, macro lux) plus one draw curve.
+     default 'ease' is banned on this page. */
+  --ease-snap:cubic-bezier(.4,0,.1,1);
+  --ease-lux:cubic-bezier(.16,1,.3,1);
+  --ease-draw:cubic-bezier(.45,0,.2,1);
   /* the one echo: the arc as a link underline */
   --arc-underline:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='6' viewBox='0 0 44 6'%3E%3Cpath d='M2 5 Q22 -1 42 5' fill='none' stroke='%23ffb43a' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+[id]{scroll-margin-top:24px}
 body{
   font-family:'Inter',system-ui,-apple-system,sans-serif;
   font-size:17px;line-height:1.65;color:var(--ink-body);
@@ -173,38 +179,43 @@ a{color:var(--cascade)}
   font-size:12.5px;font-weight:500;line-height:1.6;
   padding:9px clamp(20px,3.5vw,40px);
 }
+.m-status-mark{height:20px;width:auto;align-self:center;flex:none}
 .m-status .lbl{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8fb0d4}
 .m-status b{color:#fff;font-weight:600}
 .m-status a{
   margin-left:auto;color:#fff;font-weight:600;text-decoration:none;white-space:nowrap;
   padding-bottom:6px;background:var(--arc-underline) no-repeat left bottom/0 6px;
-  transition:background-size .18s ease;
+  transition:background-size .35s var(--ease-snap);
 }
 .m-status a:hover,.m-status a:focus-visible{background-size:44px 6px}
 
-/* ---- mock nav ---- */
+/* ---- mock nav: navy surface, official white lockup, spring-loaded labels ---- */
 .m-nav{
-  display:flex;align-items:center;gap:28px;background:#fff;
-  padding:18px clamp(20px,3.5vw,40px);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:28px;background:var(--navy);
+  padding:18px clamp(20px,3.5vw,40px);
 }
 .m-logo{display:flex;align-items:center}
-.m-logo img{
-  width:128px;height:auto;flex:none;
-  /* official one-color lockup (black on transparent), recolored to Anchor Navy #1c3b65 */
-  filter:brightness(0) saturate(100%) invert(29%) sepia(5%) saturate(2125%) hue-rotate(175deg) brightness(115%) contrast(176%);
-}
+.m-logo img{width:138px;height:auto;flex:none}
 .m-links{display:flex;gap:6px;margin-left:auto;list-style:none}
 .m-links a{
-  font-size:15px;font-weight:600;color:var(--navy);text-decoration:none;
+  display:block;font-size:15px;font-weight:600;color:#fff;text-decoration:none;
   padding:8px 12px 12px;
   background:var(--arc-underline) no-repeat center bottom 4px/0 6px;
-  transition:background-size .18s ease;
+  transition:background-size .35s var(--ease-snap);
 }
 .m-links a:hover,.m-links a:focus-visible{background-size:36px 6px}
+/* text hover roll: the label rolls out, an identical clone rolls in from below */
+.m-links .roll{display:block;position:relative;overflow:hidden}
+.m-links .rt{display:block}
+.m-links .rt2{position:absolute;left:0;top:100%}
+@media (prefers-reduced-motion: no-preference){
+  .m-links .rt{transition:transform .4s var(--ease-snap)}
+  .m-links a:hover .rt,.m-links a:focus-visible .rt{transform:translateY(-100%)}
+}
 .m-cta{
   font-size:15px;font-weight:700;color:var(--navy);text-decoration:none;background:var(--gold);
   border-radius:999px;padding:11px 24px;margin-left:8px;white-space:nowrap;
-  transition:background .15s ease;
+  transition:background .3s var(--ease-snap),transform .35s var(--ease-snap);
 }
 .m-cta:hover{background:var(--gold-deep)}
 
@@ -219,6 +230,10 @@ a{color:var(--cascade)}
   font-size:clamp(64px,9vw,120px);line-height:.98;letter-spacing:-.03em;max-width:11ch;
   overflow-wrap:break-word;
 }
+/* split-text line masks: each line slides up from behind an invisible overflow mask.
+   padding/margin pair protects descenders at line-height .98; base state is the settled line. */
+.m-hero h2 .ln{display:block;overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
+.m-hero h2 .lni{display:block}
 .m-hero .sub{max-width:52ch;margin:32px 0 0;font-size:clamp(17px,1.4vw,19px)}
 .m-hero-ctas{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;margin-top:32px}
 .m-hero-lede{display:grid;grid-template-columns:1.5fr 1fr;gap:clamp(28px,4vw,64px);align-items:end}
@@ -258,7 +273,7 @@ a{color:var(--cascade)}
   background:rgba(17,36,61,.72);color:#fff;cursor:pointer;
   display:flex;align-items:center;justify-content:center;padding:0;
   box-shadow:0 2px 12px rgba(17,36,61,.35);
-  transition:background .15s ease,border-color .15s ease;
+  transition:background .3s var(--ease-snap),border-color .3s var(--ease-snap);
 }
 .ph-play[hidden]{display:none}
 .ph-play:hover{background:rgba(17,36,61,.92);border-color:rgba(231,241,251,.85)}
@@ -291,6 +306,11 @@ a{color:var(--cascade)}
   background:#fff;border-radius:var(--radius);overflow:hidden;
   display:flex;flex-direction:column;
   box-shadow:0 10px 30px rgba(17,36,61,.07);
+  /* JS writes a ≤4° perspective tilt on fine pointers; this is its easing home */
+  transition:transform .45s var(--ease-snap),box-shadow .45s var(--ease-snap);
+}
+@media (hover:hover) and (pointer:fine){
+  .path-card:hover{box-shadow:0 18px 44px rgba(17,36,61,.12)}
 }
 .path-card img{
   width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;
@@ -306,7 +326,7 @@ a{color:var(--cascade)}
 .path-link{
   align-self:flex-start;font-size:15px;font-weight:700;color:var(--cascade);text-decoration:none;
   padding-bottom:9px;background:var(--arc-underline) no-repeat left bottom/0 6px;
-  transition:background-size .18s ease;
+  transition:background-size .35s var(--ease-snap);
 }
 .path-link:hover,.path-link:focus-visible{background-size:44px 6px}
 
@@ -337,7 +357,7 @@ a{color:var(--cascade)}
 .story-foot a{
   color:#fff;font-weight:700;text-decoration:none;font-size:14.5px;
   padding-bottom:8px;background:var(--arc-underline) no-repeat left bottom/0 6px;
-  transition:background-size .18s ease;
+  transition:background-size .35s var(--ease-snap);
 }
 .story-foot a:hover,.story-foot a:focus-visible{background-size:44px 6px}
 .story-photo{display:flex;flex-direction:column}
@@ -365,6 +385,27 @@ a{color:var(--cascade)}
 .season-steps b{display:block;font-family:'Sora',sans-serif;font-weight:700;font-size:16.5px;color:var(--navy)}
 .season-steps span{display:block;font-size:13.5px;color:var(--ink-soft);margin-top:4px;line-height:1.5}
 
+/* ---- mock footer: the closing brand moment — the formline mark at crest scale ---- */
+.m-foot{
+  background:var(--night);text-align:center;
+  padding:clamp(72px,9vw,116px) clamp(20px,3.5vw,40px) clamp(56px,7vw,88px);
+}
+.m-foot-mark{
+  width:clamp(280px,30vw,352px);height:auto;margin:0 auto clamp(32px,4vw,44px);
+}
+.m-foot-vision{
+  font-family:'Sora',sans-serif;font-weight:700;color:#fff;
+  font-size:clamp(20px,2.4vw,27px);line-height:1.25;letter-spacing:-.01em;
+}
+.m-foot-meta{font-size:13.5px;color:#a9c3de;margin-top:16px}
+.m-foot-meta + .m-foot-meta{margin-top:10px}
+.m-foot-meta a{
+  color:#fff;font-weight:600;text-decoration:none;white-space:nowrap;
+  padding-bottom:7px;background:var(--arc-underline) no-repeat center bottom/0 6px;
+  transition:background-size .35s var(--ease-snap);
+}
+.m-foot-meta a:hover,.m-foot-meta a:focus-visible{background-size:44px 6px}
+
 /* ============ 09 UI COMPONENTS ============ */
 .ui-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px}
 .ui-cell{border:1px solid var(--line);border-radius:var(--radius-lg);padding:30px 32px;background:#fff}
@@ -377,7 +418,7 @@ a{color:var(--cascade)}
   display:inline-flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;
   font-size:15.5px;font-weight:700;line-height:1;border-radius:999px;padding:15px 28px;
   cursor:pointer;border:2px solid transparent;text-decoration:none;
-  transition:background .15s ease, color .15s ease;
+  transition:background .3s var(--ease-snap),color .3s var(--ease-snap),transform .35s var(--ease-snap);
 }
 .btn-gold{background:var(--gold);color:var(--navy)}
 .btn-gold:hover,.btn-gold.is-hover{background:var(--gold-deep)}
@@ -387,7 +428,7 @@ a{color:var(--cascade)}
   background:transparent;color:var(--cascade);padding:15px 2px;border-radius:4px;
   background-image:var(--arc-underline);background-repeat:no-repeat;
   background-position:left bottom 6px;background-size:0 6px;
-  transition:background-size .18s ease;
+  transition:background-size .35s var(--ease-snap);
 }
 .btn-quiet:hover,.btn-quiet.is-hover,.btn-quiet:focus-visible{background-size:44px 6px}
 .btn-quiet.is-static{background-size:44px 6px}
@@ -443,32 +484,96 @@ a{color:var(--cascade)}
 .prop-nav a{
   color:#fff;font-weight:700;font-size:15.5px;text-decoration:none;
   padding-bottom:8px;background:var(--arc-underline) no-repeat left bottom/0 6px;
-  transition:background-size .18s ease;
+  transition:background-size .35s var(--ease-snap);
 }
 .prop-nav a:hover,.prop-nav a:focus-visible{background-size:44px 6px}
 .prop-nav small{font-size:13px;color:#8fb0d4;font-weight:500}
 
-/* ============ THE ONE MOTION MOMENT: the hero arc draws on load ============ */
+/* ============ MOTION SYSTEM — one easing language, choreographed ============
+   Base styles ARE the settled page: no-JS, reduced motion, and print all render it complete.
+   html.js-motion   — head script, only when JS runs, IO exists, and motion is allowed
+   html.go          — first painted frame: the direction header staggers in (60ms)
+   html.armed       — body script, only after observers are constructed: scroll reveals live
+   .frame-live      — the homepage mockup boots: status → nav → headline → media → arc
+   html.arc-settled — stamped 2.4s after the boot begins: everything landed, no matter what */
 @media (prefers-reduced-motion: no-preference){
-  .hero-arc .arc-draw{
-    /* dash parked wholly before the path start: no round-cap "seed dot" shows during the .3s delay */
-    stroke-dasharray:1 1.06;stroke-dashoffset:1.03;
-    animation:arcdraw 1.6s cubic-bezier(.45,0,.2,1) .3s forwards;
+  /* page entrance */
+  .js-motion .e-in{opacity:0;transform:translateY(16px)}
+  .js-motion.go .e-in{
+    opacity:1;transform:none;
+    transition:opacity .7s var(--ease-lux),transform .7s var(--ease-lux);
+    transition-delay:calc(var(--i,0)*60ms);
   }
-  .hero-arc .arc-dot{
-    opacity:0;animation:arcdot .3s ease 1.75s forwards;
+  .js-motion.load-settled .e-in{opacity:1;transform:none;transition:none}
+
+  /* scroll reveals — observers unobserve after firing */
+  .js-motion.armed .rv{opacity:0;transform:translateY(18px)}
+  .js-motion.armed .rv.in{
+    opacity:1;transform:none;
+    transition:opacity .7s var(--ease-lux),transform .7s var(--ease-lux);
+    transition-delay:calc(var(--i,0)*60ms);
   }
+
+  /* grid staggers — parent observed once, children cascade at 60ms */
+  .js-motion.armed .stag>*{opacity:0;transform:translateY(18px)}
+  .js-motion.armed .stag.in>*{opacity:1;transform:none;transition:opacity .7s var(--ease-lux),transform .7s var(--ease-lux)}
+  .js-motion.armed .stag.in>*:nth-child(2){transition-delay:60ms}
+  .js-motion.armed .stag.in>*:nth-child(3){transition-delay:120ms}
+  .js-motion.armed .stag.in>*:nth-child(4){transition-delay:180ms}
+  .js-motion.armed .stag.in>*:nth-child(5){transition-delay:240ms}
+  .js-motion.armed .stag.in>*:nth-child(6){transition-delay:300ms}
+
+  /* pathway cards fade only — transform stays reserved for the hover tilt */
+  .js-motion.armed .path-grid>*{opacity:0}
+  .js-motion.armed .path-grid.in>*{opacity:1;transition:opacity .8s var(--ease-lux),transform .45s var(--ease-snap),box-shadow .45s var(--ease-snap)}
+  .js-motion.armed .path-grid.in>*:nth-child(2){transition:opacity .8s var(--ease-lux) 90ms,transform .45s var(--ease-snap),box-shadow .45s var(--ease-snap)}
+  .js-motion.armed .path-grid.in>*:nth-child(3){transition:opacity .8s var(--ease-lux) 180ms,transform .45s var(--ease-snap),box-shadow .45s var(--ease-snap)}
+
+  /* the homepage boot — status, nav, headline, media, 60ms apart on one curve */
+  .js-motion.armed .frame .mb{opacity:0;transform:translateY(14px)}
+  .js-motion.armed .frame-live .mb{
+    opacity:1;transform:none;
+    transition:opacity .6s var(--ease-lux),transform .6s var(--ease-lux);
+    transition-delay:calc(var(--i,0)*60ms);
+  }
+  .js-motion.armed .frame-live .mb-media{transition-duration:.8s,.8s}
+  .js-motion.armed .frame .lni{transform:translateY(112%)}
+  .js-motion.armed .frame-live .lni{
+    transform:none;
+    transition:transform .9s var(--ease-lux);
+    transition-delay:calc(180ms + var(--l,0)*80ms);
+  }
+
+  /* the arc draws last and lands (dash parked wholly before the path start: no seed dot) */
+  .js-motion.armed .hero-arc .arc-draw{stroke-dasharray:1 1.06;stroke-dashoffset:1.03}
+  .js-motion.armed .frame-live .hero-arc .arc-draw{animation:arcdraw 1.3s var(--ease-draw) .9s forwards}
+  .js-motion.armed .hero-arc .arc-dot{opacity:0}
+  .js-motion.armed .frame-live .hero-arc .arc-dot{animation:arcdot .3s var(--ease-snap) 2.05s forwards}
+
+  /* signature specimen draws itself when the section arrives */
+  .js-motion.armed .sig-stage .spec-arc{stroke-dasharray:1 1.06;stroke-dashoffset:1.03;transition:stroke-dashoffset 1.4s var(--ease-draw) .15s}
+  .js-motion.armed .sig-stage.in .spec-arc{stroke-dashoffset:0}
+  .js-motion.armed .sig-stage .spec-dot{opacity:0;transition:opacity .3s var(--ease-snap) 1.45s}
+  .js-motion.armed .sig-stage.in .spec-dot{opacity:1}
 }
 @keyframes arcdraw{to{stroke-dashoffset:0}}
 @keyframes arcdot{to{opacity:1}}
-/* print & screenshots always show the landed arc */
+/* print & screenshots always show the finished page */
 @media print{
-  .hero-arc .arc-draw{animation:none;stroke-dasharray:none;stroke-dashoffset:0}
-  .hero-arc .arc-dot{animation:none;opacity:1}
+  .hero-arc .arc-draw,.sig-stage .spec-arc{animation:none !important;transition:none !important;stroke-dasharray:none !important;stroke-dashoffset:0 !important}
+  .hero-arc .arc-dot,.sig-stage .spec-dot{animation:none !important;opacity:1 !important}
+  .e-in,.rv,.mb,.stag>*,.path-grid>*{opacity:1 !important;transform:none !important;transition:none !important}
+  .lni{transform:none !important}
 }
-/* unconditional settle: JS stamps this class at 2.2s — whatever happened, the arc is landed */
-.arc-settled .hero-arc .arc-draw{animation:none;stroke-dasharray:none;stroke-dashoffset:0}
-.arc-settled .hero-arc .arc-dot{animation:none;opacity:1}
+/* reduced motion: hover/focus feedback still lands (underline appears, colors change) — just instantly */
+@media (prefers-reduced-motion: reduce){
+  .m-status a,.m-links a,.m-cta,.btn,.btn-quiet,.path-link,.story-foot a,.m-foot-meta a,.prop-nav a,.path-card,.ph-play{transition:none !important}
+}
+/* unconditional settle — stamped 2.4s after the boot begins; also the catch for any failure path */
+html.arc-settled .hero-arc .arc-draw{animation:none !important;stroke-dasharray:none !important;stroke-dashoffset:0 !important}
+html.arc-settled .hero-arc .arc-dot{animation:none !important;opacity:1 !important}
+html.arc-settled .frame .mb{opacity:1 !important;transform:none !important}
+html.arc-settled .frame .lni{transform:none !important}
 
 /* ============ RESPONSIVE ============ */
 @media (max-width:1020px){
@@ -503,16 +608,27 @@ a{color:var(--cascade)}
   .ts-h1{font-size:27px}
 }
 </style>
+<script>
+/* arm the entrance only when JS runs, IntersectionObserver exists, and the visitor allows motion —
+   and carry its own failsafe: the header entrance is settled by 2.2s no matter what happens later */
+(function(){try{
+  if('IntersectionObserver' in window&&window.matchMedia&&window.matchMedia('(prefers-reduced-motion: no-preference)').matches){
+    var d=document.documentElement;
+    d.classList.add('js-motion');
+    setTimeout(function(){d.classList.add('load-settled');},2200);
+  }
+}catch(e){}})();
+</script>
 </head>
 <body>
 
 <!-- ============ 01 DIRECTION HEADER ============ -->
 <header class="dir-head dark">
   <div class="wrap">
-    <p class="crumb"><span>DiscNW website redesign</span><span>Direction 5 of 8</span><span>Prepared for Matt &amp; the DiscNW board</span></p>
-    <h1>Flight Path</h1>
-    <p class="thesis">The current brand, evolved. Keep the navy members trust; modernize everything around it with sky, space, and one graphic idea — a single gold arc, the flight of a disc, drawn once across the hero and echoed nowhere except link underlines.</p>
-    <ul class="keywords">
+    <p class="crumb e-in" style="--i:0"><span>DiscNW website redesign</span><span>Direction 5 of 8</span><span>Prepared for Matt &amp; the DiscNW board</span></p>
+    <h1 class="e-in" style="--i:1">Flight Path</h1>
+    <p class="thesis e-in" style="--i:2">The current brand, evolved. Keep the navy members trust; modernize everything around it with sky, space, and one graphic idea — a single gold arc, the flight of a disc, drawn once across the hero and echoed nowhere except link underlines.</p>
+    <ul class="keywords e-in" style="--i:3">
       <li>Familiar</li><li>Airborne</li><li>Systematic</li><li>Calm</li><li>Product-grade</li>
     </ul>
   </div>
@@ -523,13 +639,13 @@ a{color:var(--cascade)}
 <!-- ============ 02 THE IDEA ============ -->
 <section class="spec-section" aria-labelledby="idea-h">
   <div class="wrap idea-grid">
-    <div class="idea-copy">
+    <div class="idea-copy rv" style="--i:0">
       <p class="spec-label">02 · The idea</p>
       <h2 class="spec-title" id="idea-h">Don't replace the brand. Give it lift.</h2>
       <p>Over 10,000 players a year already know DiscNW navy — it's on their schedules, their registration receipts, their league emails. This direction keeps that navy as the anchor and rebuilds everything around it: generous white space, clean full-color photography, and interface polish at the level of a product people use every week, because that's what this site is.</p>
       <p>The one new idea is the flight path — the long hyzer arc of a thrown disc — drawn once, in gold, across the homepage hero. It appears again only as the underline that grows beneath links. That's the whole system: one line, two scales, total discipline. It's the direction that can ship page by page next to the existing registration tools, and the easiest for the board to say yes to.</p>
     </div>
-    <aside class="idea-aside" aria-label="Why this fits DiscNW">
+    <aside class="idea-aside rv" style="--i:1" aria-label="Why this fits DiscNW">
       <h3>Why this fits DiscNW</h3>
       <ul>
         <li>The navy stays — nothing to relearn for existing members, coaches, or captains.</li>
@@ -544,10 +660,10 @@ a{color:var(--cascade)}
 <!-- ============ 03 COLOR ============ -->
 <section class="spec-section" aria-labelledby="color-h">
   <div class="wrap">
-    <p class="spec-label">03 · Color</p>
-    <h2 class="spec-title" id="color-h">The navy you know, with more sky above it.</h2>
-    <p class="spec-note">Two colors carry over from the current brand untouched. Above them, a tier of skies — pale morning through clear midday — and one sunrise gold, reserved for exactly two things: the arc, and the primary call to action. Photos carry their own color; nothing tints them.</p>
-    <div class="swatches">
+    <p class="spec-label rv" style="--i:0">03 · Color</p>
+    <h2 class="spec-title rv" style="--i:1" id="color-h">The navy you know, with more sky above it.</h2>
+    <p class="spec-note rv" style="--i:2">Two colors carry over from the current brand untouched. Above them, a tier of skies — pale morning through clear midday — and one sunrise gold, reserved for exactly two things: the arc, and the primary call to action. Photos carry their own color; nothing tints them.</p>
+    <div class="swatches stag">
       <div class="swatch">
         <div class="chip" style="background:#1c3b65"><span class="kept">Kept</span></div>
         <div class="meta"><strong>Anchor Navy</strong> <code>#1c3b65</code><span>Headings, nav, primary surfaces — the current brand core, unchanged.</span></div>
@@ -579,11 +695,11 @@ a{color:var(--cascade)}
 <!-- ============ 04 TYPOGRAPHY ============ -->
 <section class="spec-section" aria-labelledby="type-h">
   <div class="wrap">
-    <p class="spec-label">04 · Typography</p>
-    <h2 class="spec-title" id="type-h">A pairing built for product, not posters.</h2>
-    <p class="spec-note">Sora brings just enough geometric character to feel new without shouting; Inter is the proven workhorse for schedules, rosters, and registration forms. The scale is deliberately steep — one enormous display voice, then a fast drop to working sizes — so every page has exactly one loud moment.</p>
+    <p class="spec-label rv" style="--i:0">04 · Typography</p>
+    <h2 class="spec-title rv" style="--i:1" id="type-h">A pairing built for product, not posters.</h2>
+    <p class="spec-note rv" style="--i:2">Sora brings just enough geometric character to feel new without shouting; Inter is the proven workhorse for schedules, rosters, and registration forms. The scale is deliberately steep — one enormous display voice, then a fast drop to working sizes — so every page has exactly one loud moment.</p>
 
-    <div class="type-panel">
+    <div class="type-panel rv" style="--i:3">
       <div class="type-head">
         <div>
           <p class="facename">Sora</p>
@@ -613,21 +729,21 @@ a{color:var(--cascade)}
 <!-- ============ 05 SIGNATURE ELEMENT ============ -->
 <section class="spec-section sig-section dark" aria-labelledby="sig-h">
   <div class="wrap">
-    <p class="spec-label">05 · Signature element</p>
-    <h2 class="spec-title" id="sig-h">One arc. Drawn once.</h2>
-    <p class="spec-note">The long, smooth hyzer arc of a thrown disc, in gold, three pixels thin. It crosses the homepage film exactly once — entering low on the left, riding the sky of the frame, and landing on the right like a throw finding its receiver — and it echoes in exactly one other place: the underline that grows beneath links. No dividers, no gauges, no watermarks. A signature stays a signature by refusing to become a pattern.</p>
+    <p class="spec-label rv" style="--i:0">05 · Signature element</p>
+    <h2 class="spec-title rv" style="--i:1" id="sig-h">One arc. Drawn once.</h2>
+    <p class="spec-note rv" style="--i:2">The long, smooth hyzer arc of a thrown disc, in gold, three pixels thin. It crosses the homepage film exactly once — entering low on the left, riding the sky of the frame, and landing on the right like a throw finding its receiver — and it echoes in exactly one other place: the underline that grows beneath links. No dividers, no gauges, no watermarks. A signature stays a signature by refusing to become a pattern.</p>
 
     <div class="sig-stage">
       <svg viewBox="0 0 1100 210" role="img" aria-label="A single thin gold arc rising from the lower left and landing at a small gold dot on the right, like a disc in flight">
-        <path d="M 10 185 C 280 40, 640 25, 1070 150" fill="none" stroke="#ffb43a" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-        <path d="M 1070 150 h 0.01" fill="none" stroke="#ffb43a" stroke-width="13" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+        <path class="spec-arc" pathLength="1" d="M 10 185 C 280 40, 640 25, 1070 150" fill="none" stroke="#ffb43a" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+        <path class="spec-dot" d="M 1070 150 h 0.01" fill="none" stroke="#ffb43a" stroke-width="13" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
       </svg>
     </div>
 
-    <div class="sig-cells">
+    <div class="sig-cells stag">
       <div class="sig-cell">
         <h3>Where it lives — twice, only</h3>
-        <p class="sig-where"><b>1 · The hero.</b> Drawn once on page load, left to right, 1.6 seconds, then still. Reduced-motion visitors see it already landed.</p>
+        <p class="sig-where"><b>1 · The hero.</b> Drawn once, left to right, as the last beat of the homepage's load sequence — after the film settles, never before. Reduced-motion visitors see it already landed.</p>
         <p class="sig-where"><b>2 · Link underlines.</b> The same curve, 44 pixels wide, grows under a link on hover and focus. That's the entire echo.</p>
       </div>
       <div class="sig-cell">
@@ -643,9 +759,9 @@ a{color:var(--cascade)}
 <section class="spec-section" aria-labelledby="hero-h">
   <div class="wrap">
     <div class="mock-intro">
-      <p class="spec-label">06 · Homepage hero</p>
-      <h2 class="spec-title" id="hero-h">discnw.org, evolved — not replaced.</h2>
-      <p class="spec-note">Type leads on clean white; the Spring Reign film plays below it, full color, untouched. The gold arc draws once across the film on load — the page's only animation. Members still land on a site they recognize: the same navy, the same "register" verb, just with air under it.</p>
+      <p class="spec-label rv" style="--i:0">06 · Homepage hero</p>
+      <h2 class="spec-title rv" style="--i:1" id="hero-h">discnw.org, evolved — not replaced.</h2>
+      <p class="spec-note rv" style="--i:2">Type leads on clean white; the Spring Reign film plays below it, full color, untouched. The homepage assembles in one buttery pass — status bar, nav, headline, film, sixty milliseconds apart on a single easing curve — and the gold arc draws across the film last, then everything holds still. Members land on a site they recognize: the same navy, the same "register" verb, just with air under it.</p>
     </div>
 
     <div class="frame" role="group" aria-label="Mockup of the redesigned discnw.org homepage">
@@ -654,35 +770,35 @@ a{color:var(--cascade)}
         <span class="url">discnw.org</span>
       </div>
 
-      <p class="m-status dark"><span class="lbl">Field status · Fri May 22</span><span><b>Magnuson Park</b> — open, games on</span><a href="tel:+12067815840">Weather hotline (206)&nbsp;781-5840</a></p>
+      <p class="m-status dark mb" style="--i:0"><img class="m-status-mark" src="assets/brand/logo-mark-white.png" alt="" width="590" height="616"><span class="lbl">Field status · Fri May 22</span><span><b>Magnuson Park</b> — open, games on</span><a href="tel:+12067815840">Weather hotline (206)&nbsp;781-5840</a></p>
 
-      <nav class="m-nav" aria-label="Mock site navigation">
+      <nav class="m-nav dark mb" style="--i:1" aria-label="Mock site navigation">
         <span class="m-logo">
-          <img src="assets/discnw-logo-transparent-april2021.png" alt="DiscNW" width="1446" height="616">
+          <img src="assets/brand/logo-full-white.png" alt="DiscNW — Disc Northwest" width="1446" height="616">
         </span>
         <ul class="m-links">
-          <li><a href="#hero-h">Events</a></li>
-          <li><a href="#hero-h">Youth</a></li>
-          <li><a href="#hero-h">Adult Leagues</a></li>
-          <li><a href="#hero-h">Coaching</a></li>
-          <li><a href="#hero-h">About</a></li>
+          <li><a href="#hero-h"><span class="roll"><span class="rt">Events</span><span class="rt rt2" aria-hidden="true">Events</span></span></a></li>
+          <li><a href="#hero-h"><span class="roll"><span class="rt">Youth</span><span class="rt rt2" aria-hidden="true">Youth</span></span></a></li>
+          <li><a href="#hero-h"><span class="roll"><span class="rt">Adult Leagues</span><span class="rt rt2" aria-hidden="true">Adult Leagues</span></span></a></li>
+          <li><a href="#hero-h"><span class="roll"><span class="rt">Coaching</span><span class="rt rt2" aria-hidden="true">Coaching</span></span></a></li>
+          <li><a href="#hero-h"><span class="roll"><span class="rt">About</span><span class="rt rt2" aria-hidden="true">About</span></span></a></li>
         </ul>
-        <a class="m-cta" href="#hero-h">Register</a>
+        <a class="m-cta" href="#hero-h" data-magnet>Register</a>
       </nav>
 
       <div class="m-hero">
-        <p class="m-kicker">Ultimate across Puget Sound · Seattle-based 501(c)(3)</p>
-        <h2>Your season starts here.</h2>
+        <p class="m-kicker mb" style="--i:2">Ultimate across Puget Sound · Seattle-based 501(c)(3)</p>
+        <h2><span class="ln"><span class="lni" style="--l:0">Your season</span></span><span class="ln"><span class="lni" style="--l:1">starts here.</span></span></h2>
 
         <div class="m-hero-lede">
-          <div>
+          <div class="mb" style="--i:5">
             <p class="sub">DiscNW runs leagues, camps, and tournaments for more than 10,000 players a year — from a kid's first pull at Summer Youth Ultimate Camps to your twentieth Potlatch.</p>
             <div class="m-hero-ctas">
-              <a class="btn btn-gold" href="#hero-h">Register for summer leagues</a>
+              <a class="btn btn-gold" href="#hero-h" data-magnet>Register for summer leagues</a>
               <a class="btn btn-quiet is-static" href="#hero-h">See the full events calendar</a>
             </div>
           </div>
-          <div class="m-open">
+          <div class="m-open mb" style="--i:6">
             <p class="lbl" id="regnow-l">Registering now</p>
             <ul aria-labelledby="regnow-l">
               <li><a href="#hero-h"><span>Summer Mixed Hat League</span><small>closes May 30</small></a></li>
@@ -692,7 +808,7 @@ a{color:var(--cascade)}
           </div>
         </div>
 
-        <figure class="m-hero-media">
+        <figure class="m-hero-media mb mb-media" style="--i:7">
           <video muted loop playsinline preload="metadata" disablepictureinpicture disableremoteplayback
             poster="assets/sr26-catch-celebration.jpg"
             aria-label="Muted highlight loop from the Spring Reign 2026 high school finals: a sprint downfield, an overhead catch, and the celebration after.">
@@ -712,7 +828,7 @@ a{color:var(--cascade)}
           <figcaption><span>Spring Reign 2026 · high school finals</span><span>Muted 7-second loop · full color, no treatment</span></figcaption>
         </figure>
 
-        <ul class="m-trust">
+        <ul class="m-trust mb" style="--i:8">
           <li>Self-officiated — Spirit of the Game</li>
           <li>Sliding-scale fees: every player, the same season</li>
           <li>Serving the Puget Sound region, rec to competitive</li>
@@ -722,9 +838,9 @@ a{color:var(--cascade)}
       <!-- ============ 07 AUDIENCE PATHWAYS (inside mock) ============ -->
       <div class="m-paths" id="pathways">
         <div class="m-sec-head">
-          <p class="m-kicker">07 · Audience pathways</p>
-          <h3>Three ways in.</h3>
-          <p>Players, coaches, parents — each lands on a door labeled in their own language, two clicks from what they came for.</p>
+          <p class="m-kicker rv" style="--i:0">07 · Audience pathways</p>
+          <h3 class="rv" style="--i:1">Three ways in.</h3>
+          <p class="rv" style="--i:2">Players, coaches, parents — each lands on a door labeled in their own language, two clicks from what they came for.</p>
         </div>
         <div class="path-grid">
           <article class="path-card">
@@ -763,12 +879,12 @@ a{color:var(--cascade)}
       <!-- ============ 08 STORYTELLING (inside mock) ============ -->
       <div class="m-story" id="stories">
         <div class="m-sec-head">
-          <p class="m-kicker">08 · Storytelling</p>
-          <h3>Stories from the sideline.</h3>
-          <p>Community stories, impact numbers with a human line under each, and a season you can see end to end — the narrative layer the current site is missing.</p>
+          <p class="m-kicker rv" style="--i:0">08 · Storytelling</p>
+          <h3 class="rv" style="--i:1">Stories from the sideline.</h3>
+          <p class="rv" style="--i:2">Community stories, impact numbers with a human line under each, and a season you can see end to end — the narrative layer the current site is missing.</p>
         </div>
 
-        <div class="story-grid">
+        <div class="story-grid stag">
           <article class="story-card dark">
             <span class="story-tag">Player story · "My First…" series</span>
             <blockquote class="story-quote">"My first layout was at Spring Reign. I missed the disc — and my whole team ran over like I'd scored. That's when I knew I wasn't quitting."</blockquote>
@@ -785,7 +901,7 @@ a{color:var(--cascade)}
           </figure>
         </div>
 
-        <div class="impact">
+        <div class="impact stag">
           <div class="impact-cell">
             <strong>10,000+</strong>
             <span>players a year — from third-grade campers at Hiawatha to masters hat leaguers on Monday nights.</span>
@@ -800,10 +916,10 @@ a{color:var(--cascade)}
           </div>
         </div>
 
-        <div class="season">
+        <div class="season rv">
           <h4>One season, at a glance</h4>
           <p>Summer Mixed Hat League, from signup to spirit circle — so new players and parents know exactly what they're stepping into.</p>
-          <ol class="season-steps">
+          <ol class="season-steps stag">
             <li><b>Register</b><span>by May 30 — individual signup, sliding-scale fees</span></li>
             <li><b>Hat draft</b><span>teams drawn from a hat — fourteen new teammates</span></li>
             <li><b>First pull</b><span>Monday June 1, Magnuson Park</span></li>
@@ -812,6 +928,16 @@ a{color:var(--cascade)}
           </ol>
         </div>
       </div>
+
+      <!-- closing brand moment: the formline mark at crest scale on the navy footer band -->
+      <footer class="m-foot dark" aria-label="Mock site footer">
+        <div class="rv">
+          <img class="m-foot-mark" src="assets/brand/logo-mark-white.png" alt="DiscNW circular formline disc mark" width="590" height="616">
+          <p class="m-foot-vision">An Ultimate community without barriers.</p>
+          <p class="m-foot-meta">Disc Northwest · Seattle-based 501(c)(3) · founded 1995 · 10,000+ players a year</p>
+          <p class="m-foot-meta"><a href="tel:+12067815840">Rainout hotline (206)&nbsp;781-5840</a></p>
+        </div>
+      </footer>
     </div><!-- /frame -->
   </div>
 </section>
@@ -819,16 +945,16 @@ a{color:var(--cascade)}
 <!-- ============ 09 UI COMPONENTS ============ -->
 <section class="spec-section" aria-labelledby="ui-h">
   <div class="wrap">
-    <p class="spec-label">09 · UI components</p>
-    <h2 class="spec-title" id="ui-h">Working parts, brand-shaped.</h2>
-    <p class="spec-note">Buttons, an event card, and a league finder — the pieces staff will actually reuse. Gold appears only on the primary action; capacity reads as a plain, honest bar; nothing pulses.</p>
+    <p class="spec-label rv" style="--i:0">09 · UI components</p>
+    <h2 class="spec-title rv" style="--i:1" id="ui-h">Working parts, brand-shaped.</h2>
+    <p class="spec-note rv" style="--i:2">Buttons, an event card, and a league finder — the pieces staff will actually reuse. Gold appears only on the primary action and leans up to six pixels toward your cursor; capacity reads as a plain, honest bar; nothing pulses.</p>
 
-    <div class="ui-grid">
+    <div class="ui-grid stag">
       <div class="ui-cell">
         <h3>Buttons</h3>
         <div class="btn-row">
           <span class="btn-note">Default</span>
-          <button class="btn btn-gold" type="button">Register for summer league</button>
+          <button class="btn btn-gold" type="button" data-magnet>Register for summer league</button>
         </div>
         <div class="btn-row">
           <span class="btn-note">Hover</span>
@@ -873,7 +999,7 @@ a{color:var(--cascade)}
             <div class="ev-bar" role="img" aria-label="Capacity: 142 of 180 spots filled"><i></i></div>
           </div>
           <div class="ev-actions">
-            <a class="btn btn-gold" href="#ui-h">Register</a>
+            <a class="btn btn-gold" href="#ui-h" data-magnet>Register</a>
             <a class="btn btn-quiet" href="#ui-h">League details</a>
           </div>
         </article>
@@ -913,10 +1039,10 @@ a{color:var(--cascade)}
 <!-- ============ 10 VOICE & TONE ============ -->
 <section class="spec-section" aria-labelledby="voice-h">
   <div class="wrap">
-    <p class="spec-label">10 · Voice &amp; tone</p>
-    <h2 class="spec-title" id="voice-h">Plain verbs, warm sidelines.</h2>
-    <p class="spec-note">The voice members already trust, tuned: active, specific, never precious. It sounds like the person at the fields who hands you a disc and points you to your team.</p>
-    <div class="voice-grid">
+    <p class="spec-label rv" style="--i:0">10 · Voice &amp; tone</p>
+    <h2 class="spec-title rv" style="--i:1" id="voice-h">Plain verbs, warm sidelines.</h2>
+    <p class="spec-note rv" style="--i:2">The voice members already trust, tuned: active, specific, never precious. It sounds like the person at the fields who hands you a disc and points you to your team.</p>
+    <div class="voice-grid stag">
       <div class="voice-cell">
         <h3>Hero headline</h3>
         <p class="v-hero">Your season starts here.</p>
@@ -938,7 +1064,7 @@ a{color:var(--cascade)}
 <!-- ============ 11 FOOTER ============ -->
 <footer class="prop-footer dark">
   <div class="wrap">
-    <div class="verdict">
+    <div class="verdict stag">
       <div>
         <h2>Choose this direction if…</h2>
         <p>You want the redesign members recognize on day one and the board approves in one meeting — the same trusted navy with product-grade polish, one disciplined signature, shippable page by page alongside the existing registration tools.</p>
@@ -958,8 +1084,9 @@ a{color:var(--cascade)}
 
 <script>
 (function(){
-  /* unconditional settle — the arc is in its landed state by 2.2s no matter what */
-  setTimeout(function(){document.documentElement.classList.add('arc-settled');},2200);
+  var d=document.documentElement;
+  var motion=d.classList.contains('js-motion');
+
   /* hero highlight loop: playback is JS-initiated, so no-JS and reduced-motion both get a crisp still */
   try{
     var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -980,6 +1107,77 @@ a{color:var(--cascade)}
           entries.forEach(function(en){if(en.isIntersecting){tryPlay();}else{vid.pause();}});
         },{threshold:.2}).observe(vid);
       }else{tryPlay();}
+    }
+  }catch(e){}
+
+  if(!motion)return; /* reduced motion / no IO: the settled base page, nothing else */
+
+  /* entrance: the direction header staggers in on the first painted frame */
+  requestAnimationFrame(function(){requestAnimationFrame(function(){d.classList.add('go');});});
+
+  /* choreography: scroll reveals + the homepage boot; observers unobserve after firing.
+     'armed' is added only once observers exist — any failure leaves the settled base page. */
+  try{
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}
+      });
+    },{threshold:.15,rootMargin:'0px 0px -7% 0px'});
+    var frame=document.querySelector('.frame');
+    var fio=frame&&new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if(en.isIntersecting){
+          frame.classList.add('frame-live');
+          fio.unobserve(frame);
+          /* unconditional settle: 2.4s after the boot begins, the page is landed */
+          setTimeout(function(){d.classList.add('arc-settled');},2400);
+        }
+      });
+    },{threshold:0,rootMargin:'0px 0px -15% 0px'});
+    d.classList.add('armed');
+    document.querySelectorAll('.rv,.stag,.path-grid,.sig-stage').forEach(function(el){io.observe(el);});
+    if(fio){fio.observe(frame);}else{d.classList.add('arc-settled');}
+  }catch(e){
+    d.classList.remove('armed');
+    d.classList.add('arc-settled');
+  }
+
+  /* hover physics — fine pointers only: pathway tilt ≤4°, magnetic primaries ≤6px.
+     Writes are rAF-throttled; the house snap curve eases everything home on leave. */
+  try{
+    if(window.matchMedia&&window.matchMedia('(hover: hover) and (pointer: fine)').matches){
+      document.querySelectorAll('.path-card').forEach(function(card){
+        var raf=0,rx=0,ry=0;
+        card.addEventListener('pointermove',function(e){
+          var r=card.getBoundingClientRect();
+          ry=((e.clientX-r.left)/r.width-.5)*7;
+          rx=(.5-(e.clientY-r.top)/r.height)*7;
+          if(!raf){raf=requestAnimationFrame(function(){
+            raf=0;
+            card.style.transform='perspective(900px) rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg)';
+          });}
+        });
+        card.addEventListener('pointerleave',function(){
+          if(raf){cancelAnimationFrame(raf);raf=0;}
+          card.style.transform='';
+        });
+      });
+      document.querySelectorAll('[data-magnet]').forEach(function(el){
+        var raf=0,mx=0,my=0;
+        el.addEventListener('pointermove',function(e){
+          var r=el.getBoundingClientRect();
+          mx=Math.max(-6,Math.min(6,(e.clientX-(r.left+r.width/2))*.18));
+          my=Math.max(-6,Math.min(6,(e.clientY-(r.top+r.height/2))*.32));
+          if(!raf){raf=requestAnimationFrame(function(){
+            raf=0;
+            el.style.transform='translate('+mx.toFixed(1)+'px,'+my.toFixed(1)+'px)';
+          });}
+        });
+        el.addEventListener('pointerleave',function(){
+          if(raf){cancelAnimationFrame(raf);raf=0;}
+          el.style.transform='';
+        });
+      });
     }
   }catch(e){}
 })();

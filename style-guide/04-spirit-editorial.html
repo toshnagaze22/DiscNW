@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Direction 4 of 5 — Spirit &amp; Story · DiscNW redesign</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
 <meta name="description" content="Design direction 4 for the DiscNW website redesign: the community magazine. Real voices at headline scale, clean full-color documentary photography, Spirit of the Game as the editorial voice.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,6 +23,9 @@
   --serif:"Newsreader", Georgia, "Times New Roman", serif;
   --sans:"Public Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
   --wrap:1160px;
+  /* house easing — every transition on this page uses one of these two curves */
+  --ease-lux:cubic-bezier(.16,1,.3,1);  /* macro reveals: fast attack, long luxurious settle */
+  --ease-snap:cubic-bezier(.4,0,.1,1);  /* micro interactions: hovers, underlines, buttons */
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -66,12 +70,93 @@ a{color:var(--green)}
 .photo img{width:100%;height:100%;object-fit:cover;filter:contrast(1.03) saturate(1.04)}
 .bw img{filter:grayscale(1) contrast(1.1)}
 
-/* the one motion system: a quiet scroll reveal. JS adds .js to <html>;
-   without JS everything stays visible; a settle timer inks everything ≤1.6s. */
-html.js .reveal{opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease}
+/* ============ MOTION — the editorial reveal ============
+   One choreographed system, two house curves, transform/opacity/clip only.
+   Every rule below lives under html.js: the base styles ARE the settled
+   magazine, so no-JS, print, screenshots, and reduced motion read the
+   finished page. Each triggered animation settles in ≤1.5s; an untouched
+   page (no scroll, no pointer — print pipelines, screenshot rigs) is fully
+   inked well inside 2.5s by the settle watchdog in the script. */
+html.js .reveal{opacity:0;transform:translateY(14px);transition:opacity .7s var(--ease-lux),transform .8s var(--ease-lux)}
 html.js .reveal.in{opacity:1;transform:none}
+
+/* grids arrive as a paced set — one clock, 70ms apart */
+html.js .reveal.stagger{opacity:1;transform:none;transition:none}
+html.js .stagger>*{opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease-lux),transform .7s var(--ease-lux)}
+html.js .stagger.in>*{opacity:1;transform:none}
+html.js .stagger.in>*:nth-child(2){transition-delay:70ms}
+html.js .stagger.in>*:nth-child(3){transition-delay:140ms}
+html.js .stagger.in>*:nth-child(4){transition-delay:210ms}
+html.js .stagger.in>*:nth-child(5){transition-delay:280ms}
+
+/* photographs develop: a slow top-to-bottom clip wipe while the frame
+   settles 1.06 → 1, like a print coming off the roller; caption hung after */
+html.js .clip-reveal .photo{clip-path:inset(0 0 100% 0);transition:clip-path 1.1s var(--ease-lux)}
+html.js .clip-reveal .photo img{transform:scale(1.06);transition:transform 1.4s var(--ease-lux)}
+html.js .clip-reveal.in .photo{clip-path:inset(0 0 0 0)}
+html.js .clip-reveal.in .photo img{transform:none}
+html.js .clip-reveal .cap{opacity:0;transform:translateY(10px);transition:opacity .6s var(--ease-lux) .45s,transform .6s var(--ease-lux) .45s}
+html.js .clip-reveal.in .cap{opacity:1;transform:none}
+
+/* the giant quotes ink in line-by-line from behind masks. JS splits them
+   into .q-line spans only after the display face has loaded and only when
+   motion is allowed; once the ink is dry the spans are removed again, so
+   resize, text selection, find-in-page, and no-JS all read one clean
+   paragraph. The mask's left padding keeps the hung “ visible while the
+   overflow clips the slide. */
+html.js [data-inkline].is-split .q-line{display:block;overflow:hidden;text-indent:0;padding-left:.9ch;margin-left:-.9ch;padding-right:.35ch;margin-right:-.35ch}
+html.js [data-inkline].is-split .q-line:first-child{text-indent:inherit}
+html.js [data-inkline].is-split .q-line-in{display:block;transform:translateY(115%);transition:transform .95s var(--ease-lux)}
+html.js [data-inkline].in .q-line-in{transform:translateY(0)}
+
+/* the byline rule draws in once its quote has landed. The hidden state
+   carries no transition (it must apply instantly when the split happens);
+   the transition rides on the revealed state so only the draw animates. */
+html.js .mock-hero-quote.is-split + .mock-hero-attr,
+html.js blockquote:has(.pullquote-text.is-split) + .pullquote-attr{opacity:0;transform:translateY(8px)}
+html.js .mock-hero-quote.is-split + .mock-hero-attr::before,
+html.js blockquote:has(.pullquote-text.is-split) + .pullquote-attr::before{transform:scaleX(0);transform-origin:0 50%}
+html.js .mock-hero-quote.in + .mock-hero-attr,
+html.js blockquote:has(.pullquote-text.in) + .pullquote-attr{opacity:1;transform:none;transition:opacity .5s var(--ease-lux) .85s,transform .5s var(--ease-lux) .85s}
+html.js .mock-hero-quote.in + .mock-hero-attr::before,
+html.js blockquote:has(.pullquote-text.in) + .pullquote-attr::before{transform:scaleX(1);transition:transform .7s var(--ease-lux) .95s}
+
+/* the drop-cap moment: the cap inks in with one left-to-right stroke */
+html.js .story-spread .dropcap{clip-path:inset(-12% 100% -12% -12%);transition:clip-path .8s var(--ease-lux) .3s}
+html.js .story-spread.in .dropcap{clip-path:inset(-12% -12% -12% -12%)}
+
+/* masthead entrance: meta, title-from-mask, thesis, tags, then the seal */
+html.js .ent{opacity:0;transform:translateY(14px);transition:opacity .7s var(--ease-lux) var(--d,0s),transform .8s var(--ease-lux) var(--d,0s)}
+html.js.masthead-in .ent{opacity:1;transform:none}
+html.js .dh-name .ln{display:block;overflow:hidden;padding:0 .14em;margin:0 -.14em}
+html.js .dh-name .ln-in{display:block;transform:translateY(112%);transition:transform .9s var(--ease-lux) .12s}
+html.js.masthead-in .dh-name .ln-in{transform:none}
+
+/* the copper end-mark stamps closed */
+html.js .essay-end img{transform:scale(.6);transition:transform .9s var(--ease-lux) .15s}
+html.js .essay-end.in img{transform:none}
+
+/* settle paths: the watchdog compresses everything into one quick soft ink;
+   print snaps to the finished page instantly */
+html.settle-quick *,html.settle-quick *::before,html.settle-quick *::after{transition-duration:.45s !important;transition-delay:0s !important}
+html.no-anim *,html.no-anim *::before,html.no-anim *::after{transition:none !important;animation:none !important}
+
+/* settled state for reduced motion and print — always the finished page */
 @media (prefers-reduced-motion: reduce){
-  html.js .reveal{opacity:1;transform:none}
+  html.js .reveal,html.js .ent,html.js .stagger>*,html.js .clip-reveal .cap{opacity:1;transform:none}
+  html.js .clip-reveal .photo{clip-path:none}
+  html.js .clip-reveal .photo img,html.js .dh-name .ln-in,html.js [data-inkline] .q-line-in,html.js .essay-end img{transform:none}
+  html.js .story-spread .dropcap{clip-path:none}
+  html.js .mock-hero-quote.is-split + .mock-hero-attr,html.js blockquote:has(.pullquote-text.is-split) + .pullquote-attr{opacity:1;transform:none}
+  html.js .mock-hero-quote.is-split + .mock-hero-attr::before,html.js blockquote:has(.pullquote-text.is-split) + .pullquote-attr::before{transform:none}
+}
+@media print{
+  html.js .reveal,html.js .ent,html.js .stagger>*,html.js .clip-reveal .cap{opacity:1;transform:none}
+  html.js .clip-reveal .photo{clip-path:none}
+  html.js .clip-reveal .photo img,html.js .dh-name .ln-in,html.js [data-inkline] .q-line-in,html.js .essay-end img{transform:none}
+  html.js .story-spread .dropcap{clip-path:none}
+  html.js .mock-hero-quote.is-split + .mock-hero-attr,html.js blockquote:has(.pullquote-text.is-split) + .pullquote-attr{opacity:1;transform:none}
+  html.js .mock-hero-quote.is-split + .mock-hero-attr::before,html.js blockquote:has(.pullquote-text.is-split) + .pullquote-attr::before{transform:none}
 }
 
 /* magazine micro-craft: opening quote marks hang into the margin by their measured
@@ -120,6 +205,21 @@ html.js .reveal.in{opacity:1;transform:none}
 .dh-tags li{
   font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--ink);
   background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 14px;
+}
+/* masthead colophon seal — the mark set like a press seal beside the title,
+   full clearspace, never redrawn */
+.dh-row{display:grid;grid-template-columns:1fr auto;gap:48px;align-items:start}
+.dh-seal{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:6px}
+.dh-seal img{width:88px;height:auto}
+.dh-seal figcaption{
+  font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--grey);text-align:center;border-top:1px solid var(--line);padding-top:10px;
+}
+@media (max-width:640px){
+  .dh-row{grid-template-columns:1fr;gap:24px}
+  .dh-seal{order:-1;align-items:flex-start}
+  .dh-seal img{width:64px}
+  .dh-seal figcaption{border-top:none;padding-top:0;text-align:left}
 }
 
 /* ============ 02 THE IDEA ============ */
@@ -173,8 +273,9 @@ html.js .reveal.in{opacity:1;transform:none}
 @media (max-width:700px){.type-row{grid-template-columns:1fr;gap:8px;padding:20px 24px}}
 
 /* ============ 05 SIGNATURE / PULL QUOTE ============ */
-/* the signature sits directly on the paper — no box, no overlay, no animation.
-   Ink on paper at full scale is the whole idea. */
+/* the signature sits directly on the paper — no box, no overlay. On first
+   view its lines ink in from behind their masks and the rule draws; then it
+   rests. Ink on paper at full scale is the whole idea. */
 .pullquote{padding:24px 0 0}
 /* leading tightens as the quote grows: 1.02 at 88px, 1.0 at the hero's 120px.
    Newsreader's max glyph stack measures 0.975em, so even 1.0 cannot collide. */
@@ -223,11 +324,15 @@ html.js .reveal.in{opacity:1;transform:none}
 .mock-logo{display:flex;align-items:center;color:var(--ink);text-decoration:none}
 .mock-logo img{width:132px;height:auto}
 .mock-links{display:flex;gap:28px;margin-left:auto;list-style:none}
+/* nav links: the underline draws in left-to-right — the same "rules draw"
+   language as the byline rules */
 .mock-links a{
-  font-size:15px;font-weight:600;color:var(--ink);text-decoration:none;
-  padding-bottom:3px;border-bottom:2px solid transparent;
+  font-size:15px;font-weight:600;color:var(--ink);text-decoration:none;padding-bottom:3px;
+  background-image:linear-gradient(currentColor,currentColor);background-repeat:no-repeat;
+  background-size:0% 2px;background-position:0 100%;
+  transition:background-size .35s var(--ease-snap),color .35s var(--ease-snap);
 }
-.mock-links a:hover{border-bottom-color:var(--green);color:var(--green)}
+.mock-links a:hover,.mock-links a:focus-visible{color:var(--green);background-size:100% 2px}
 .mock-nav .btn{margin-left:8px}
 @media (max-width:880px){
   .mock-links{display:none}
@@ -293,6 +398,8 @@ html.js .reveal.in{opacity:1;transform:none}
 }
 .path-card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
 .path-photo{height:200px}
+.path-card .photo img{transition:transform .6s var(--ease-lux)}
+.path-card:hover .photo img{transform:scale(1.03)}
 .path-body{display:flex;flex-direction:column;gap:12px;padding:24px 26px 26px;flex:1}
 .path-body h4{font-family:var(--serif);font-weight:500;font-size:26px;line-height:1.12;letter-spacing:-0.005em}
 .path-body p{font-size:15px;line-height:1.6;color:#3A4150}
@@ -315,7 +422,9 @@ html.js .reveal.in{opacity:1;transform:none}
   margin:16px 0 26px;font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);
 }
 .story-lede{font-size:17px;line-height:1.7;max-width:58ch}
-.story-lede::first-letter{
+/* the drop cap is a real span (not ::first-letter) so the ink-stroke reveal
+   can address it; this base style is the settled state */
+.story-lede .dropcap{
   font-family:var(--serif);font-weight:600;font-size:64px;line-height:.85;
   float:left;padding:6px 12px 0 0;color:var(--green);
 }
@@ -400,6 +509,10 @@ html.js .reveal.in{opacity:1;transform:none}
   .essay-frames{grid-template-columns:1fr;gap:36px}
   .f-lead,.f-race,.f-cele,.f-tunnel{grid-column:auto}
 }
+/* the copper end-mark closes the essay the way a magazine ends a feature */
+.essay-end{display:flex;align-items:center;justify-content:center;gap:24px;margin-top:56px}
+.essay-end::before,.essay-end::after{content:"";height:1px;width:72px;background:var(--line);flex:none}
+.essay-end img{width:44px;height:44px}
 
 /* ============ 09 UI COMPONENTS ============ */
 .ui-grid{display:grid;grid-template-columns:1fr 1.15fr .95fr;gap:24px;align-items:start}
@@ -409,7 +522,7 @@ html.js .reveal.in{opacity:1;transform:none}
 .btn{
   display:inline-block;font-family:var(--sans);font-size:15px;font-weight:700;line-height:1;
   padding:14px 24px;border-radius:8px;text-decoration:none;cursor:pointer;border:1.5px solid transparent;
-  transition:background-color .15s ease,color .15s ease,border-color .15s ease,transform .15s ease;
+  transition:background-color .35s var(--ease-snap),color .35s var(--ease-snap),border-color .35s var(--ease-snap),transform .35s var(--ease-snap);
 }
 .btn-primary{background:var(--green);color:var(--paper)}
 .btn-primary:hover,.btn-primary.is-hover{background:var(--green-deep);transform:translateY(-1px)}
@@ -418,6 +531,7 @@ html.js .reveal.in{opacity:1;transform:none}
 .btn-quiet{
   background:transparent;color:var(--green);padding:14px 4px;border-radius:4px;
   text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px;
+  transition:text-decoration-color .35s var(--ease-snap),color .35s var(--ease-snap);
 }
 .btn-quiet:hover,.btn-quiet.is-hover{text-decoration-color:var(--green)}
 .on-ink .btn-secondary{color:var(--paper);border-color:var(--paper)}
@@ -461,6 +575,7 @@ html.js .reveal.in{opacity:1;transform:none}
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%230E5F41' stroke-width='2'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 14px center;
 }
+.filter select{transition:border-color .35s var(--ease-snap)}
 .filter select:hover{border-color:var(--green)}
 .filter .btn{margin-top:20px;width:100%;text-align:center}
 
@@ -495,12 +610,20 @@ html.js .reveal.in{opacity:1;transform:none}
 <!-- ============ 01 DIRECTION HEADER ============ -->
 <header class="dh">
   <div class="wrap">
-    <p class="dh-meta"><strong>Direction 4 of 5</strong><span>DiscNW website redesign · design direction proposal</span></p>
-    <h1 class="dh-name">Spirit &amp; Story</h1>
-    <p class="dh-thesis">The site reads like a beautifully edited community magazine: every program is a person's story, and Spirit of the Game is the editorial voice.</p>
-    <ul class="dh-tags" aria-label="Personality keywords">
-      <li>Editorial</li><li>Documentary</li><li>Proud</li><li>Warm</li><li>Literary</li><li>Human</li>
-    </ul>
+    <div class="dh-row">
+      <div class="dh-main">
+        <p class="dh-meta ent"><strong>Direction 4 of 5</strong><span>DiscNW website redesign · design direction proposal</span></p>
+        <h1 class="dh-name"><span class="ln"><span class="ln-in">Spirit &amp; Story</span></span></h1>
+        <p class="dh-thesis ent" style="--d:.26s">The site reads like a beautifully edited community magazine: every program is a person's story, and Spirit of the Game is the editorial voice.</p>
+        <ul class="dh-tags ent" style="--d:.38s" aria-label="Personality keywords">
+          <li>Editorial</li><li>Documentary</li><li>Proud</li><li>Warm</li><li>Literary</li><li>Human</li>
+        </ul>
+      </div>
+      <figure class="dh-seal ent" style="--d:.5s">
+        <img src="assets/brand/logo-mark.png" alt="DiscNW mark: a flying disc held in a circular Coast Salish–style formline design" width="88" height="92">
+        <figcaption>Disc Northwest · est. 1995</figcaption>
+      </figure>
+    </div>
   </div>
 </header>
 
@@ -534,7 +657,7 @@ html.js .reveal.in{opacity:1;transform:none}
         <h2 class="stitle" id="t-color">Paper, ink, and one spirit green</h2>
         <p class="ssub">The photographs carry the color; the interface stays out of their way. Around them: warm paper, a near-black ink, quiet greys — and a single saturated green that belongs to the fields this club plays on.</p>
       </div>
-      <div class="col-grid reveal">
+      <div class="col-grid reveal stagger">
         <div class="swatch">
           <div class="swatch-chip" style="background:#FAFAF7;border-bottom:1px solid var(--line)"></div>
           <div class="swatch-body">
@@ -635,13 +758,13 @@ html.js .reveal.in{opacity:1;transform:none}
         <span class="snum">05 · Signature element</span>
         <h2 class="stitle" id="t-sig">The oversized attributed pull quote</h2>
       </div>
-      <figure class="pullquote reveal">
+      <figure class="pullquote">
         <blockquote>
-          <p class="pullquote-text">“We drove home from Spring Reign and she talked the whole way. She never talks the whole way.”</p>
+          <p class="pullquote-text" data-inkline>“We drove home from Spring Reign and she talked the whole way. She never talks the whole way.”</p>
         </blockquote>
         <figcaption class="pullquote-attr">—&nbsp;Priya S., Spring Reign parent</figcaption>
       </figure>
-      <p class="sig-note">A real community voice at massive serif scale, with a byline, replacing the slogan everywhere a slogan would normally go — starting with the homepage hero. It is set once and set perfectly: ink on paper, opening quote hung into the margin, no animation, nothing laid over it. The attribution convention never changes — a green rule, an em dash, a first name, and where they belong in this community.</p>
+      <p class="sig-note">A real community voice at massive serif scale, with a byline, replacing the slogan everywhere a slogan would normally go — starting with the homepage hero. On first view it sets like print — each line inks in from behind its mask, then the green rule draws — and afterwards it rests: ink on paper, opening quote hung into the margin, nothing laid over it. The attribution convention never changes — a green rule, an em dash, a first name, and where they belong in this community.</p>
     </div>
   </section>
 
@@ -661,7 +784,7 @@ html.js .reveal.in{opacity:1;transform:none}
         </div>
         <nav class="mock-nav" aria-label="Mockup site navigation">
           <a class="mock-logo" href="#t-hero">
-            <img src="assets/discnw-logo-transparent-april2021.png" alt="DiscNW — home" width="132" height="56">
+            <img src="assets/brand/logo-full.png" alt="DiscNW — home" width="132" height="56">
           </a>
           <ul class="mock-links">
             <li><a href="#t-hero">Events</a></li>
@@ -676,7 +799,7 @@ html.js .reveal.in{opacity:1;transform:none}
           <div class="mock-hero-copy">
             <p class="mock-hero-kicker">From the sideline · Fall Middle School Leagues</p>
             <blockquote>
-              <p class="mock-hero-quote">“I signed him up for a frisbee league. He came home with a second family.”</p>
+              <p class="mock-hero-quote" data-inkline>“I signed him up for a frisbee league. He came home with a second family.”</p>
               <footer class="mock-hero-attr">—&nbsp;Maya R., Fall Middle School League parent</footer>
             </blockquote>
             <p class="mock-hero-deck">Stories from the 10,000 players, coaches, and families who make DiscNW — and every league, camp, and tournament you can join this fall.</p>
@@ -685,7 +808,7 @@ html.js .reveal.in{opacity:1;transform:none}
               <a class="btn btn-secondary" href="#t-hero">Read Maya's story</a>
             </div>
           </div>
-          <figure class="mock-hero-photo">
+          <figure class="mock-hero-photo clip-reveal">
             <div class="photo">
               <img src="assets/ycc-tryouts-2015-4.jpg" alt="A youth player throws a forehand past her defender's mark, the white disc frozen mid-air between them; bleachers, houses, and evergreens beyond the fence." style="object-position:50% 18%">
             </div>
@@ -716,7 +839,7 @@ html.js .reveal.in{opacity:1;transform:none}
           <p class="kicker">Find your way in</p>
           <h3>Where do you fit in this community?</h3>
         </div>
-        <div class="paths-grid">
+        <div class="paths-grid stagger">
           <article class="path-card">
             <div class="path-photo photo">
               <img src="assets/lili-gu.jpg" alt="A club player laughs mid-celebration, holding two water bottles aloft, teammates blurred behind her on an overcast sideline." style="object-position:50% 22%">
@@ -770,7 +893,7 @@ html.js .reveal.in{opacity:1;transform:none}
           <span class="kicker">My first… · No. 3 in a community series</span>
           <h3 class="story-hed">The first layout costs you a clean jersey</h3>
           <p class="story-byline">As told by Theo N., 7th grade, Fall MS Mixed Hat League · Photographs from the sideline</p>
-          <p class="story-lede">The huck went up in the second half of Theo's fourth-ever game, at Spring Reign, on a field still wet from the morning. He'd spent three practices learning to cut — go when the disc goes up, not after. He went. The disc floated the way a white disc floats against a grey April sky, and for one long second the whole sideline held its breath with him.</p>
+          <p class="story-lede"><span class="dropcap">T</span>he huck went up in the second half of Theo's fourth-ever game, at Spring Reign, on a field still wet from the morning. He'd spent three practices learning to cut — go when the disc goes up, not after. He went. The disc floated the way a white disc floats against a grey April sky, and for one long second the whole sideline held its breath with him.</p>
           <p class="story-graf">He left his feet. He caught it. The spirit circle afterward ran ten minutes long, because both teams wanted to talk about it.</p>
           <blockquote class="story-pull">
             <p>“My knees were green until Thursday. Completely worth it.”</p>
@@ -810,38 +933,41 @@ html.js .reveal.in{opacity:1;transform:none}
           <p class="essay-standfirst">The biggest youth ultimate weekend in the Northwest, hung the way a gallery would hang it: black and white, printed wide, one caption per photograph. This essay is the only monochrome on the site — a deliberate choice, for one story a season.</p>
         </header>
         <div class="essay-frames">
-          <figure class="reveal f-lead">
+          <figure class="clip-reveal f-lead">
             <div class="photo bw">
               <img src="assets/sr26-thrower-mountains.jpg" alt="A youth player gathers the disc and lines up her throw on open grass, the crowded far sideline stretching behind her." style="object-position:50% 10%">
             </div>
             <figcaption class="cap"><b>9:04 AM</b>First game of the morning, the treeline still wearing last night's weather.</figcaption>
           </figure>
-          <figure class="reveal f-race">
+          <figure class="clip-reveal f-race">
             <div class="photo bw">
               <img src="assets/sr26-sprint-race.jpg" alt="Two players sprint flat out side by side, tents and spectators blurred along the sideline." style="object-position:50% 10%">
             </div>
             <figcaption class="cap"><b>11:37 AM</b>Open grass and a footrace — the disc floating somewhere ahead, both certain it's theirs.</figcaption>
           </figure>
-          <figure class="reveal f-cele">
+          <figure class="clip-reveal f-cele">
             <div class="photo bw">
               <img src="assets/sr26-catch-celebration.jpg" alt="A player holds the disc high after an overhead catch as two teammates rush in shouting." style="object-position:60% 50%">
             </div>
             <figcaption class="cap"><b>3:42 PM</b>The catch, and the half-second before the hug.</figcaption>
           </figure>
-          <figure class="reveal f-tunnel">
+          <figure class="clip-reveal f-tunnel">
             <div class="photo bw">
               <img src="assets/sr26-spirit-tunnel.jpg" alt="Both teams form a post-game spirit tunnel, players trading high fives down the line." style="object-position:50% 8%">
             </div>
             <figcaption class="cap"><b>5:48 PM</b>Every game here ends the same way, win or lose.</figcaption>
           </figure>
         </div>
+        <figure class="essay-end reveal">
+          <img src="assets/brand/logo-copper.png" alt="DiscNW mark, set small in ink — the end-sign of the essay" width="44" height="44">
+        </figure>
       </article>
 
       <p class="comp-label" style="margin-top:48px">Component C — impact stats with narrative framing</p>
       <div class="impact on-ink reveal">
         <p class="kicker impact-kicker">The season in numbers</p>
         <h4>The numbers are stories too.</h4>
-        <div class="impact-grid">
+        <div class="impact-grid stagger">
           <div class="impact-stat">
             <b>10,000+</b>
             <i>players every year</i>
@@ -870,7 +996,7 @@ html.js .reveal.in{opacity:1;transform:none}
         <h2 class="stitle" id="t-ui-heading">Utility, in the magazine's voice</h2>
         <p class="ssub">Registration stays fast — buttons say exactly what happens, and even an event card carries one community voice.</p>
       </div>
-      <div class="ui-grid reveal">
+      <div class="ui-grid reveal stagger">
         <div class="ui-panel">
           <p class="comp-label">Buttons</p>
           <div class="btn-row">
@@ -954,7 +1080,7 @@ html.js .reveal.in{opacity:1;transform:none}
         <span class="snum">10 · Voice &amp; tone</span>
         <h2 class="stitle" id="t-voice">Plain verbs, real details, quiet pride</h2>
       </div>
-      <div class="voice-grid reveal">
+      <div class="voice-grid reveal stagger">
         <div class="voice-card">
           <p class="kicker">Hero headline</p>
           <p class="voice-hed">Nobody referees this sport. That's the point.</p>
@@ -999,22 +1125,90 @@ html.js .reveal.in{opacity:1;transform:none}
 
 <script>
 (function(){
-  document.documentElement.classList.add('js');
-  var reveals = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
-  var settle = function(){
-    reveals.forEach(function(el){ el.classList.add('in'); });
-    if (io) { io.disconnect(); } /* nothing left to reveal — stop observing */
-  };
+  /* The editorial reveal, conducted. Base styles are the settled page; this
+     script only ever moves things TOWARD that state, on the two house curves. */
+  var doc = document.documentElement;
+  doc.classList.add('js');
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduced || !('IntersectionObserver' in window)) { settle(); return; }
-  var io = new IntersectionObserver(function(entries){
+  var all = Array.prototype.slice.call(document.querySelectorAll('.reveal, .stagger, .clip-reveal, [data-inkline]'));
+  var inklines = all.filter(function(el){ return el.hasAttribute('data-inkline'); });
+
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function unsplit(el){ /* ink is dry — restore the clean paragraph */
+    if (el.__orig != null){ el.innerHTML = el.__orig; el.__orig = null; el.classList.remove('is-split'); }
+  }
+  function split(el){ /* measure the rendered wrap, rebuild as masked lines */
+    var words = el.textContent.split(/\s+/).filter(Boolean);
+    if (words.length < 2) return;
+    var orig = el.innerHTML;
+    el.innerHTML = words.map(function(w){ return '<span class="w">' + esc(w) + '</span>'; }).join(' ');
+    var lines = [], top = null;
+    Array.prototype.forEach.call(el.querySelectorAll('.w'), function(w){
+      if (w.offsetTop !== top){ top = w.offsetTop; lines.push([]); }
+      lines[lines.length - 1].push(w.textContent);
+    });
+    el.innerHTML = lines.map(function(l, i){
+      return '<span class="q-line"><span class="q-line-in" style="transition-delay:' + (i * 90) + 'ms">' + esc(l.join(' ')) + '</span></span>';
+    }).join('');
+    el.__orig = orig;
+    el.__wait = lines.length * 90 + 1250;
+    el.classList.add('is-split');
+  }
+
+  var io = null, settled = false;
+  function settle(){
+    settled = true;
+    doc.classList.add('masthead-in');
+    inklines.forEach(unsplit);
+    all.forEach(function(el){ el.classList.add('in'); });
+    if (io) io.disconnect();
+  }
+  window.addEventListener('beforeprint', function(){ doc.classList.add('no-anim'); settle(); });
+  if (reduced || !('IntersectionObserver' in window)){ settle(); return; }
+
+  /* 1 · masthead entrance: meta → title from its mask → thesis → tags → seal */
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ doc.classList.add('masthead-in'); }); });
+
+  /* 2 · scroll choreography — observers unobserve after firing */
+  io = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
-      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      if (!e.isIntersecting) return;
+      var el = e.target;
+      el.classList.add('in');
+      io.unobserve(el);
+      if (el.__orig != null){ setTimeout(function(){ unsplit(el); }, el.__wait); }
     });
   }, { rootMargin: '0px 0px -8% 0px' });
-  reveals.forEach(function(el){ io.observe(el); });
-  /* unconditional settle: print, screenshots, and no-scroll views always get the final state */
-  setTimeout(settle, 1600);
+  all.forEach(function(el){ if (!el.hasAttribute('data-inkline')) io.observe(el); });
+
+  /* 3 · the quotes split only once the display face has loaded, so the
+     measured line breaks match the true typography; if fonts stall we
+     observe them unsplit — the base state is already fully inked */
+  var armed = false;
+  function armInklines(){
+    if (armed || settled) return;
+    armed = true;
+    inklines.forEach(function(el){ try { split(el); } catch (err) {} io.observe(el); });
+  }
+  if (document.fonts && document.fonts.ready){ document.fonts.ready.then(armInklines); }
+  setTimeout(armInklines, 1800);
+
+  /* 4 · settle watchdog: a view that receives no human input (print
+     pipelines, screenshot rigs, embeds) is fully inked well inside 2.5s;
+     the first scroll, pointer, or key hands the page to the observers */
+  var interacted = false;
+  var marks = ['scroll','wheel','pointerdown','pointermove','keydown','touchstart'];
+  function mark(){
+    interacted = true;
+    marks.forEach(function(t){ window.removeEventListener(t, mark); });
+  }
+  marks.forEach(function(t){ window.addEventListener(t, mark, { passive: true }); });
+  setTimeout(function(){
+    if (interacted) return;
+    doc.classList.add('settle-quick');
+    settle();
+    setTimeout(function(){ doc.classList.remove('settle-quick'); }, 800);
+  }, 1700);
 })();
 </script>
 </body>

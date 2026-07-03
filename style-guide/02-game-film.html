@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Direction 2 of 5 — Game Film · DiscNW Redesign</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -24,6 +25,11 @@
     --line-soft:rgba(242,246,248,.09);
     --disp:"Barlow Condensed","Arial Narrow",sans-serif;
     --body:"Inter",-apple-system,"Helvetica Neue",sans-serif;
+    /* house easing — the whole broadcast speaks two curves (default 'ease' is banned):
+       snap for micro (hovers, chips, toggles), lux for reveals, hero for the title lines */
+    --ease-snap:cubic-bezier(.4,0,.1,1);
+    --ease-lux:cubic-bezier(.16,1,.3,1);
+    --ease-hero:cubic-bezier(.65,.05,0,1);
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth; color-scheme:dark}
@@ -60,6 +66,50 @@
     margin:0 0 16px;
   }
   .sec-note{color:var(--slate); max-width:62ch; margin:0 0 48px}
+
+  /* ---------- kinetic broadcast: the motion system ----------
+     One language, three moves: headlines slide out of masks like a title
+     sequence, quiet blocks rise 24px, box-score digits roll to their totals.
+     Every initial-hidden style requires BOTH .js and motion-permission, so
+     no-JS, reduced-motion, and print all render the finished page. */
+  .tl{display:block}
+  .tl .tli{display:block}
+  @media (prefers-reduced-motion: no-preference){
+    .js .rv{
+      opacity:0; transform:translateY(24px);
+      transition:opacity .7s var(--ease-lux), transform .7s var(--ease-lux);
+      transition-delay:calc(var(--i,0)*90ms);
+    }
+    .js .rv.in{opacity:1; transform:none}
+    /* masked line: clip window padded .14em so Barlow descenders survive the crop */
+    .js .tl{overflow:hidden; padding-bottom:.14em; margin-bottom:-.14em}
+    .js .tl .tli{
+      transform:translateY(118%);
+      transition:transform .95s var(--ease-hero);
+      transition-delay:calc(var(--i,0)*90ms);
+    }
+    .js .tl.in .tli{transform:none}
+  }
+  /* odometer stat roll — built by JS only (base markup stays plain text).
+     Ghost chars keep real metrics + accessible text; aria-hidden columns carry
+     the pixels and roll up three false digits before landing on the total. */
+  .od{position:relative; display:inline-block; clip-path:inset(-.1em 0 -.24em 0); vertical-align:baseline}
+  .od-g{color:transparent}
+  .od-c,.od-v{position:absolute; top:0; left:0; user-select:none; pointer-events:none}
+  .od-c i{display:block; font-style:normal; height:var(--lh); line-height:var(--lh)}
+  .od-v{transform:translateY(calc(var(--lh)*1.4))}
+  @media (prefers-reduced-motion: no-preference){
+    .od-c{transition:transform .9s var(--ease-lux); transition-delay:calc(var(--i,0)*50ms)}
+    .od-v{transition:transform .9s var(--ease-lux); transition-delay:calc(var(--i,0)*50ms)}
+  }
+  .roll.in .od-c{transform:translateY(calc(var(--n)*var(--lh)*-1))}
+  .roll.in .od-v{transform:translateY(0)}
+  @media print{
+    .js .rv{opacity:1 !important; transform:none !important}
+    .js .tl .tli{transform:none !important}
+    .od-g{color:inherit !important}
+    .od-c,.od-v{display:none !important}
+  }
 
   /* ---------- 1. direction header ---------- */
   .slate-head{border-bottom:1px solid var(--line); padding:72px 0 48px}
@@ -194,14 +244,17 @@
   }
   @media (max-width:900px){ .site-nav{padding:16px 20px; gap:18px} }
   .site-logo{display:flex; align-items:center; text-decoration:none}
-  .site-logo img{display:block; width:132px; height:auto; filter:brightness(0) invert(1); opacity:.96}
+  /* the real white lockup — no filters, no redraw; clearspace comes from nav padding */
+  .site-logo img{display:block; width:140px; height:auto}
   .site-links{display:flex; gap:30px; margin-left:auto; align-items:center}
   /* :not(.btn) keeps the Register CTA a true button — link padding and
      link-hover color must never flatten it */
   .site-links a:not(.btn){
     font-family:var(--disp); font-weight:600; font-size:15px; letter-spacing:.17em; text-transform:uppercase;
     color:var(--chalk); text-decoration:none; padding:5px 1px 6px; border-bottom:2px solid transparent;
+    transition:color .3s var(--ease-snap), border-color .3s var(--ease-snap);
   }
+  @media (prefers-reduced-motion: reduce){ .site-links a:not(.btn){transition:none} }
   .site-links a:not(.btn):hover{color:var(--cone); border-bottom-color:var(--cone)}
   .site-links .btn{margin-left:10px}
   @media (max-width:900px){ .site-links a:not(.btn){display:none} }
@@ -249,7 +302,8 @@
     display:block; font-family:var(--disp); font-weight:700; font-size:30px; line-height:1.1;
     letter-spacing:.02em; font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1;
   }
-  .scorestrip span{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--slate); font-weight:500}
+  /* direct child only — the odometer injects spans inside <b> that must inherit its 30px */
+  .scorestrip div > span{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--slate); font-weight:500}
   /* the film room row: matte navy UI around honest, untouched footage */
   .filmrow{background:var(--night); border-top:1px solid var(--line-soft); padding:36px 48px 48px}
   @media (max-width:900px){ .filmrow{padding:28px 20px 32px} }
@@ -265,7 +319,9 @@
   .film-frame{position:relative; background:#000; aspect-ratio:16/9}
   .film-frame video{display:block; width:100%; height:100%; object-fit:cover}
   .film-toggle{
-    position:absolute; left:12px; bottom:12px; z-index:2; display:none;
+    /* top-left: the footage carries its own burned-in broadcast bug at bottom-left,
+       and a control must never sit on the crest */
+    position:absolute; left:12px; top:12px; z-index:2; display:none;
     align-items:center; justify-content:center; width:32px; height:32px;
     border-radius:6px; background:rgba(5,11,20,.88); border:1px solid var(--line);
     color:var(--chalk); cursor:pointer; padding:0;
@@ -281,6 +337,28 @@
     font-size:11px; font-weight:500; letter-spacing:.08em; color:var(--slate);
     background:rgba(5,11,20,.88); border-radius:4px; padding:3px 8px;
     font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1;
+    transition:color .3s var(--ease-snap);
+  }
+  /* broadcast bug: the film loops arrive with the formline mark burned in at
+     bottom-left — the network corner. Stills that lack it get the same 44px
+     white mark in the same corner, so every film surface signs off identically.
+     Shadow sits on the logo, never the footage. */
+  .film-bug{
+    position:absolute; left:14px; bottom:14px; z-index:2; width:44px; height:auto;
+    opacity:.92; filter:drop-shadow(0 1px 5px rgba(0,0,0,.5)); pointer-events:none;
+  }
+  /* hover-scrub: pointer X drives currentTime; the cone line is the jog bar.
+     Touch, reduced motion, and no-JS all keep the plain loop. */
+  .film-scrub{
+    position:absolute; left:0; right:0; bottom:0; height:3px; z-index:2;
+    background:var(--cone); transform:scaleX(0); transform-origin:left;
+    opacity:0; transition:opacity .3s var(--ease-snap);
+  }
+  .film-live.scrubbing .film-scrub{opacity:1}
+  .film-live.scrubbing .film-tc{color:var(--cone)}
+  @media (prefers-reduced-motion: reduce){ .film-tc, .film-scrub{transition:none} }
+  @media (hover:hover) and (pointer:fine){
+    .js .film-live.can-scrub{cursor:ew-resize}
   }
   .film figcaption{flex:1; padding:15px 20px 17px; font-size:14px; color:var(--slate); line-height:1.55; border-top:1px solid var(--line-soft)}
   .film figcaption b{display:block; color:var(--chalk); font-family:var(--disp); font-weight:600; letter-spacing:.12em; font-size:16px; line-height:1.25; text-transform:uppercase; margin-bottom:5px}
@@ -289,7 +367,8 @@
   .btn{
     display:inline-block; font-family:var(--disp); font-weight:700; letter-spacing:.1em; text-transform:uppercase;
     font-size:17px; text-decoration:none; border-radius:8px; padding:13px 26px 12px; line-height:1;
-    border:2px solid transparent; cursor:pointer; transition:background .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
+    border:2px solid transparent; cursor:pointer;
+    transition:background .3s var(--ease-snap), color .3s var(--ease-snap), border-color .3s var(--ease-snap), box-shadow .3s var(--ease-snap);
   }
   @media (prefers-reduced-motion: reduce){ .btn{transition:none} }
   .btn-primary{background:var(--cone); color:var(--night); box-shadow:0 10px 26px -14px rgba(255,107,28,.55)}
@@ -333,6 +412,8 @@
   .filmroom-photo{position:relative; min-height:520px}
   @media (max-width:920px){ .filmroom-photo{min-height:0; aspect-ratio:4/5; max-height:520px} }
   .filmroom-photo img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top}
+  /* the broadcast bug must escape the full-bleed photo rule above */
+  .filmroom-photo .film-bug{inset:auto; left:14px; bottom:14px; width:44px; height:46px; object-fit:contain}
   .filmroom-body{padding:44px 44px 40px; border-left:1px solid var(--line-soft)}
   @media (max-width:920px){ .filmroom-body{border-left:0; border-top:1px solid var(--line-soft)} }
   @media (max-width:640px){ .filmroom-body{padding:28px 20px} }
@@ -464,7 +545,9 @@
   .foot-nav a{
     font-family:var(--disp); font-weight:600; font-size:16px; letter-spacing:.16em; text-transform:uppercase;
     color:var(--chalk); text-decoration:none; border-bottom:2px solid transparent; padding-bottom:2px;
+    transition:color .3s var(--ease-snap), border-color .3s var(--ease-snap);
   }
+  @media (prefers-reduced-motion: reduce){ .foot-nav a{transition:none} }
   .foot-nav a:hover{color:var(--cone); border-bottom-color:var(--cone)}
   .foot-print{font-size:12.5px; color:var(--slate); letter-spacing:.08em}
 </style>
@@ -484,28 +567,28 @@
 </svg>
 
 <!-- ============ 1. DIRECTION HEADER ============ -->
-<header class="slate-head">
+<header class="slate-head" id="title-card">
   <div class="wrap">
-    <p class="slate-count">Direction 02 / 05</p>
-    <h1 class="slate-name">Game Film</h1>
-    <p class="slate-thesis">The sport, taken seriously: playbook chalk, film-room surfaces, and honest numbers speak to the athlete — with Spirit of the Game as the code of honor, not a softener.</p>
-    <p class="slate-tags" aria-label="Personality keywords">Disciplined · Competitive · Analytical · Night-lit · Spirited · Exacting</p>
+    <p class="slate-count rv" style="--i:0">Direction 02 / 05</p>
+    <h1 class="slate-name"><span class="tl" style="--i:1"><span class="tli">Game Film</span></span></h1>
+    <p class="slate-thesis rv" style="--i:3">The sport, taken seriously: playbook chalk, film-room surfaces, and honest numbers speak to the athlete — with Spirit of the Game as the code of honor, not a softener.</p>
+    <p class="slate-tags rv" style="--i:4" aria-label="Personality keywords">Disciplined · Competitive · Analytical · Night-lit · Spirited · Exacting</p>
   </div>
 </header>
 
 <main>
   <!-- ============ 2. THE IDEA ============ -->
   <section class="sec wrap" aria-labelledby="idea-t">
-    <p class="sec-eyebrow"><span class="idx">01</span>The idea</p>
-    <h2 class="sec-title" id="idea-t">Treat them like athletes</h2>
-    <p class="idea-copy">Most rec-sports sites talk down to their players. This direction assumes the opposite: the people on DiscNW fields study matchups, argue about force angles, and drive to Ocean Shores for a beach tournament — so the site treats them like athletes. One play diagram drawn in chalk, film presented straight, numbers set like a box score. <strong>Spirit of the Game</strong> runs through everything as the sport's code of honor — the thing that makes the competition trustworthy, not the thing that waters it down.</p>
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">01</span>The idea</p>
+    <h2 class="sec-title" id="idea-t"><span class="tl" style="--i:1"><span class="tli">Treat them like athletes</span></span></h2>
+    <p class="idea-copy rv" style="--i:2">Most rec-sports sites talk down to their players. This direction assumes the opposite: the people on DiscNW fields study matchups, argue about force angles, and drive to Ocean Shores for a beach tournament — so the site treats them like athletes. One play diagram drawn in chalk, film presented straight, numbers set like a box score. <strong>Spirit of the Game</strong> runs through everything as the sport's code of honor — the thing that makes the competition trustworthy, not the thing that waters it down.</p>
   </section>
 
   <!-- ============ 3. COLOR ============ -->
   <section class="sec wrap" aria-labelledby="color-t">
-    <p class="sec-eyebrow"><span class="idx">02</span>Color</p>
-    <h2 class="sec-title" id="color-t">Chalk on a rainy-night field</h2>
-    <p class="sec-note">Flat ink-navy surfaces, chalk-white type, and one hot accent — the orange of a practice cone — reserved strictly for actions and the huck arc. Photographs carry all the remaining color themselves, untouched.</p>
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">02</span>Color</p>
+    <h2 class="sec-title" id="color-t"><span class="tl" style="--i:1"><span class="tli">Chalk on a rainy-night field</span></span></h2>
+    <p class="sec-note rv" style="--i:2">Flat ink-navy surfaces, chalk-white type, and one hot accent — the orange of a practice cone — reserved strictly for actions and the huck arc. Photographs carry all the remaining color themselves, untouched.</p>
     <div class="swatch-grid">
       <div class="swatch">
         <div class="swatch-chip" style="background:#0B1626"></div>
@@ -560,9 +643,9 @@
 
   <!-- ============ 4. TYPOGRAPHY ============ -->
   <section class="sec wrap" aria-labelledby="type-t">
-    <p class="sec-eyebrow"><span class="idx">03</span>Typography</p>
-    <h2 class="sec-title" id="type-t">Scoreboard scale, game-notes detail</h2>
-    <p class="sec-note">Barlow Condensed goes genuinely big — jersey numbers, not headlines — then drops to small, wide-tracked labels. Inter does the quiet work of schedules and stories, with tabular numerals wherever a stat appears so columns of numbers sit like a box score.</p>
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">03</span>Typography</p>
+    <h2 class="sec-title" id="type-t"><span class="tl" style="--i:1"><span class="tli">Scoreboard scale, game-notes detail</span></span></h2>
+    <p class="sec-note rv" style="--i:2">Barlow Condensed goes genuinely big — jersey numbers, not headlines — then drops to small, wide-tracked labels. Inter does the quiet work of schedules and stories, with tabular numerals wherever a stat appears so columns of numbers sit like a box score.</p>
     <div class="type-board">
       <p class="type-label">Display — Barlow Condensed 700 · clamp(64–120px) · uppercase, 0.92 leading</p>
       <p class="type-display">Game to 15.</p>
@@ -591,19 +674,19 @@
 
       <p class="type-label" style="margin-top:32px">Tabular numerals in the wild · font-variant-numeric: tabular-nums</p>
       <dl class="statline tnum">
-        <div><dt>Final</dt><dd>13–11</dd></div>
-        <div><dt>Spirit score</dt><dd>11.50</dd></div>
-        <div><dt>Rainout hotline</dt><dd>(206) 781-5840</dd></div>
-        <div><dt>Hydration <span class="unit">/ tournament day</span></dt><dd>64–96 <span class="unit">oz</span></dd></div>
+        <div><dt>Final</dt><dd data-roll>13–11</dd></div>
+        <div><dt>Spirit score</dt><dd data-roll>11.50</dd></div>
+        <div><dt>Rainout hotline</dt><dd data-roll>(206) 781-5840</dd></div>
+        <div><dt>Hydration <span class="unit">/ tournament day</span></dt><dd data-roll>64–96 <span class="unit">oz</span></dd></div>
       </dl>
     </div>
   </section>
 
   <!-- ============ 5. SIGNATURE ELEMENT ============ -->
   <section class="sec wrap" aria-labelledby="sig-t">
-    <p class="sec-eyebrow"><span class="idx">04</span>Signature element</p>
-    <h2 class="sec-title" id="sig-t">The playbook diagram</h2>
-    <p class="sec-note">One graphic idea, drawn once and drawn perfectly: a chalk vertical stack, a dashed deep cut, and a single cone-orange huck. It lives here at full size and echoes exactly once more — as faint chalk behind the homepage headline. Like any good film session, you can run it back.</p>
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">04</span>Signature element</p>
+    <h2 class="sec-title" id="sig-t"><span class="tl" style="--i:1"><span class="tli">The playbook diagram</span></span></h2>
+    <p class="sec-note rv" style="--i:2">One graphic idea, drawn once and drawn perfectly: a chalk vertical stack, a dashed deep cut, and a single cone-orange huck. It lives here at full size and echoes exactly once more — as faint chalk behind the homepage headline. Like any good film session, you can run it back.</p>
 
     <div class="sig-board play-anim">
       <svg class="play-svg" viewBox="0 0 1120 520" role="img" aria-label="Ultimate play diagram: a vertical stack offense drawn in chalk on navy. The deepest cutter breaks toward the end zone on a dashed line while the handler's huck, drawn in orange, arcs downfield to meet the cut for a score.">
@@ -661,9 +744,9 @@
 
   <!-- ============ 6. HOMEPAGE HERO MOCKUP ============ -->
   <section class="sec wrap" aria-labelledby="hero-t">
-    <p class="sec-eyebrow"><span class="idx">05</span>Homepage hero</p>
-    <h2 class="sec-title" id="hero-t">discnw.org, redrawn</h2>
-    <p class="sec-note">The top of the redesigned homepage: a scoreboard-simple nav, one live registration line, a headline at jersey-number scale beside the play's faint chalk echo, and the org's real numbers set like a box score. Below the fold, this week's film is actual game film — full color, no tint, nothing on the frame but the score of the moment.</p>
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">05</span>Homepage hero</p>
+    <h2 class="sec-title" id="hero-t"><span class="tl" style="--i:1"><span class="tli">discnw.org, redrawn</span></span></h2>
+    <p class="sec-note rv" style="--i:2">The top of the redesigned homepage: a scoreboard-simple nav, one live registration line, a headline at jersey-number scale beside the play's faint chalk echo, and the org's real numbers set like a box score. Below the fold, this week's film is actual game film — full color, no tint, signed only by the DiscNW mark in the corner like a network bug. On a desktop, hovering a frame turns the pointer into a jog wheel: drag across to scrub the play.</p>
 
     <div class="mock-frame">
       <div class="browser-bar" aria-hidden="true">
@@ -673,7 +756,7 @@
       <div class="site">
         <nav class="site-nav" aria-label="DiscNW mockup navigation">
           <a class="site-logo" href="#">
-            <img src="assets/discnw-logo-transparent-april2021.png" alt="DiscNW home — Coast Salish-style twin-bird mark and DiscNW wordmark" width="132" height="56">
+            <img src="assets/brand/logo-full-white.png" alt="DiscNW home — Coast Salish-style twin-bird formline mark and DiscNW wordmark, white" width="1446" height="616">
           </a>
           <div class="site-links">
             <a href="#">Events</a>
@@ -686,16 +769,16 @@
         </nav>
 
         <div class="hero">
-          <p class="hero-status">Registering now — Summer Mixed Hat League</p>
-          <h1>10,000 players.<br>Zero referees.<br>One code.</h1>
+          <p class="hero-status rv" style="--i:0">Registering now — Summer Mixed Hat League</p>
+          <h1><span class="tl" style="--i:1"><span class="tli">10,000 players.</span></span><span class="tl" style="--i:2"><span class="tli">Zero referees.</span></span><span class="tl" style="--i:3"><span class="tli">One code.</span></span></h1>
           <div class="hero-copy">
-            <p class="hero-sub">DiscNW runs the leagues, camps, and tournaments where Puget Sound ultimate gets serious — self-officiated at every level, from middle school to masters.</p>
-            <div class="hero-ctas">
+            <p class="hero-sub rv" style="--i:4">DiscNW runs the leagues, camps, and tournaments where Puget Sound ultimate gets serious — self-officiated at every level, from middle school to masters.</p>
+            <div class="hero-ctas rv" style="--i:5">
               <a class="btn btn-primary" href="#">Register for summer leagues</a>
               <a class="btn btn-secondary" href="#">See the full schedule</a>
             </div>
           </div>
-          <div class="hero-art" aria-hidden="true">
+          <div class="hero-art rv" style="--i:6" aria-hidden="true">
             <!-- the signature's single echo: same play, faint chalk, static -->
             <svg viewBox="0 0 620 460" focusable="false">
               <g opacity=".38" stroke="#F2F6F8" fill="none">
@@ -725,10 +808,10 @@
         </div>
 
         <div class="scorestrip tnum" role="list" aria-label="DiscNW by the numbers">
-          <div role="listitem"><b>10,000+</b><span>players every year</span></div>
-          <div role="listitem"><b>No. 3</b><span>youth sport in King County</span></div>
-          <div role="listitem"><b>7 v 7</b><span>non-contact, self-officiated</span></div>
-          <div role="listitem"><b>$33</b><span>lowest sliding-scale tier</span></div>
+          <div role="listitem" class="rv" style="--i:0"><b data-roll>10,000+</b><span>players every year</span></div>
+          <div role="listitem" class="rv" style="--i:1"><b data-roll>No. 3</b><span>youth sport in King County</span></div>
+          <div role="listitem" class="rv" style="--i:2"><b data-roll>7 v 7</b><span>non-contact, self-officiated</span></div>
+          <div role="listitem" class="rv" style="--i:3"><b data-roll>$33</b><span>lowest sliding-scale tier</span></div>
         </div>
 
         <div class="filmrow">
@@ -737,7 +820,7 @@
             <a href="#">All highlights</a>
           </div>
           <div class="filmgrid">
-            <figure class="film">
+            <figure class="film rv" style="--i:0">
               <div class="film-frame film-live">
                 <video muted loop playsinline preload="metadata" poster="assets/video/poster-zLzKRCbhIAg.jpg" aria-label="Muted game film loop: a player sprints deep, rises over two defenders for the catch, and disappears into the celebration — Spring Reign 2026 high school finals">
                   <source src="assets/video/loop-hs-catch.mp4" type="video/mp4">
@@ -747,10 +830,11 @@
                   <svg class="i-pause" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5 h2.6 v9 h-2.6 z M6.9 1.5 h2.6 v9 h-2.6 z" fill="currentColor"/></svg>
                 </button>
                 <span class="film-tc" aria-hidden="true">00:00</span>
+                <span class="film-scrub" aria-hidden="true"></span>
               </div>
-              <figcaption><b>Spring Reign HS final · The catch</b>Actual game film: the deep shot goes up over three players and comes down a goal.</figcaption>
+              <figcaption><b>Spring Reign HS final · The catch</b>Actual game film: the deep shot goes up over three players and comes down a goal. Hover to scrub the frame.</figcaption>
             </figure>
-            <figure class="film">
+            <figure class="film rv" style="--i:1">
               <div class="film-frame film-live">
                 <video muted loop playsinline preload="metadata" poster="assets/video/poster--vM_JH6IbDo.jpg" aria-label="Muted game film loop: both teams form a post-game spirit tunnel of high fives — Spring Reign 2026 middle school finals">
                   <source src="assets/video/loop-ms-spirit-tunnel.mp4" type="video/mp4">
@@ -760,8 +844,9 @@
                   <svg class="i-pause" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5 h2.6 v9 h-2.6 z M6.9 1.5 h2.6 v9 h-2.6 z" fill="currentColor"/></svg>
                 </button>
                 <span class="film-tc" aria-hidden="true">00:00</span>
+                <span class="film-scrub" aria-hidden="true"></span>
               </div>
-              <figcaption><b>Spring Reign MS final · Spirit tunnel</b>Both teams in one high-five line — spirit scores get filed minutes after this.</figcaption>
+              <figcaption><b>Spring Reign MS final · Spirit tunnel</b>Both teams in one high-five line — spirit scores get filed minutes after this. Hover to scrub the frame.</figcaption>
             </figure>
           </div>
         </div>
@@ -771,23 +856,23 @@
 
   <!-- ============ 7. AUDIENCE PATHWAYS ============ -->
   <section class="sec wrap" aria-labelledby="path-t">
-    <p class="sec-eyebrow"><span class="idx">06</span>Audience pathways</p>
-    <h2 class="sec-title" id="path-t">Three ways onto the field</h2>
-    <p class="sec-note">The client's number-one ask: players, coaches, and parents each get a door labeled in their own language — athlete-direct for players, tool-shaped for coaches, proof-shaped for parents.</p>
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">06</span>Audience pathways</p>
+    <h2 class="sec-title" id="path-t"><span class="tl" style="--i:1"><span class="tli">Three ways onto the field</span></span></h2>
+    <p class="sec-note rv" style="--i:2">The client's number-one ask: players, coaches, and parents each get a door labeled in their own language — athlete-direct for players, tool-shaped for coaches, proof-shaped for parents.</p>
     <div class="path-grid">
-      <article class="path-card">
+      <article class="path-card rv" style="--i:0">
         <p class="path-tag">Players</p>
         <h3>Get better every season</h3>
         <p class="path-copy">Pickup to hat league to club tryouts: <b>year-round mixed and single-gender play</b>, plus tournaments from Sea Plastic on the beach to Potlatch on the big weekend. Your schedule lives one click from your name.</p>
         <a class="btn btn-primary btn-sm" href="#">Find your league</a>
       </article>
-      <article class="path-card">
+      <article class="path-card rv" style="--i:1">
         <p class="path-tag">Coaches &amp; volunteers</p>
         <h3>Run a smarter sideline</h3>
         <p class="path-copy">The <b>DiscNW Coaching Collective</b> hands you practice plans, season templates, and a bench of coaches trading drills. Certification is a checklist here, not a maze — done before your first practice.</p>
         <a class="btn btn-secondary btn-sm" href="#">Join the Coaching Collective</a>
       </article>
-      <article class="path-card">
+      <article class="path-card rv" style="--i:2">
         <p class="path-tag">Parents &amp; families</p>
         <h3>Yes, it's a real sport. Here's the proof.</h3>
         <p class="path-copy">Non-contact, self-officiated, coached by <b>background-checked, SafeSport-trained adults</b> — and the third most popular youth sport in King County. Sliding-scale fees mean the price never picks the roster.</p>
@@ -798,13 +883,14 @@
 
   <!-- ============ 8. STORYTELLING COMPONENT ============ -->
   <section class="sec wrap" aria-labelledby="story-t">
-    <p class="sec-eyebrow"><span class="idx">07</span>Storytelling component</p>
-    <h2 class="sec-title" id="story-t">The film room</h2>
-    <p class="sec-note">Stories told the way this audience already talks: one honest frame, a timecode breakdown, and the quote that makes it matter. The same template serves a first layout, a coach's favorite drill, or a spirit circle that fixed a game.</p>
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">07</span>Storytelling component</p>
+    <h2 class="sec-title" id="story-t"><span class="tl" style="--i:1"><span class="tli">The film room</span></span></h2>
+    <p class="sec-note rv" style="--i:2">Stories told the way this audience already talks: one honest frame, a timecode breakdown, and the quote that makes it matter. The same template serves a first layout, a coach's favorite drill, or a spirit circle that fixed a game.</p>
 
-    <article class="filmroom">
+    <article class="filmroom rv" style="--i:0">
       <div class="filmroom-photo">
         <img src="assets/ycc-tryouts-2015-4.jpg" width="2333" height="2475" alt="Youth club tryouts: a player releases a forehand past a defender in a black pinnie, the white disc frozen mid-air between them, bleachers and evergreens behind">
+        <img class="film-bug" src="assets/brand/logo-mark-white.png" alt="" width="590" height="616">
       </div>
       <div class="filmroom-body">
         <p class="kicker">Film room · Fall MS Mixed League</p>
@@ -823,16 +909,16 @@
     <p class="treatment-note"><b>Photo treatment: none.</b> Game film and stills run full color at native contrast — the film room is matte navy UI around the footage, never a tint on it. Chalk belongs on the diagram, not on people.</p>
 
     <div class="impact tnum">
-      <div>
-        <b>10,000+</b>
+      <div class="rv" style="--i:0">
+        <b data-roll>10,000+</b>
         <p>players take the field with DiscNW every year — and every one of them makes their own calls. No referees, ever.</p>
       </div>
-      <div>
-        <b>$33<span class="unit"> – $495</span></b>
+      <div class="rv" style="--i:1">
+        <b data-roll>$33<span class="unit"> – $495</span></b>
         <p>the sliding scale. Pick the tier that fits your household; same leagues, same fields, same game for everyone.</p>
       </div>
-      <div>
-        <b>Grades 3–12</b>
+      <div class="rv" style="--i:2">
+        <b data-roll>Grades 3–12</b>
         <p>summer camp divisions, from first catch at Hiawatha to the Overnight Training Camp grind at Camp Waskowitz.</p>
       </div>
     </div>
@@ -840,11 +926,11 @@
 
   <!-- ============ 9. UI COMPONENTS ============ -->
   <section class="sec wrap" aria-labelledby="ui-t">
-    <p class="sec-eyebrow"><span class="idx">08</span>UI components</p>
-    <h2 class="sec-title" id="ui-t">Kit of parts</h2>
-    <p class="sec-note">Team-tools discipline: every control flat, labeled, and obvious. Orange appears exactly where a decision does.</p>
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">08</span>UI components</p>
+    <h2 class="sec-title" id="ui-t"><span class="tl" style="--i:1"><span class="tli">Kit of parts</span></span></h2>
+    <p class="sec-note rv" style="--i:2">Team-tools discipline: every control flat, labeled, and obvious. Orange appears exactly where a decision does.</p>
     <div class="ui-grid">
-      <div class="ui-panel">
+      <div class="ui-panel rv" style="--i:0">
         <h3>Buttons &amp; filters</h3>
         <div class="btn-rows">
           <div class="btn-row">
@@ -890,7 +976,7 @@
         </form>
       </div>
 
-      <div class="ui-panel">
+      <div class="ui-panel rv" style="--i:1">
         <h3>Event card</h3>
         <article class="event-card">
           <div class="event-top">
@@ -916,21 +1002,21 @@
 
   <!-- ============ 10. VOICE & TONE ============ -->
   <section class="sec wrap" aria-labelledby="voice-t">
-    <p class="sec-eyebrow"><span class="idx">09</span>Voice &amp; tone</p>
-    <h2 class="sec-title" id="voice-t">Coach's voice, athlete's ear</h2>
-    <p class="sec-note">Direct, specific, a little dry. Numbers whenever they earn their place. Warmth shows up as respect — the site assumes you can handle real information.</p>
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">09</span>Voice &amp; tone</p>
+    <h2 class="sec-title" id="voice-t"><span class="tl" style="--i:1"><span class="tli">Coach's voice, athlete's ear</span></span></h2>
+    <p class="sec-note rv" style="--i:2">Direct, specific, a little dry. Numbers whenever they earn their place. Warmth shows up as respect — the site assumes you can handle real information.</p>
     <div class="voice-grid">
-      <div class="voice-card">
+      <div class="voice-card rv" style="--i:0">
         <h3>Hero headline</h3>
         <p class="vc-disp">Train all winter. Prove it at Potlatch.</p>
         <p class="vc-note">Season-arc framing: every league is a build toward something.</p>
       </div>
-      <div class="voice-card">
+      <div class="voice-card rv" style="--i:1">
         <h3>Registration confirmation</h3>
         <p class="vc-body">Roster locked. You're in for Summer Mixed Hat League — first pull is June 2. Your schedule posts under your name, top right, about two weeks out.</p>
         <p class="vc-note">Confirmation reads like a team announcement, not a receipt.</p>
       </div>
-      <div class="voice-card">
+      <div class="voice-card rv" style="--i:2">
         <h3>To a nervous first-time parent</h3>
         <p class="vc-body">Ultimate is non-contact, and the kids referee themselves — it teaches honest competition faster than any whistle could. Send cleats, water, and a rain layer. We'll teach the rest, including you.</p>
         <p class="vc-note">Reassurance through facts, closed with one line of warmth.</p>
@@ -941,14 +1027,14 @@
 
 <!-- ============ 11. FOOTER ============ -->
 <footer class="verdict wrap">
-  <p class="sec-eyebrow"><span class="idx">10</span>The honest read</p>
-  <h2 class="sec-title">Is Game Film your direction?</h2>
+  <p class="sec-eyebrow rv" style="--i:0"><span class="idx">10</span>The honest read</p>
+  <h2 class="sec-title"><span class="tl" style="--i:1"><span class="tli">Is Game Film your direction?</span></span></h2>
   <div class="verdict-grid">
-    <div class="verdict-card go">
+    <div class="verdict-card go rv" style="--i:0">
       <h3>Choose this direction if…</h3>
       <p>Your first job is convincing competitive players, captains, and ambitious teenagers that DiscNW takes the sport as seriously as they do — and you want parents to read that seriousness as legitimacy.</p>
     </div>
-    <div class="verdict-card warn">
+    <div class="verdict-card warn rv" style="--i:1">
       <h3>Think twice if…</h3>
       <p>The nervous eight-year-old and the brand-new parent are your front door — film-room intensity can read as a tryout rather than a welcome, and this direction needs discipline to stay friendly at the edges.</p>
     </div>
@@ -964,8 +1050,103 @@
   document.documentElement.classList.add('js');
   (function(){
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var hasIO = 'IntersectionObserver' in window;
 
-    /* the ONE motion moment: the signature huck draws itself, once.
+    /* ---- kinetic broadcast 1/3: the box-score odometer ----
+       Built only when motion is welcome; the markup underneath stays plain text.
+       Every digit becomes a transparent ghost (real metrics, real accessible text)
+       plus an aria-hidden column that rolls three false digits before the total. */
+    if (!reduce && hasIO) {
+      document.querySelectorAll('[data-roll]').forEach(function(stat){
+        var tokens = 0;
+        function lineH(el){
+          var px = parseFloat(getComputedStyle(el).lineHeight);
+          if (!px || isNaN(px)) px = parseFloat(getComputedStyle(el).fontSize) * 1.15;
+          return px + 'px';
+        }
+        function baseToken(){
+          var t = document.createElement('span');
+          t.className = 'od';
+          t.style.setProperty('--i', tokens++);
+          return t;
+        }
+        function ghost(text){
+          var g = document.createElement('span');
+          g.className = 'od-g';
+          g.textContent = text.replace(/ /g, '\u00A0');
+          return g;
+        }
+        function digitToken(ch){
+          var t = baseToken(), d = +ch;
+          t.appendChild(ghost(ch));
+          var col = document.createElement('span');
+          col.className = 'od-c';
+          col.setAttribute('aria-hidden', 'true');
+          col.style.setProperty('--n', 3);
+          [0, (d + 3) % 10, (d + 7) % 10, d].forEach(function(n){
+            var row = document.createElement('i');
+            row.textContent = n;
+            col.appendChild(row);
+          });
+          t.appendChild(col);
+          return t;
+        }
+        function chunkToken(text){
+          var t = baseToken();
+          t.appendChild(ghost(text));
+          var v = document.createElement('span');
+          v.className = 'od-v';
+          v.setAttribute('aria-hidden', 'true');
+          v.textContent = text.replace(/ /g, '\u00A0');
+          t.appendChild(v);
+          return t;
+        }
+        (function process(el){
+          el.style.setProperty('--lh', lineH(el));
+          Array.prototype.slice.call(el.childNodes).forEach(function(node){
+            if (node.nodeType === 3) {
+              var frag = document.createDocumentFragment(), run = '';
+              function flush(){ if (run) { frag.appendChild(chunkToken(run)); run = ''; } }
+              node.textContent.split('').forEach(function(ch){
+                if (ch >= '0' && ch <= '9') { flush(); frag.appendChild(digitToken(ch)); }
+                else run += ch;
+              });
+              flush();
+              el.replaceChild(frag, node);
+            } else if (node.nodeType === 1) {
+              process(node);
+            }
+          });
+        })(stat);
+        stat.classList.add('roll');
+      });
+    }
+
+    /* ---- kinetic broadcast 2/3: reveal engine ----
+       The slate header runs as a title card on load; everything else reveals on
+       entry, staggered by --i, then unobserved. Any missing capability (or
+       reduced motion) resolves instantly to the settled page. */
+    var reveals = Array.prototype.slice.call(document.querySelectorAll('.rv, .tl, .roll'));
+    var card = document.getElementById('title-card');
+    if (reduce || !hasIO) {
+      reveals.forEach(function(el){ el.classList.add('in'); });
+    } else {
+      var cardEls = [], scrollEls = [];
+      reveals.forEach(function(el){
+        (card && card.contains(el) ? cardEls : scrollEls).push(el);
+      });
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){
+        cardEls.forEach(function(el){ el.classList.add('in'); });
+      }); });
+      var rio = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); }
+        });
+      }, {threshold:.18, rootMargin:'0px 0px -6% 0px'});
+      scrollEls.forEach(function(el){ rio.observe(el); });
+    }
+
+    /* the signature moment: the huck draws itself, once.
        Unconditional settle: a 550ms failsafe forces the final state even with no
        scroll (550ms + 1.55s draw + flash ends 1.87s in → sharp by 2.42s, inside
        the 2.5s budget). Reduced motion or no JS renders the finished diagram, static. */
@@ -995,15 +1176,20 @@
       });
     });
 
-    /* this week's film — clean muted loops with a quiet running timecode.
-       Autoplay only in view and only when motion is welcome; reduced motion
-       (or no JS) leaves the honest poster frame. */
+    /* ---- kinetic broadcast 3/3: this week's film ----
+       Clean muted loops with a running timecode — and on fine pointers the
+       frame becomes a jog wheel: hovering pauses the loop and pointer X
+       scrubs currentTime along the cone-orange bar. Touch, reduced motion,
+       and no-JS all degrade to the plain loop or the honest poster frame. */
     document.querySelectorAll('.film-live').forEach(function(box){
       var video = box.querySelector('video');
       if (!video) return;
       var tc = box.querySelector('.film-tc');
       var btn = box.querySelector('.film-toggle');
+      var bar = box.querySelector('.film-scrub');
       var userPaused = reduce;
+      var inView = !hasIO;
+      var scrubbing = false, pendingX = null, rafId = null;
       video.muted = true;
       function setUI(playing){
         box.classList.toggle('playing', playing);
@@ -1024,16 +1210,54 @@
         else { userPaused = true; video.pause(); }
       });
       setUI(false);
-      if (!reduce && 'IntersectionObserver' in window) {
+      if (!reduce && hasIO) {
         var vio = new IntersectionObserver(function(entries){
           entries.forEach(function(e){
-            if (e.isIntersecting) { if (!userPaused && video.paused) tryPlay(); }
+            inView = e.isIntersecting;
+            if (e.isIntersecting) { if (!userPaused && !scrubbing && video.paused) tryPlay(); }
             else if (!video.paused) { video.pause(); }
           });
         }, {threshold:.2});
         vio.observe(box);
       } else if (!reduce) {
         tryPlay();
+      }
+
+      /* hover-scrub — fine pointers only; needs real duration metadata */
+      if (!reduce && window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+        function dur(){
+          var d = video.duration;
+          return (d && isFinite(d)) ? d : 0;
+        }
+        function arm(){ if (dur()) box.classList.add('can-scrub'); }
+        video.addEventListener('loadedmetadata', arm);
+        arm();
+        function applyScrub(){
+          rafId = null;
+          var d = dur();
+          if (!scrubbing || !d || pendingX === null) return;
+          var r = box.getBoundingClientRect();
+          var f = Math.min(1, Math.max(0, (pendingX - r.left) / (r.width || 1)));
+          try { video.currentTime = Math.min(f * d, d - 0.05); } catch (_) {}
+          if (bar) bar.style.transform = 'scaleX(' + f + ')';
+        }
+        box.addEventListener('pointerenter', function(e){
+          if (e.pointerType === 'touch' || !dur()) return;
+          scrubbing = true;
+          box.classList.add('scrubbing');
+          if (!video.paused) video.pause();
+        });
+        box.addEventListener('pointermove', function(e){
+          if (!scrubbing || !video.paused) return; /* if they hit play mid-hover, let it run */
+          pendingX = e.clientX;
+          if (!rafId) rafId = requestAnimationFrame(applyScrub);
+        });
+        box.addEventListener('pointerleave', function(){
+          if (!scrubbing) return;
+          scrubbing = false;
+          box.classList.remove('scrubbing');
+          if (!userPaused && inView) tryPlay();
+        });
       }
     });
   })();

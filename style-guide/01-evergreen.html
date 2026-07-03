@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Direction 1 · Evergreen — DiscNW redesign</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900&family=Source+Sans+3:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
@@ -25,6 +26,12 @@
     --sky-mid:#CFDAD7;
     --sky-low:#E9EDE6;
     --wrap:1200px;
+
+    /* house easing — three curves, used everywhere, default 'ease' is banned.
+       snap: micro-interactions · lux: reveals and rises · hero: band wipes */
+    --ease-snap:cubic-bezier(.4,0,.1,1);
+    --ease-lux:cubic-bezier(.16,1,.3,1);
+    --ease-hero:cubic-bezier(.65,.05,0,1);
   }
   *{ box-sizing:border-box; }
   html{ scroll-behavior:smooth; }
@@ -59,7 +66,14 @@
     font-weight:700; font-size:12px;
     letter-spacing:.16em; text-transform:uppercase;
     color:var(--hemlock);
-    margin:0 0 12px;
+    margin:0 0 14px; padding-bottom:10px;
+    position:relative;
+  }
+  /* the wet-grass tick under every section label — swept in on arrival */
+  .kicker::after{
+    content:""; position:absolute; left:0; bottom:0;
+    width:44px; height:3px; background:var(--grass);
+    transform-origin:0 50%;
   }
   .sec-title{
     font-family:'Archivo',sans-serif;
@@ -76,18 +90,18 @@
     margin:16px 2px 0; max-width:84ch;
   }
 
-  /* ---------- the signature: treeline horizon ---------- */
-  .treeline{ display:block; width:100%; height:clamp(120px, 10vw, 240px); }
-  .tl-far{ fill:#B9C8CD; }
-  .tl-mid{ fill:#71897A; }
-  .tl-near{ fill:#2E5843; }
-  .tl-front{ fill:var(--fir); }
-  .skyband{ background:linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 52%, var(--sky-low) 100%); }
-  .skyband .treeline{ margin-bottom:-1px; }
-
   /* ---------- photos: clean, full color, nothing on top, no filter ---------- */
   .ph{ display:block; width:100%; object-fit:cover; }
   .ph-cap{ font-size:13px; font-style:italic; color:var(--slate); margin:10px 2px 0; }
+
+  /* ---------- the signature: the atmospheric band ----------
+     A full-bleed Northwest still used as structure. The image is never
+     tinted or typed over; captions keep to a fir plate below the frame.
+     Each band reveals exactly once with a clip-path wipe, then holds still. */
+  .band-clip{ display:block; overflow:hidden; background:var(--fir); }
+  .band-plate{ background:var(--fir); }
+  .band-plate-in{ max-width:var(--wrap); margin:0 auto; padding:20px 32px 28px; }
+  .band-cap{ margin:0; font-size:15px; font-style:italic; color:#C9D6CD; max-width:74ch; }
 
   /* ---------- buttons ---------- */
   .btn{
@@ -95,16 +109,19 @@
     font-family:'Source Sans 3',sans-serif; font-weight:700; font-size:16px; line-height:1;
     padding:16px 24px; border-radius:8px; /* 48px tall — on the 8px grid */
     text-decoration:none;
-    transition:background-color .15s ease, color .15s ease, transform .15s ease;
+    transition:background-color .3s var(--ease-snap), color .3s var(--ease-snap),
+               box-shadow .3s var(--ease-snap), transform .3s var(--ease-snap);
   }
   .btn-primary{ background:var(--grass); color:var(--btn-ink); }
-  .btn-primary:hover, .btn-primary.demo-hover{ background:var(--grass-dark); transform:translateY(-1px); }
+  .btn-primary:hover, .btn-primary.demo-hover{ background:var(--grass-dark); }
+  /* magnetic primaries: JS drives transform, so the curve must not fight the lerp */
+  .magnet{ transition:background-color .3s var(--ease-snap), color .3s var(--ease-snap); }
   .btn-secondary{
     background:transparent; color:var(--hemlock);
     box-shadow:inset 0 0 0 2px var(--hemlock);
   }
   .btn-secondary:hover, .btn-secondary.demo-hover{ background:var(--hemlock); color:var(--paper); transform:translateY(-1px); }
-  .btn-primary:active, .btn-secondary:active{ transform:translateY(0); }
+  .btn-secondary:active{ transform:translateY(0); }
   .btn-quiet{
     background:none; padding:16px 4px;
     color:var(--hemlock); font-weight:700;
@@ -113,13 +130,20 @@
   }
   .btn-quiet:hover, .btn-quiet.demo-hover{ color:var(--fir); text-decoration-thickness:3px; }
 
-  /* ---------- 1 · masthead (the page opens on the horizon) ---------- */
+  /* ---------- hover roll: duplicate-and-shift nav labels ---------- */
+  .roll{ position:relative; display:inline-block; overflow:hidden; vertical-align:top; }
+  .roll-a, .roll-b{ display:block; transition:transform .45s var(--ease-snap); }
+  .roll-b{ position:absolute; top:100%; left:0; }
+  .roll:hover .roll-a, .roll:focus-visible .roll-a,
+  .roll:hover .roll-b, .roll:focus-visible .roll-b{ transform:translateY(-100%); }
+
+  /* ---------- 1 · masthead (the page opens on the real horizon) ---------- */
   .masthead{
     background:linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 46%, var(--sky-low) 100%);
   }
   .masthead-in{
     max-width:var(--wrap); margin:0 auto;
-    padding:96px 32px 56px;
+    padding:96px 32px 64px;
   }
   .mast-series{
     margin:0 0 20px;
@@ -139,21 +163,32 @@
     letter-spacing:.16em; text-transform:uppercase; color:var(--hemlock);
   }
   .mast-tags span{ color:var(--fog); padding:0 8px; }
-  .masthead .treeline{ height:clamp(140px, 13vw, 260px); margin-bottom:-1px; }
+  .mast-band{ margin:0; background:var(--fir); }
+  .mast-band .ph{
+    max-width:2400px; margin:0 auto; /* native width — never upscaled */
+    height:clamp(360px, 44vw, 700px);
+    object-position:50% 35%;
+  }
+  .mast-plate-in{ max-width:var(--wrap); margin:0 auto; padding:22px 32px 30px; }
+  .mast-cap{ margin:0; font-size:15px; font-style:italic; color:#C9D6CD; max-width:74ch; }
 
-  /* the page's one orchestrated moment: a quiet load sequence.
-     Base styles ARE the settled state — if animations never run
-     (reduced motion, print, old browsers) the page is simply sharp. */
-  @keyframes rise-in{ from{ opacity:0; transform:translateY(16px); } }
-  @keyframes drift-up{ from{ opacity:0; transform:translateY(12px); } }
-  .masthead-in > *{ animation:rise-in .7s cubic-bezier(.2,.7,.3,1) backwards; }
-  .masthead-in > :nth-child(2){ animation-delay:.06s; }
-  .masthead-in > :nth-child(3){ animation-delay:.12s; }
-  .masthead-in > :nth-child(4){ animation-delay:.18s; }
-  .masthead .treeline .tl-front{ animation:drift-up .8s .10s cubic-bezier(.2,.7,.3,1) backwards; }
-  .masthead .treeline .tl-near{ animation:drift-up .8s .22s cubic-bezier(.2,.7,.3,1) backwards; }
-  .masthead .treeline .tl-mid{ animation:drift-up .8s .34s cubic-bezier(.2,.7,.3,1) backwards; }
-  .masthead .treeline .tl-far{ animation:drift-up .8s .46s cubic-bezier(.2,.7,.3,1) backwards; }
+  /* the page's one orchestrated entrance: name lines rise out of masks, the fog
+     band wipes open beneath them, the caption settles last. Pure CSS keyframes —
+     base styles ARE the settled state, so no-JS, print, and screenshots are whole,
+     and everything is still by 2.1s. */
+  @keyframes mask-rise{ from{ transform:translateY(130%); } }
+  @keyframes fade-rise{ from{ opacity:0; transform:translateY(18px); } }
+  @keyframes band-wipe{ from{ clip-path:inset(0 0 100% 0); } to{ clip-path:inset(0 0 0 0); } }
+  @keyframes band-settle{ from{ transform:scale(1.045); } }
+  .mline{ display:block; overflow:hidden; padding-bottom:.15em; margin-bottom:-.15em; }
+  .mline-in{ display:block; animation:mask-rise .95s var(--ease-lux) backwards; }
+  .mast-series .mline-in{ animation-delay:.08s; }
+  .mast-name .mline-in{ animation-delay:.18s; }
+  .mast-thesis{ animation:fade-rise .9s var(--ease-lux) .34s backwards; }
+  .mast-tags{ animation:fade-rise .9s var(--ease-lux) .44s backwards; }
+  .mast-band .band-clip{ animation:band-wipe 1.15s var(--ease-hero) .42s backwards; }
+  .mast-band .ph{ animation:band-settle 1.6s var(--ease-lux) .42s backwards; }
+  .mast-cap{ animation:fade-rise .8s var(--ease-lux) 1.1s backwards; }
 
   /* ---------- 2 · idea ---------- */
   .idea-copy{ max-width:68ch; font-size:21px; line-height:1.65; color:var(--ink); margin:0; }
@@ -216,8 +251,7 @@
 
   /* ---------- 5 · signature specimen ---------- */
   .sig-frame{ border-radius:16px; overflow:hidden; background:var(--card); box-shadow:0 24px 48px -32px rgba(20,41,31,.35); }
-  .sig-sky{ background:linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 52%, var(--sky-low) 100%); padding-top:56px; }
-  .sig-sky .treeline{ height:clamp(150px, 14vw, 240px); margin-bottom:-1px; }
+  .sig-photo .ph{ height:clamp(240px, 30vw, 420px); object-position:50% 62%; }
   .sig-base{
     background:var(--fir); color:#D9E3DA;
     padding:22px 30px 24px;
@@ -231,20 +265,6 @@
     letter-spacing:.16em; text-transform:uppercase; color:var(--hemlock);
   }
   .sig-uses span{ color:var(--fog); padding:0 8px; }
-
-  /* ---------- 5b · fog grove break: the real fog, then the drawn horizon ---------- */
-  .grove-break{ margin:0; background:var(--fir); }
-  .grove-break .ph{
-    max-width:2400px; margin:0 auto; /* native width — never upscaled */
-    height:clamp(340px, 42vw, 680px);
-    object-position:50% 35%;
-  }
-  .grove-plate{ background:var(--fir); }
-  .grove-plate-in{
-    max-width:var(--wrap); margin:0 auto;
-    padding:24px 32px 32px;
-  }
-  .grove-cap{ margin:0; font-size:15.5px; font-style:italic; color:#C9D6CD; max-width:74ch; }
 
   /* ---------- 6 · homepage hero mockup (the money shot) ---------- */
   .browser{
@@ -268,17 +288,16 @@
     display:flex; align-items:center; gap:32px;
     padding:16px 40px;
   }
-  .mock-logo img{
-    display:block; width:140px; height:auto;
-    filter:brightness(0) invert(1); opacity:.97;
-  }
+  .mock-logo img{ display:block; width:140px; height:auto; }
   .mock-links{ display:flex; gap:24px; margin-left:auto; }
   .mock-links span{ color:#DCE5DC; font-weight:600; font-size:15.5px; }
   .mock-register{
     background:var(--grass); color:var(--btn-ink);
     font-weight:700; font-size:15px;
     padding:12px 24px; border-radius:8px;
+    transition:background-color .3s var(--ease-snap);
   }
+  .mock-register:hover{ background:var(--grass-dark); }
   .mock-burger{ display:none; margin-left:auto; }
   .mock-burger span{ display:block; width:22px; height:2.5px; background:#DCE5DC; margin:4px 0; border-radius:2px; }
 
@@ -303,7 +322,7 @@
   }
   .mock-hero-inner{
     max-width:1040px; margin:0 auto;
-    padding:88px 48px 40px;
+    padding:88px 48px 72px;
     text-align:center;
   }
   .mock-eyebrow{
@@ -326,7 +345,6 @@
     color:var(--hemlock); font-weight:700; font-size:16px;
     text-decoration:underline; text-underline-offset:4px;
   }
-  .mock-hero .treeline{ height:clamp(120px, 13vw, 220px); margin-bottom:-1px; display:block; }
   .mock-photo{
     display:block; width:100%;
     height:clamp(300px, 34vw, 460px);
@@ -369,12 +387,32 @@
   }
   .path-card p{ margin:0 0 24px; font-size:15.5px; color:var(--slate); flex:1; }
 
+  /* ---------- chapter turn: one clean PNW still carries light into dark ---------- */
+  .band-divider{ margin:0; background:var(--fir); }
+  .band-divider .ph{
+    max-width:1800px; margin:0 auto; /* native width — never upscaled */
+    height:clamp(340px, 40vw, 600px);
+    object-position:50% 72%;
+  }
+
   /* ---------- 8 · storytelling (dark) ---------- */
   .sec-dark{ background:var(--fir); color:#E5ECE4; }
   .sec-dark .kicker{ color:var(--grass); }
   .sec-dark .sec-title{ color:var(--paper); }
   .sec-dark .sec-intro{ color:#B9C7C0; }
   .sec-dark .note{ color:#A9BBAF; }
+  .story-head{
+    display:grid; grid-template-columns:minmax(0,1fr) auto;
+    gap:24px 56px; align-items:center;
+    margin-bottom:48px;
+  }
+  .story-head .sec-intro{ margin-bottom:0; }
+  /* the formline mark, large and quiet on the deep fir — a crest, not wallpaper.
+     Full asset, generous clearspace, never over a photograph. */
+  .story-crest{
+    width:clamp(240px, 26vw, 360px); height:auto;
+    opacity:.14; justify-self:end;
+  }
   .story-grid{ display:grid; grid-template-columns:1.15fr .85fr; gap:32px; align-items:start; }
   .report{ background:var(--card); color:var(--ink); border-radius:16px; overflow:hidden; }
   .report .ph{ height:280px; object-position:50% 28%; }
@@ -475,7 +513,7 @@
   .filter label{ display:flex; flex-direction:column; gap:6px; font-weight:600; font-size:14px; color:var(--slate); }
   .filter select{
     font-family:'Source Sans 3',sans-serif; font-size:15.5px; color:var(--ink);
-    background:var(--card); border:1.5px solid #B7C3B7; border-radius:8px;
+    background:var(--card); border:1.5px solid #75897C; border-radius:8px;
     padding:11px 12px; min-width:190px;
   }
   .filter .check{ flex-direction:row; align-items:center; gap:9px; padding-bottom:12px; font-size:15px; color:var(--ink); }
@@ -510,8 +548,34 @@
     border-top:1px solid #2C4A3A; padding-top:28px;
   }
   .foot-nav a{ color:var(--grass-light); font-weight:700; font-size:16px; }
+  .foot-nav a.roll{ text-decoration:none; }
   .foot-nav a:hover{ color:var(--paper); }
   .foot-meta{ font-size:13px; color:var(--fog); font-family:'Archivo',sans-serif; font-weight:600; letter-spacing:.06em; }
+
+  /* ---------- atmosphere choreography: scroll reveals ----------
+     Armed only when JS adds html.anim (observers live, motion allowed).
+     Without it — no JS, print, reduced motion — every base style below
+     is already the settled page. Each reveal fires once, then unobserves. */
+  /* the observed element is never clipped itself — a fully clipped target
+     reports an empty intersection and would never fire. The wipe runs on the
+     image inside it, between two explicit (interpolable) inset() endpoints. */
+  html.anim [data-wipe] .ph{
+    clip-path:inset(0 0 0 0);
+    transition:clip-path 1.1s var(--ease-hero), transform 1.5s var(--ease-lux);
+  }
+  html.anim [data-wipe]:not(.in) .ph{ clip-path:inset(0 0 100% 0); transform:scale(1.045); }
+
+  html.anim [data-rise]{
+    transition:opacity .8s var(--ease-lux), transform .8s var(--ease-lux);
+    transition-delay:calc(var(--i, 0) * 80ms);
+  }
+  html.anim [data-rise]:not(.in){ opacity:0; transform:translateY(18px); }
+
+  html.anim .kicker::after{ transition:transform .7s var(--ease-snap) .12s; }
+  html.anim .kicker:not(.in)::after{ transform:scaleX(0); }
+
+  html.anim .story-crest{ transition:opacity 1.3s var(--ease-lux), transform 1.3s var(--ease-lux); }
+  html.anim .story-crest:not(.in){ opacity:0; transform:scale(.96); }
 
   /* ---------- responsive ---------- */
   @media (max-width: 980px){
@@ -519,6 +583,8 @@
     .paths{ grid-template-columns:1fr; }
     .path-card{ width:100%; max-width:440px; margin:0 auto; }
     .story-grid{ grid-template-columns:1fr; }
+    .story-head{ grid-template-columns:1fr; }
+    .story-crest{ justify-self:start; width:220px; margin-top:4px; }
     .ui-grid{ grid-template-columns:1fr; }
     .voice-grid{ grid-template-columns:1fr; }
     .type-cards{ grid-template-columns:1fr; }
@@ -531,18 +597,20 @@
     .mock-nav{ padding:12px 24px; }
     .mock-conditions{ padding:12px 24px; }
     .mock-conditions .cond-right{ display:none; }
-    .mock-hero-inner{ padding:64px 28px 32px; }
+    .mock-hero-inner{ padding:64px 28px 56px; }
     .mock-reg{ padding:18px 24px 20px; }
     .mock-reg .reg-more{ margin-left:0; }
   }
   @media (max-width: 560px){
     .sec{ padding:72px 20px; }
-    .masthead-in{ padding:64px 20px 40px; }
+    .masthead-in{ padding:64px 20px 44px; }
+    .mast-plate-in{ padding:18px 20px 26px; }
+    .band-plate-in{ padding:16px 20px 24px; }
     .swatches{ grid-template-columns:1fr; }
     .mock-nav{ gap:16px; padding:12px 16px; }
     .mock-logo img{ width:104px; }
     .mock-h1{ font-stretch:100%; letter-spacing:-.03em; }
-    .mock-hero-inner{ padding:56px 18px 28px; }
+    .mock-hero-inner{ padding:56px 18px 44px; }
     .mock-reg li{ white-space:normal; }
     .scale-row{ flex-direction:column; gap:4px; }
     .scale-sample{ white-space:normal; }
@@ -550,7 +618,7 @@
     .site-foot .foot-in{ padding:64px 20px 44px; }
     .report-body{ padding:22px 20px 26px; }
     .vista-plate-in{ padding:36px 20px 44px; }
-    .grove-plate-in{ padding:20px 20px 28px; }
+    .story-crest{ width:180px; }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -561,47 +629,25 @@
 </head>
 <body>
 
-<!-- The signature, drawn once: three fir silhouettes, four grove layers, two fog bands.
-     Every horizon on this page is a <use> of these symbols. -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <defs>
-    <symbol id="fir-a" viewBox="0 0 44 110"><path d="M22 0 L22 4.4 Q25.5 28.8 30.3 28.3 L25.5 29.6 Q28.3 43.4 32.2 43.2 L26.3 44.5 Q30.3 55 35.8 54.8 L27.8 56.1 Q32.3 71.5 38.5 71.2 L28.9 72.5 Q33.4 82.9 39.4 82.7 L29.3 84 Q34.8 98 42.3 97.7 L30.5 99 L24.2 101.2 L24.2 110 L19.8 110 L19.8 101.2 L13.5 99 L1.7 97.7 Q9.2 98 14.7 84 L4.6 82.7 Q10.6 82.9 15.1 72.5 L5.5 71.2 Q11.7 71.5 16.2 56.1 L8.2 54.8 Q13.7 55 17.7 44.5 L11.8 43.2 Q15.7 43.4 18.5 29.6 L13.7 28.3 Q18.5 28.8 22 4.4 Z"/></symbol>
-    <symbol id="fir-b" viewBox="0 0 52 104"><path d="M26 0 L26 4.2 Q30.8 31.9 37.4 30.4 L30.8 31.6 Q34.7 46 40.1 45.2 L31.9 46.4 Q36.9 61.9 43.7 61 L33.4 62.3 Q39.1 78.5 46.9 77.5 L34.8 78.8 Q41.1 91.4 49.8 90.7 L36 91.9 L28.6 94 L28.6 104 L23.4 104 L23.4 94 L16 91.9 L2.2 90.7 Q10.9 91.4 17.2 78.8 L5.1 77.5 Q12.9 78.5 18.6 62.3 L8.3 61 Q15.1 61.9 20.1 46.4 L11.9 45.2 Q17.3 46 21.2 31.6 L14.6 30.4 Q21.2 31.9 26 4.2 Z"/></symbol>
-    <symbol id="fir-c" viewBox="0 0 40 112"><path d="M20 0 L20 4.5 Q22.7 29.2 26.4 29.2 L22.7 30.5 Q25.1 40.8 28.5 40.8 L23.6 42.1 Q26.4 50.8 30.4 50.8 L24.4 52.1 Q27.5 62 31.8 62 L24.9 63.3 Q28.9 76 34.4 76 L26 77.4 Q30.4 88.2 36.5 88.2 L26.9 89.6 Q31.9 97.5 38.7 97.5 L27.9 98.8 L22 101.1 L22 112 L18 112 L18 101.1 L12.1 98.8 L1.3 97.5 Q8.1 97.5 13.1 89.6 L3.5 88.2 Q9.6 88.2 14 77.4 L5.6 76 Q11.1 76 15.1 63.3 L8.2 62 Q12.5 62 15.6 52.1 L9.6 50.8 Q13.6 50.8 16.4 42.1 L11.5 40.8 Q14.9 40.8 17.3 30.5 L13.6 29.2 Q17.3 29.2 20 4.5 Z"/></symbol>
-    <linearGradient id="fogGradA" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#F1F3EE" stop-opacity="0"/>
-      <stop offset=".55" stop-color="#F1F3EE" stop-opacity=".9"/>
-      <stop offset="1" stop-color="#F1F3EE" stop-opacity=".1"/>
-    </linearGradient>
-    <linearGradient id="fogGradB" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#F1F3EE" stop-opacity="0"/>
-      <stop offset=".6" stop-color="#F1F3EE" stop-opacity=".55"/>
-      <stop offset="1" stop-color="#F1F3EE" stop-opacity="0"/>
-    </linearGradient>
-    <symbol id="ridge-far" viewBox="0 0 2000 200" overflow="visible"><path d="M-80 200 L-80 111 Q-40 111 -10 116 Q20 120 50 123 Q80 126 110 125 Q140 125 170 121 Q200 118 230 113 Q260 108 290 103 Q320 98 350 95 Q380 91 410 91 Q440 90 470 91 Q500 92 530 95 Q560 97 590 98 Q620 99 650 99 Q680 98 710 95 Q740 92 770 88 Q800 84 830 81 Q860 77 890 76 Q920 74 950 76 Q980 77 1010 81 Q1040 85 1070 91 Q1100 97 1130 102 Q1160 108 1190 111 Q1220 114 1250 115 Q1280 116 1310 114 Q1340 112 1370 109 Q1400 107 1430 105 Q1460 103 1490 102 Q1520 102 1550 104 Q1580 106 1610 109 Q1640 112 1670 115 Q1700 117 1730 118 Q1760 119 1790 117 Q1820 115 1850 110 Q1880 105 1910 99 Q1940 93 1970 88 Q2000 83 2030 80 L2080 77 L2080 200 Z"/></symbol>
-<symbol id="fog-hi" viewBox="0 0 2000 200" overflow="visible"><rect x="-80" y="46" width="2160" height="132" fill="url(#fogGradA)"/></symbol><symbol id="fog-lo" viewBox="0 0 2000 200" overflow="visible"><rect x="-80" y="98" width="2160" height="102" fill="url(#fogGradB)"/></symbol>
-<symbol id="grove-mid" viewBox="0 0 2000 200" overflow="visible"><rect x="-80" y="144" width="2160" height="86"/><use href="#fir-c" x="-36" y="123" width="11" height="30"/><use href="#fir-b" x="-12" y="116" width="18" height="37"/><use href="#fir-b" x="8" y="108" width="19" height="39"/><use href="#fir-b" x="30" y="104" width="23" height="46"/><use href="#fir-a" x="56" y="118" width="16" height="37"/><use href="#fir-b" x="79" y="109" width="20" height="42"/><use href="#fir-c" x="114" y="113" width="13" height="35"/><use href="#fir-a" x="130" y="127" width="10" height="27"/><use href="#fir-c" x="158" y="126" width="10" height="26"/><use href="#fir-c" x="192" y="109" width="15" height="40"/><use href="#fir-a" x="218" y="105" width="19" height="44"/><use href="#fir-b" x="244" y="111" width="19" height="37"/><use href="#fir-c" x="264" y="113" width="12" height="36"/><use href="#fir-a" x="289" y="120" width="12" height="30"/><use href="#fir-a" x="321" y="114" width="13" height="32"/><use href="#fir-b" x="352" y="118" width="17" height="32"/><use href="#fir-b" x="369" y="104" width="21" height="43"/><use href="#fir-c" x="397" y="109" width="14" height="40"/><use href="#fir-b" x="430" y="119" width="13" height="30"/><use href="#fir-a" x="454" y="101" width="19" height="46"/><use href="#fir-c" x="476" y="120" width="9" height="30"/><use href="#fir-c" x="504" y="116" width="11" height="36"/><use href="#fir-c" x="520" y="116" width="10" height="31"/><use href="#fir-b" x="557" y="113" width="19" height="41"/><use href="#fir-c" x="574" y="108" width="15" height="40"/><use href="#fir-c" x="600" y="123" width="10" height="29"/><use href="#fir-c" x="633" y="121" width="9" height="26"/><use href="#fir-a" x="653" y="119" width="13" height="35"/><use href="#fir-c" x="676" y="125" width="11" height="30"/><use href="#fir-b" x="700" y="120" width="17" height="32"/><use href="#fir-b" x="731" y="108" width="21" height="45"/><use href="#fir-a" x="764" y="117" width="14" height="36"/><use href="#fir-b" x="781" y="102" width="20" height="45"/><use href="#fir-a" x="808" y="108" width="16" height="39"/><use href="#fir-c" x="832" y="107" width="15" height="46"/><use href="#fir-a" x="861" y="117" width="12" height="33"/><use href="#fir-a" x="880" y="107" width="16" height="40"/><use href="#fir-a" x="903" y="119" width="12" height="34"/><use href="#fir-c" x="927" y="111" width="11" height="35"/><use href="#fir-a" x="961" y="119" width="12" height="29"/><use href="#fir-b" x="985" y="121" width="17" height="33"/><use href="#fir-c" x="1012" y="111" width="14" height="40"/><use href="#fir-a" x="1032" y="116" width="11" height="30"/><use href="#fir-c" x="1069" y="121" width="11" height="29"/><use href="#fir-c" x="1097" y="116" width="11" height="34"/><use href="#fir-c" x="1118" y="120" width="13" height="35"/><use href="#fir-a" x="1149" y="119" width="11" height="29"/><use href="#fir-b" x="1171" y="109" width="21" height="42"/><use href="#fir-c" x="1188" y="109" width="15" height="45"/><use href="#fir-b" x="1214" y="125" width="13" height="29"/><use href="#fir-a" x="1241" y="105" width="18" height="46"/><use href="#fir-b" x="1259" y="113" width="17" height="32"/><use href="#fir-c" x="1283" y="126" width="10" height="28"/><use href="#fir-a" x="1305" y="104" width="17" height="45"/><use href="#fir-c" x="1323" y="114" width="12" height="37"/><use href="#fir-b" x="1351" y="128" width="12" height="26"/><use href="#fir-c" x="1381" y="107" width="13" height="39"/><use href="#fir-b" x="1412" y="114" width="20" height="37"/><use href="#fir-a" x="1441" y="112" width="15" height="41"/><use href="#fir-c" x="1466" y="113" width="13" height="35"/><use href="#fir-a" x="1499" y="113" width="13" height="36"/><use href="#fir-a" x="1537" y="110" width="17" height="42"/><use href="#fir-a" x="1556" y="115" width="12" height="31"/><use href="#fir-a" x="1589" y="111" width="14" height="39"/><use href="#fir-b" x="1616" y="110" width="22" height="43"/><use href="#fir-b" x="1641" y="114" width="16" height="35"/><use href="#fir-b" x="1668" y="112" width="21" height="40"/><use href="#fir-b" x="1685" y="117" width="17" height="35"/><use href="#fir-c" x="1723" y="114" width="14" height="41"/><use href="#fir-c" x="1746" y="115" width="11" height="35"/><use href="#fir-c" x="1766" y="117" width="10" height="29"/><use href="#fir-b" x="1801" y="116" width="17" height="38"/><use href="#fir-c" x="1836" y="105" width="15" height="44"/><use href="#fir-c" x="1860" y="112" width="14" height="37"/><use href="#fir-c" x="1898" y="119" width="11" height="30"/><use href="#fir-c" x="1934" y="116" width="11" height="32"/><use href="#fir-a" x="1967" y="117" width="13" height="37"/><use href="#fir-c" x="1986" y="113" width="16" height="42"/><use href="#fir-b" x="2008" y="112" width="15" height="34"/></symbol>
-<symbol id="grove-near" viewBox="0 0 2000 200" overflow="visible"><rect x="-80" y="168" width="2160" height="62"/><use href="#fir-a" x="-44" y="115" width="25" height="65"/><use href="#fir-a" x="9" y="118" width="26" height="61"/><use href="#fir-a" x="36" y="100" width="27" height="74"/><use href="#fir-c" x="71" y="109" width="23" height="69"/><use href="#fir-a" x="112" y="108" width="27" height="72"/><use href="#fir-c" x="168" y="113" width="22" height="68"/><use href="#fir-a" x="200" y="121" width="20" height="54"/><use href="#fir-c" x="253" y="117" width="21" height="65"/><use href="#fir-c" x="282" y="125" width="19" height="56"/><use href="#fir-b" x="338" y="110" width="33" height="70"/><use href="#fir-a" x="395" y="107" width="29" height="69"/><use href="#fir-b" x="452" y="113" width="27" height="59"/><use href="#fir-c" x="509" y="108" width="24" height="73"/><use href="#fir-b" x="553" y="118" width="31" height="57"/><use href="#fir-b" x="586" y="126" width="25" height="48"/><use href="#fir-b" x="620" y="114" width="36" height="67"/><use href="#fir-c" x="648" y="130" width="17" height="50"/><use href="#fir-a" x="705" y="116" width="23" height="61"/><use href="#fir-b" x="743" y="111" width="36" height="69"/><use href="#fir-a" x="777" y="114" width="24" height="62"/><use href="#fir-b" x="807" y="105" width="31" height="69"/><use href="#fir-b" x="864" y="107" width="34" height="73"/><use href="#fir-c" x="918" y="135" width="16" height="47"/><use href="#fir-a" x="957" y="121" width="23" height="56"/><use href="#fir-b" x="1007" y="123" width="26" height="57"/><use href="#fir-a" x="1037" y="122" width="23" height="59"/><use href="#fir-c" x="1081" y="121" width="20" height="61"/><use href="#fir-b" x="1139" y="119" width="27" height="55"/><use href="#fir-c" x="1173" y="111" width="23" height="67"/><use href="#fir-a" x="1226" y="103" width="29" height="68"/><use href="#fir-c" x="1277" y="104" width="23" height="70"/><use href="#fir-a" x="1310" y="123" width="23" height="56"/><use href="#fir-a" x="1344" y="135" width="18" height="48"/><use href="#fir-a" x="1387" y="132" width="20" height="49"/><use href="#fir-a" x="1414" y="127" width="20" height="50"/><use href="#fir-b" x="1454" y="108" width="33" height="75"/><use href="#fir-b" x="1487" y="99" width="34" height="76"/><use href="#fir-a" x="1545" y="130" width="20" height="52"/><use href="#fir-c" x="1603" y="106" width="24" height="75"/><use href="#fir-b" x="1651" y="99" width="38" height="77"/><use href="#fir-b" x="1708" y="116" width="27" height="61"/><use href="#fir-c" x="1756" y="109" width="24" height="71"/><use href="#fir-c" x="1787" y="124" width="18" height="49"/><use href="#fir-c" x="1828" y="122" width="19" height="53"/><use href="#fir-a" x="1878" y="122" width="21" height="60"/><use href="#fir-c" x="1935" y="110" width="22" height="69"/><use href="#fir-c" x="1977" y="112" width="21" height="63"/><use href="#fir-b" x="2033" y="119" width="32" height="64"/></symbol>
-<symbol id="grove-front" viewBox="0 0 2000 200" overflow="visible"><rect x="-80" y="193" width="2160" height="37"/><use href="#fir-a" x="-60" y="98" width="39" height="107"/><use href="#fir-c" x="-7" y="74" width="41" height="126"/><use href="#fir-c" x="31" y="84" width="46" height="122"/><use href="#fir-b" x="69" y="89" width="57" height="119"/><use href="#fir-a" x="129" y="76" width="54" height="128"/><use href="#fir-b" x="168" y="94" width="50" height="109"/><use href="#fir-a" x="224" y="105" width="38" height="95"/><use href="#fir-b" x="279" y="62" width="64" height="139"/><use href="#fir-b" x="420" y="84" width="64" height="124"/><use href="#fir-c" x="467" y="97" width="35" height="105"/><use href="#fir-c" x="536" y="89" width="42" height="115"/><use href="#fir-a" x="577" y="71" width="51" height="132"/><use href="#fir-c" x="621" y="62" width="53" height="144"/><use href="#fir-c" x="676" y="76" width="43" height="125"/><use href="#fir-b" x="880" y="95" width="58" height="108"/><use href="#fir-c" x="944" y="68" width="44" height="132"/><use href="#fir-a" x="991" y="95" width="42" height="109"/><use href="#fir-c" x="1032" y="74" width="46" height="135"/><use href="#fir-a" x="1098" y="83" width="48" height="125"/><use href="#fir-a" x="1135" y="89" width="43" height="112"/><use href="#fir-a" x="1310" y="81" width="49" height="123"/><use href="#fir-b" x="1364" y="84" width="55" height="117"/><use href="#fir-b" x="1399" y="67" width="59" height="133"/><use href="#fir-a" x="1445" y="97" width="41" height="105"/><use href="#fir-a" x="1516" y="93" width="42" height="113"/><use href="#fir-c" x="1690" y="94" width="36" height="113"/><use href="#fir-b" x="1754" y="90" width="60" height="116"/><use href="#fir-b" x="1809" y="104" width="50" height="103"/><use href="#fir-c" x="1880" y="62" width="52" height="142"/><use href="#fir-b" x="1926" y="106" width="48" height="97"/><use href="#fir-a" x="1971" y="78" width="53" height="128"/><use href="#fir-a" x="2007" y="108" width="42" height="97"/></symbol>
-  </defs>
-</svg>
-
-<!-- 1 · DIRECTION HEADER — the page opens on the horizon -->
+<!-- 1 · DIRECTION HEADER — the page opens on the real horizon:
+     type rises out of masks, then the fog photograph wipes open beneath it. -->
 <header class="masthead">
   <div class="masthead-in">
-    <p class="mast-series">DiscNW website redesign · Direction 1 of 5</p>
-    <h1 class="mast-name">Evergreen</h1>
+    <p class="mast-series"><span class="mline"><span class="mline-in">DiscNW website redesign · Direction 1 of 5</span></span></p>
+    <h1 class="mast-name"><span class="mline"><span class="mline-in">Evergreen</span></span></h1>
     <p class="mast-thesis">Pacific Northwest place-identity. Ultimate as this region plays it — the brand is rooted in where the game happens: wet grass, fog, firs, and long June light, year-round.</p>
     <p class="mast-tags">Rooted<span>·</span>Weatherproof<span>·</span>Local<span>·</span>Year-round<span>·</span>Welcoming</p>
   </div>
-  <svg class="treeline" viewBox="0 0 2000 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
-      <use href="#ridge-far" class="tl-far"/>
-      <use href="#fog-hi"/>
-      <use href="#grove-mid" class="tl-mid"/>
-      <use href="#fog-lo"/>
-      <use href="#grove-near" class="tl-near"/>
-      <use href="#grove-front" class="tl-front"/>
-    </svg>
+  <figure class="mast-band">
+    <div class="band-clip">
+      <img class="ph" src="assets/pnw/fog-old-growth-forest.jpg" width="2400" height="1614" alt="Fog moving through an old-growth fir stand in the Okanogan-Wenatchee National Forest, rank after rank of dark crowns fading into grey.">
+    </div>
+    <figcaption class="mast-plate band-plate">
+      <div class="mast-plate-in">
+        <p class="mast-cap">Okanogan-Wenatchee National Forest — the original horizon line. Fog has been drawing it a lot longer than we have.</p>
+      </div>
+    </figcaption>
+  </figure>
 </header>
 
 <main>
@@ -610,7 +656,7 @@
   <section class="sec" aria-labelledby="idea-title">
     <p class="kicker">02 — The idea</p>
     <h2 class="sec-title" id="idea-title">Belonging to a place</h2>
-    <p class="idea-copy">Most league sites could be anywhere. DiscNW couldn&rsquo;t: this game lives at Magnuson Park, in fog at a 9&nbsp;a.m. jamboree, in June light that holds until the last point. Evergreen makes that the brand — fir green and fog grey doing the everyday work, one vivid wet-grass green marking every action, and a drawn treeline putting every page somewhere real. The photographs stay untouched, because the place is already in them. The bet is simple: people don&rsquo;t just sign up for a league, they join a place.</p>
+    <p class="idea-copy">Most league sites could be anywhere. DiscNW couldn&rsquo;t: this game lives at Magnuson Park, in fog at a 9&nbsp;a.m. jamboree, in June light that holds until the last point. Evergreen makes that the brand — fir green and fog grey doing the everyday work, one vivid wet-grass green marking every action, and the region&rsquo;s own weather, photographed and untouched, standing where ornament would go. Even the motion behaves like weather here: it arrives slowly, settles completely, and never performs. The bet is simple: people don&rsquo;t just sign up for a league, they join a place.</p>
   </section>
 
   <!-- 3 · COLOR -->
@@ -619,7 +665,7 @@
     <h2 class="sec-title" id="color-title">A palette pulled from a wet field</h2>
     <p class="sec-intro">Two working greens, two weathers, one ground — on panels, buttons, and type only. Photography keeps its own color; the palette frames it and never sits on it.</p>
     <ul class="swatches">
-      <li class="swatch">
+      <li class="swatch" data-rise style="--i:0">
         <div class="swatch-chip" style="background:#14291F"></div>
         <div class="swatch-info">
           <h3 class="swatch-name">Old Fir</h3>
@@ -627,7 +673,7 @@
           <p class="swatch-use">Darkest ground — nav, footer, and story bands; headline ink on light.</p>
         </div>
       </li>
-      <li class="swatch">
+      <li class="swatch" data-rise style="--i:1">
         <div class="swatch-chip" style="background:#24513B"></div>
         <div class="swatch-info">
           <h3 class="swatch-name">Hemlock</h3>
@@ -635,7 +681,7 @@
           <p class="swatch-use">Headings, links, secondary buttons — the everyday brand green.</p>
         </div>
       </li>
-      <li class="swatch">
+      <li class="swatch" data-rise style="--i:2">
         <div class="swatch-chip" style="background:#3DAE54"></div>
         <div class="swatch-info">
           <h3 class="swatch-name">Wet Grass</h3>
@@ -643,15 +689,15 @@
           <p class="swatch-use">Primary actions only — register, join, give. Always with dark fir text.</p>
         </div>
       </li>
-      <li class="swatch">
+      <li class="swatch" data-rise style="--i:3">
         <div class="swatch-chip" style="background:#94A9B4"></div>
         <div class="swatch-info">
           <h3 class="swatch-name">Fog Bank</h3>
           <span class="swatch-hex">#94A9B4</span>
-          <p class="swatch-use">Skies behind the treeline, separators on dark, quiet metadata.</p>
+          <p class="swatch-use">Fog skies behind the masthead, separators on dark, quiet metadata.</p>
         </div>
       </li>
-      <li class="swatch">
+      <li class="swatch" data-rise style="--i:4">
         <div class="swatch-chip chip-outline" style="background:#F1F3EE"></div>
         <div class="swatch-info">
           <h3 class="swatch-name">Morning Fog</h3>
@@ -659,7 +705,7 @@
           <p class="swatch-use">Page backgrounds — the grey-green white of a low sky, not cream.</p>
         </div>
       </li>
-      <li class="swatch">
+      <li class="swatch" data-rise style="--i:5">
         <div class="swatch-chip" style="background:#44554D"></div>
         <div class="swatch-info">
           <h3 class="swatch-name">Rain Slate</h3>
@@ -677,13 +723,13 @@
     <p class="sec-intro">Display type with trailhead-sign confidence, body type warm enough for a waiver form. Both load from Google Fonts; both hold up soaked.</p>
 
     <div class="type-cards">
-      <div class="type-card tc-display">
+      <div class="type-card tc-display" data-rise style="--i:0">
         <span class="role">Display · headings</span>
         <h3>Archivo</h3>
         <p>A sturdy grotesque we run wide (expanded width) and heavy — national-park-sign energy, not tech-startup energy. Weights 700–900.</p>
         <p class="glyphs" aria-hidden="true">AaBbGgRr 0123456789 →</p>
       </div>
-      <div class="type-card">
+      <div class="type-card" data-rise style="--i:1">
         <span class="role">Body · UI</span>
         <h3>Source Sans 3</h3>
         <p>A warm humanist sans that stays friendly at schedule-table and waiver-form sizes. Weights 400–700, true italics.</p>
@@ -722,55 +768,28 @@
   <!-- 5 · SIGNATURE ELEMENT -->
   <section class="sec" aria-labelledby="sig-title">
     <p class="kicker">05 — Signature element</p>
-    <h2 class="sec-title" id="sig-title">The horizon line</h2>
-    <p class="sec-intro">One device, drawn once, used everywhere: four grove layers and two banks of fog, built from three fir silhouettes. It opens the page, grounds the hero, divides the light sections from the dark, and closes the footer. It is drawn — never printed over a photograph.</p>
+    <h2 class="sec-title" id="sig-title">The atmospheric band</h2>
+    <p class="sec-intro">One device, used everywhere: a full-bleed Northwest photograph as structure. It opens the page, turns the light chapters into the dark ones, and holds the field checks — always clean, never tinted or typed over, captioned below on a fir plate.</p>
 
     <div class="sig-frame">
-      <div class="sig-sky">
-        <svg class="treeline" viewBox="0 0 2000 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
-      <use href="#ridge-far" class="tl-far"/>
-      <use href="#fog-hi"/>
-      <use href="#grove-mid" class="tl-mid"/>
-      <use href="#fog-lo"/>
-      <use href="#grove-near" class="tl-near"/>
-      <use href="#grove-front" class="tl-front"/>
-    </svg>
+      <div class="band-clip sig-photo" data-wipe>
+        <img class="ph" src="assets/pnw/puget-sound-ferry-dusk.jpg" width="2800" height="1412" alt="A Washington State ferry crossing flat silver water on Puget Sound at dusk, low clouds above and forested hills on the far shore.">
       </div>
       <div class="sig-base">
-        <span><strong>Drawn, not photographed.</strong> Far ridge, fog, mid grove, fog, near grove, front grove — one shared set of SVG symbols.</span>
-        <span>Static by design · the weather does the moving</span>
+        <span><strong>Photographed, never drawn.</strong> The frame runs edge to edge, untouched; words keep to this plate below it.</span>
+        <span>Reveals once with a slow wipe · then still</span>
       </div>
     </div>
 
-    <p class="sig-uses">Page opening<span>·</span>Hero grounding<span>·</span>Section divider<span>·</span>Footer horizon</p>
+    <p class="sig-uses">Page opening<span>·</span>Chapter divider<span>·</span>Field check<span>·</span>Caption below, never on top</p>
+    <p class="note">Motion rule: a band enters exactly once — a clip-path wipe on the house curve as it reaches the viewport — then it holds still. No parallax, no drift. The weather inside the frame does the moving.</p>
   </section>
-
-  <!-- fog grove break: the reference itself — the photograph runs clean and untouched,
-       the drawn treeline rises below it, adjacent, never over it -->
-  <figure class="grove-break">
-    <img class="ph" src="assets/pnw/fog-old-growth-forest.jpg" width="2400" height="1614" alt="Fog moving through an old-growth fir stand in the Okanogan-Wenatchee National Forest, rank after rank of dark crowns fading into grey.">
-    <div class="skyband" aria-hidden="true">
-      <svg class="treeline" viewBox="0 0 2000 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
-      <use href="#ridge-far" class="tl-far"/>
-      <use href="#fog-hi"/>
-      <use href="#grove-mid" class="tl-mid"/>
-      <use href="#fog-lo"/>
-      <use href="#grove-near" class="tl-near"/>
-      <use href="#grove-front" class="tl-front"/>
-    </svg>
-    </div>
-    <figcaption class="grove-plate">
-      <div class="grove-plate-in">
-        <p class="grove-cap">The original horizon line — fog has been drawing it a lot longer than we have.</p>
-      </div>
-    </figcaption>
-  </figure>
 
   <!-- 6 · HOMEPAGE HERO MOCKUP -->
   <section class="sec" aria-labelledby="hero-title">
     <p class="kicker">06 — Homepage hero</p>
     <h2 class="sec-title" id="hero-title">discnw.org, redesigned</h2>
-    <p class="sec-intro">The top of the new homepage: field conditions, one clear action, the horizon, and the sport in full color. It should feel like standing at the edge of the field at 5:55 on a league night.</p>
+    <p class="sec-intro">The top of the new homepage: field conditions, one clear action, and the sport in full color. It should feel like standing at the edge of the field at 5:55 on a league night.</p>
 
     <div class="browser">
       <div class="browser-bar">
@@ -778,13 +797,17 @@
         <div class="browser-url">discnw.org</div>
       </div>
 
-      <div class="mock" role="img" aria-label="Mockup of the redesigned DiscNW homepage: dark green navigation with the DiscNW twin-bird logo in white, a field-conditions strip, the headline 'Ultimate grows here.' over a fog sky, a drawn fir treeline, a full-color photograph of players celebrating an overhead catch, and a static list of programs registering now.">
+      <div class="mock" role="img" aria-label="Mockup of the redesigned DiscNW homepage: dark green navigation with the white DiscNW logo lockup, a field-conditions strip, the headline 'Ultimate grows here.' over a fog-grey sky, a full-color photograph of players celebrating an overhead catch, and a static list of programs registering now.">
         <div class="mock-nav">
           <div class="mock-logo">
-            <img src="assets/discnw-logo-transparent-april2021.png" alt="" width="1446" height="616">
+            <img src="assets/brand/logo-full-white.png" alt="" width="1446" height="616">
           </div>
           <div class="mock-links" aria-hidden="true">
-            <span>Events</span><span>Youth</span><span>Adult Leagues</span><span>Coaching</span><span>About</span>
+            <span class="roll"><span class="roll-a">Events</span><span class="roll-b">Events</span></span>
+            <span class="roll"><span class="roll-a">Youth</span><span class="roll-b">Youth</span></span>
+            <span class="roll"><span class="roll-a">Adult Leagues</span><span class="roll-b">Adult Leagues</span></span>
+            <span class="roll"><span class="roll-a">Coaching</span><span class="roll-b">Coaching</span></span>
+            <span class="roll"><span class="roll-a">About</span><span class="roll-b">About</span></span>
           </div>
           <span class="mock-register">Register</span>
           <div class="mock-burger" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -808,17 +831,11 @@
               <span class="mock-cta-quiet">New to ultimate? Start here</span>
             </div>
           </div>
-          <svg class="treeline" viewBox="0 0 2000 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
-      <use href="#ridge-far" class="tl-far"/>
-      <use href="#fog-hi"/>
-      <use href="#grove-mid" class="tl-mid"/>
-      <use href="#fog-lo"/>
-      <use href="#grove-near" class="tl-near"/>
-      <use href="#grove-front" class="tl-front"/>
-    </svg>
         </div>
 
-        <img class="mock-photo" src="assets/sr26-catch-celebration.jpg" width="1920" height="1080" alt="">
+        <div class="band-clip" data-wipe>
+          <img class="ph mock-photo" src="assets/sr26-catch-celebration.jpg" width="1920" height="1080" alt="">
+        </div>
 
         <div class="mock-reg">
           <strong>Registering now</strong>
@@ -832,7 +849,7 @@
         </div>
       </div>
     </div>
-    <p class="note">Component note: the conditions strip is real utility — DiscNW already runs a rainout hotline, and players check field status daily. Registration is a calm, current list, not a ticker. The photograph runs clean and full color; the trees, not the pixels, carry the brand.</p>
+    <p class="note">Component note: the conditions strip is real utility — DiscNW already runs a rainout hotline, and players check field status daily. Registration is a calm, current list, not a ticker. The photograph runs clean and full color; the place, not the pixels, carries the brand. Nav labels roll on hover; the register button leans up to 6px toward the cursor.</p>
   </section>
 
   <!-- 7 · AUDIENCE PATHWAYS -->
@@ -842,7 +859,7 @@
     <p class="sec-intro">Players, coaches, parents — each gets their own door, in their own language, three seconds after the page loads. Photography above, words below; the two never fight.</p>
 
     <div class="paths">
-      <article class="path-card">
+      <article class="path-card" data-rise style="--i:0">
         <img class="ph" src="assets/ycc-tryouts-2015-4.jpg" style="object-position:50% 24%" alt="Two youth players at YCC tryouts: one snaps a forehand past her defender, the white disc frozen mid-air between them.">
         <div class="path-body">
           <p class="path-tag">Players</p>
@@ -852,7 +869,7 @@
         </div>
       </article>
 
-      <article class="path-card">
+      <article class="path-card" data-rise style="--i:1">
         <img class="ph" src="assets/coaching-2.jpg" style="object-position:50% 40%" alt="A coach kneels facing a huddle of about ten youth players on a grass field, a white disc on the ground beside them.">
         <div class="path-body">
           <p class="path-tag">Coaches &amp; volunteers</p>
@@ -862,7 +879,7 @@
         </div>
       </article>
 
-      <article class="path-card">
+      <article class="path-card" data-rise style="--i:2">
         <img class="ph" src="assets/sheila-camarena.jpg" style="object-position:50% 30%" alt="A woman in a pink jacket hugs a player in a white jersey on the field while two smiling teammates look on.">
         <div class="path-body">
           <p class="path-tag">Parents &amp; families</p>
@@ -874,27 +891,32 @@
     </div>
   </section>
 
-  <!-- treeline divider: the horizon carries the page from light into dark -->
-  <div class="skyband" aria-hidden="true">
-    <svg class="treeline" viewBox="0 0 2000 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
-      <use href="#ridge-far" class="tl-far"/>
-      <use href="#fog-hi"/>
-      <use href="#grove-mid" class="tl-mid"/>
-      <use href="#fog-lo"/>
-      <use href="#grove-near" class="tl-near"/>
-      <use href="#grove-front" class="tl-front"/>
-    </svg>
-  </div>
+  <!-- chapter turn: one clean PNW still carries the page from light into dark -->
+  <figure class="band-divider">
+    <div class="band-clip" data-wipe>
+      <img class="ph" src="assets/pnw/old-growth-cedar-olympic.jpg" width="1800" height="2700" alt="A child stands at the base of an old-growth western red cedar in Olympic National Park, the fluted trunk rising far out of frame.">
+    </div>
+    <figcaption class="band-plate">
+      <div class="band-plate-in">
+        <p class="band-cap">Big cedar, Olympic National Park — the chapter turns where the light does.</p>
+      </div>
+    </figcaption>
+  </figure>
 
-  <!-- 8 · STORYTELLING (dark) -->
+  <!-- 8 · STORYTELLING (dark) — the formline mark sits large and quiet on the deep fir -->
   <section class="sec-dark" aria-labelledby="story-title">
     <div class="sec">
-      <p class="kicker">08 — Storytelling</p>
-      <h2 class="sec-title" id="story-title">Stories from the field</h2>
-      <p class="sec-intro">Evergreen&rsquo;s story unit is the field report: every story is tagged by park, season, and weather, so the archive slowly becomes a map of where this community plays.</p>
+      <div class="story-head">
+        <div>
+          <p class="kicker">08 — Storytelling</p>
+          <h2 class="sec-title" id="story-title">Stories from the field</h2>
+          <p class="sec-intro">Evergreen&rsquo;s story unit is the field report: every story is tagged by park, season, and weather, so the archive slowly becomes a map of where this community plays.</p>
+        </div>
+        <img class="story-crest" src="assets/brand/logo-mark-white.png" alt="" width="590" height="616">
+      </div>
 
       <div class="story-grid">
-        <article class="report">
+        <article class="report" data-rise style="--i:0">
           <img class="ph" src="assets/sr26-spirit-huddle.jpg" alt="High school players stand arm in arm in a tight post-game huddle at Spring Reign, a few fists raised in celebration.">
           <div class="report-body">
             <p class="report-meta">
@@ -910,31 +932,33 @@
         </article>
 
         <ul class="stats">
-          <li class="stat">
+          <li class="stat" data-rise style="--i:0">
             <span class="num">10,000+</span>
             <p class="why">players a year — third-grade campers to masters hat leaguers, on the same fields.</p>
           </li>
-          <li class="stat">
+          <li class="stat" data-rise style="--i:1">
             <span class="num">#3</span>
             <p class="why">ultimate&rsquo;s rank among organized youth sports in King County.</p>
           </li>
-          <li class="stat">
+          <li class="stat" data-rise style="--i:2">
             <span class="num">$33</span>
             <p class="why">the lowest Community Supported Ultimate tier — same season, same fields, same disc as every tier.</p>
           </li>
-          <li class="stat">
+          <li class="stat" data-rise style="--i:3">
             <span class="num">(206) 781-5840</span>
             <p class="why">the rainout hotline — because almost nothing else stops play here.</p>
           </li>
         </ul>
       </div>
-      <p class="note">Component note: field reports are 400–600 words with one photo, submitted by the community through a story form — a sustainable pipeline, not a staff burden.</p>
+      <p class="note">Component note: field reports are 400–600 words with one photo, submitted by the community through a story form — a sustainable pipeline, not a staff burden. The twin-bird mark holds this band the way a crest holds a jersey: large, quiet, never over a photograph.</p>
     </div>
   </section>
 
   <!-- field check: one clean photograph, full color, captioned below — never on top -->
   <figure class="vista">
-    <img class="ph" src="assets/sr26-thrower-mountains.jpg" width="1920" height="1080" alt="A player brings the disc in with both hands on open tournament grass at Spring Reign, sideline tents and a dark treeline under a storm sky behind her.">
+    <div class="band-clip" data-wipe>
+      <img class="ph" src="assets/sr26-thrower-mountains.jpg" width="1920" height="1080" alt="A player brings the disc in with both hands on open tournament grass at Spring Reign, sideline tents and a dark treeline under a storm sky behind her.">
+    </div>
     <figcaption class="vista-plate">
       <div class="vista-plate-in">
         <p class="vista-kicker">Field check · Spring Reign 2026, Burlington</p>
@@ -953,7 +977,7 @@
     <div class="ui-grid">
       <div class="ui-block">
         <h3>Buttons</h3>
-        <span class="btn-label">Primary — rest / hover</span>
+        <span class="btn-label">Primary — rest / hover · leans ≤6px toward the cursor</span>
         <div class="btn-row">
           <button type="button" class="btn btn-primary">Register for summer league</button>
           <button type="button" class="btn btn-primary demo-hover">Register for summer league</button>
@@ -968,7 +992,7 @@
           <button type="button" class="btn btn-quiet">Read the full rules</button>
           <button type="button" class="btn btn-quiet demo-hover">Read the full rules</button>
         </div>
-        <p class="note">Keyboard focus draws a 3px Hemlock ring (Wet Grass on dark grounds).</p>
+        <p class="note">Keyboard focus draws a 3px Hemlock ring (Wet Grass on dark grounds). The magnetic lean is pointer-only — touch and reduced-motion get the plain button.</p>
       </div>
 
       <div>
@@ -1034,15 +1058,15 @@
     <p class="sec-intro">Plainspoken, weatherproof, a little wry. It talks like a longtime captain welcoming you to the sideline — never like league-management software.</p>
 
     <div class="voice-grid">
-      <div class="voice-card">
+      <div class="voice-card" data-rise style="--i:0">
         <span class="vlabel">Hero headline</span>
         <p class="vhero">Ultimate grows here.</p>
       </div>
-      <div class="voice-card">
+      <div class="voice-card" data-rise style="--i:1">
         <span class="vlabel">Registration confirmation</span>
         <p>You&rsquo;re in — Summer Wonder League, starting June 1. We&rsquo;ll email your team after draft night. Bring cleats: the grass will be wet, and that&rsquo;s the point.</p>
       </div>
-      <div class="voice-card">
+      <div class="voice-card" data-rise style="--i:2">
         <span class="vlabel">To a nervous first-time parent</span>
         <p>You don&rsquo;t need to know what a huck is yet. Bring a rain jacket and a camp chair; your kid&rsquo;s coach handles the rest, and the sideline will save you a spot.</p>
       </div>
@@ -1050,18 +1074,6 @@
   </section>
 
 </main>
-
-<!-- the horizon closes the page -->
-<div class="skyband" aria-hidden="true">
-  <svg class="treeline" viewBox="0 0 2000 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
-      <use href="#ridge-far" class="tl-far"/>
-      <use href="#fog-hi"/>
-      <use href="#grove-mid" class="tl-mid"/>
-      <use href="#fog-lo"/>
-      <use href="#grove-near" class="tl-near"/>
-      <use href="#grove-front" class="tl-front"/>
-    </svg>
-</div>
 
 <!-- 11 · FOOTER -->
 <footer class="site-foot">
@@ -1077,12 +1089,73 @@
       </div>
     </div>
     <nav class="foot-nav" aria-label="Direction navigation">
-      <a href="index.html">← All directions</a>
+      <a class="roll" href="index.html"><span class="roll-a">← All directions</span><span class="roll-b" aria-hidden="true">← All directions</span></a>
       <span class="foot-meta">Direction 1 of 5 · Evergreen · prepared for DiscNW</span>
-      <a href="02-game-film.html">Next direction →</a>
+      <a class="roll" href="02-game-film.html"><span class="roll-a">Next direction →</span><span class="roll-b" aria-hidden="true">Next direction →</span></a>
     </nav>
   </div>
 </footer>
+
+<script>
+/* Atmosphere choreography — progressive enhancement only.
+   Base styles are the settled page: no JS, print, screenshots, and
+   reduced motion all get the complete layout with zero motion. */
+(function(){
+  'use strict';
+  var reduce = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : null;
+  if (!window.matchMedia || reduce.matches) return;
+
+  /* Scroll reveals: band wipes, card rises, kicker sweeps, crest fade.
+     html.anim arms the hidden states only once observers are live;
+     each target fires once, transitions ≤1.5s, then is unobserved. */
+  var root = document.documentElement;
+  if ('IntersectionObserver' in window){
+    try{
+      var targets = [].slice.call(document.querySelectorAll('[data-wipe], [data-rise], .kicker, .story-crest'));
+      var io = new IntersectionObserver(function(entries){
+        for (var i = 0; i < entries.length; i++){
+          if (entries[i].isIntersecting){
+            entries[i].target.classList.add('in');
+            io.unobserve(entries[i].target);
+          }
+        }
+      }, { threshold:.15 });
+      for (var t = 0; t < targets.length; t++) io.observe(targets[t]);
+      root.classList.add('anim');
+    }catch(err){
+      root.classList.remove('anim'); /* any failure: the page stays fully settled */
+    }
+  }
+
+  /* Magnetic primary CTAs: the button leans ≤6px toward the cursor and
+     glides home on leave. Pointer devices only; rAF-throttled; transform-only. */
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches){
+    var magnets = [].slice.call(document.querySelectorAll('.btn-primary, .mock-register'));
+    magnets.forEach(function(el){
+      el.classList.add('magnet');
+      var raf = 0, x = 0, y = 0, tx = 0, ty = 0;
+      function step(){
+        x += (tx - x) * .16;
+        y += (ty - y) * .16;
+        if (Math.abs(tx - x) < .08 && Math.abs(ty - y) < .08){ x = tx; y = ty; raf = 0; }
+        else { raf = requestAnimationFrame(step); }
+        el.style.transform = (x || y) ? 'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px)' : '';
+      }
+      el.addEventListener('pointermove', function(e){
+        if (reduce.matches) return;
+        var r = el.getBoundingClientRect();
+        tx = Math.max(-6, Math.min(6, (e.clientX - r.left - r.width / 2) * .14));
+        ty = Math.max(-6, Math.min(6, (e.clientY - r.top - r.height / 2) * .28));
+        if (!raf) raf = requestAnimationFrame(step);
+      });
+      el.addEventListener('pointerleave', function(){
+        tx = 0; ty = 0;
+        if (!raf) raf = requestAnimationFrame(step);
+      });
+    });
+  }
+})();
+</script>
 
 </body>
 </html>

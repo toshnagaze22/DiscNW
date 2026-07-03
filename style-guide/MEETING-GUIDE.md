@@ -38,7 +38,7 @@
 **Experimental three (~5 min each):**
 
 6. **06 One Point** — the bridge into the experiments: cinema built from the sport itself, and the cleanest test of "does immersion serve the story?"
-7. **07 The Understory** — the furthest world: a fully illustrated brand; tests how much craft the organization can carry.
+7. **07 The Understory** — the furthest world: a photographic field-guide brand; tests how much craft the organization can carry.
 8. **08 Game to 15** — the sharpest provocation last: cheapest, loudest, most retellable — it ends the review on the risk-versus-buzz question, which flows straight into synthesis.
 
 ---
@@ -51,7 +51,7 @@
 - Q: Is the gold flight-path arc a signature you'd still love on page 40, or a decoration you'd stop noticing?
 
 ### 01 Evergreen — "Rooted in the place we play"
-**Pitch:** "This roots the brand in where the game actually happens — wet grass, fog, firs, long June light. If you've played a March game in the rain, you should recognize yourself instantly."
+**Pitch:** "This roots the brand in where the game actually happens — wet grass, fog, firs, long June light, all carried in real forest photography. If you've played a March game in the rain, you should recognize yourself instantly."
 - Q: Does this feel like it could *only* be Puget Sound ultimate — or could it be any outdoorsy Northwest nonprofit?
 - Q: Forest, not stadium: does that trade cost us anything with competitive players and score-driven visitors?
 
@@ -75,10 +75,10 @@
 - Q: Scroll it once, honestly: does the story make you *feel* the sport — the turnover in your stomach, the catch — or is it a beautifully produced tour you're being walked through?
 - Q: This is a narrative cover, not a schedule tool. Which grounded system would you put behind it — and does the flight line landing on "Register" feel earned, or engineered?
 
-### 07 The Understory — "The place is the brand, drawn by hand"
-**Pitch:** "A fully illustrated Pacific Northwest world in the WPA park-poster tradition — hand-cut fir silhouettes in seven gently parallaxing layers, one dashed coral line that is both the disc's flight and the trail through the season, photographs pinned like field specimens. The bet is that no other sports organization in America could copy it, and that it extends into posters, patches, and sideline merch on day one."
-- Q: Gut call: is this illustrated world ownable brand genius — or too precious for a sports org that also has to post rainouts, rosters, and refund policies?
-- Q: The illustration *is* the brand, so every major new page asks for an illustrator's hand. Who draws page 40 next spring — and knowing that answer, would you still pick it?
+### 07 The Understory — "The place is the brand, photographed in the field"
+**Pitch:** "A photographic field guide to the Pacific Northwest season in the WPA park-poster voice — real fog and old-growth imagery carrying the place, one dashed coral line that is both the disc's flight and the trail through the year, waypoint photographs developing like pinned specimens. The bet is that no other sports organization in America could copy it, and that it extends into posters, patches, and sideline merch on day one."
+- Q: Gut call: is this photographic field guide ownable brand genius — or too precious for a sports org that also has to post rainouts, rosters, and refund policies?
+- Q: The field-guide craft *is* the brand, so every major new page asks for photography worth pinning. Who shoots page 40 next spring — and knowing that answer, would you still pick it?
 
 ### 08 Game to 15 — "The whole site is a game to 15"
 **Pitch:** "The site is a game of ultimate played to 15 — a fixed scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point, ending on 'DiscNW pulls. You score.' It's pure typography: the cheapest of the eight to build flawlessly, and the easiest to retell in one sentence."
@@ -90,6 +90,7 @@
 ## 4. Cross-cutting questions (synthesis, ~8 min)
 
 - Which **hero** made you want to scroll — and can you say why in one sentence?
+- Scrolling each page — which one **feels** most innovative, and is that feeling serving DiscNW or showing off?
 - Of the grounded five, which **audience-pathways section** (players / coaches / parents) speaks to all three groups best?
 - Which **storytelling component** would we actually keep publishing content for a year from now?
 - If an experimental concept won your gut, which **grounded system carries its schedules, standings, and registration** — and does the pairing still feel like one brand?
@@ -117,6 +118,6 @@
 ## 6. After the meeting
 
 1. **Pick a lead direction** (highest conviction, not necessarily highest score) and name **2–3 borrowed elements** from the others (e.g., Sideline's sticker badges on Evergreen's palette, Spirit & Story's pull quote in Flight Path's hero, or Game to 15's scoreboard mechanism riding a grounded homepage).
-2. **Name the content commitment** the pick implies (e.g., quotes/photos per season for Spirit & Story, an illustrator's hand for The Understory) and confirm someone will own it.
+2. **Name the content commitment** the pick implies (e.g., quotes/photos per season for Spirit & Story, field photography for The Understory) and confirm someone will own it.
 3. **Build one real homepage prototype** in the lead direction with the borrowed elements — real programs, real copy, mobile-first — as the next artifact to review.
 4. Set a date to review the prototype together.

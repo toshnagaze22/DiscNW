@@ -6,7 +6,7 @@
 <title>Direction 06 — One Point · DiscNW redesign</title>
 <meta name="description" content="Experimental concept for the DiscNW redesign: the entire page is a single point of ultimate, narrated from pull to catch, and the interface itself is the disc's flight.">
 <meta name="theme-color" content="#070D1E">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23070D1E'/%3E%3Cellipse cx='16' cy='16' rx='11' ry='4.5' fill='%23F2EEE3' stroke='%23FF6A2B' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,700;1,400&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -34,6 +34,9 @@
   --disp:"Big Shoulders Display",system-ui,sans-serif;
   --body:"Schibsted Grotesk",system-ui,-apple-system,sans-serif;
   --mono:"Spline Sans Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  /* house curves — every move on the page speaks one of these */
+  --ease-snap:cubic-bezier(.4,0,.1,1);   /* micro: hovers, chip roll   */
+  --ease-lux:cubic-bezier(.16,1,.3,1);   /* macro: line reveals, rises */
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{overflow-x:clip}
@@ -64,11 +67,8 @@ img{max-width:100%}
   display:flex;align-items:center;justify-content:space-between;gap:16px;
   padding:20px clamp(20px,4vw,44px);
 }
-.brand{
-  font-family:var(--disp);font-weight:700;font-size:23px;letter-spacing:.10em;
-  text-decoration:none;color:var(--chalk);
-}
-.brand b{color:var(--ember-bright);font-weight:700}
+.brand{display:block;text-decoration:none;line-height:0}
+.brand img{display:block;width:clamp(118px,12vw,148px);height:auto}
 .top-mid{
   font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--chalk-dim);
   text-transform:uppercase;
@@ -97,9 +97,10 @@ main{
     #070D1E 91%,
     #070D1E 100%);
 }
-main::before{ /* the sun, going down behind the hero */
+main::before{ /* the sun, going down behind the hero — JS eases it out as you scroll */
   content:"";position:absolute;z-index:0;left:0;right:0;top:0;height:120vh;
   background:radial-gradient(ellipse 70% 34% at 50% 78%, rgba(255,138,80,.18), rgba(255,138,80,0) 68%);
+  opacity:var(--dusk,1);
   pointer-events:none;
 }
 
@@ -139,6 +140,11 @@ main::before{ /* the sun, going down behind the hero */
   margin-top:22px;
 }
 .standfirst strong{color:var(--chalk);font-weight:500}
+
+/* split-line primitives: block lines in overflow masks.
+   Settled by default — they only move under body.fx + motion-ok. */
+.l{display:block;overflow:hidden}
+.li{display:block;padding:.06em .04em .14em 0;margin:-.06em -.04em -.14em 0} /* let descenders breathe inside the mask */
 
 /* ---------- 01 · THE PULL ---------- */
 .pull{
@@ -200,7 +206,7 @@ main::before{ /* the sun, going down behind the hero */
   font-size:clamp(2.7rem,7vw,5.6rem);line-height:.95;letter-spacing:.012em;
   max-width:17ch;margin:22px auto 0;
 }
-.turn h2 em{font-style:normal;color:var(--ember)}
+.turn h2 .accent{color:var(--ember)}
 .turn-body{max-width:620px;margin:28px auto 0;color:var(--chalk-dim)}
 .turn-body strong{color:var(--chalk);font-weight:500}
 .vision{
@@ -241,6 +247,8 @@ main::before{ /* the sun, going down behind the hero */
   color:var(--chalk);
   background:linear-gradient(0deg, rgba(0,0,0,.55), rgba(0,0,0,0) 100%);
 }
+.still-cap{max-width:1400px} /* 1280px native poster frame: full-bleed through laptop widths, never stretched past 1.1x */
+.huck .still-replay{margin-top:11vh}
 
 /* ---------- 04 · THE HUCK ---------- */
 .huck{padding:16vh 0 15vh}
@@ -350,6 +358,8 @@ main::before{ /* the sun, going down behind the hero */
   font-family:var(--disp);font-weight:700;text-transform:uppercase;
   font-size:clamp(1.9rem,3.4vw,2.7rem);margin-top:10px;
 }
+.appendix-head{display:flex;align-items:flex-end;justify-content:space-between;gap:22px 40px;flex-wrap:wrap}
+.appendix-lockup{width:min(188px,44vw);height:auto;flex:none;margin-bottom:5px}
 .appendix .thesis{max-width:72ch;color:var(--chalk-dim);margin-top:14px;font-size:15.5px}
 .spec-grid{
   display:grid;grid-template-columns:1.25fr 1fr;gap:30px 54px;margin-top:38px;
@@ -380,30 +390,85 @@ main::before{ /* the sun, going down behind the hero */
 .prop-nav a:hover{color:var(--ember-bright);border-color:var(--ember-bright)}
 .prop-nav small{color:var(--chalk-dim);font-size:10.5px;letter-spacing:.18em}
 
-/* ---------- HUD (broadcast bug) ---------- */
+/* ---------- HUD (broadcast bug, crest-badged) ---------- */
 .hud{
   position:fixed;left:18px;bottom:18px;z-index:7;
-  display:none;align-items:center;gap:9px;
-  background:rgba(7,13,30,.78);border:1px solid var(--line-faint);border-radius:3px;
-  padding:8px 12px;
+  display:none;align-items:center;gap:12px;
+  background:rgba(7,13,30,.9);border:1px solid var(--line-faint);border-radius:3px;
+  padding:9px 16px 9px 11px;
   font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--chalk-dim);
+  color:var(--chalk);
 }
-.hud i{width:7px;height:7px;background:var(--ember);border-radius:1px;flex:none}
+.hud-mark{height:44px;width:auto;display:block;flex:none}
+.hud-sep{width:1px;align-self:stretch;background:var(--line-faint);flex:none}
+.hud-meta{display:flex;flex-direction:column;gap:5px;min-width:172px}
+.hud-eyebrow{display:flex;align-items:center;gap:7px;color:var(--ember-bright);font-size:9.5px;letter-spacing:.26em}
+.hud-eyebrow i{width:6px;height:6px;background:var(--ember);border-radius:1px;flex:none}
+.hud-roll{position:relative;overflow:hidden}
+.hud-roll span{display:block}
+.hud.done{border-color:rgba(255,106,43,.75)}
+.hud.done .hud-roll span{color:var(--ember-bright)}
 .flight-live .hud{display:flex}
 @media (max-width:759px){.hud{display:none!important}}
 
-/* ---------- motion & print guards ---------- */
+/* ---------- disc cursor (fine pointers + motion only; native cursor stays everywhere else) ---------- */
+.cursor{display:none;position:fixed;left:0;top:0;z-index:9;pointer-events:none;will-change:transform}
+.fx-cursor .cursor{display:block}
+.cursor.off{opacity:0}
+.cursor-dot{position:absolute;left:-4px;top:-4px;width:8px;height:8px;border-radius:50%;background:var(--ember);opacity:.6}
+.cursor-disc{
+  position:absolute;left:-19px;top:-8px;width:38px;height:16px;border-radius:50%;
+  background:var(--chalk);box-shadow:0 0 0 1.5px var(--ember),0 0 20px rgba(255,106,43,.5);
+  opacity:0;transform:scale(.3);
+}
+.cursor-disc::after{content:"";position:absolute;inset:3px 9px;border-radius:50%;border:1px solid rgba(11,18,36,.45)}
+.cursor-tag{
+  position:absolute;left:0;top:15px;transform:translateX(-50%) translateY(5px);
+  font-family:var(--mono);font-size:9px;letter-spacing:.24em;text-transform:uppercase;white-space:nowrap;
+  color:var(--chalk);background:rgba(7,13,30,.92);border:1px solid var(--line-faint);border-radius:2px;
+  padding:4px 8px 3px 10px;opacity:0;
+}
+.on-cta .cursor-dot{opacity:0;transform:scale(.4)}
+.on-cta .cursor-disc{opacity:1;transform:none}
+.on-cta .cursor-tag{opacity:1;transform:translateX(-50%) translateY(0)}
+.fx-cursor .btn{cursor:none}
+
+/* ---------- motion & print guards ----------
+   One language: --ease-snap for micro (240-400ms), --ease-lux for macro (700-900ms).
+   Everything below only moves when JS sets body.fx / body.fx-cursor AND motion is allowed;
+   the base styles above are the settled page. */
 @media (prefers-reduced-motion: no-preference){
-  .btn,.top-link,.facts a,.prop-nav a{transition:background-color .18s ease,border-color .18s ease,color .18s ease}
+  .btn,.top-link,.facts a,.prop-nav a{transition:background-color .3s var(--ease-snap),border-color .3s var(--ease-snap),color .3s var(--ease-snap)}
+
+  /* split-line headline reveals (masked rise, 85ms stagger) */
+  .fx .reveal .li{transform:translateY(115%);transition:transform .9s var(--ease-lux);transition-delay:calc(var(--i,0)*85ms)}
+  .fx .reveal.in .li{transform:none}
+
+  /* soft rises for cards, plates, numerals */
+  .fx .rise{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease-lux),transform .7s var(--ease-lux);transition-delay:calc(var(--r,0)*80ms)}
+  .fx .rise.in{opacity:1;transform:none}
+
+  /* broadcast bug label roll (duplicate-shift, state-driven) */
+  .fx .hud-roll span{transition:transform .24s var(--ease-snap),opacity .24s var(--ease-snap)}
+  .hud-roll span.out{transform:translateY(-130%);opacity:0}
+  .hud-roll span.pre{transform:translateY(130%);opacity:0;transition:none!important}
+  .hud{transition:border-color .4s var(--ease-snap)}
+
+  /* disc cursor */
+  .cursor{transition:opacity .3s var(--ease-snap)}
+  .cursor-dot,.cursor-disc{transition:opacity .3s var(--ease-snap),transform .3s var(--ease-snap)}
+  .cursor-tag{transition:opacity .3s var(--ease-snap),transform .3s var(--ease-snap)}
 }
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
 @media print{
-  .hud,#flightRide{display:none!important}
+  .hud,.cursor,#flightRide{display:none!important}
   .disc-static{display:block!important}
   .flight-ember{stroke-dasharray:none!important;stroke-dashoffset:0!important}
+  .fx .reveal .li{transform:none!important}
+  .fx .rise{opacity:1!important;transform:none!important}
+  main::before{opacity:1!important}
 }
 </style>
 </head>
@@ -411,7 +476,7 @@ main::before{ /* the sun, going down behind the hero */
 <a class="skip" href="#story">Skip to the story</a>
 
 <header class="top">
-  <a class="brand" href="index.html">DISC<b>NW</b></a>
+  <a class="brand" href="index.html"><img src="assets/brand/logo-full-white.png" alt="DiscNW" width="1446" height="616"></a>
   <p class="top-mid">Concept 06 · One Point — a single point, pull to catch</p>
   <nav aria-label="Style guide"><a class="top-link" href="index.html">All directions</a></nav>
 </header>
@@ -441,11 +506,11 @@ main::before{ /* the sun, going down behind the hero */
   <section class="station pull" id="pull" aria-labelledby="pull-h">
     <div class="wrap">
       <p class="chyron">Station 01 · The Pull — own end zone · sunset 21:09</p>
-      <h1 id="pull-h">
-        <span>Every point</span>
-        <span>starts the same:</span>
-        <span>someone throws,</span>
-        <span class="chase">everyone chases.</span>
+      <h1 id="pull-h" class="reveal">
+        <span class="l"><span class="li">Every point</span></span>
+        <span class="l"><span class="li">starts the same:</span></span>
+        <span class="l"><span class="li">someone throws,</span></span>
+        <span class="l"><span class="li chase">everyone chases.</span></span>
       </h1>
       <p class="pull-intro"><strong>DiscNW is the nonprofit that keeps Northwest ultimate in the air</strong> — ten thousand players a year, Magnuson Park to the Puget Sound, every game self-officiated since 1995. This page plays out a single point, pull to catch, across one Seattle evening. The disc is already up.</p>
       <p class="pull-cue" aria-hidden="true">Follow the disc &darr;</p>
@@ -456,47 +521,47 @@ main::before{ /* the sun, going down behind the hero */
   <section class="station possession" id="possession" aria-labelledby="poss-h">
     <div class="wrap">
       <p class="chyron">Station 02 · The Possession — working the field</p>
-      <h2 class="station-title" id="poss-h">No hero throws.<br>You work it up, pass by pass.</h2>
+      <h2 class="station-title reveal" id="poss-h"><span class="l"><span class="li">No hero throws.</span></span><span class="l"><span class="li">You work it up, pass by pass.</span></span></h2>
       <p class="standfirst">A possession is just completions strung together — a swing, a reset, a gainer. <strong>Eight programs, eight ways DiscNW moves you down the field.</strong> Every one of them is a real catch someone makes this year.</p>
     </div>
     <div class="wrap">
       <div class="passes">
-        <article class="pass">
+        <article class="pass rise">
           <p class="pass-kicker"><span class="num">Pass 01</span><span class="throw">The Backhand</span></p>
           <h3>Potlatch</h3>
           <p>The original. The mixed tournament that founded DiscNW in 1995 — thirty-one summers later, it's still the party the whole region circles on the calendar.</p>
         </article>
-        <article class="pass">
+        <article class="pass rise">
           <p class="pass-kicker"><span class="num">Pass 02</span><span class="throw">The Swing</span></p>
           <h3>Summer Mixed Hat League</h3>
           <p>Change the angle. Sign up alone, get drafted onto a team of strangers, leave with a sideline that knows your name.</p>
         </article>
-        <article class="pass">
+        <article class="pass rise">
           <p class="pass-kicker"><span class="num">Pass 03</span><span class="throw">The Reset</span></p>
           <h3>Summer Wonder League</h3>
           <p>Keep it moving. The unhurried league of a Seattle summer — show up after work, swing it around, stay for the late light.</p>
         </article>
-        <article class="pass">
+        <article class="pass rise">
           <p class="pass-kicker"><span class="num">Pass 04</span><span class="throw">The Gainer</span></p>
           <h3>Summer Youth Ultimate Camps</h3>
           <p>Real yards. Camps for ages 7&ndash;18 where the first forehand of somebody's life happens before lunch, every single day.</p>
         </article>
-        <article class="pass">
+        <article class="pass rise">
           <p class="pass-kicker"><span class="num">Pass 05</span><span class="throw">The Break</span></p>
           <h3>Fall Middle School &amp; High School Leagues</h3>
           <p>Through the mark. School-season leagues where a hallway becomes a roster and October rain becomes a home-field advantage.</p>
         </article>
-        <article class="pass">
+        <article class="pass rise">
           <p class="pass-kicker"><span class="num">Pass 06</span><span class="throw">The Hammer</span></p>
           <h3>Sea Plastic</h3>
           <p>Upside down, on purpose. Beach ultimate on Puget Sound sand — the disc flies strange and everybody cheers anyway.</p>
         </article>
-        <article class="pass">
+        <article class="pass rise">
           <p class="pass-kicker"><span class="num">Pass 07</span><span class="throw">The Greatest</span></p>
           <h3>Spring Reign</h3>
           <p>The save that shouldn't be possible. The world's largest mixed youth ultimate tournament, played in the shadow of the Cascades every spring.</p>
         </article>
-        <article class="pass">
+        <article class="pass rise">
           <p class="pass-kicker"><span class="num">Pass 08</span><span class="throw">The Assist</span></p>
           <h3>DiscNW Coaching Collective</h3>
           <p>The throw that makes the goal. Training and mentorship that puts a real coach on every Northwest sideline that wants one.</p>
@@ -509,23 +574,28 @@ main::before{ /* the sun, going down behind the hero */
   <section class="station turn" id="turn" aria-labelledby="turn-h">
     <div class="wrap">
       <p class="chyron">Station 03 · The Turn — turnover, still dusk</p>
-      <h2 id="turn-h">You'll drop one. Everyone does. <em>The next point starts anyway.</em></h2>
+      <h2 id="turn-h" class="reveal">
+        <span class="l"><span class="li">You'll drop one.</span></span>
+        <span class="l"><span class="li">Everyone does.</span></span>
+        <span class="l"><span class="li accent">The next point</span></span>
+        <span class="l"><span class="li accent">starts anyway.</span></span>
+      </h2>
       <p class="turn-body">That's the honest sales pitch. Nobody here was born throwing a flick, there are no tryouts for a hat league, and there are no referees to impress — <strong>players call their own game and shake hands after.</strong> If the fee is the barrier, it slides: you choose what you pay.</p>
       <div class="plates">
-        <div class="plate">
+        <div class="plate rise" style="--r:0">
           <p class="k">Sliding scale</p>
           <p><strong>League fees from $33.</strong> Pick the tier that fits your year. Nobody checks, nobody asks.</p>
         </div>
-        <div class="plate">
+        <div class="plate rise" style="--r:1">
           <p class="k">No experience needed</p>
           <p><strong>Hat leagues draft everyone a team.</strong> Cleats help; a willingness to run helps more.</p>
         </div>
-        <div class="plate">
+        <div class="plate rise" style="--r:2">
           <p class="k">Spirit of the Game</p>
           <p><strong>Self-officiated, zero referees.</strong> The game has run on player calls since 1995. It holds.</p>
         </div>
       </div>
-      <p class="vision">&ldquo;An Ultimate community without barriers.&rdquo;<small>The whole DiscNW vision, one line</small></p>
+      <p class="vision rise">&ldquo;An Ultimate community without barriers.&rdquo;<small>The whole DiscNW vision, one line</small></p>
     </div>
   </section>
 
@@ -533,29 +603,33 @@ main::before{ /* the sun, going down behind the hero */
   <section class="station huck" id="huck" aria-labelledby="huck-h">
     <div class="wrap huck-head">
       <p class="chyron">Station 04 · The Huck — past midfield, lights coming on</p>
-      <h2 class="station-title" id="huck-h">Then somebody sees the<br>whole field, and it goes long.</h2>
+      <h2 class="station-title reveal" id="huck-h"><span class="l"><span class="li">Then somebody sees the</span></span><span class="l"><span class="li">whole field, and it goes long.</span></span></h2>
     </div>
-    <figure class="still">
-      <img src="assets/sr26-sprint-race.jpg" width="1920" height="1080" alt="Two youth players sprinting stride for stride after a long throw at Spring Reign, tournament tents and spectators blurred behind them." decoding="async">
-      <figcaption><span>Spring Reign 2026 · Burlington, WA</span><span>The disc goes long</span></figcaption>
+    <figure class="still still-cap">
+      <img src="assets/sr26-sky-battle-mountains.jpg" width="1280" height="720" alt="Three players leap together for a floating disc at Spring Reign, evergreen treeline and Cascade foothills behind them." decoding="async">
+      <figcaption><span>Spring Reign 2026 · Burlington, WA</span><span>Three up, one disc</span></figcaption>
     </figure>
     <div class="wrap numbers">
       <div class="numbers-grid">
-        <div class="num-block">
+        <div class="num-block rise" style="--r:0">
           <p class="figure">10,000<sup>+</sup></p>
           <p class="label">Players every year</p>
         </div>
-        <div class="num-block">
+        <div class="num-block rise" style="--r:1">
           <p class="figure">1995</p>
           <p class="label">Founded out of the Potlatch tournament</p>
         </div>
-        <div class="num-block">
+        <div class="num-block rise" style="--r:2">
           <p class="figure">31</p>
           <p class="label">Seasons and counting</p>
         </div>
       </div>
-      <p class="worlds">Spring Reign is the <em>world's largest</em> mixed youth ultimate tournament.<small>Not the Northwest's. The world's.</small></p>
+      <p class="worlds rise">Spring Reign is the <em>world's largest</em> mixed youth ultimate tournament.<small>Not the Northwest's. The world's.</small></p>
     </div>
+    <figure class="still still-replay">
+      <img src="assets/sr26-sprint-race.jpg" width="1920" height="1080" alt="Two youth players sprinting stride for stride after a long throw at Spring Reign, tournament tents and spectators blurred behind them." decoding="async">
+      <figcaption><span>Spring Reign 2026 · The replay</span><span>Stride for stride</span></figcaption>
+    </figure>
   </section>
 
   <!-- ============ 05 · THE CATCH ============ -->
@@ -570,7 +644,7 @@ main::before{ /* the sun, going down behind the hero */
     <div class="wrap">
       <div class="catch-cta" id="catchCta">
         <span class="disc-static" aria-hidden="true"></span>
-        <h2 id="catch-h"><span>This one's <em>yours.</em></span> <span>Go get it.</span></h2>
+        <h2 id="catch-h" class="reveal"><span class="l"><span class="li">This one's <em>yours.</em></span></span> <span class="l"><span class="li">Go get it.</span></span></h2>
         <p>Somewhere on a DiscNW field there's a point with your name on it — this summer or this fall, age 7 or 47, first throw or ten-thousandth.</p>
         <div class="cta-row">
           <a class="btn" href="https://www.discnw.org/adult-ultimate">Register for an adult league</a>
@@ -585,7 +659,7 @@ main::before{ /* the sun, going down behind the hero */
   <section class="station gameon" id="gameon" aria-labelledby="gameon-h">
     <div class="wrap">
       <p class="chyron">Final · Game on</p>
-      <h2 id="gameon-h">Next pull's at Magnuson.</h2>
+      <h2 id="gameon-h" class="reveal"><span class="l"><span class="li">Next pull's at Magnuson.</span></span></h2>
       <p>Or on the sand, or under the Cascades. <strong>Fields across Magnuson Park and the Puget Sound region</strong> — and yes, this is Seattle, so when the sky opens, the hotline knows first.</p>
       <p class="facts">
         <span>Rainout hotline · <a href="tel:+12067815840"><b>(206)&nbsp;781-5840</b></a></span>
@@ -600,9 +674,14 @@ main::before{ /* the sun, going down behind the hero */
 <!-- ============ ABOUT THIS DIRECTION ============ -->
 <aside class="appendix" aria-labelledby="about-h">
   <div class="wrap panel">
-    <p class="k">About this direction</p>
-    <h2 id="about-h">06 — One Point</h2>
-    <p class="thesis">The page is a single point of ultimate, narrated pull to catch: one ember flight line draws itself down the whole story as you scroll, while the evening deepens from dusk to field-light navy around it.</p>
+    <div class="appendix-head">
+      <div>
+        <p class="k">About this direction</p>
+        <h2 id="about-h">06 — One Point</h2>
+      </div>
+      <img class="appendix-lockup" src="assets/brand/logo-full-white.png" alt="DiscNW logo: circular Coast Salish-style formline disc mark beside the DiscNW wordmark" width="1446" height="616">
+    </div>
+    <p class="thesis">The page is a single point of ultimate, narrated pull to catch: one ember flight line draws itself down the whole story as you scroll, while the evening deepens from dusk to field-light navy around it. The formline crest rides the corner like a network bug, calling each station until the disc is caught.</p>
     <div class="spec-grid">
       <div class="spec">
         <h3>Palette</h3>
@@ -620,10 +699,10 @@ main::before{ /* the sun, going down behind the hero */
       </div>
       <div class="spec">
         <h3>Signature</h3>
-        <p>A page-length SVG flight line that draws with your scroll and rides a small disc at its tip: it weaves behind every panel, stumbles at the turnover, vanishes into the photographs, and lands — disc and all — on the registration call. No JS, print, or reduced motion: the route renders fully flown, disc waiting at the catch.</p>
+        <p>A page-length SVG flight line that draws with your scroll and rides a small disc with a frame of real drag: it weaves behind every panel, stumbles at the turnover, vanishes into the photographs, and lands — disc and all — on the registration call. In the corner, a broadcast bug carries the formline crest at 44px and calls every station, flipping to <strong>Caught — game on</strong> when the line lands. No JS, print, or reduced motion: the route renders fully flown, disc waiting at the catch.</p>
         <div class="spec">
           <h3>Motion</h3>
-          <p>One system only — the scroll-scrubbed flight (line, disc, corner chyron). Everything else on the page is still.</p>
+          <p>One choreography on two house curves — a fast snap (<strong>cubic-bezier(.4,0,.1,1)</strong>) for micro moves, a long settle (<strong>.16,1,.3,1</strong>) for reveals. Station headlines rise line-by-line from masks as they arrive; the disc chases your scroll with lerped momentum; the sun glow eases down as you leave the pull; the bug label rolls between stations; and over the register buttons the cursor becomes a small disc that says catch it. Native scroll everywhere, base state is the finished frame.</p>
         </div>
       </div>
     </div>
@@ -645,7 +724,20 @@ main::before{ /* the sun, going down behind the hero */
   </div>
 </aside>
 
-<p class="hud" id="hud" aria-hidden="true"><i></i><span id="hudLabel">On point — The Pull</span></p>
+<p class="hud" id="hud" aria-hidden="true">
+  <img class="hud-mark" src="assets/brand/logo-mark-white.png" alt="" width="590" height="616">
+  <span class="hud-sep"></span>
+  <span class="hud-meta">
+    <span class="hud-eyebrow"><i></i><span id="hudNet">DiscNW · Live</span></span>
+    <span class="hud-roll"><span id="hudLabel">On point — The Pull</span></span>
+  </span>
+</p>
+
+<div class="cursor off" id="cursor" aria-hidden="true">
+  <span class="cursor-dot"></span>
+  <span class="cursor-disc"></span>
+  <span class="cursor-tag">Catch it</span>
+</div>
 
 <script>
 (function(){
@@ -656,12 +748,18 @@ main::before{ /* the sun, going down behind the hero */
   var ghost  = doc.getElementById('flightGhost');
   var ember  = doc.getElementById('flightEmber');
   var ride   = doc.getElementById('flightRide');
+  var hudEl  = doc.getElementById('hud');
   var hudLbl = doc.getElementById('hudLabel');
+  var hudNet = doc.getElementById('hudNet');
+  var cursor = doc.getElementById('cursor');
+  var body   = doc.body;
   if(!mainEl || !svg || !ghost || !ember || !ride) return;
 
-  var mq = win.matchMedia('(prefers-reduced-motion: reduce)');
+  var mq   = win.matchMedia('(prefers-reduced-motion: reduce)');
+  var fine = win.matchMedia('(pointer: fine) and (hover: hover)');
   var motion = false, mainTop = 0, W = 0, H = 0, L = 0;
-  var samples = [], stations = [], ticking = false, buildTimer = 0, hudText = '';
+  var samples = [], stations = [], buildTimer = 0;
+  var lagLen = 0, flying = false, hudText = 'On point — The Pull', hudTimer = 0;
 
   function el(id){ return doc.getElementById(id); }
   function yOf(node, f){
@@ -731,7 +829,9 @@ main::before{ /* the sun, going down behind the hero */
 
     if(motion){
       ember.style.strokeDasharray = L + ' ' + L;
-      update();
+      lagLen = targetLen();   // no lerp across a rebuild — snap, then chase
+      render(lagLen);
+      kick();
     }else{
       ember.style.strokeDasharray = 'none';
       ember.style.strokeDashoffset = '0';
@@ -752,13 +852,15 @@ main::before{ /* the sun, going down behind the hero */
     return a[1] + (b[1] - a[1]) * t;
   }
 
-  function update(){
-    if(!motion || !L) return;
-    var vh = win.innerHeight;
-    var target = win.scrollY + vh * 0.7 - mainTop;
-    var maxScroll = doc.documentElement.scrollHeight - vh;
-    var len = (win.scrollY >= maxScroll - 2) ? L : Math.max(0, Math.min(L, lenAt(target)));
+  /* ---------- velocity-lagged scrub: the disc chases the scroll ---------- */
+  function targetY(){ return win.scrollY + win.innerHeight * 0.7 - mainTop; }
+  function targetLen(){
+    if(!L) return 0;
+    var maxScroll = doc.documentElement.scrollHeight - win.innerHeight;
+    return (win.scrollY >= maxScroll - 2) ? L : Math.max(0, Math.min(L, lenAt(targetY())));
+  }
 
+  function render(len){
     ember.style.strokeDashoffset = String(L - len);
 
     var p = ember.getPointAtLength(len);
@@ -767,23 +869,131 @@ main::before{ /* the sun, going down behind the hero */
     ang = Math.max(-38, Math.min(38, ang));
     ride.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ') rotate(' + ang.toFixed(1) + ')');
 
+    var caught = len >= L - 1;
+    if(hudEl){ hudEl.classList.toggle('done', caught); }
+    if(hudNet){
+      var net = caught ? 'DiscNW · Final' : 'DiscNW · Live';
+      if(hudNet.textContent !== net) hudNet.textContent = net;
+    }
     if(hudLbl){
       var text;
-      if(len >= L - 1){ text = 'Caught — game on'; }
+      if(caught){ text = 'Caught — game on'; }
       else{
-        var label = 'The Pull';
-        for(var i = 0; i < stations.length; i++){ if(stations[i][0] <= target) label = stations[i][1]; }
+        var ty = targetY(), label = 'The Pull';
+        for(var i = 0; i < stations.length; i++){ if(stations[i][0] <= ty) label = stations[i][1]; }
         text = 'On point — ' + label;
       }
-      if(text !== hudText){ hudText = text; hudLbl.textContent = text; }
+      setHud(text);
+    }
+
+    /* the sun sets as you leave the pull (opacity only, eased) */
+    var dp = Math.max(0, Math.min(1, win.scrollY / (win.innerHeight * 1.15)));
+    dp = 1 - Math.pow(1 - dp, 3);
+    mainEl.style.setProperty('--dusk', (1 - 0.8 * dp).toFixed(3));
+  }
+
+  function frame(){
+    if(!motion || !L){ flying = false; return; }
+    var t = targetLen();
+    var d = t - lagLen;
+    lagLen = (Math.abs(d) < 0.5) ? t : lagLen + d * 0.16;
+    render(lagLen);
+    if(lagLen === t){ flying = false; return; }
+    win.requestAnimationFrame(frame);
+  }
+  function kick(){
+    if(flying) return;
+    flying = true;
+    win.requestAnimationFrame(frame);
+  }
+  function onScroll(){ kick(); }
+
+  /* ---------- broadcast bug: label rolls between stations ---------- */
+  function setHud(text){
+    if(!hudLbl || text === hudText) return;
+    hudText = text;
+    if(!motion){ hudLbl.textContent = text; return; }
+    clearTimeout(hudTimer);
+    hudLbl.classList.remove('pre');
+    hudLbl.classList.add('out');
+    hudTimer = setTimeout(function(){
+      hudLbl.textContent = hudText;
+      hudLbl.classList.add('pre');
+      hudLbl.classList.remove('out');
+      void hudLbl.offsetHeight;
+      hudLbl.classList.remove('pre');
+    }, 250);
+  }
+
+  /* ---------- split-line + rise reveals (unobserve after firing) ---------- */
+  var primed = false;
+  function primeReveals(){
+    if(primed || !win.IntersectionObserver) return;
+    primed = true;
+    var heads = doc.querySelectorAll('.reveal'), i, j, lines;
+    for(i = 0; i < heads.length; i++){
+      lines = heads[i].querySelectorAll('.li');
+      for(j = 0; j < lines.length; j++){ lines[j].style.setProperty('--i', String(j)); }
+    }
+    try{
+      var io = new IntersectionObserver(function(entries){
+        for(var k = 0; k < entries.length; k++){
+          if(entries[k].isIntersecting){
+            entries[k].target.classList.add('in');
+            io.unobserve(entries[k].target);
+          }
+        }
+      }, {threshold:.18, rootMargin:'0px 0px -7% 0px'});
+      var targets = doc.querySelectorAll('.reveal,.rise');
+      for(i = 0; i < targets.length; i++){ io.observe(targets[i]); }
+      /* unconditional settle: anything on screen is forced to its finished
+         state even if the observer never fires — 1.25s + 255ms max stagger
+         + .9s rise lands the worst case at 2.4s, inside the 2.5s budget.
+         Below-fold elements keep their scroll reveal; without fx the base
+         styles are already the settled page. */
+      setTimeout(function(){
+        var els = doc.querySelectorAll('.reveal:not(.in),.rise:not(.in)'), k, r;
+        for(k = 0; k < els.length; k++){
+          r = els[k].getBoundingClientRect();
+          if(r.top < win.innerHeight && r.bottom > 0){
+            els[k].classList.add('in');
+            io.unobserve(els[k]);
+          }
+        }
+      }, 1250);
+    }catch(e){
+      body.classList.remove('fx'); /* any observer failure returns the settled base page */
     }
   }
 
-  function onScroll(){
-    if(ticking) return;
-    ticking = true;
-    win.requestAnimationFrame(function(){ ticking = false; update(); });
+  /* ---------- disc cursor over the CTAs (fine pointer + motion only) ---------- */
+  var cx = 0, cy = 0, mx = 0, my = 0, chasing = false, cmoved = false;
+  function cursorLive(){ return motion && fine.matches && !!cursor; }
+  function cursorFrame(){
+    if(!cursorLive()){ chasing = false; return; }
+    cx += (mx - cx) * 0.22;
+    cy += (my - cy) * 0.22;
+    cursor.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
+    if(Math.abs(mx - cx) < 0.3 && Math.abs(my - cy) < 0.3){ chasing = false; return; }
+    win.requestAnimationFrame(cursorFrame);
   }
+  doc.addEventListener('pointermove', function(e){
+    if(!cursorLive()) return;
+    mx = e.clientX; my = e.clientY;
+    if(!cmoved){ cmoved = true; cx = mx; cy = my; cursor.classList.remove('off'); }
+    if(!chasing){ chasing = true; win.requestAnimationFrame(cursorFrame); }
+  }, {passive:true});
+  doc.documentElement.addEventListener('mouseleave', function(){ if(cursor) cursor.classList.add('off'); });
+  doc.documentElement.addEventListener('mouseenter', function(){ if(cmoved && cursorLive()) cursor.classList.remove('off'); });
+  (function(){
+    var btns = doc.querySelectorAll('.btn'), i;
+    function over(){ body.classList.add('on-cta'); }
+    function out(){ body.classList.remove('on-cta'); }
+    for(i = 0; i < btns.length; i++){
+      btns[i].addEventListener('pointerenter', over);
+      btns[i].addEventListener('pointerleave', out);
+    }
+  })();
 
   function scheduleBuild(){
     clearTimeout(buildTimer);
@@ -793,7 +1003,14 @@ main::before{ /* the sun, going down behind the hero */
   var listening = false;
   function init(){
     motion = !mq.matches;
-    doc.body.classList.toggle('flight-live', motion);
+    body.classList.toggle('flight-live', motion);
+    body.classList.toggle('fx', motion && !!win.IntersectionObserver);
+    body.classList.toggle('fx-cursor', motion && fine.matches);
+    if(!motion){
+      body.classList.remove('on-cta');
+      if(cursor) cursor.classList.add('off');
+      mainEl.style.setProperty('--dusk', '1');
+    }
     if(motion && !listening){
       win.addEventListener('scroll', onScroll, {passive:true});
       listening = true;
@@ -801,6 +1018,7 @@ main::before{ /* the sun, going down behind the hero */
       win.removeEventListener('scroll', onScroll);
       listening = false;
     }
+    if(motion) primeReveals();
     buildPath();
   }
 
@@ -813,6 +1031,7 @@ main::before{ /* the sun, going down behind the hero */
   if(doc.fonts && doc.fonts.ready){ doc.fonts.ready.then(scheduleBuild); }
   if(mq.addEventListener){ mq.addEventListener('change', init); }
   else if(mq.addListener){ mq.addListener(init); }
+  if(fine.addEventListener){ fine.addEventListener('change', init); }
 
   init();
 })();

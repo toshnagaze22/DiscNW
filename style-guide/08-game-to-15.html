@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>08 · Game to 15 — DiscNW design directions</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
 <meta name="description" content="Experimental direction 08 for the DiscNW redesign: the site is a game of Ultimate played to 15. Fifteen numbered truths, one scoreboard, one orange flood.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,6 +21,11 @@
     --pad:clamp(20px, 5.5vw, 84px);
     --grot:"Space Grotesk","Helvetica Neue",Helvetica,Arial,sans-serif;
     --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    /* house easing — two working curves + one hero curve, used everywhere (SOTY grammar) */
+    --ease-snap:cubic-bezier(.4,0,.1,1);      /* micro: hovers, ticks, strip flips */
+    --ease-lux:cubic-bezier(.16,1,.3,1);      /* macro: masks, rises, line draws */
+    --ease-hero:cubic-bezier(.65,.05,0,1);    /* the flood: fast attack, long settle */
+    --ease-over:cubic-bezier(.32,1.36,.42,1); /* numeral landing: slight overshoot */
   }
   *,*::before,*::after{box-sizing:border-box}
   html{overflow-x:clip;scroll-padding-top:calc(var(--strip-h) + 8px)}
@@ -60,6 +66,12 @@
     font-family:var(--grot);font-weight:500;font-size:12px;
     letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
   }
+  /* the crest — the mark sits at the scoreboard's left like a team badge */
+  .strip-crest{position:absolute;left:clamp(14px,2.2vw,26px);top:50%;transform:translateY(-50%);display:flex;align-items:center}
+  .strip-crest img{height:30px;width:auto}
+  .strip-crest .crest-white{display:none}
+  html.play .strip.final .crest-dark{display:none}
+  html.play .strip.final .crest-white{display:block}
   .s-live,.s-final{display:none}
   .s-team{font-weight:500}
   .s-box{
@@ -67,6 +79,7 @@
     font-weight:700;letter-spacing:.06em;
     font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
   }
+  .s-you{display:inline-block}
   .s-box::after{
     content:"";position:absolute;left:0;right:0;bottom:-8px;height:2px;
     background:var(--accent);opacity:0;
@@ -78,17 +91,104 @@
 
   html.play .s-static{display:none}
   html.play .s-live{display:inline-flex;align-items:baseline;gap:.85em}
-  html.play .strip{transition:background-color .3s ease,border-color .3s ease}
-  html.play .s-box::after{transition:opacity .9s ease}
-  html.play .s-box.tick::after{opacity:1;transition:none}
-  html.play .s-box.tick .s-you{animation:tick .26s cubic-bezier(.2,.7,.2,1)}
-  @keyframes tick{from{transform:translateY(.5em);opacity:0}to{transform:translateY(0);opacity:1}}
+  @media (prefers-reduced-motion: no-preference){
+    html.play .strip{transition:background-color .35s var(--ease-snap),border-color .35s var(--ease-snap)}
+    html.play .s-box::after{transition:opacity .9s var(--ease-lux)}
+    html.play .s-box.tick::after{opacity:1;transition:none}
+    html.play .s-box.tick .s-you{animation:tickpulse .34s var(--ease-snap)}
+    @keyframes tickpulse{0%{transform:scale(1)}45%{transform:scale(1.12)}100%{transform:scale(1)}}
+  }
   html.play .strip.final{background:var(--accent);border-color:transparent}
   html.play .strip.final .s-live{display:none}
   html.play .strip.final .s-final{display:inline}
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{animation:none!important;transition:none!important}
+  }
+
+  /* ---------- CHOREOGRAPHY (all pre-states doubly gated: behind html.play,
+     which only JS adds, AND inside prefers-reduced-motion: no-preference — with
+     no JS, print, or reduced motion the base styles below ARE the settled page.
+     One easing language; a script failsafe lands everything ≤ 2.5s.) ---------- */
+
+  /* hero entrance — the two title lines slide up from overflow masks (split-line
+     reveal), kicker/standfirst/hint fade-rise on offset clocks */
+  .hl{display:block;overflow:hidden}
+  .hl-in{display:block}
+  @media (prefers-reduced-motion: no-preference){
+    html.play .hl-in{transform:translateY(112%);transition:transform .85s var(--ease-lux)}
+    html.play .hl:nth-child(1) .hl-in{transition-delay:.14s}
+    html.play .hl:nth-child(2) .hl-in{transition-delay:.22s}
+    html.play .hero .kicker,
+    html.play .hero .standfirst,
+    html.play .hero .pull-hint{opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease-lux),transform .6s var(--ease-lux)}
+    html.play .hero .kicker{transition-delay:.06s}
+    html.play .hero .standfirst{transition-delay:.42s}
+    html.play .hero .pull-hint{transition-delay:.58s}
+    html.go .hl-in{transform:none}
+    html.go .hero .kicker,
+    html.go .hero .standfirst,
+    html.go .hero .pull-hint{opacity:1;transform:none}
+  }
+
+  /* per-point choreography — the rule draws, the colossal numeral lands under a
+     rising mask with a slight overshoot, then the column rises on 80ms staggers */
+  @media (prefers-reduced-motion: no-preference){
+    html.play .pt .tagrow{position:relative;border-top-color:transparent}
+    html.play .pt .tagrow::before{
+      content:"";position:absolute;left:0;right:0;top:-1px;height:1px;
+      background:var(--ink);transform:scaleX(0);transform-origin:0 50%;
+      transition:transform .7s var(--ease-lux);
+    }
+    html.play .pt.in .tagrow::before{transform:scaleX(1)}
+    html.play .pt .tagrow > span{opacity:0;transform:translateY(10px);transition:opacity .5s var(--ease-lux) .08s,transform .5s var(--ease-lux) .08s}
+    html.play .pt.in .tagrow > span{opacity:1;transform:none}
+    html.play .pt .num{
+      clip-path:inset(100% -.12em -.12em -.12em);transform:translateY(.14em);
+      transition:clip-path .9s var(--ease-lux) .06s,transform .9s var(--ease-over) .06s;
+    }
+    html.play .pt.in .num{clip-path:inset(-.12em);transform:none}
+    html.play .pt:not(.pt-15) .col > *,
+    html.play .crest-open{opacity:0;transform:translateY(22px);transition:opacity .55s var(--ease-lux),transform .55s var(--ease-lux)}
+    html.play .crest-open{transition-delay:.14s}
+    html.play .pt:not(.pt-15) .col > :nth-child(1){transition-delay:.18s}
+    html.play .pt:not(.pt-15) .col > :nth-child(2){transition-delay:.26s}
+    html.play .pt:not(.pt-15) .col > :nth-child(3){transition-delay:.34s}
+    html.play .pt:not(.pt-15) .col > :nth-child(4){transition-delay:.42s}
+    html.play .pt.in:not(.pt-15) .col > *,
+    html.play .pt.in .crest-open{opacity:1;transform:none}
+  }
+
+  /* point 15 — the flood pours out of the scoreboard: an accent layer scales
+     from transform-origin top the moment the section's top edge meets the strip
+     (the same frame the strip itself flips to "15 — Game.") */
+  .pt-15{position:relative}
+  .pt-15 > .wrap{position:relative;z-index:1}
+  .flood{display:none}
+  @media (prefers-reduced-motion: no-preference){
+    html.play .pt-15{background:transparent}
+    html.play .flood{
+      display:block;position:absolute;inset:0;background:var(--accent);
+      transform:scaleY(0);transform-origin:50% 0;
+      transition:transform .8s var(--ease-hero);
+    }
+    html.play .pt-15.flooded .flood{transform:scaleY(1)}
+    html.play .pt-15 .col > *{opacity:0;transform:translateY(22px);transition:opacity .55s var(--ease-lux),transform .55s var(--ease-lux)}
+    html.play .pt-15 .col > :nth-child(1){transition-delay:.3s}
+    html.play .pt-15 .col > :nth-child(2){transition-delay:.38s}
+    html.play .pt-15 .col > :nth-child(3){transition-delay:.46s}
+    html.play .pt-15 .col > :nth-child(4){transition-delay:.54s}
+    html.play .pt-15.flooded .col > *{opacity:1;transform:none}
+  }
+
+  /* register button — label roll on hover (duplicate-and-shift; the roll span
+     is the mask, so the clone never leaks into the button's padding) */
+  .btn .roll{display:block;position:relative;overflow:hidden}
+  .btn .roll span{display:block}
+  .btn .roll span[aria-hidden]{position:absolute;left:0;top:100%;width:100%}
+  @media (prefers-reduced-motion: no-preference){
+    .btn .roll span{transition:transform .4s var(--ease-snap)}
+    .btn:hover .roll span,.btn:focus-visible .roll span{transform:translateY(-100%)}
   }
 
   /* ---------- LAYOUT ---------- */
@@ -155,6 +255,14 @@
   .col p{margin:0}
   .col p + p{margin-top:16px}
   .col em{font-weight:500}
+
+  /* point 01 — the crest opens the game: the mark holds its own grid cell
+     beside the column, at modest scale, on full clearspace */
+  #pt-01 .ptgrid{grid-template-columns:minmax(280px,430px) minmax(64px,96px) minmax(300px,460px)}
+  .crest-open{height:clamp(56px,7vw,84px);width:auto;justify-self:start;margin-top:.35em}
+
+  /* appendix lockup */
+  .about-lockup{width:clamp(128px,12vw,150px);height:auto;margin:0 0 30px}
 
   /* point 10 — the hotline (h2.hotline ties .col h2 specificity; declared later, so it wins) */
   h2.hotline{
@@ -253,8 +361,9 @@
 
   /* responsive */
   @media (max-width:880px){
-    .ptgrid,.pt-quote .ptgrid,.pt-15 .ptgrid{grid-template-columns:1fr;row-gap:24px}
+    .ptgrid,.pt-quote .ptgrid,.pt-15 .ptgrid,#pt-01 .ptgrid{grid-template-columns:1fr;row-gap:24px}
     .col{padding-top:0}
+    .crest-open{margin-top:4px}
     h2.hotline{font-size:clamp(34px,9.5vw,52px)}
   }
   @media (max-width:480px){
@@ -268,9 +377,19 @@
     .strip{position:static;background:var(--paper)!important;border-bottom-color:var(--ink)}
     html.play .s-live,html.play .s-final{display:none!important}
     html.play .s-static{display:inline!important}
+    .strip-crest .crest-white{display:none!important}
+    .strip-crest .crest-dark{display:block!important}
     .pt{min-height:auto}
     .break{page-break-inside:avoid}
     .pt-15{min-height:auto}
+    /* print is the settled state, whatever classes JS left behind */
+    html.play .pt-15{background:var(--accent)!important}
+    .flood{display:none!important}
+    html.play .hl-in,html.play .pt .num{transform:none!important;clip-path:none!important}
+    html.play .hero .kicker,html.play .hero .standfirst,html.play .hero .pull-hint,
+    html.play .pt .tagrow > span,html.play .pt .col > *,html.play .crest-open{opacity:1!important;transform:none!important}
+    html.play .pt .tagrow{border-top-color:var(--ink)!important}
+    html.play .pt .tagrow::before{display:none!important}
   }
 </style>
 </head>
@@ -278,6 +397,10 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="strip" id="strip" aria-label="Scoreboard — game to 15">
+  <span class="strip-crest">
+    <img class="crest-dark" src="assets/brand/logo-mark.png" alt="DiscNW" width="590" height="616">
+    <img class="crest-white" src="assets/brand/logo-mark-white.png" alt="" aria-hidden="true" width="590" height="616">
+  </span>
   <div class="strip-in" aria-hidden="true">
     <span class="s-static">Game to 15</span>
     <span class="s-live">
@@ -297,7 +420,7 @@
   <section class="hero wrap" aria-label="Game to 15 — introduction">
     <div>
       <p class="kicker"><span class="tickmark" aria-hidden="true"></span>DiscNW · Design direction 08 · Experimental</p>
-      <h1>Game<br>to 15</h1>
+      <h1><span class="hl"><span class="hl-in">Game</span></span><span class="hl"><span class="hl-in">to 15</span></span></h1>
       <p class="standfirst">Fifteen points. Fifteen true things about Ultimate in the Northwest. <strong>DiscNW pulls; you receive.</strong> Every point you read is a point you score.</p>
     </div>
     <p class="pull-hint">↓ First pull</p>
@@ -309,6 +432,7 @@
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 01 · The vision</span><span class="run" aria-hidden="true">0 — 1</span></div>
       <div class="ptgrid">
         <div class="num" aria-hidden="true">01</div>
+        <img class="crest-open" src="assets/brand/logo-mark.png" alt="DiscNW — Coast Salish-style formline disc mark" width="590" height="616">
         <div class="col">
           <h2 id="h01">An Ultimate community without barriers.</h2>
           <p>That is DiscNW’s entire vision, in six words. No gate at the field, no fine print under the mission. The next fourteen points are what those six words cost, and what they buy.</p>
@@ -521,6 +645,7 @@
 
   <!-- 15 — GAME. -->
   <section class="pt pt-15" id="pt-15" data-pt="15" aria-labelledby="h15">
+    <div class="flood" aria-hidden="true"></div>
     <div class="wrap">
       <div class="tagrow"><span>Point 15 · Game point</span><span class="run" aria-hidden="true">0 — 15 · Game</span></div>
       <div class="ptgrid">
@@ -528,7 +653,7 @@
         <div class="col">
           <h2 id="h15" class="game-word">Game.</h2>
           <p class="lead">You read to 15. Now play to 15.</p>
-          <p><a class="btn" href="https://www.discnw.org/">Register at discnw.org</a></p>
+          <p><a class="btn" href="https://www.discnw.org/"><span class="roll"><span>Register at discnw.org</span><span aria-hidden="true">Register at discnw.org</span></span></a></p>
           <p class="fine">Sliding scale from $33 — point 07 always applies.</p>
         </div>
       </div>
@@ -538,6 +663,7 @@
   <!-- appendix -->
   <section class="about" aria-labelledby="about-h">
     <div class="wrap">
+      <img class="about-lockup" src="assets/brand/logo-full.png" alt="DiscNW — Disc Northwest" width="1446" height="616">
       <p class="kicker" style="margin-bottom:0"><span class="tickmark" aria-hidden="true"></span>About this direction</p>
       <h2 id="about-h">08 — Game to 15</h2>
       <p class="thesis">The site is a game of Ultimate played to 15: a fixed scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point — the whole personality lives in the typesetting.</p>
@@ -556,7 +682,7 @@
         </div>
         <div>
           <dt>Signature</dt>
-          <dd>The score strip: “DISCNW 0 — 0 YOU” ticking up as you scroll, ending at “15 — Game.” Reading progress is the score.</dd>
+          <dd>The crested score strip: “DISCNW 0 — 0 YOU” ticking up as you read, each colossal numeral landing under a rising mask — and at point 15 the orange floods down out of the scoreboard itself.</dd>
         </div>
         <div>
           <dt>Choose this if</dt>
@@ -585,32 +711,59 @@
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return; /* static strip per spec */
   var root=document.documentElement;
   root.classList.add('play');
-  var pts=[].slice.call(document.querySelectorAll('[data-pt]'));
-  var you=document.getElementById('score-you');
-  var box=document.getElementById('scorebox');
-  var strip=document.getElementById('strip');
-  var current=0,t,raf=0;
-  /* a point is scored once its section reaches the middle of the viewport,
-     and un-scored if you scroll back above it — recomputed exactly from
-     geometry on every scroll frame, so fast flicks and long jumps can
-     never leave a stale score */
-  function recompute(){
-    var mid=window.innerHeight*0.5,n=0,i,r;
-    for(i=0;i<pts.length;i++){
-      r=pts[i].getBoundingClientRect();
-      if(r.top<=mid)n=+pts[i].getAttribute('data-pt');
+  /* unconditional settle — registered before any other wiring so it holds even
+     if everything below fails: by 1.2s the hero is told to land and anything on
+     screen is forced into its revealed state (worst chain: 1.2s + .54s delay +
+     .55s rise = 2.29s, inside the 2.5s budget). Below-fold points keep their
+     scroll reveal; without .play the base styles are already the settled page. */
+  setTimeout(function(){
+    root.classList.add('go');
+    var els=document.querySelectorAll('[data-pt]'),vh=window.innerHeight,i,r;
+    for(i=0;i<els.length;i++){
+      r=els[i].getBoundingClientRect();
+      if(r.top<vh&&r.bottom>0&&!els[i].classList.contains('in'))els[i].classList.add('in');
     }
-    if(n===current)return;
-    current=n;
-    you.textContent=String(n);
-    strip.classList.toggle('final',n===15);
-    box.classList.remove('tick');void box.offsetWidth;box.classList.add('tick');
-    clearTimeout(t);t=setTimeout(function(){box.classList.remove('tick');},700);
+  },1200);
+  try{
+    var pts=[].slice.call(document.querySelectorAll('[data-pt]'));
+    var you=document.getElementById('score-you');
+    var box=document.getElementById('scorebox');
+    var strip=document.getElementById('strip');
+    var pt15=document.getElementById('pt-15');
+    var current=0,t,raf=0,revealed=0;
+    /* hero entrance — two frames in so the pre-state paints first */
+    requestAnimationFrame(function(){requestAnimationFrame(function(){root.classList.add('go');});});
+    /* a point is scored once its section reaches the middle of the viewport,
+       and un-scored if you scroll back above it — recomputed exactly from
+       geometry on every scroll frame, so fast flicks and long jumps can
+       never leave a stale score. The same pass fires each section's one-shot
+       reveal (at 85% viewport, so it also catches anchor jumps), and the
+       point-15 flood + final strip flip together at the exact frame the
+       section's top edge meets the scoreboard. */
+    function recompute(){
+      var vh=window.innerHeight,mid=vh*0.5,gate=vh*0.85,n=0,i,r,r15=null;
+      for(i=0;i<pts.length;i++){
+        r=pts[i].getBoundingClientRect();
+        if(r.top<=mid)n=+pts[i].getAttribute('data-pt');
+        if(revealed<pts.length&&r.top<=gate&&!pts[i].classList.contains('in')){pts[i].classList.add('in');revealed++;}
+        if(pts[i]===pt15)r15=r;
+      }
+      var flood=(r15&&r15.top<=strip.offsetHeight+24)||(window.scrollY+vh>=root.scrollHeight-2);
+      strip.classList.toggle('final',flood);
+      pt15.classList.toggle('flooded',flood);
+      if(n===current)return;
+      current=n;
+      you.textContent=String(n);
+      box.classList.remove('tick');void box.offsetWidth;box.classList.add('tick');
+      clearTimeout(t);t=setTimeout(function(){box.classList.remove('tick');},700);
+    }
+    function schedule(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;recompute();});}
+    window.addEventListener('scroll',schedule,{passive:true});
+    window.addEventListener('resize',schedule,{passive:true});
+    recompute();
+  }catch(e){
+    root.classList.remove('play');root.classList.remove('go'); /* any failure returns the settled base page */
   }
-  function schedule(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;recompute();});}
-  window.addEventListener('scroll',schedule,{passive:true});
-  window.addEventListener('resize',schedule,{passive:true});
-  recompute();
 })();
 </script>
 </body>

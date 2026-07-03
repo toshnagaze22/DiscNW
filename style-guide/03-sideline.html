@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Direction 3 · Sideline Day — DiscNW website redesign</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -26,11 +27,19 @@
   --r-lg:20px;
   --r-md:14px;
   --shadow:0 8px 24px rgba(27,48,34,.08);
-  --die-cut:5px;   /* the one die-cut white width, all five stickers */
+  --shadow-lift:0 18px 44px rgba(27,48,34,.16); /* cards, picked up */
+  --die-cut:5px;   /* the one die-cut white width, all seven stickers */
   --die-shadow:drop-shadow(0 6px 12px rgba(27,48,34,.18)); /* the one sticker shadow, cast from the die-cut silhouette */
+  --die-lift:drop-shadow(0 14px 22px rgba(27,48,34,.24)); /* the same silhouette, lifted off the bottle on hover */
   --disp:'Baloo 2','Trebuchet MS',sans-serif;
   --body:'Atkinson Hyperlegible','Verdana',sans-serif;
   --display-size:clamp(64px, 9vw, 120px); /* the one display moment */
+  /* The house easing family — three curves, used everywhere, no default "ease" anywhere.
+     pop = the sticker spring (slight overshoot); lux = big reveals (fast attack, long settle);
+     snap = micro hovers. One motion language for the whole page. */
+  --ease-pop:cubic-bezier(.34,1.56,.64,1);
+  --ease-lux:cubic-bezier(.16,1,.3,1);
+  --ease-snap:cubic-bezier(.4,0,.1,1);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -54,8 +63,12 @@ p{margin:0 0 1em}
 .sec--wash-sky{background:var(--wash-sky)}
 .sec--wash-grass{background:var(--wash-grass)}
 .overline{
+  display:inline-block; /* shrink-wraps, so the sweep matches the words */
   font:700 12px/1 var(--body); letter-spacing:.18em; text-transform:uppercase;
-  color:var(--green-deep); margin:0 0 16px;
+  color:var(--green-deep); margin:0 0 16px; padding:2px 2px 3px;
+  /* the marigold highlighter sweep — same band as the story quote's .hl; AA holds (5.4:1) */
+  background:linear-gradient(transparent 55%, rgba(255,182,30,.55) 55%) no-repeat 0 0;
+  background-size:100% 100%;
 }
 .sec-title{font-size:clamp(32px,4vw,44px); font-weight:700; letter-spacing:-.005em; margin-bottom:.35em}
 .sec-note{max-width:62ch; color:var(--muted); margin-bottom:0}
@@ -70,13 +83,29 @@ p{margin:0 0 1em}
 .ph-cap b{font-weight:700; color:var(--ink)}
 
 /* ================= THE SIGNATURE — DIE-CUT STICKERS =================
-   Exactly five on the whole page. One die-cut white width (--die-cut, 5px
+   Exactly seven on the whole page. One die-cut white width (--die-cut, 5px
    at sheet size), one evergreen outline, one soft shadow (--die-shadow —
    a drop-shadow, so it hugs the die-cut silhouette on every shape), and
-   three angles only. The five rotations, exactly: sheet starburst −3°,
-   club badge 2°, duck −2°, hero starburst 2°, event pill −2°.
+   three angles only. The seven rotations, exactly: sheet starburst −3°,
+   sheet crest 2°, duck −2°, hero starburst 2°, schedule crest 2°,
+   story crest 2°, event pill −2°. The club crest — the real DiscNW mark,
+   die-cut — always signs at the same 2°, never recolored, never cropped.
    Never on a face, never under text. */
 .die{filter:var(--die-shadow); transform:rotate(var(--rot,-3deg))}
+.die-crest{background:var(--white); border-radius:50%; padding:var(--die-cut)} /* the mark's 5px die-cut ring, same as the duck's */
+/* Tactile play — stickers are springy under the pointer: they straighten and
+   lift as if peeled, press flat when grabbed. Hover-capable, motion-welcome
+   devices only; the settled state above is always the no-JS truth. */
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  .die,.stkr{transition:transform .45s var(--ease-pop), filter .45s var(--ease-pop)}
+  .die:hover,.stkr:hover{transform:rotate(calc(var(--rot,-3deg)*-.35)) scale(1.07); filter:var(--die-lift)}
+  .die:active,.stkr:active{transform:rotate(calc(var(--rot,-3deg)*.25)) scale(.95); filter:var(--die-shadow); transition-duration:.15s}
+  /* the one custom cursor state: a grab hand over the sticker sheet — pure CSS,
+     progressive enhancement, guarded with the peel effect it advertises —
+     touch and reduced-motion users keep their native cursors */
+  .sheet{cursor:grab}
+  .sheet .die:active{cursor:grabbing}
+}
 .stkr{
   display:inline-block; font:700 13px/1 var(--disp); letter-spacing:.05em; text-transform:uppercase;
   background:var(--marigold); color:var(--ink);
@@ -91,7 +120,7 @@ p{margin:0 0 1em}
   display:inline-block; font-family:var(--disp); font-weight:700; font-size:17px; line-height:1;
   border-radius:999px; padding:15px 28px 16px; border:2px solid transparent;
   cursor:pointer; text-decoration:none; text-align:center;
-  transition:background-color .15s ease, border-color .15s ease;
+  transition:background-color .25s var(--ease-snap), border-color .25s var(--ease-snap);
 }
 @media (prefers-reduced-motion:reduce){ .btn{transition:none} }
 .btn-primary{background:var(--green-deep); color:var(--white)}
@@ -191,7 +220,7 @@ p{margin:0 0 1em}
   padding:18px 48px; border-bottom:1.5px solid var(--line); background:var(--white);
 }
 .mock-logo{display:flex; align-items:center; text-decoration:none}
-.mock-logo-img{width:132px; height:auto; filter:brightness(0); opacity:.88} /* real one-color lockup, recolored to ink */
+.mock-logo-img{width:140px; height:auto} /* the real dark lockup on the light header — no filters, no recoloring */
 .mock-links{display:flex; gap:30px; flex-wrap:wrap; margin:0 auto 0 0; padding:0; list-style:none}
 .mock-links a{font:700 16px/1 var(--body); color:var(--ink); text-decoration:none; padding:8px 0}
 .mock-links a:hover{color:var(--green-deep); text-decoration:underline 2.5px; text-underline-offset:6px}
@@ -200,8 +229,11 @@ p{margin:0 0 1em}
   font-size:var(--display-size); font-weight:800; line-height:.98; letter-spacing:-.015em;
   margin:0; max-width:11em;
 }
-.mock-h1 span{display:block}
-.hero-doodle{width:min(400px,68%); height:auto; color:var(--green); margin:20px 0 0}
+/* each headline line sits in its own overflow mask, so it can rise from behind
+   an invisible edge; padding keeps Baloo's descenders clear of the clip */
+.mock-h1 .ln{display:block; overflow:hidden; padding-bottom:.09em; margin-bottom:-.09em}
+.mock-h1 .ln-in{display:block}
+.hero-doodle{width:min(400px,68%); height:auto; color:var(--green); margin:20px 0 0; clip-path:inset(-12px -3% -12px -3%)} /* expanded box = visually unclipped; gives the draw-in an interpolable settled state */
 .mock-sub{font-size:20px; color:var(--muted); max-width:56ch; margin:36px 0 32px}
 .mock-ctas{display:flex; gap:14px 18px; flex-wrap:wrap; align-items:center}
 .mock-ctas .btn{font-size:18px; padding:17px 32px 18px} /* hero-scale pair: equal heights, primary reads first */
@@ -212,7 +244,7 @@ p{margin:0 0 1em}
    photo never crops at any viewport — both faces (left and center-left) and
    the disc (lower left) always sit fully in frame, and the sticker's corner
    is blurred fence, never a person. Renders ≤1069px, well under native. */
-.mock-ph{aspect-ratio:16/9; border-radius:0; background:#E9EFE9; overflow:hidden}
+.mock-ph{aspect-ratio:16/9; border-radius:0; background:#E9EFE9; overflow:hidden; clip-path:inset(0 0 0 0)} /* settled curtain — interpolable with the armed state */
 .mock-ph img{width:100%; height:100%; object-fit:cover; object-position:50% 50%; filter:contrast(1.03) saturate(1.04)}
 .mock-stkr{position:absolute; top:-26px; right:40px; z-index:2; width:128px; height:128px}
 .mock-figcap{font-size:14px; color:var(--muted); padding:14px 48px 24px; margin:0}
@@ -234,6 +266,9 @@ p{margin:0 0 1em}
 }
 .sat-list b{font:700 15.5px/1.5 var(--disp); color:var(--ink); letter-spacing:.01em}
 .sat-time{font:700 13px/1.5 var(--body); letter-spacing:.06em; color:var(--green-deep); text-transform:uppercase}
+/* the club crest pins the far end of the schedule strip — smallest sticker on
+   the sheet, in flow (never over text), same die-cut ring, always 2° */
+.sat-crest{flex:none; width:64px; height:auto; margin-left:auto; align-self:center}
 .mock-trust{display:grid; grid-template-columns:repeat(3,1fr); border-top:1.5px solid var(--line); background:var(--wash-grass)}
 .mock-trust-item{display:flex; gap:14px; padding:28px 32px; align-items:flex-start}
 .mock-trust-item + .mock-trust-item{border-left:1.5px solid rgba(27,48,34,.12)}
@@ -242,20 +277,74 @@ p{margin:0 0 1em}
 .mock-trust-item b{font-family:var(--disp); font-weight:700; font-size:16.5px; display:block}
 .mock-note{margin:20px 4px 0; font-size:14.5px; color:var(--muted); max-width:78ch}
 
-/* The page's single orchestrated moment: the disc-flight underline draws in
-   once, when the hero mockup enters view. JS-gated so it is always visible
-   without JS; a 2s settle timer guarantees the final state; reduced motion
-   and print always get the drawn line. */
-.js .hero-doodle{clip-path:inset(-10px 100% -10px 0)}
-.js .mock-frame.is-in .hero-doodle{
-  clip-path:inset(-10px -2% -10px 0);
-  transition:clip-path 1.1s cubic-bezier(.3,.6,.25,1) .2s;
+/* ================= MOTION — TACTILE PLAY =================
+   One choreographed system, one easing family. The hero mockup plays a single
+   entrance when it arrives (headline lines rise from masks → the flight line
+   draws → the photo curtain lifts → the sticker pops on with a spring); down
+   the page, stickers pop into place and cards rise the first time they're
+   seen; overlines take a marigold highlighter sweep. Every sequence completes
+   within 1.5s of its trigger and plays once. Pre-states live only inside
+   html.anim AND motion-welcome media, and .anim is added only once observers
+   are live — so no-JS, reduced-motion, and print all get the settled page
+   for free. Base styles ARE the settled state. */
+@media (prefers-reduced-motion:no-preference){
+  /* -- armed (pre-entrance) states -- */
+  .anim .mock-frame:not(.is-in) .ln-in{transform:translateY(112%)}
+  .anim .mock-frame:not(.is-in) .hero-doodle{clip-path:inset(-12px 100% -12px -3%)}
+  .anim .mock-frame:not(.is-in) .mock-ph{clip-path:inset(0 0 100% 0)}
+  .anim .mock-frame:not(.is-in) .mock-sub,
+  .anim .mock-frame:not(.is-in) .mock-ctas,
+  .anim .mock-frame:not(.is-in) .mock-reassure,
+  .anim .mock-frame:not(.is-in) .mock-stkr,
+  .anim .mock-sat:not(.is-in) .sat-crest,
+  .anim .sheet:not(.is-in) .sheet-item .die,
+  .anim .path-grid:not(.is-in) .path-card,
+  .anim .story-shell:not(.is-in) .story-card,
+  .anim .story-shell:not(.is-in) .story-crest,
+  .anim .film:not(.is-in) .ph,
+  .anim .event-card:not(.is-in) .event-stkr{opacity:0}
+  .anim .overline{background-size:0% 100%}
+  /* -- the hero entrance, staggered on one clock -- */
+  .anim .mock-frame.is-in .ln-in{animation:line-up .75s var(--ease-lux) calc(var(--l)*90ms) backwards}
+  .anim .mock-frame.is-in .mock-sub{animation:rise-in .6s var(--ease-lux) .38s backwards}
+  .anim .mock-frame.is-in .mock-ctas{animation:rise-in .6s var(--ease-lux) .47s backwards}
+  .anim .mock-frame.is-in .mock-reassure{animation:rise-in .6s var(--ease-lux) .56s backwards}
+  .anim .mock-frame.is-in .hero-doodle{animation:doodle-draw .8s var(--ease-lux) .5s backwards}
+  .anim .mock-frame.is-in .mock-ph{animation:ph-curtain .9s var(--ease-lux) .25s backwards}
+  .anim .mock-frame.is-in .mock-ph img{animation:ph-settle 1.1s var(--ease-lux) .25s backwards}
+  .anim .mock-frame.is-in .mock-stkr{animation:stkr-pop .55s var(--ease-pop) .9s backwards}
+  /* -- scroll reveals: stickers land, cards rise, once each -- */
+  .anim .mock-sat.is-in .sat-crest{animation:stkr-pop .5s var(--ease-pop) .12s backwards}
+  .anim .sheet.is-in .sheet-item .die{animation:stkr-pop .55s var(--ease-pop) calc(var(--i)*90ms) backwards}
+  .anim .path-grid.is-in .path-card{animation:card-rise .65s var(--ease-lux) calc(var(--i)*90ms) backwards}
+  .anim .story-shell.is-in .story-card{animation:card-rise .7s var(--ease-lux) backwards}
+  .anim .story-shell.is-in .story-crest{animation:stkr-pop .55s var(--ease-pop) .4s backwards}
+  .anim .film.is-in .ph{animation:card-rise .7s var(--ease-lux) backwards}
+  .anim .event-card.is-in .event-stkr{animation:stkr-pop .5s var(--ease-pop) .1s backwards}
+  .anim .overline.is-swept{background-size:100% 100%; transition:background-size .7s var(--ease-lux) .12s}
+  /* -- cards lift under the pointer; layered clocks (card now, photo long, arrow late) -- */
+  @media (hover:hover){
+    .path-card,.event-card{transition:transform .35s var(--ease-snap), box-shadow .35s var(--ease-snap)}
+    .path-card:hover,.event-card:hover{transform:translateY(-6px); box-shadow:var(--shadow-lift)}
+    .path-ph img{transition:transform .8s var(--ease-lux)}
+    .path-card:hover .path-ph img{transform:scale(1.035)} /* 325px slot × 1.035 stays well under every native width */
+    .path-cta{display:inline-block; transition:transform .3s var(--ease-snap) .08s}
+    .path-card:hover .path-cta{transform:translateX(5px)}
+  }
 }
-@media (prefers-reduced-motion:reduce){
-  .js .hero-doodle{clip-path:none !important; transition:none !important}
-}
-@media print{
-  .js .hero-doodle{clip-path:none !important}
+@keyframes line-up{from{transform:translateY(112%)}}
+@keyframes rise-in{from{opacity:0; transform:translateY(14px)}}
+@keyframes doodle-draw{from{clip-path:inset(-12px 100% -12px -3%)}}
+@keyframes ph-curtain{from{clip-path:inset(0 0 100% 0)}}
+@keyframes ph-settle{from{transform:scale(1.06)}}
+@keyframes stkr-pop{from{opacity:0; transform:rotate(var(--rot,-3deg)) scale(.4)}}
+@keyframes card-rise{from{opacity:0; transform:translateY(26px)}}
+@media print{ /* print gets the finished page, no exceptions */
+  .anim .ln-in,.anim .mock-ph,.anim .mock-ph img,.anim .mock-sub,.anim .mock-ctas,.anim .mock-reassure,
+  .anim .mock-stkr,.anim .hero-doodle,.anim .sat-crest,.anim .sheet-item .die,.anim .path-card,
+  .anim .story-card,.anim .story-crest,.anim .film .ph,.anim .event-stkr{animation:none !important; opacity:1 !important; clip-path:none !important}
+  .anim .ln-in{transform:none !important}
+  .anim .overline{background-size:100% 100% !important}
 }
 
 /* ================= 7 · AUDIENCE PATHWAYS ================= */
@@ -272,8 +361,10 @@ p{margin:0 0 1em}
 .path-cta{margin-top:auto}
 
 /* ================= 8 · STORYTELLING ================= */
+.story-shell{position:relative; margin-top:56px} /* holds the crest outside the card's overflow clip, so the mark never crops */
+.story-crest{position:absolute; top:-26px; left:-14px; z-index:2; width:104px; height:auto} /* straddles the card's top-left — blurred treeline in the photo corner, never a face, never text */
 .story-card{
-  margin-top:56px; background:var(--white); border:1.5px solid var(--line);
+  background:var(--white); border:1.5px solid var(--line);
   border-radius:var(--r-lg); overflow:hidden;
   display:grid; grid-template-columns:.95fr 1.05fr;
 }
@@ -316,7 +407,7 @@ p{margin:0 0 1em}
   background:var(--white); border:2px solid var(--ink); border-radius:999px;
   padding:11px 18px 12px; cursor:pointer;
   box-shadow:0 2px 10px rgba(27,48,34,.22); /* lifts the control off bright grass */
-  transition:background-color .15s ease;
+  transition:background-color .25s var(--ease-snap);
 }
 .film-btn:hover{background:var(--wash-grass)}
 .film-btn[hidden]{display:none}
@@ -356,7 +447,7 @@ p{margin:0 0 1em}
 .chip span{
   display:inline-block; font:700 15px/1 var(--body); color:var(--ink);
   border:2px solid var(--ink); border-radius:999px; padding:10px 16px 11px; background:var(--white);
-  transition:background-color .12s ease;
+  transition:background-color .2s var(--ease-snap);
 }
 .chip input:checked + span{background:var(--marigold)}
 .chip input:hover + span{background:var(--wash-grass)}
@@ -435,6 +526,9 @@ p{margin:0 0 1em}
   .mock-sat{padding:22px 20px 24px; gap:12px}
   .sat-list{gap:10px 24px}
   .mock-stkr{width:96px; height:96px; top:-18px; right:20px}
+  .mock-logo-img{width:118px}
+  .sat-crest{width:56px}
+  .story-crest{width:84px; top:-20px; left:-8px} /* stays fully on-canvas at 390px — the mark never clips */
   .tl-track{grid-template-columns:1fr}
   .story-body{padding:32px 24px}
 }
@@ -591,45 +685,28 @@ p{margin:0 0 1em}
   <div class="wrap">
     <p class="overline">04 · Signature element</p>
     <h2 class="sec-title" id="sig-h">The water-bottle sticker system</h2>
-    <p class="sec-note">Badges styled like the vinyl on a player’s water bottle — same die-cut white edge, same evergreen outline, same soft shadow — and curated like a good sticker sheet: this entire page wears exactly five. One answers a question, one carries the club, one is real event art, untouched.</p>
+    <p class="sec-note">Badges styled like the vinyl on a player’s water bottle — same die-cut white edge, same evergreen outline, same soft shadow — and curated like a good sticker sheet: this entire page wears exactly seven. One answers a question, one is the club’s own mark, one is real event art, untouched.</p>
 
     <div class="sheet">
-      <figure class="sheet-item">
+      <figure class="sheet-item" style="--i:0">
         <svg class="die" style="--rot:-3deg" width="160" height="160" role="img" aria-label="Marigold starburst sticker reading: no experience needed"><use href="#starburst"/></svg>
         <figcaption><b>The reassurance starburst</b> Answers the nervous question before it’s asked. Lives beside the homepage photo and on beginner program pages.</figcaption>
       </figure>
 
-      <figure class="sheet-item">
-        <svg class="die" style="--rot:2deg" width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="Round white club sticker with three evergreen trees and a small marigold disc, reading: Puget Sound Ultimate, rain or shine">
-          <circle cx="75" cy="75" r="73" fill="#fff"/>
-          <!-- r 66.5 + 1.5 half-stroke leaves exactly 5px of die-cut white inside the r-73 blank -->
-          <circle cx="75" cy="75" r="66.5" fill="#fff" stroke="#1B3022" stroke-width="3"/>
-          <path id="badgearc" d="M21,75 A54,54 0 0 1 129,75" fill="none"/>
-          <text font-family="'Baloo 2',sans-serif" font-weight="800" font-size="11" letter-spacing="1.4" fill="#1B3022">
-            <textPath href="#badgearc" startOffset="50%" text-anchor="middle">PUGET SOUND ULTIMATE</textPath>
-          </text>
-          <g stroke="#1B3022" stroke-width="2.4" stroke-linejoin="round">
-            <polygon points="75,42 89,61 61,61" fill="#1F7A33"/>
-            <polygon points="75,53 93,76 57,76" fill="#1F7A33"/>
-            <polygon points="75,64 97,91 53,91" fill="#1F7A33"/>
-            <rect x="71" y="91" width="8" height="9" rx="2" fill="#1B3022" stroke="none"/>
-          </g>
-          <ellipse cx="44" cy="49" rx="9.5" ry="3.4" fill="#FFB61E" stroke="#1B3022" stroke-width="2"/>
-          <path d="M26 52 l8 -2 M28 57 l7 -1" stroke="#1B3022" stroke-width="1.8" stroke-linecap="round" opacity=".55"/>
-          <text x="75" y="121" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="10.5" letter-spacing="1.4" fill="#1B3022">RAIN OR SHINE</text>
-        </svg>
-        <figcaption><b>The club badge</b> Puget Sound Ultimate, rain or shine. Footer, merch, and the occasional 404 page — never competing with content.</figcaption>
+      <figure class="sheet-item" style="--i:1">
+        <img class="die die-crest" style="--rot:2deg" src="assets/brand/logo-mark.png" width="146" height="152" alt="The DiscNW mark — two Coast Salish-style formline birds circling a disc — cut as a white-edged vinyl sticker.">
+        <figcaption><b>The club crest</b> The real DiscNW mark, die-cut like the vinyl it already is. It signs the page — beside the Saturday schedule, on the story card — always at the same easy 2°, never recolored, never cropped.</figcaption>
       </figure>
 
-      <figure class="sheet-item">
+      <figure class="sheet-item" style="--i:2">
         <img class="die sheet-duck" style="--rot:-2deg" src="assets/seaplastic-2026-logo.png" width="140" height="136" alt="Sea Plastic 2026 tournament badge — a cartoon rubber duck in sunglasses surfing a big blue wave.">
         <figcaption><b>Event art, as-is</b> DiscNW already speaks sticker: the real Sea Plastic badge drops onto the sheet untouched. New tournament art joins the family automatically.</figcaption>
       </figure>
     </div>
 
     <ol class="sheet-rules" aria-label="The sticker sheet rules">
-      <li><b>One per view.</b> A sticker earns its corner or waits for the next page. Five on this entire page — count them.</li>
-      <li><b>Three angles only.</b> −3°, 2°, −2°. Deliberate, like a careful hand placed them. Nothing tumbles, nothing spins.</li>
+      <li><b>One per view.</b> A sticker earns its corner or waits for the next page. Seven on this entire page — count them.</li>
+      <li><b>Three angles only.</b> −3°, 2°, −2°. Deliberate, like a careful hand placed them — and the crest always signs at 2°. Nothing tumbles, nothing spins.</li>
       <li><b>Never on a face, never under text.</b> Stickers keep to photo corners and page margins; people and words always win.</li>
     </ol>
   </div>
@@ -650,7 +727,7 @@ p{margin:0 0 1em}
       <p class="mock-announce">Summer registration is open — youth camps, hat leagues, and Wonder League. <a href="#mock-h">See what’s registering now</a></p>
       <nav class="mock-nav" aria-label="Mockup site navigation">
         <a class="mock-logo" href="#mock-h">
-          <img class="mock-logo-img" src="assets/discnw-logo-transparent-april2021.png" width="132" height="56" alt="DiscNW home — the Coast Salish-style twin-bird disc mark and DiscNW wordmark">
+          <img class="mock-logo-img" src="assets/brand/logo-full.png" width="140" height="60" alt="DiscNW home — the Coast Salish-style twin-bird disc mark and DiscNW wordmark">
         </a>
         <ul class="mock-links">
           <li><a href="#mock-h">Events</a></li>
@@ -663,7 +740,7 @@ p{margin:0 0 1em}
       </nav>
 
       <div class="mock-hero">
-        <h3 class="mock-h1"><span>Come play.</span> <span>We’ll teach you</span> <span>everything.</span></h3>
+        <h3 class="mock-h1"><span class="ln" style="--l:0"><span class="ln-in">Come play.</span></span> <span class="ln" style="--l:1"><span class="ln-in">We’ll teach you</span></span> <span class="ln" style="--l:2"><span class="ln-in">everything.</span></span></h3>
         <svg class="hero-doodle" viewBox="0 0 240 30" aria-hidden="true"><use href="#flightline"/></svg>
         <p class="mock-sub">DiscNW runs ultimate frisbee leagues, camps, and tournaments for more than 10,000 players across Puget Sound — ages 7 to adult, brand-new to competitive. No tryouts required to find your place here.</p>
         <div class="mock-ctas">
@@ -689,24 +766,25 @@ p{margin:0 0 1em}
           <li><span class="sat-time">1:00 pm</span> <b>Wonder League</b> Genesee Playfield</li>
           <li><span class="sat-time">5:30 pm</span> <b>Free pickup — everyone welcome</b> Green Lake</li>
         </ul>
+        <img class="die die-crest sat-crest" style="--rot:2deg" src="assets/brand/logo-mark.png" width="64" height="67" alt="The DiscNW mark, worn as a small die-cut sticker at the end of the schedule strip.">
       </div>
 
       <div class="mock-trust">
         <div class="mock-trust-item">
-          <svg width="26" height="26" aria-hidden="true"><use href="#checkdisc"/></svg>
+          <svg width="24" height="24" aria-hidden="true"><use href="#checkdisc"/></svg>
           <p><b>Kids own the calls</b> Ultimate is non-contact and self-officiated — players resolve their own fouls, guided by Spirit of the Game.</p>
         </div>
         <div class="mock-trust-item">
-          <svg width="26" height="26" aria-hidden="true"><use href="#checkdisc"/></svg>
+          <svg width="24" height="24" aria-hidden="true"><use href="#checkdisc"/></svg>
           <p><b>Vetted coaches</b> Every youth coach is background-checked, SafeSport-certified, and First Aid &amp; CPR trained.</p>
         </div>
         <div class="mock-trust-item">
-          <svg width="26" height="26" aria-hidden="true"><use href="#checkdisc"/></svg>
+          <svg width="24" height="24" aria-hidden="true"><use href="#checkdisc"/></svg>
           <p><b>Pay what fits</b> Sliding-scale fees from $33 on every program — same high-quality experience at every tier.</p>
         </div>
       </div>
     </div>
-    <p class="mock-note">Voice check: the headline promises teaching, not glory, and gets the page’s one hand-drawn line under it. Register is the only marigold button on the page, so the eye lands on it from anywhere. “This Saturday” sits still — real programs, plain times, marigold disc-dots — because a family planning their weekend doesn’t need anything to scroll past them.</p>
+    <p class="mock-note">Voice check: the headline promises teaching, not glory, and gets the page’s one hand-drawn line under it. Register is the only marigold button on the page, so the eye lands on it from anywhere. “This Saturday” sits still — real programs, plain times, marigold disc-dots, the club crest pinning the far end like a magnet on the fridge — because a family planning their weekend doesn’t need anything to scroll past them. The hero arrives once, in order — headline, flight line, photograph, sticker — then holds still.</p>
   </div>
 </section>
 
@@ -717,7 +795,7 @@ p{margin:0 0 1em}
     <h2 class="sec-title" id="path-h">Three front doors, each in its own words</h2>
     <p class="sec-note">Straight from the homepage: players, coaches, and parents each get a door labeled in their language — not the organization’s.</p>
     <div class="path-grid">
-      <article class="path-card">
+      <article class="path-card" style="--i:0">
         <div class="ph path-ph">
           <img src="assets/lili-gu.jpg" style="object-position:50% 32%" width="901" height="600" alt="A laughing player in a white, red, and blue club jersey cheers between points with a water bottle in each hand, teammates blurred on the grass behind her.">
         </div>
@@ -728,7 +806,7 @@ p{margin:0 0 1em}
           <a class="arrow-link path-cta" href="#path-h">Find pickup near you →</a>
         </div>
       </article>
-      <article class="path-card">
+      <article class="path-card" style="--i:1">
         <div class="ph path-ph">
           <img src="assets/coaching-2.jpg" style="object-position:50% 42%" width="400" height="267" alt="A coach in a white cap kneels face-to-face with a huddle of about ten young players in black and yellow jerseys on a grass field.">
         </div>
@@ -739,7 +817,7 @@ p{margin:0 0 1em}
           <a class="arrow-link path-cta" href="#path-h">See what coaching takes →</a>
         </div>
       </article>
-      <article class="path-card">
+      <article class="path-card" style="--i:2">
         <div class="ph path-ph">
           <img src="assets/ycc-tryouts-2015-4.jpg" style="object-position:50% 28%" width="2333" height="2475" alt="Two teen players mid-point on a sunny turf field — a forehand floats between them, frozen in the air — while families watch from bleachers behind.">
         </div>
@@ -761,6 +839,8 @@ p{margin:0 0 1em}
     <h2 class="sec-title" id="story-h">Stories from the sideline</h2>
     <p class="sec-note">The community story card — one great photo on its own, one real voice on solid ground beside it. Parents trust other parents more than they trust any brochure.</p>
 
+    <div class="story-shell">
+    <img class="die die-crest story-crest" style="--rot:2deg" src="assets/brand/logo-mark.png" width="104" height="108" alt="The DiscNW mark as a die-cut sticker, signing the corner of the story card.">
     <article class="story-card">
       <div class="ph story-ph">
         <img src="assets/sr26-catch-celebration.jpg" width="1920" height="1080" alt="A player in a white jersey laughs and holds the disc high overhead after a catch, a teammate rushing in to celebrate on a sunlit grass field.">
@@ -778,6 +858,7 @@ p{margin:0 0 1em}
         <p class="story-photonote">Photo: the catch that made the carload of questions worth it — Spring Reign 2026.</p>
       </div>
     </article>
+    </div>
 
     <div class="tl">
       <h3>A first season, at a glance</h3>
@@ -816,7 +897,7 @@ p{margin:0 0 1em}
   <div class="wrap">
     <p class="overline">08 · UI components</p>
     <h2 class="sec-title" id="ui-h">The working parts</h2>
-    <p class="sec-note">Buttons that say what they do, an event card wearing the page’s fifth and final sticker, and a program finder that speaks household, not org chart.</p>
+    <p class="sec-note">Buttons that say what they do, an event card wearing the page’s seventh and final sticker, and a program finder that speaks household, not org chart.</p>
     <div class="ui-grid">
 
       <div class="ui-panel">
@@ -950,7 +1031,7 @@ p{margin:0 0 1em}
       <a href="index.html">← All directions</a>
       <a href="04-spirit-editorial.html">Next direction →</a>
     </nav>
-    <p class="pfoot-meta">Direction 3 of 5 · “Sideline Day” · DiscNW website redesign · All program names, dates, and policies are drawn from discnw.org; photography, logos, and film (Spring Reign 2026) are real DiscNW assets, shown full color with no overlays or tints. Times on the sample “This Saturday” strip are placeholders.</p>
+    <p class="pfoot-meta">Direction 3 of 5 · “Sideline Day” · DiscNW website redesign · All program names, dates, and policies are drawn from discnw.org; photography, logos, and film (Spring Reign 2026) are real DiscNW assets, shown full color with no overlays or tints. Times on the sample “This Saturday” strip are placeholders. Motion is one easing family — spring for stickers, long settle for reveals — each sequence plays once, finishes within 1.5 seconds, and the page is complete with JavaScript, motion, or both switched off.</p>
   </div>
 </footer>
 
@@ -960,24 +1041,38 @@ p{margin:0 0 1em}
   "use strict";
   var motionOK = window.matchMedia && window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
 
-  /* 1 · The one orchestrated moment: the disc-flight underline draws in when
-     the hero mockup enters view. Gated behind html.js so nothing is hidden
-     without JS; an unconditional 2s settle timer guarantees the final state. */
-  var frame = document.querySelector(".mock-frame");
-  if (frame){
-    document.documentElement.classList.add("js");
-    var settle = function(){ frame.classList.add("is-in"); };
-    if ("IntersectionObserver" in window){
+  /* 1 · Tactile-play choreography (house pattern, as directions 01–02).
+     Hidden pre-states exist only under html.anim AND motion-welcome media,
+     and .anim is added only once observers are live — so no-JS, reduced
+     motion, print, screenshots, and any failure all render the settled page.
+     Each element reveals once (then unobserved); every sequence finishes
+     within 1.5s of its trigger; a 2.2s sweep settles anything already on
+     screen so nothing visible sits unfinished past load. */
+  var root = document.documentElement;
+  if (motionOK && "IntersectionObserver" in window){
+    try{
+      var targets = [].slice.call(document.querySelectorAll(
+        ".mock-frame, .mock-sat, .sheet, .path-grid, .story-shell, .film, .event-card, .overline"
+      ));
+      var settleOne = function(el){
+        el.classList.add(el.classList.contains("overline") ? "is-swept" : "is-in");
+      };
       var io = new IntersectionObserver(function(entries){
         entries.forEach(function(en){
-          if (en.isIntersecting){ settle(); io.disconnect(); }
+          if (en.isIntersecting){ settleOne(en.target); io.unobserve(en.target); }
         });
-      }, {rootMargin:"0px 0px -15% 0px", threshold:.1});
-      io.observe(frame);
-    } else {
-      settle();
+      }, {rootMargin:"0px 0px -10% 0px", threshold:.15});
+      targets.forEach(function(t){ io.observe(t); });
+      root.classList.add("anim"); /* arm only now — observers are live */
+      window.setTimeout(function(){ /* guarantee: nothing in view stays armed past 2.2s */
+        targets.forEach(function(t){
+          if (t.getBoundingClientRect().top < window.innerHeight){ settleOne(t); io.unobserve(t); }
+        });
+      }, 2200);
+      window.addEventListener("beforeprint", function(){ root.classList.remove("anim"); });
+    }catch(err){
+      root.classList.remove("anim"); /* any failure: the page stays fully settled */
     }
-    window.setTimeout(settle, 2000); /* settle no matter what */
   }
 
   /* 2 · Spirit-tunnel film: autoplays only while in view and only when motion
