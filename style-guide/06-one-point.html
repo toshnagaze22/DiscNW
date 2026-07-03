@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction 06 — One Point · DiscNW redesign</title>
+<meta name="description" content="Experimental concept for the DiscNW redesign: the entire page is a single point of ultimate, narrated from pull to catch, and the interface itself is the disc's flight.">
+<meta name="theme-color" content="#070D1E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23070D1E'/%3E%3Cellipse cx='16' cy='16' rx='11' ry='4.5' fill='%23F2EEE3' stroke='%23FF6A2B' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,700;1,400&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DIRECTION 06 — ONE POINT
+   One point of ultimate, pull to catch. The page is the flight.
+   ============================================================ */
+:root{
+  --night-950:#070D1E;
+  --night-900:#0B1329;
+  --night-800:#101A34;
+  --night-700:#16203F;
+  --night-600:#1E2547;
+  --violet:#241A33;
+  --violet-2:#33284A;
+  --plum:#59303F;
+  --plum-2:#3A2440;
+  --chalk:#F2EEE3;
+  --chalk-dim:#C8C2B0;
+  --line-faint:rgba(242,238,227,.16);
+  --panel:rgba(12,19,41,.92);
+  --ember:#FF6A2B;
+  --ember-bright:#FF8A50;
+  --disp:"Big Shoulders Display",system-ui,sans-serif;
+  --body:"Schibsted Grotesk",system-ui,-apple-system,sans-serif;
+  --mono:"Spline Sans Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-x:clip}
+body{
+  overflow-x:clip;
+  background:var(--night-950);
+  color:var(--chalk);
+  font-family:var(--body);
+  font-size:16.5px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--ember);color:#0B1224}
+:focus-visible{outline:2px solid var(--ember);outline-offset:3px;border-radius:2px}
+a{color:inherit}
+img{max-width:100%}
+
+.skip{
+  position:absolute;left:-9999px;top:0;z-index:60;
+  background:var(--ember);color:#0B1224;font-family:var(--mono);font-size:12px;
+  padding:10px 16px;text-decoration:none;
+}
+.skip:focus-visible{left:12px;top:12px}
+
+/* ---------- header ---------- */
+.top{
+  position:absolute;inset:0 0 auto 0;z-index:6;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:20px clamp(20px,4vw,44px);
+}
+.brand{
+  font-family:var(--disp);font-weight:700;font-size:23px;letter-spacing:.10em;
+  text-decoration:none;color:var(--chalk);
+}
+.brand b{color:var(--ember-bright);font-weight:700}
+.top-mid{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--chalk-dim);
+  text-transform:uppercase;
+}
+.top-link{
+  font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--chalk-dim);text-decoration:none;border-bottom:1px solid var(--line-faint);
+  padding-bottom:2px;
+}
+.top-link:hover{color:var(--ember-bright);border-color:var(--ember-bright)}
+@media (max-width:700px){.top-mid{display:none}}
+
+/* ---------- the evening (page-length dusk gradient) ---------- */
+main{
+  position:relative;
+  background:linear-gradient(180deg,
+    #241A33 0%,
+    #3A2440 6%,
+    #59303F 10.5%,
+    #472944 13.5%,
+    #33284A 19%,
+    #1E2547 31%,
+    #16203F 45%,
+    #101A34 61%,
+    #0B1329 77%,
+    #070D1E 91%,
+    #070D1E 100%);
+}
+main::before{ /* the sun, going down behind the hero */
+  content:"";position:absolute;z-index:0;left:0;right:0;top:0;height:120vh;
+  background:radial-gradient(ellipse 70% 34% at 50% 78%, rgba(255,138,80,.18), rgba(255,138,80,0) 68%);
+  pointer-events:none;
+}
+
+/* ---------- flight line ---------- */
+.flight{
+  position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;
+}
+.flight svg{display:block;width:100%;height:100%}
+.flight-ghost{
+  fill:none;stroke:rgba(242,238,227,.30);stroke-width:1.4;
+  stroke-dasharray:2 9;stroke-linecap:round;
+}
+.flight-ember{
+  fill:none;stroke:var(--ember);stroke-width:2.6;stroke-linecap:round;
+}
+#flightRide{display:none}
+.flight-live #flightRide{display:block}
+
+/* stations sit above the line; opaque panels hide it as it passes behind */
+.station{position:relative;z-index:2}
+.wrap{max-width:1160px;margin:0 auto;padding:0 clamp(20px,4vw,44px)}
+
+/* ---------- shared type ---------- */
+.chyron{
+  display:flex;align-items:center;gap:12px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ember-bright);
+}
+.chyron::before{content:"";width:26px;height:1px;background:var(--ember);flex:none}
+.station-title{
+  font-family:var(--disp);font-weight:700;text-transform:uppercase;
+  font-size:clamp(2.5rem,5.6vw,4.4rem);line-height:.96;letter-spacing:.015em;
+  margin:14px 0 0;
+}
+.standfirst{
+  max-width:640px;color:var(--chalk-dim);font-size:clamp(1rem,1.35vw,1.13rem);
+  margin-top:22px;
+}
+.standfirst strong{color:var(--chalk);font-weight:500}
+
+/* ---------- 01 · THE PULL ---------- */
+.pull{
+  min-height:100vh;min-height:100svh;
+  display:flex;align-items:center;
+  padding:130px 0 90px;
+}
+.pull h1{
+  font-family:var(--disp);font-weight:700;text-transform:uppercase;
+  font-size:clamp(3.1rem,8.8vw,7.4rem);
+  line-height:.93;letter-spacing:.012em;
+  margin-top:18px;
+}
+.pull h1 span{display:block}
+.pull h1 .chase{color:var(--ember);}
+.pull-intro{
+  max-width:600px;margin-top:34px;color:var(--chalk-dim);
+  font-size:clamp(1rem,1.4vw,1.16rem);
+}
+.pull-intro strong{color:var(--chalk);font-weight:500}
+.pull-cue{
+  margin-top:46px;font-family:var(--mono);font-size:11px;letter-spacing:.26em;
+  text-transform:uppercase;color:var(--chalk-dim);
+}
+
+/* ---------- 02 · THE POSSESSION ---------- */
+.possession{padding:15vh 0 16vh}
+.passes{
+  display:flex;flex-direction:column;gap:32px;
+  max-width:1060px;margin:64px auto 0;
+}
+.pass{
+  width:min(620px,100%);
+  background:var(--panel);
+  border:1px solid var(--line-faint);
+  border-left:2px solid rgba(255,106,43,.85);
+  padding:24px 28px 26px;
+}
+.pass:nth-child(even){margin-left:auto}
+.pass-kicker{
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+}
+.pass-kicker .num{color:var(--chalk-dim)}
+.pass-kicker .throw{color:var(--ember-bright)}
+.pass h3{
+  font-family:var(--disp);font-weight:600;text-transform:uppercase;
+  font-size:clamp(1.5rem,2.6vw,2rem);letter-spacing:.02em;line-height:1.02;
+  margin-top:12px;
+}
+.pass p{color:var(--chalk-dim);font-size:15.5px;margin-top:10px;max-width:52ch}
+
+/* ---------- 03 · THE TURN ---------- */
+.turn{padding:17vh 0 17vh;text-align:center}
+.turn .chyron{justify-content:center}
+.turn .chyron::after{content:"";width:26px;height:1px;background:var(--ember);flex:none}
+.turn h2{
+  font-family:var(--disp);font-weight:700;text-transform:uppercase;
+  font-size:clamp(2.7rem,7vw,5.6rem);line-height:.95;letter-spacing:.012em;
+  max-width:17ch;margin:22px auto 0;
+}
+.turn h2 em{font-style:normal;color:var(--ember)}
+.turn-body{max-width:620px;margin:28px auto 0;color:var(--chalk-dim)}
+.turn-body strong{color:var(--chalk);font-weight:500}
+.vision{
+  margin:40px auto 0;max-width:560px;
+  font-family:var(--body);font-style:italic;font-size:clamp(1.1rem,1.6vw,1.3rem);
+  color:var(--chalk);
+}
+.vision small{
+  display:block;margin-top:10px;font-style:normal;font-family:var(--mono);
+  font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--chalk-dim);
+}
+.plates{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+  max-width:960px;margin:52px auto 0;text-align:left;
+}
+.plate{
+  background:var(--panel);border:1px solid var(--line-faint);padding:20px 22px;
+}
+.plate .k{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ember-bright);
+}
+.plate p{margin-top:9px;font-size:14.5px;color:var(--chalk-dim)}
+.plate p strong{color:var(--chalk);font-weight:500}
+@media (max-width:860px){.plates{grid-template-columns:1fr;max-width:560px}}
+
+/* ---------- stills (the only photography on the page) ---------- */
+.still{position:relative;max-width:2200px;margin:0 auto}
+.still img{
+  display:block;width:100%;height:min(76vh,820px);object-fit:cover;
+  filter:contrast(1.03) saturate(1.04);
+}
+.still figcaption{
+  position:absolute;left:0;right:0;bottom:0;
+  display:flex;justify-content:flex-end;gap:26px;flex-wrap:wrap;
+  padding:38px 22px 13px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--chalk);
+  background:linear-gradient(0deg, rgba(0,0,0,.55), rgba(0,0,0,0) 100%);
+}
+
+/* ---------- 04 · THE HUCK ---------- */
+.huck{padding:16vh 0 15vh}
+.huck-head{margin-bottom:58px}
+.huck .still{margin-top:0}
+.numbers{margin-top:12vh;text-align:center}
+.numbers-grid{
+  display:grid;grid-template-columns:repeat(3,auto);justify-content:center;
+  column-gap:clamp(28px,7vw,110px);row-gap:44px;align-items:end;
+}
+.num-block .figure{
+  font-family:var(--disp);font-weight:800;
+  font-size:clamp(3.7rem,13.5vw,11.5rem);line-height:.9;letter-spacing:.01em;
+  color:var(--chalk);
+}
+.num-block .figure sup{font-size:.42em;color:var(--ember);vertical-align:.62em}
+.num-block .label{
+  margin-top:12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--chalk-dim);
+}
+.worlds{
+  margin:9vh auto 0;max-width:900px;
+  font-family:var(--disp);font-weight:600;text-transform:uppercase;
+  font-size:clamp(1.6rem,3.6vw,2.9rem);line-height:1.04;letter-spacing:.02em;
+}
+.worlds em{font-style:normal;color:var(--ember)}
+.worlds small{
+  display:block;margin-top:14px;font-family:var(--mono);font-weight:400;
+  font-size:10.5px;letter-spacing:.2em;color:var(--chalk-dim);text-transform:uppercase;
+}
+@media (max-width:820px){.numbers-grid{grid-template-columns:auto;justify-items:center}}
+
+/* ---------- 05 · THE CATCH ---------- */
+.catch{padding:14vh 0 0}
+.catch-head{margin-bottom:58px}
+.catch-cta{
+  position:relative;
+  margin:150px auto 0;
+  max-width:820px;
+  background:var(--panel);
+  border:1px solid var(--line-faint);
+  border-top:2px solid var(--ember);
+  padding:clamp(34px,5vw,58px) clamp(24px,4.5vw,60px) clamp(38px,5vw,56px);
+  text-align:center;
+}
+.disc-static{
+  position:absolute;left:50%;top:-44px;width:32px;height:12px;
+  transform:translate(-50%,-50%);
+  background:var(--chalk);border-radius:50%;
+  box-shadow:0 0 0 1.6px var(--ember),0 0 26px rgba(255,106,43,.55);
+}
+.disc-static::after{
+  content:"";position:absolute;inset:3px 8px;border-radius:50%;
+  border:1px solid rgba(11,18,36,.45);
+}
+.flight-live .disc-static{display:none}
+.catch-cta h2{
+  font-family:var(--disp);font-weight:700;text-transform:uppercase;
+  font-size:clamp(2.6rem,6vw,4.6rem);line-height:.95;letter-spacing:.012em;
+}
+.catch-cta h2 span{display:block}
+.catch-cta h2 em{font-style:normal;color:var(--ember)}
+.catch-cta > p{max-width:52ch;margin:20px auto 0;color:var(--chalk-dim)}
+.cta-row{
+  display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:34px;
+}
+.btn{
+  font-family:var(--disp);font-weight:600;text-transform:uppercase;letter-spacing:.09em;
+  font-size:16px;line-height:1;
+  padding:16px 26px 15px;text-decoration:none;border-radius:3px;
+  background:var(--ember);color:#0B1224;border:1px solid var(--ember);
+}
+.btn:hover{background:var(--ember-bright);border-color:var(--ember-bright)}
+.btn.ghost{background:transparent;color:var(--chalk);border:1px solid rgba(242,238,227,.38)}
+.btn.ghost:hover{color:var(--ember-bright);border-color:var(--ember-bright);background:transparent}
+
+/* ---------- 06 · GAME ON ---------- */
+.gameon{padding:15vh 0 12vh;text-align:center}
+.gameon .chyron{justify-content:center}
+.gameon .chyron::after{content:"";width:26px;height:1px;background:var(--ember);flex:none}
+.gameon h2{
+  font-family:var(--disp);font-weight:700;text-transform:uppercase;
+  font-size:clamp(2.4rem,5.4vw,4.2rem);line-height:.95;margin-top:18px;
+}
+.gameon > .wrap > p{max-width:54ch;margin:18px auto 0;color:var(--chalk-dim)}
+.gameon p strong{color:var(--chalk);font-weight:500}
+.facts{
+  display:flex;flex-wrap:wrap;gap:12px 44px;justify-content:center;
+  margin-top:42px;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+}
+.facts span{color:var(--chalk-dim)}
+.facts b{color:var(--chalk);font-weight:500}
+.facts a{color:var(--chalk);text-decoration:none;border-bottom:1px solid var(--line-faint)}
+.facts a:hover{color:var(--ember-bright);border-color:var(--ember-bright)}
+
+/* ---------- appendix ---------- */
+.appendix{position:relative;z-index:2;background:var(--night-950);padding:64px 0 30px;border-top:1px solid var(--line-faint)}
+.appendix .panel{
+  max-width:1160px;margin:0 auto;
+}
+.appendix .k{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--ember-bright);
+}
+.appendix h2{
+  font-family:var(--disp);font-weight:700;text-transform:uppercase;
+  font-size:clamp(1.9rem,3.4vw,2.7rem);margin-top:10px;
+}
+.appendix .thesis{max-width:72ch;color:var(--chalk-dim);margin-top:14px;font-size:15.5px}
+.spec-grid{
+  display:grid;grid-template-columns:1.25fr 1fr;gap:30px 54px;margin-top:38px;
+}
+.spec h3{
+  font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--chalk-dim);margin-bottom:14px;
+}
+.chips{display:flex;flex-wrap:wrap;gap:10px 22px}
+.chip{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.06em}
+.chip .sw{width:30px;height:30px;border-radius:4px;border:1px solid rgba(242,238,227,.22);flex:none}
+.chip b{font-weight:500;color:var(--chalk)}
+.chip span{color:var(--chalk-dim)}
+.spec p{font-size:14.5px;color:var(--chalk-dim)}
+.spec p strong{color:var(--chalk);font-weight:500}
+.spec + .spec,.spec .spec{margin-top:28px}
+.choose{display:grid;grid-template-columns:1fr 1fr;gap:30px 54px;margin-top:38px}
+@media (max-width:860px){.spec-grid,.choose{grid-template-columns:1fr}}
+
+/* ---------- footer nav ---------- */
+.prop-nav{
+  max-width:1160px;margin:52px auto 0;padding:22px 0 8px;
+  border-top:1px solid var(--line-faint);
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+}
+.prop-nav a{color:var(--chalk);text-decoration:none;border-bottom:1px solid var(--line-faint);padding-bottom:2px}
+.prop-nav a:hover{color:var(--ember-bright);border-color:var(--ember-bright)}
+.prop-nav small{color:var(--chalk-dim);font-size:10.5px;letter-spacing:.18em}
+
+/* ---------- HUD (broadcast bug) ---------- */
+.hud{
+  position:fixed;left:18px;bottom:18px;z-index:7;
+  display:none;align-items:center;gap:9px;
+  background:rgba(7,13,30,.78);border:1px solid var(--line-faint);border-radius:3px;
+  padding:8px 12px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--chalk-dim);
+}
+.hud i{width:7px;height:7px;background:var(--ember);border-radius:1px;flex:none}
+.flight-live .hud{display:flex}
+@media (max-width:759px){.hud{display:none!important}}
+
+/* ---------- motion & print guards ---------- */
+@media (prefers-reduced-motion: no-preference){
+  .btn,.top-link,.facts a,.prop-nav a{transition:background-color .18s ease,border-color .18s ease,color .18s ease}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+@media print{
+  .hud,#flightRide{display:none!important}
+  .disc-static{display:block!important}
+  .flight-ember{stroke-dasharray:none!important;stroke-dashoffset:0!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#story">Skip to the story</a>
+
+<header class="top">
+  <a class="brand" href="index.html">DISC<b>NW</b></a>
+  <p class="top-mid">Concept 06 · One Point — a single point, pull to catch</p>
+  <nav aria-label="Style guide"><a class="top-link" href="index.html">All directions</a></nav>
+</header>
+
+<main id="story">
+
+  <!-- the flight line: one continuous path, drawn by scroll -->
+  <div class="flight" aria-hidden="true">
+    <svg id="flightSvg" viewBox="0 0 1000 8000" preserveAspectRatio="none" fill="none" focusable="false" role="presentation">
+      <defs>
+        <radialGradient id="discGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="rgba(255,106,43,.55)"/>
+          <stop offset="100%" stop-color="rgba(255,106,43,0)"/>
+        </radialGradient>
+      </defs>
+      <path id="flightGhost" class="flight-ghost" vector-effect="non-scaling-stroke" d="M 720 64 C 720 163, 864 201, 864 300 C 864 423, 800 469, 800 592 C 800 713, 160 759, 160 880 C 160 1006, 90 1054, 90 1180 C 90 1516, 900 1644, 900 1980 C 900 2240, 100 2340, 100 2600 C 100 2818, 840 2902, 840 3120 C 840 3254, 620 3306, 620 3440 C 620 3472, 380 3608, 380 3640 C 380 3672, 600 3808, 600 3840 C 600 3904, 500 4176, 500 4240 C 500 4374, 780 4426, 780 4560 C 780 4946, 880 5094, 880 5480 C 880 5690, 320 5770, 320 5980 C 320 6114, 600 6166, 600 6300 C 600 6409, 500 6451, 500 6560"/>
+      <path id="flightEmber" class="flight-ember" vector-effect="non-scaling-stroke" d="M 720 64 C 720 163, 864 201, 864 300 C 864 423, 800 469, 800 592 C 800 713, 160 759, 160 880 C 160 1006, 90 1054, 90 1180 C 90 1516, 900 1644, 900 1980 C 900 2240, 100 2340, 100 2600 C 100 2818, 840 2902, 840 3120 C 840 3254, 620 3306, 620 3440 C 620 3472, 380 3608, 380 3640 C 380 3672, 600 3808, 600 3840 C 600 3904, 500 4176, 500 4240 C 500 4374, 780 4426, 780 4560 C 780 4946, 880 5094, 880 5480 C 880 5690, 320 5770, 320 5980 C 320 6114, 600 6166, 600 6300 C 600 6409, 500 6451, 500 6560"/>
+      <g id="flightRide">
+        <circle r="30" fill="url(#discGlow)"/>
+        <ellipse rx="15" ry="5" fill="#F2EEE3" stroke="#FF6A2B" stroke-width="1.6"/>
+        <ellipse rx="8" ry="2.4" fill="none" stroke="rgba(11,18,36,.5)" stroke-width="1"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ============ 01 · THE PULL ============ -->
+  <section class="station pull" id="pull" aria-labelledby="pull-h">
+    <div class="wrap">
+      <p class="chyron">Station 01 · The Pull — own end zone · sunset 21:09</p>
+      <h1 id="pull-h">
+        <span>Every point</span>
+        <span>starts the same:</span>
+        <span>someone throws,</span>
+        <span class="chase">everyone chases.</span>
+      </h1>
+      <p class="pull-intro"><strong>DiscNW is the nonprofit that keeps Northwest ultimate in the air</strong> — ten thousand players a year, Magnuson Park to the Puget Sound, every game self-officiated since 1995. This page plays out a single point, pull to catch, across one Seattle evening. The disc is already up.</p>
+      <p class="pull-cue" aria-hidden="true">Follow the disc &darr;</p>
+    </div>
+  </section>
+
+  <!-- ============ 02 · THE POSSESSION ============ -->
+  <section class="station possession" id="possession" aria-labelledby="poss-h">
+    <div class="wrap">
+      <p class="chyron">Station 02 · The Possession — working the field</p>
+      <h2 class="station-title" id="poss-h">No hero throws.<br>You work it up, pass by pass.</h2>
+      <p class="standfirst">A possession is just completions strung together — a swing, a reset, a gainer. <strong>Eight programs, eight ways DiscNW moves you down the field.</strong> Every one of them is a real catch someone makes this year.</p>
+    </div>
+    <div class="wrap">
+      <div class="passes">
+        <article class="pass">
+          <p class="pass-kicker"><span class="num">Pass 01</span><span class="throw">The Backhand</span></p>
+          <h3>Potlatch</h3>
+          <p>The original. The mixed tournament that founded DiscNW in 1995 — thirty-one summers later, it's still the party the whole region circles on the calendar.</p>
+        </article>
+        <article class="pass">
+          <p class="pass-kicker"><span class="num">Pass 02</span><span class="throw">The Swing</span></p>
+          <h3>Summer Mixed Hat League</h3>
+          <p>Change the angle. Sign up alone, get drafted onto a team of strangers, leave with a sideline that knows your name.</p>
+        </article>
+        <article class="pass">
+          <p class="pass-kicker"><span class="num">Pass 03</span><span class="throw">The Reset</span></p>
+          <h3>Summer Wonder League</h3>
+          <p>Keep it moving. The unhurried league of a Seattle summer — show up after work, swing it around, stay for the late light.</p>
+        </article>
+        <article class="pass">
+          <p class="pass-kicker"><span class="num">Pass 04</span><span class="throw">The Gainer</span></p>
+          <h3>Summer Youth Ultimate Camps</h3>
+          <p>Real yards. Camps for ages 7&ndash;18 where the first forehand of somebody's life happens before lunch, every single day.</p>
+        </article>
+        <article class="pass">
+          <p class="pass-kicker"><span class="num">Pass 05</span><span class="throw">The Break</span></p>
+          <h3>Fall Middle School &amp; High School Leagues</h3>
+          <p>Through the mark. School-season leagues where a hallway becomes a roster and October rain becomes a home-field advantage.</p>
+        </article>
+        <article class="pass">
+          <p class="pass-kicker"><span class="num">Pass 06</span><span class="throw">The Hammer</span></p>
+          <h3>Sea Plastic</h3>
+          <p>Upside down, on purpose. Beach ultimate on Puget Sound sand — the disc flies strange and everybody cheers anyway.</p>
+        </article>
+        <article class="pass">
+          <p class="pass-kicker"><span class="num">Pass 07</span><span class="throw">The Greatest</span></p>
+          <h3>Spring Reign</h3>
+          <p>The save that shouldn't be possible. The world's largest mixed youth ultimate tournament, played in the shadow of the Cascades every spring.</p>
+        </article>
+        <article class="pass">
+          <p class="pass-kicker"><span class="num">Pass 08</span><span class="throw">The Assist</span></p>
+          <h3>DiscNW Coaching Collective</h3>
+          <p>The throw that makes the goal. Training and mentorship that puts a real coach on every Northwest sideline that wants one.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 · THE TURN ============ -->
+  <section class="station turn" id="turn" aria-labelledby="turn-h">
+    <div class="wrap">
+      <p class="chyron">Station 03 · The Turn — turnover, still dusk</p>
+      <h2 id="turn-h">You'll drop one. Everyone does. <em>The next point starts anyway.</em></h2>
+      <p class="turn-body">That's the honest sales pitch. Nobody here was born throwing a flick, there are no tryouts for a hat league, and there are no referees to impress — <strong>players call their own game and shake hands after.</strong> If the fee is the barrier, it slides: you choose what you pay.</p>
+      <div class="plates">
+        <div class="plate">
+          <p class="k">Sliding scale</p>
+          <p><strong>League fees from $33.</strong> Pick the tier that fits your year. Nobody checks, nobody asks.</p>
+        </div>
+        <div class="plate">
+          <p class="k">No experience needed</p>
+          <p><strong>Hat leagues draft everyone a team.</strong> Cleats help; a willingness to run helps more.</p>
+        </div>
+        <div class="plate">
+          <p class="k">Spirit of the Game</p>
+          <p><strong>Self-officiated, zero referees.</strong> The game has run on player calls since 1995. It holds.</p>
+        </div>
+      </div>
+      <p class="vision">&ldquo;An Ultimate community without barriers.&rdquo;<small>The whole DiscNW vision, one line</small></p>
+    </div>
+  </section>
+
+  <!-- ============ 04 · THE HUCK ============ -->
+  <section class="station huck" id="huck" aria-labelledby="huck-h">
+    <div class="wrap huck-head">
+      <p class="chyron">Station 04 · The Huck — past midfield, lights coming on</p>
+      <h2 class="station-title" id="huck-h">Then somebody sees the<br>whole field, and it goes long.</h2>
+    </div>
+    <figure class="still">
+      <img src="assets/sr26-sprint-race.jpg" width="1920" height="1080" alt="Two youth players sprinting stride for stride after a long throw at Spring Reign, tournament tents and spectators blurred behind them." decoding="async">
+      <figcaption><span>Spring Reign 2026 · Burlington, WA</span><span>The disc goes long</span></figcaption>
+    </figure>
+    <div class="wrap numbers">
+      <div class="numbers-grid">
+        <div class="num-block">
+          <p class="figure">10,000<sup>+</sup></p>
+          <p class="label">Players every year</p>
+        </div>
+        <div class="num-block">
+          <p class="figure">1995</p>
+          <p class="label">Founded out of the Potlatch tournament</p>
+        </div>
+        <div class="num-block">
+          <p class="figure">31</p>
+          <p class="label">Seasons and counting</p>
+        </div>
+      </div>
+      <p class="worlds">Spring Reign is the <em>world's largest</em> mixed youth ultimate tournament.<small>Not the Northwest's. The world's.</small></p>
+    </div>
+  </section>
+
+  <!-- ============ 05 · THE CATCH ============ -->
+  <section class="station catch" id="catch" aria-labelledby="catch-h">
+    <div class="wrap catch-head">
+      <p class="chyron">Station 05 · The Catch — end zone, under the lights</p>
+    </div>
+    <figure class="still">
+      <img src="assets/sr26-catch-celebration.jpg" width="1920" height="1080" alt="A young player holds the disc overhead mid-celebration as teammates rush toward her across a green tournament field." decoding="async">
+      <figcaption><span>Spring Reign 2026</span><span>The catch, the pile</span></figcaption>
+    </figure>
+    <div class="wrap">
+      <div class="catch-cta" id="catchCta">
+        <span class="disc-static" aria-hidden="true"></span>
+        <h2 id="catch-h"><span>This one's <em>yours.</em></span> <span>Go get it.</span></h2>
+        <p>Somewhere on a DiscNW field there's a point with your name on it — this summer or this fall, age 7 or 47, first throw or ten-thousandth.</p>
+        <div class="cta-row">
+          <a class="btn" href="https://www.discnw.org/adult-ultimate">Register for an adult league</a>
+          <a class="btn" href="https://www.discnw.org/youth-ultimate">Sign a kid up for camp</a>
+          <a class="btn ghost" href="https://www.discnw.org/events">See every open registration</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 06 · GAME ON ============ -->
+  <section class="station gameon" id="gameon" aria-labelledby="gameon-h">
+    <div class="wrap">
+      <p class="chyron">Final · Game on</p>
+      <h2 id="gameon-h">Next pull's at Magnuson.</h2>
+      <p>Or on the sand, or under the Cascades. <strong>Fields across Magnuson Park and the Puget Sound region</strong> — and yes, this is Seattle, so when the sky opens, the hotline knows first.</p>
+      <p class="facts">
+        <span>Rainout hotline · <a href="tel:+12067815840"><b>(206)&nbsp;781-5840</b></a></span>
+        <span>Home base · <a href="https://www.discnw.org"><b>discnw.org</b></a></span>
+        <span>Est. · <b>1995</b></span>
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ ABOUT THIS DIRECTION ============ -->
+<aside class="appendix" aria-labelledby="about-h">
+  <div class="wrap panel">
+    <p class="k">About this direction</p>
+    <h2 id="about-h">06 — One Point</h2>
+    <p class="thesis">The page is a single point of ultimate, narrated pull to catch: one ember flight line draws itself down the whole story as you scroll, while the evening deepens from dusk to field-light navy around it.</p>
+    <div class="spec-grid">
+      <div class="spec">
+        <h3>Palette</h3>
+        <div class="chips">
+          <p class="chip"><span class="sw" style="background:#070D1E"></span><b>First Dark</b>&nbsp;<span>#070D1E</span></p>
+          <p class="chip"><span class="sw" style="background:#16203F"></span><b>Field Navy</b>&nbsp;<span>#16203F</span></p>
+          <p class="chip"><span class="sw" style="background:#59303F"></span><b>Duskline</b>&nbsp;<span>#59303F</span></p>
+          <p class="chip"><span class="sw" style="background:#F2EEE3"></span><b>Chalk</b>&nbsp;<span>#F2EEE3</span></p>
+          <p class="chip"><span class="sw" style="background:#FF6A2B"></span><b>Ember</b>&nbsp;<span>#FF6A2B</span></p>
+        </div>
+        <div class="spec">
+          <h3>Type</h3>
+          <p><strong>Big Shoulders Display</strong> for titles and numerals — stadium-lettering condensed, set tight and tall. <strong>Schibsted Grotesk</strong> for narration. <strong>Spline Sans Mono</strong> for the broadcast chyrons.</p>
+        </div>
+      </div>
+      <div class="spec">
+        <h3>Signature</h3>
+        <p>A page-length SVG flight line that draws with your scroll and rides a small disc at its tip: it weaves behind every panel, stumbles at the turnover, vanishes into the photographs, and lands — disc and all — on the registration call. No JS, print, or reduced motion: the route renders fully flown, disc waiting at the catch.</p>
+        <div class="spec">
+          <h3>Motion</h3>
+          <p>One system only — the scroll-scrubbed flight (line, disc, corner chyron). Everything else on the page is still.</p>
+        </div>
+      </div>
+    </div>
+    <div class="choose">
+      <div class="spec">
+        <h3>Choose this if</h3>
+        <p>You want the presentation people retell the next morning — a front door that argues, in one continuous gesture, that a rec league point deserves broadcast treatment, and that makes registering feel like catching the goal.</p>
+      </div>
+      <div class="spec">
+        <h3>Think twice if</h3>
+        <p>You need workhorse information architecture first. This is a narrative cover, not a schedule tool — standings, rosters, and rainout utilities still need one of the grounded systems behind it.</p>
+      </div>
+    </div>
+    <nav class="prop-nav" aria-label="Direction navigation">
+      <a href="index.html">&larr; All directions</a>
+      <small>Direction 06 · One Point · DiscNW website redesign</small>
+      <a href="07-understory.html">Next direction &rarr;</a>
+    </nav>
+  </div>
+</aside>
+
+<p class="hud" id="hud" aria-hidden="true"><i></i><span id="hudLabel">On point — The Pull</span></p>
+
+<script>
+(function(){
+  "use strict";
+  var win = window, doc = document;
+  var mainEl = doc.getElementById('story');
+  var svg    = doc.getElementById('flightSvg');
+  var ghost  = doc.getElementById('flightGhost');
+  var ember  = doc.getElementById('flightEmber');
+  var ride   = doc.getElementById('flightRide');
+  var hudLbl = doc.getElementById('hudLabel');
+  if(!mainEl || !svg || !ghost || !ember || !ride) return;
+
+  var mq = win.matchMedia('(prefers-reduced-motion: reduce)');
+  var motion = false, mainTop = 0, W = 0, H = 0, L = 0;
+  var samples = [], stations = [], ticking = false, buildTimer = 0, hudText = '';
+
+  function el(id){ return doc.getElementById(id); }
+  function yOf(node, f){
+    var r = node.getBoundingClientRect();
+    return (r.top + win.scrollY - mainTop) + r.height * f;
+  }
+
+  function buildPath(){
+    W = mainEl.clientWidth;
+    H = mainEl.offsetHeight;
+    mainTop = mainEl.getBoundingClientRect().top + win.scrollY;
+    var narrow = W < 760;
+    var P = el('pull'), O = el('possession'), T = el('turn'),
+        K = el('huck'), C = el('catch'), cta = el('catchCta');
+    if(!(P && O && T && K && C && cta)) return;
+
+    // waypoints: [xFraction, yPx]; the line must always descend
+    var pts = narrow ? [
+      [.84, yOf(P,.05)], [.96, yOf(P,.36)], [.92, yOf(P,.74)], [.10, yOf(P,.985)],
+      [.035,yOf(O,.12)], [.965,yOf(O,.42)], [.035,yOf(O,.70)], [.94, yOf(O,.95)],
+      [.72, yOf(T,.14)], [.28, yOf(T,.30)], [.68, yOf(T,.46)], [.50, yOf(T,.82)],
+      [.90, yOf(K,.06)], [.94, yOf(K,.70)], [.22, yOf(K,.96)],
+      [.60, yOf(C,.30)], [.50, yOf(cta,0) - 44]
+    ] : [
+      [.72, yOf(P,.05)], [.86, yOf(P,.38)], [.80, yOf(P,.74)], [.16, yOf(P,.985)],
+      [.09, yOf(O,.12)], [.90, yOf(O,.42)], [.10, yOf(O,.70)], [.84, yOf(O,.95)],
+      [.62, yOf(T,.14)], [.37, yOf(T,.30)], [.60, yOf(T,.46)], [.50, yOf(T,.82)],
+      [.78, yOf(K,.06)], [.88, yOf(K,.70)], [.32, yOf(K,.96)],
+      [.60, yOf(C,.30)], [.50, yOf(cta,0) - 44]
+    ];
+
+    var d = '', px = 0, py = 0, i, x, y, dy, k;
+    for(i = 0; i < pts.length; i++){
+      x = pts[i][0] * W;
+      y = Math.max(pts[i][1], (i ? py + 10 : 0)); // enforce descent
+      if(i === 0){
+        d = 'M ' + x.toFixed(1) + ' ' + y.toFixed(1);
+      }else{
+        dy = y - py;
+        k = (i === 9 || i === 10 || i === 11) ? 0.16 : 0.42; // tight corners at the turnover
+        d += ' C ' + px.toFixed(1) + ' ' + (py + dy * k).toFixed(1)
+           + ', '  + x.toFixed(1)  + ' ' + (y  - dy * k).toFixed(1)
+           + ', '  + x.toFixed(1)  + ' ' + y.toFixed(1);
+      }
+      px = x; py = y;
+    }
+
+    ghost.setAttribute('d', d);
+    ember.setAttribute('d', d);
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    L = ember.getTotalLength();
+
+    // y -> length lookup (monotonic)
+    samples = [];
+    var n = Math.max(220, Math.min(720, Math.round(L / 22))), pt, prevY = -1e9, len;
+    for(i = 0; i <= n; i++){
+      len = L * i / n;
+      pt = ember.getPointAtLength(len);
+      prevY = Math.max(prevY, pt.y);
+      samples.push([prevY, len]);
+    }
+
+    stations = [
+      [yOf(P,0), 'The Pull'], [yOf(O,0), 'The Possession'], [yOf(T,0), 'The Turn'],
+      [yOf(K,0), 'The Huck'], [yOf(C,0), 'The Catch'], [yOf(el('gameon'),0), 'Game on']
+    ];
+
+    if(motion){
+      ember.style.strokeDasharray = L + ' ' + L;
+      update();
+    }else{
+      ember.style.strokeDasharray = 'none';
+      ember.style.strokeDashoffset = '0';
+    }
+  }
+
+  function lenAt(y){
+    if(!samples.length) return 0;
+    if(y <= samples[0][0]) return 0;
+    if(y >= samples[samples.length-1][0]) return L;
+    var lo = 0, hi = samples.length - 1, mid;
+    while(hi - lo > 1){
+      mid = (lo + hi) >> 1;
+      if(samples[mid][0] < y) lo = mid; else hi = mid;
+    }
+    var a = samples[lo], b = samples[hi];
+    var t = (b[0] - a[0]) > 0 ? (y - a[0]) / (b[0] - a[0]) : 0;
+    return a[1] + (b[1] - a[1]) * t;
+  }
+
+  function update(){
+    if(!motion || !L) return;
+    var vh = win.innerHeight;
+    var target = win.scrollY + vh * 0.7 - mainTop;
+    var maxScroll = doc.documentElement.scrollHeight - vh;
+    var len = (win.scrollY >= maxScroll - 2) ? L : Math.max(0, Math.min(L, lenAt(target)));
+
+    ember.style.strokeDashoffset = String(L - len);
+
+    var p = ember.getPointAtLength(len);
+    var q = ember.getPointAtLength(Math.max(0, len - 16));
+    var ang = Math.atan2(p.y - q.y, p.x - q.x) * 57.29578 - 90;
+    ang = Math.max(-38, Math.min(38, ang));
+    ride.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ') rotate(' + ang.toFixed(1) + ')');
+
+    if(hudLbl){
+      var text;
+      if(len >= L - 1){ text = 'Caught — game on'; }
+      else{
+        var label = 'The Pull';
+        for(var i = 0; i < stations.length; i++){ if(stations[i][0] <= target) label = stations[i][1]; }
+        text = 'On point — ' + label;
+      }
+      if(text !== hudText){ hudText = text; hudLbl.textContent = text; }
+    }
+  }
+
+  function onScroll(){
+    if(ticking) return;
+    ticking = true;
+    win.requestAnimationFrame(function(){ ticking = false; update(); });
+  }
+
+  function scheduleBuild(){
+    clearTimeout(buildTimer);
+    buildTimer = setTimeout(buildPath, 140);
+  }
+
+  var listening = false;
+  function init(){
+    motion = !mq.matches;
+    doc.body.classList.toggle('flight-live', motion);
+    if(motion && !listening){
+      win.addEventListener('scroll', onScroll, {passive:true});
+      listening = true;
+    }else if(!motion && listening){
+      win.removeEventListener('scroll', onScroll);
+      listening = false;
+    }
+    buildPath();
+  }
+
+  if(win.ResizeObserver){
+    new ResizeObserver(scheduleBuild).observe(mainEl);
+  }else{
+    win.addEventListener('resize', scheduleBuild);
+  }
+  win.addEventListener('load', buildPath);
+  if(doc.fonts && doc.fonts.ready){ doc.fonts.ready.then(scheduleBuild); }
+  if(mq.addEventListener){ mq.addEventListener('change', init); }
+  else if(mq.addListener){ mq.addListener(init); }
+
+  init();
+})();
+</script>
+</body>
+</html>

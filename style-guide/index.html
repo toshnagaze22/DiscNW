@@ -6,7 +6,7 @@
 <title>DiscNW — Design directions</title>
 <style>
   /* Deliberately neutral: system fonts, white ground, quiet greys.
-     This page is the gallery wall label, not a sixth contender. */
+     This page is the gallery wall label, not a ninth contender. */
   :root {
     --ink: #1a1a1a;
     --grey: #52525b;
@@ -46,8 +46,14 @@
   header.site h1 { font-size: 28px; font-weight: 700; margin: 0 0 12px; letter-spacing: -0.01em; }
   header.site p { max-width: 62ch; margin: 0; color: var(--grey); }
 
+  /* Tiers */
+  .tier { padding: 40px 0 8px; }
+  .tier + .tier { border-top: 1px solid var(--line); }
+  .tier-head { margin: 0 0 24px; }
+  .tier-head h2 { font-size: 21px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .tier-head p { margin: 0; color: var(--grey); font-size: 14.5px; max-width: 68ch; }
+
   /* Cards */
-  .cards { padding: 40px 0 8px; }
   .card {
     border: 1px solid var(--line);
     border-radius: 8px;
@@ -60,7 +66,7 @@
     font-size: 13px; font-weight: 600; color: var(--grey-soft);
     letter-spacing: 0.08em;
   }
-  .card h2 { font-size: 21px; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+  .card h3 { font-size: 21px; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
   .tagline { font-style: italic; color: var(--grey); margin: 0 0 14px; }
   .thesis { margin: 0 0 18px; max-width: 68ch; }
 
@@ -80,8 +86,8 @@
   .swatch-name { font-size: 12.5px; color: var(--grey); }
   .swatch-name code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: var(--grey-soft); }
 
-  .fonts, .signature { margin: 0 0 16px; font-size: 14.5px; color: var(--grey); max-width: 68ch; }
-  .fonts strong, .signature strong { color: var(--ink); font-weight: 600; }
+  .fonts, .signature, .mechanism { margin: 0 0 16px; font-size: 14.5px; color: var(--grey); max-width: 68ch; }
+  .fonts strong, .signature strong, .mechanism strong { color: var(--ink); font-weight: 600; }
 
   .verdicts { margin: 0 0 20px; padding: 14px 16px; background: var(--wash); border-radius: 6px; }
   .verdicts p { margin: 0 0 8px; font-size: 14.5px; max-width: 70ch; }
@@ -98,7 +104,7 @@
   .open-link:hover { background: #000; }
 
   /* Comparison table */
-  .compare { padding: 32px 0 16px; }
+  .compare { padding: 40px 0 16px; border-top: 1px solid var(--line); }
   .compare h2 { font-size: 21px; font-weight: 700; margin: 0 0 16px; }
   .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
   table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 14px; }
@@ -110,7 +116,8 @@
 
   /* Footer */
   footer.site { margin-top: 40px; padding: 28px 0 56px; border-top: 1px solid var(--line); }
-  footer.site p { margin: 0; color: var(--grey); font-size: 14.5px; max-width: 68ch; }
+  footer.site p { margin: 0 0 10px; color: var(--grey); font-size: 14.5px; max-width: 68ch; }
+  footer.site p:last-child { margin-bottom: 0; }
 
   @media (max-width: 560px) {
     header.site { padding: 40px 0 28px; }
@@ -125,18 +132,22 @@
 <header class="site">
   <div class="wrap">
     <h1>DiscNW — Design directions</h1>
-    <p>Five directions for the discnw.org redesign, each built around storytelling for players, coaches, and parents. Open each one and react honestly — first impressions count. Nothing here is all-or-nothing: directions can be mixed, like one direction's palette carrying another's storytelling components. Mockups use real DiscNW photography and film, shown clean and full-resolution.</p>
+    <p>Eight directions for the discnw.org redesign, each built around storytelling for players, coaches, and parents. Five grounded directions show the full design system — palette, type, components, and voice — while three experimental concepts are built as immersive homepage experiences, each around one mechanism. All eight use real DiscNW photography and film, shown clean at full resolution. Open each one and react honestly — first impressions count. Nothing here is all-or-nothing: directions can be mixed, and a grounded system can adopt an experimental page's mechanism.</p>
   </div>
 </header>
 
 <main class="wrap">
 
-  <section class="cards" aria-label="The five directions">
+  <section class="tier" aria-labelledby="grounded-heading">
+    <div class="tier-head">
+      <h2 id="grounded-heading">Five grounded directions</h2>
+      <p>Complete, shippable design systems. Each page walks the same eleven sections — palette, type, signature, components, voice — so they compare like for like.</p>
+    </div>
 
     <article class="card">
       <div class="card-head">
         <span class="card-num">DIRECTION 01</span>
-        <h2>Evergreen</h2>
+        <h3>Evergreen</h3>
       </div>
       <p class="tagline">Rooted in the place we play</p>
       <p class="thesis">Ultimate as the Pacific Northwest plays it — the brand is rooted in the wet grass, fog, firs, and long June light where the game actually happens.</p>
@@ -165,7 +176,7 @@
     <article class="card">
       <div class="card-head">
         <span class="card-num">DIRECTION 02</span>
-        <h2>Game Film</h2>
+        <h3>Game Film</h3>
       </div>
       <p class="tagline">The sport taken seriously, chalk and floodlights</p>
       <p class="thesis">DiscNW players train, scheme, and compete — so the site speaks to the athlete with playbook diagrams, film-room contrast, and stat culture, with Spirit of the Game as its code of honor rather than a softener.</p>
@@ -194,7 +205,7 @@
     <article class="card">
       <div class="card-head">
         <span class="card-num">DIRECTION 03</span>
-        <h2>Sideline Day</h2>
+        <h3>Sideline Day</h3>
       </div>
       <p class="tagline">Saturday at the fields, zero intimidation</p>
       <p class="thesis">The truest picture of DiscNW is a Saturday at the fields — camp chairs, orange slices, a first layout — so the site should feel like being welcomed onto that sideline, built first for parents and brand-new players.</p>
@@ -223,7 +234,7 @@
     <article class="card">
       <div class="card-head">
         <span class="card-num">DIRECTION 04</span>
-        <h2>Spirit &amp; Story</h2>
+        <h3>Spirit &amp; Story</h3>
       </div>
       <p class="tagline">Every program is a person's story</p>
       <p class="thesis">The site reads like a beautifully edited community magazine — real voices at headline scale, documentary photography, Spirit of the Game as the editorial voice — so every page answers "what will this give my kid?" with a person, not a pitch.</p>
@@ -251,7 +262,7 @@
     <article class="card">
       <div class="card-head">
         <span class="card-num">DIRECTION 05</span>
-        <h2>Flight Path</h2>
+        <h3>Flight Path</h3>
       </div>
       <p class="tagline">The brand you trust, given lift</p>
       <p class="thesis">Keep the navy 10,000 members already trust and give it lift — sky gradients, generous space, product-grade polish, and one disc-flight arc that ties every page together.</p>
@@ -270,7 +281,7 @@
       <p class="signature"><strong>Signature:</strong> One gold hyzer arc, three pixels thin, drawn once — it crosses the homepage film a single time on page load, then holds still, and echoes in exactly one other place: the curved underline that grows beneath links. No dividers, no gauges, no watermarks.</p>
 
       <div class="verdicts">
-        <p><strong>Choose if:</strong> you want the redesign members recognize on day one and the board approves in one meeting — the same trusted navy with product-grade polish, shippable page by page alongside the existing registration tools.</p>
+        <p><strong>Choose if:</strong> you want the redesign members recognize on day one and the board approves in one meeting — the same trusted navy with product-grade polish, one disciplined signature, shippable page by page alongside the existing registration tools.</p>
         <p><strong>Think twice if:</strong> you're hoping this redesign announces a bold new chapter — an evolved navy will read as a refresh, not a reinvention, and it stays in visual territory other sports leagues already occupy.</p>
       </div>
 
@@ -279,36 +290,102 @@
 
   </section>
 
-  <section class="compare" aria-labelledby="inventory-heading">
-    <h2 id="inventory-heading">What the current site gives us</h2>
-    <p class="table-note">A meeting-ready inventory of the real assets behind the mockups — what discnw.org already has, and where the gaps are.</p>
-    <div class="card">
-      <span class="spec-label">Current type</span>
-      <p class="fonts"><strong>Teko</strong> (display, weight 400) + <strong>Barlow</strong> (400/700), loaded from Google Fonts on every page today.</p>
+  <section class="tier" aria-labelledby="experimental-heading">
+    <div class="tier-head">
+      <h2 id="experimental-heading">Three experimental concepts</h2>
+      <p>Immersive homepage experiences, each built around one mechanism. They are narrative front doors, not full systems — any of them can ride on a grounded direction's information architecture, and each carries a compact "About this direction" appendix on the page itself.</p>
+    </div>
 
-      <span class="spec-label">Current colors</span>
+    <article class="card">
+      <div class="card-head">
+        <span class="card-num">DIRECTION 06</span>
+        <h3>One Point</h3>
+      </div>
+      <p class="tagline">A single point of ultimate, narrated pull to catch</p>
+      <p class="thesis">The page is a single point of ultimate, narrated pull to catch: one ember flight line draws itself down the whole story as you scroll, while the evening deepens from dusk to field-light navy around it.</p>
+
+      <span class="spec-label">Palette</span>
       <ul class="palette">
-        <li><span class="dot" style="background:#1c3b65"></span><span class="swatch-name">Primary navy <code>#1c3b65</code></span></li>
-        <li><span class="dot" style="background:#11243d"></span><span class="swatch-name">Dark navy <code>#11243d</code></span></li>
-        <li><span class="dot" style="background:#27528d"></span><span class="swatch-name">Mid blues <code>#27528d</code> / <code>#224779</code> / <code>#326ab5</code></span></li>
-        <li><span class="dot" style="background:#0bf"></span><span class="swatch-name">Link blue <code>#0bf</code></span></li>
-        <li><span class="dot" style="background:#b94a48"></span><span class="swatch-name">Danger red <code>#b94a48</code></span></li>
-        <li><span class="dot" style="background:#f8f8f8"></span><span class="swatch-name">Light greys <code>#f8f8f8</code> / <code>#efefef</code></span></li>
+        <li><span class="dot" style="background:#070D1E"></span><span class="swatch-name">First Dark <code>#070D1E</code></span></li>
+        <li><span class="dot" style="background:#16203F"></span><span class="swatch-name">Field Navy <code>#16203F</code></span></li>
+        <li><span class="dot" style="background:#59303F"></span><span class="swatch-name">Duskline <code>#59303F</code></span></li>
+        <li><span class="dot" style="background:#F2EEE3"></span><span class="swatch-name">Chalk <code>#F2EEE3</code></span></li>
+        <li><span class="dot" style="background:#FF6A2B"></span><span class="swatch-name">Ember <code>#FF6A2B</code></span></li>
       </ul>
 
-      <span class="spec-label">Logos</span>
-      <p class="fonts"><strong>Brand:</strong> two variants — the main dark-on-transparent lockup (April 2021) and a copper edition of the circular Coast Salish–style mark. <strong>Programs:</strong> roughly twenty event badges (Training Camp, Summer Wonder League, Summer Camps, corporate and hat leagues, tournament shields) — most with names baked in on opaque white, so they work as program identifiers rather than restylable art.</p>
+      <p class="fonts"><strong>Type:</strong> Big Shoulders Display + Schibsted Grotesk, with Spline Sans Mono for the broadcast chyrons</p>
+      <p class="signature"><strong>Signature:</strong> A page-length SVG flight line that draws with your scroll and rides a small disc at its tip — it weaves behind every panel, stumbles at the turnover, vanishes into the photographs, and lands, disc and all, on the registration call. Without JS, in print, or with reduced motion, the route renders fully flown.</p>
+      <p class="mechanism"><strong>The mechanism:</strong> one scroll-scrubbed motion system — the flight line, its disc, and a corner chyron — while everything else on the page holds still.</p>
 
-      <span class="spec-label">Photo library</span>
       <div class="verdicts">
-        <p>Roughly 15–20 real photos exist site-wide, mostly on the volunteer, board, and about pages — event pages lean on logos and fee infographics — and only a handful are hero-grade, so a modest photo shoot is worth budgeting for whichever direction wins.</p>
+        <p><strong>Choose if:</strong> you want the presentation people retell the next morning — a front door that argues, in one continuous gesture, that a rec league point deserves broadcast treatment, and that makes registering feel like catching the goal.</p>
+        <p><strong>Think twice if:</strong> you need workhorse information architecture first — this is a narrative cover, not a schedule tool, and standings, rosters, and rainout utilities still need one of the grounded systems behind it.</p>
       </div>
-    </div>
+
+      <a class="open-link" href="06-one-point.html">Open 06 — One Point</a>
+    </article>
+
+    <article class="card">
+      <div class="card-head">
+        <span class="card-num">DIRECTION 07</span>
+        <h3>The Understory</h3>
+      </div>
+      <p class="tagline">The place is the brand, drawn by hand</p>
+      <p class="thesis">A fully illustrated Pacific Northwest world in the WPA park-poster tradition: the place is the brand, and the season is a trail map through it.</p>
+
+      <span class="spec-label">Palette — poster inks</span>
+      <ul class="palette">
+        <li><span class="dot" style="background:#F5EEDA"></span><span class="swatch-name">Paper Cream <code>#F5EEDA</code></span></li>
+        <li><span class="dot" style="background:#1F3A2E"></span><span class="swatch-name">Deep Fir <code>#1F3A2E</code></span></li>
+        <li><span class="dot" style="background:#7E9AA8"></span><span class="swatch-name">Glacier <code>#7E9AA8</code></span></li>
+        <li><span class="dot" style="background:#AE4527"></span><span class="swatch-name">Sunset Coral <code>#AE4527</code></span></li>
+        <li><span class="dot" style="background:#5B8A4A"></span><span class="swatch-name">Meadow <code>#5B8A4A</code></span></li>
+      </ul>
+
+      <p class="fonts"><strong>Type:</strong> Big Shoulders (WPA condensed caps) + Source Serif 4 (the field-guide voice)</p>
+      <p class="signature"><strong>Signature:</strong> One dashed coral line that is both the disc's flight and the trail through the year; hand-cut fir silhouettes in seven gently parallaxing layers; four stamped waypoints; photographs pinned like field specimens.</p>
+      <p class="mechanism"><strong>The mechanism:</strong> the illustrated poster landscape moves in gentle scroll parallax — transform-only, clamped to the hero — and settles to a fully composed static scene without JS or with reduced motion.</p>
+
+      <div class="verdicts">
+        <p><strong>Choose if:</strong> you want an identity no other sports organization in America could copy — place-first, craft-heavy, warm to parents and volunteers, and endlessly extensible into posters, patches, stamps and sideline merch.</p>
+        <p><strong>Think twice if:</strong> you need score-forward, sports-tech energy or fast template production — here the illustration is the brand, and every major new page asks for an illustrator's hand.</p>
+      </div>
+
+      <a class="open-link" href="07-understory.html">Open 07 — The Understory</a>
+    </article>
+
+    <article class="card">
+      <div class="card-head">
+        <span class="card-num">DIRECTION 08</span>
+        <h3>Game to 15</h3>
+      </div>
+      <p class="tagline">The whole site is a game to 15</p>
+      <p class="thesis">The site is a game of Ultimate played to 15: a fixed scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point — the whole personality lives in the typesetting.</p>
+
+      <span class="spec-label">Palette</span>
+      <ul class="palette">
+        <li><span class="dot" style="background:#FAFAF7"></span><span class="swatch-name">Line Chalk <code>#FAFAF7</code></span></li>
+        <li><span class="dot" style="background:#101010"></span><span class="swatch-name">Stat Ink <code>#101010</code></span></li>
+        <li><span class="dot" style="background:#FF4A00"></span><span class="swatch-name">Universe Orange <code>#FF4A00</code></span></li>
+      </ul>
+
+      <p class="fonts"><strong>Type:</strong> Space Grotesk (colossal tabular numerals and the scoreboard) + Newsreader (the editorial columns, sharp and small)</p>
+      <p class="signature"><strong>Signature:</strong> The score strip — "DISCNW 0 — 0 YOU" ticking up as you scroll, ending at "15 — Game." Reading progress is the score.</p>
+      <p class="mechanism"><strong>The mechanism:</strong> a fixed scoreboard scores a point each time a numbered section crosses mid-viewport — scroll back and the point un-scores — with a static strip for reduced motion and no-JS.</p>
+
+      <div class="verdicts">
+        <p><strong>Choose if:</strong> you want the page a jury retells in one sentence — "the site is a game to 15" — pure typography, cheapest to build flawlessly, and the sport's own structure doing the branding.</p>
+        <p><strong>Think twice if:</strong> you need a working homepage, not a manifesto — schedules, standings, and registration paths still require one of the grounded directions underneath this voice.</p>
+      </div>
+
+      <a class="open-link" href="08-game-to-15.html">Open 08 — Game to 15</a>
+    </article>
+
   </section>
 
   <section class="compare" aria-labelledby="compare-heading">
     <h2 id="compare-heading">At a glance</h2>
-    <p class="table-note" id="boldness-note">Boldness = how far the direction departs from the current discnw.org, from 1 (closest) to 5 (furthest).</p>
+    <p class="table-note" id="boldness-note">Boldness = how far the direction departs from the current discnw.org, from 1 (closest) to 5 (furthest). The experimental concepts sit at 4–5 by design.</p>
     <div class="table-scroll">
       <table aria-describedby="boldness-note">
         <thead>
@@ -356,6 +433,27 @@
             <td>Fast approval and a low-risk, page-by-page ship</td>
             <td><span class="dots" aria-hidden="true">●○○○○</span><span class="sr-only">1 out of 5</span></td>
           </tr>
+          <tr>
+            <th scope="row">06 One Point</th>
+            <td>One point under the lights, narrated pull to catch</td>
+            <td>A scroll-drawn flight line — the interface is the disc</td>
+            <td>A front door people retell the next morning</td>
+            <td><span class="dots" aria-hidden="true">●●●●●</span><span class="sr-only">5 out of 5</span></td>
+          </tr>
+          <tr>
+            <th scope="row">07 The Understory</th>
+            <td>A WPA park poster you can step inside</td>
+            <td>An illustrated Northwest world, season as trail map</td>
+            <td>An identity no other sports org could copy</td>
+            <td><span class="dots" aria-hidden="true">●●●●●</span><span class="sr-only">5 out of 5</span></td>
+          </tr>
+          <tr>
+            <th scope="row">08 Game to 15</th>
+            <td>A game you win by reading</td>
+            <td>Colossal typography and a live scoreboard</td>
+            <td>Launch buzz at the lowest build cost</td>
+            <td><span class="dots" aria-hidden="true">●●●●○</span><span class="sr-only">4 out of 5</span></td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -365,7 +463,8 @@
 
 <footer class="site">
   <div class="wrap">
-    <p><strong>How to view:</strong> open any card above to see the full specimen page. Each direction's footer links back to this hub and on to the next direction, so you can cycle through all five in order without returning here.</p>
+    <p><strong>How to view:</strong> open any card above to see the full page — the grounded five as eleven-section design systems, the experimental three as scroll-through homepage experiences.</p>
+    <p>Each direction's footer links back to this hub and on to the next direction, and the cycle wraps: 01 → 02 → … → 08 → 01. Start anywhere and you can loop through all eight without returning here.</p>
   </div>
 </footer>
 

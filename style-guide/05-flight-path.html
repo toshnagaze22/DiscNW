@@ -40,6 +40,7 @@ body{
 img,svg,video{display:block;max-width:100%}
 a{color:var(--cascade)}
 :focus-visible{outline:3px solid var(--cascade);outline-offset:2px;border-radius:4px}
+.btn:focus-visible,.m-cta:focus-visible{border-radius:999px}
 .dark a:focus-visible,.dark button:focus-visible{outline-color:var(--gold)}
 
 .wrap{max-width:1160px;margin:0 auto;padding:0 clamp(20px,4vw,48px)}
@@ -236,27 +237,33 @@ a{color:var(--cascade)}
 .m-open a:hover span,.m-open a:focus-visible span{color:var(--cascade)}
 
 /* the media block — video plays clean; the arc is the only mark that crosses it */
-.m-hero-media{position:relative;margin-top:clamp(48px,6vw,80px)}
+.m-hero-media{position:relative;margin-top:clamp(48px,6vw,80px);container-type:inline-size}
 .m-hero-media video{
   width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--radius-lg) var(--radius-lg) 0 0;
   background:var(--night);
 }
 .hero-arc{
-  position:absolute;left:-1.5%;right:-1.5%;bottom:-2%;top:-2%;
+  /* anchored to the 16:9 video (not the figure, which includes the caption):
+     width 103% of the video + aspect-ratio 1200/682 = exactly the svg viewBox,
+     so the authored curve is the rendered curve, bleeding ~2% past the frame */
+  position:absolute;left:-1.5%;right:-1.5%;top:-2%;aspect-ratio:1200/682;
   pointer-events:none;
 }
 .hero-arc svg{width:100%;height:100%;overflow:visible}
 .ph-play{
-  position:absolute;bottom:14px;right:14px;z-index:3;
-  width:40px;height:40px;border-radius:50%;border:1px solid rgba(234,243,252,.5);
-  background:rgba(17,36,61,.62);color:#fff;cursor:pointer;
+  /* anchored 16px inside the 16:9 video's bottom edge (56.25cqw = video height),
+     not the figure's — so it never drifts onto the caption strip below */
+  position:absolute;bottom:16px;top:calc(56.25cqw - 60px);right:16px;z-index:3;
+  width:44px;height:44px;border-radius:50%;border:1px solid rgba(231,241,251,.55);
+  background:rgba(17,36,61,.72);color:#fff;cursor:pointer;
   display:flex;align-items:center;justify-content:center;padding:0;
-  transition:background .15s ease;
+  box-shadow:0 2px 12px rgba(17,36,61,.35);
+  transition:background .15s ease,border-color .15s ease;
 }
 .ph-play[hidden]{display:none}
-.ph-play:hover{background:rgba(17,36,61,.9)}
-.ph-play:focus-visible{outline-color:var(--gold)}
-.ph-play svg{width:12px;height:14px}
+.ph-play:hover{background:rgba(17,36,61,.92);border-color:rgba(231,241,251,.85)}
+.ph-play:focus-visible{outline-color:var(--gold);border-radius:50%}
+.ph-play svg{width:14px;height:14px}
 .ph-play .ico-play{display:none}
 .ph-play.is-paused .ico-pause{display:none}
 .ph-play.is-paused .ico-play{display:block}
@@ -444,7 +451,8 @@ a{color:var(--cascade)}
 /* ============ THE ONE MOTION MOMENT: the hero arc draws on load ============ */
 @media (prefers-reduced-motion: no-preference){
   .hero-arc .arc-draw{
-    stroke-dasharray:1;stroke-dashoffset:1;
+    /* dash parked wholly before the path start: no round-cap "seed dot" shows during the .3s delay */
+    stroke-dasharray:1 1.06;stroke-dashoffset:1.03;
     animation:arcdraw 1.6s cubic-bezier(.45,0,.2,1) .3s forwards;
   }
   .hero-arc .arc-dot{
@@ -501,7 +509,7 @@ a{color:var(--cascade)}
 <!-- ============ 01 DIRECTION HEADER ============ -->
 <header class="dir-head dark">
   <div class="wrap">
-    <p class="crumb"><span>DiscNW website redesign</span><span>Direction 5 of 5</span><span>Prepared for Matt &amp; the DiscNW board</span></p>
+    <p class="crumb"><span>DiscNW website redesign</span><span>Direction 5 of 8</span><span>Prepared for Matt &amp; the DiscNW board</span></p>
     <h1>Flight Path</h1>
     <p class="thesis">The current brand, evolved. Keep the navy members trust; modernize everything around it with sky, space, and one graphic idea — a single gold arc, the flight of a disc, drawn once across the hero and echoed nowhere except link underlines.</p>
     <ul class="keywords">
@@ -611,8 +619,8 @@ a{color:var(--cascade)}
 
     <div class="sig-stage">
       <svg viewBox="0 0 1100 210" role="img" aria-label="A single thin gold arc rising from the lower left and landing at a small gold dot on the right, like a disc in flight">
-        <path d="M 10 185 C 280 40, 640 25, 1070 150" fill="none" stroke="#ffb43a" stroke-width="3" stroke-linecap="round"/>
-        <circle cx="1070" cy="150" r="6.5" fill="#ffb43a"/>
+        <path d="M 10 185 C 280 40, 640 25, 1070 150" fill="none" stroke="#ffb43a" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+        <path d="M 1070 150 h 0.01" fill="none" stroke="#ffb43a" stroke-width="13" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
       </svg>
     </div>
 
@@ -685,20 +693,21 @@ a{color:var(--cascade)}
         </div>
 
         <figure class="m-hero-media">
-          <video muted loop playsinline preload="metadata"
+          <video muted loop playsinline preload="metadata" disablepictureinpicture disableremoteplayback
             poster="assets/sr26-catch-celebration.jpg"
             aria-label="Muted highlight loop from the Spring Reign 2026 high school finals: a sprint downfield, an overhead catch, and the celebration after.">
             <source src="assets/video/loop-hs-catch.mp4" type="video/mp4">
           </video>
           <div class="hero-arc" aria-hidden="true">
-            <svg viewBox="0 0 1200 760" preserveAspectRatio="none">
-              <path class="arc-draw" d="M -20 600 C 300 180, 700 20, 1160 320" fill="none" stroke="#ffb43a" stroke-width="3" stroke-linecap="round" pathLength="1" vector-effect="non-scaling-stroke"/>
-              <circle class="arc-dot" cx="1160" cy="320" r="6" fill="#ffb43a"/>
+            <!-- viewBox aspect matches the rendered layer (16:9 video + bleed), so the authored curve is the rendered curve -->
+            <svg viewBox="0 0 1200 682" preserveAspectRatio="none">
+              <path class="arc-draw" d="M -24 546 C 290 150, 780 60, 1150 300" fill="none" stroke="#ffb43a" stroke-width="3" stroke-linecap="round" pathLength="1" vector-effect="non-scaling-stroke"/>
+              <path class="arc-dot" d="M 1150 300 h 0.01" fill="none" stroke="#ffb43a" stroke-width="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
             </svg>
           </div>
           <button class="ph-play" type="button" hidden aria-label="Pause the highlight loop">
-            <svg class="ico-pause" viewBox="0 0 12 14" aria-hidden="true"><path d="M2 1h3v12H2zM7 1h3v12H7z" fill="currentColor"/></svg>
-            <svg class="ico-play" viewBox="0 0 12 14" aria-hidden="true"><path d="M2 1l9 6-9 6z" fill="currentColor"/></svg>
+            <svg class="ico-pause" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 2h2.6v10H3zM8.4 2H11v10H8.4z" fill="currentColor"/></svg>
+            <svg class="ico-play" viewBox="0 0 14 14" aria-hidden="true"><path d="M4.6 2.1v9.8L12.2 7z" fill="currentColor"/></svg>
           </button>
           <figcaption><span>Spring Reign 2026 · high school finals</span><span>Muted 7-second loop · full color, no treatment</span></figcaption>
         </figure>
@@ -720,7 +729,7 @@ a{color:var(--cascade)}
         <div class="path-grid">
           <article class="path-card">
             <img src="assets/sr26-sprint-race.jpg" width="1920" height="1080" style="object-position:50% 38%"
-              alt="Two players in a flat-out sprint for a floating disc, tournament crowd and tents behind them.">
+              alt="Two players in a flat-out sprint downfield, tournament crowd and canopy tents behind them.">
             <div class="path-body">
               <span class="path-tag">Players</span>
               <h4>Find your next game.</h4>
@@ -730,7 +739,7 @@ a{color:var(--cascade)}
           </article>
           <article class="path-card">
             <img src="assets/sr26-spirit-huddle.jpg" width="1920" height="1080" style="object-position:50% 30%"
-              alt="A high school team huddled tight with arms raised together at the Spring Reign finals.">
+              alt="High school players huddled in a tight line, arms around each other's shoulders, at the Spring Reign finals.">
             <div class="path-body">
               <span class="path-tag">Coaches &amp; Volunteers</span>
               <h4>You don't have to be an elite player to coach.</h4>
@@ -740,7 +749,7 @@ a{color:var(--cascade)}
           </article>
           <article class="path-card">
             <img src="assets/sr26-sideline-friends.jpg" width="1920" height="1080" style="object-position:50% 42%"
-              alt="Two middle schoolers side by side on the sideline, teammates soft-focus behind them.">
+              alt="Two young players side by side on the sideline, one holding a disc, the field soft-focus behind them.">
             <div class="path-body">
               <span class="path-tag">Parents &amp; Families</span>
               <h4>New to ultimate? Most parents are.</h4>
@@ -771,7 +780,7 @@ a{color:var(--cascade)}
           </article>
           <figure class="story-photo">
             <img src="assets/sr26-spirit-tunnel.jpg" width="1920" height="1080"
-              alt="A post-game spirit tunnel: two lines of players high-fiving the other team as it runs through.">
+              alt="A post-game spirit tunnel: two lines with arms arched overhead as the other team passes through.">
             <figcaption>The spirit tunnel after the Spring Reign 2026 middle school final.</figcaption>
           </figure>
         </div>
@@ -941,8 +950,8 @@ a{color:var(--cascade)}
     </div>
     <nav class="prop-nav" aria-label="Direction navigation">
       <a href="index.html">&larr; All directions</a>
-      <small>Direction 5 of 5 · Flight Path · DiscNW website redesign</small>
-      <a href="01-evergreen.html">Next direction &rarr;</a>
+      <small>Direction 5 of 8 · Flight Path · DiscNW website redesign</small>
+      <a href="06-one-point.html">Next direction &rarr;</a>
     </nav>
   </div>
 </footer>

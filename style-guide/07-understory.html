@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction 07 — The Understory · DiscNW style guide</title>
+<meta name="description" content="The Understory: DiscNW as a fully illustrated Pacific Northwest world in the WPA park-poster tradition — the season rendered as a trail map.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders:opsz,wght@10..72,500..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+/* ————————————————————————————————————————————————
+   DIRECTION 07 · THE UNDERSTORY
+   WPA park-poster world · the season as a trail map
+   Inks: paper cream, deep fir, glacier blue-grey, sunset coral
+   All contrast ratios computed (AA):
+     ink #1F3A2E on cream #F5EEDA ......... 10.64
+     muted #47604F on cream ................ 5.93
+     coral ink #AE4527 on cream ............ 4.92
+     cream #FBF6E9 on coral #AE4527 ........ 5.29
+     cream #F5EEDA on deep fir ............ 10.64
+     soft cream #D9D2BC on deep fir ........ 8.16
+     coral #E8875F on deep fir ............. 4.73
+     glacier #4C6374 on cream .............. 5.42
+     ink on sky (large display) ....... 4.60–6.76
+———————————————————————————————————————————————— */
+:root{
+  --cream:#F5EEDA;
+  --cream-panel:#FBF6E9;
+  --ink:#1F3A2E;
+  --fir-mid:#35594A;
+  --muted:#47604F;
+  --glacier:#7E9AA8;
+  --glacier-ink:#4C6374;
+  --meadow:#5B8A4A;
+  --coral:#D9603B;        /* illustration + large display only */
+  --coral-ink:#AE4527;    /* text-safe coral (4.92 on cream)   */
+  --coral-soft:#E8875F;   /* accents on deep fir (4.73)        */
+  --soft-on-fir:#D9D2BC;
+  --white:#FFFFFF;
+  --frame:clamp(10px,1.6vw,18px);
+  --disp:"Big Shoulders","Arial Narrow","Avenir Next Condensed",Impact,sans-serif;
+  --serif:"Source Serif 4",Georgia,"Iowan Old Style",serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+html,body{background:var(--cream)}
+body{
+  font-family:var(--serif);
+  font-optical-sizing:auto;
+  color:var(--ink);
+  font-size:17px;
+  line-height:1.62;
+  overflow-x:clip;
+}
+/* paper grain — cream paper background ONLY; every section, panel and photo
+   stacks above it, so imagery always renders clean */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0.35 0 0 0 0 0.32 0 0 0 0 0.24 0 0 0 0.055 0'/></filter><rect width='260' height='260' filter='url(%23g)'/></svg>");
+}
+main,header.topbar,footer{position:relative;z-index:1}
+img{max-width:100%;height:auto;display:block}
+h1,h2,h3,h4{font-family:var(--disp);font-weight:700;line-height:.95;text-transform:uppercase}
+a{color:var(--coral-ink)}
+:focus-visible{outline:3px solid var(--coral-ink);outline-offset:2px;border-radius:2px}
+.on-dark :focus-visible,.on-dark a:focus-visible,.on-dark button:focus-visible{outline-color:var(--cream)}
+.skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:var(--cream);padding:10px 18px;z-index:99;font-family:var(--disp);text-transform:uppercase;letter-spacing:.08em}
+.skip:focus{left:12px;top:12px}
+
+/* small-caps utility */
+.tag{font-family:var(--disp);font-weight:600;font-size:12.5px;letter-spacing:.17em;text-transform:uppercase}
+
+/* ————— top bar ————— */
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+  padding:12px var(--frame) 10px;color:var(--ink);
+}
+.topbar .tag{color:var(--ink)}
+.topbar a{color:var(--coral-ink);text-decoration:none;border-bottom:1px solid rgba(174,69,39,.4);padding-bottom:1px;white-space:nowrap}
+.topbar a:hover{border-bottom-color:var(--coral-ink)}
+@media (max-width:560px){.topbar .fg{display:none}}
+
+/* ————— HERO · the poster ————— */
+.hero{padding:0 var(--frame)}
+.scene{
+  position:relative;display:flex;flex-direction:column;
+  height:min(94svh,1020px);
+  min-height:max(600px,min(calc(37vw + 160px),940px));
+  border:1px solid rgba(31,58,46,.5);
+}
+.canvas{position:relative;flex:1;overflow:hidden;background:#8FB0C1;min-height:0}
+.layer{
+  position:absolute;left:0;right:0;bottom:0;height:175%;
+  will-change:transform;
+}
+.layer svg{position:absolute;inset:0;width:100%;height:100%}
+/* the WPA title band — solid ink, base of the poster */
+.band{
+  background:var(--ink);color:var(--cream);text-align:center;
+  padding:clamp(16px,2.6vh,26px) 16px clamp(18px,2.8vh,28px);
+  border-top:1px solid rgba(245,238,218,.35);
+  position:relative;
+}
+.band::after{
+  content:"";position:absolute;left:10px;right:10px;top:5px;bottom:5px;
+  border:1px solid rgba(245,238,218,.28);pointer-events:none;
+}
+.band .tag{display:block;color:var(--coral-soft);margin-bottom:clamp(6px,1vh,10px)}
+.band h1{font-size:clamp(46px,7vw,104px);font-weight:800;letter-spacing:.04em;line-height:.92;color:var(--cream)}
+.band .sub{font-style:italic;font-size:clamp(14px,1.6vw,18.5px);color:var(--soft-on-fir);margin-top:clamp(6px,1.2vh,12px)}
+
+/* ————— conditions band ————— */
+.conditions{background:#16291F;color:var(--soft-on-fir)}
+.conditions .in{
+  max-width:1160px;margin:0 auto;padding:13px clamp(18px,4vw,32px);
+  display:flex;flex-wrap:wrap;gap:8px 28px;justify-content:space-between;align-items:baseline;
+}
+.conditions .tag{color:var(--soft-on-fir)}
+.conditions .tag b{color:var(--coral-soft);font-weight:600}
+.conditions a{color:var(--cream);font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border-bottom:2px solid rgba(232,135,95,.55);padding-bottom:1px}
+.conditions a:hover{border-bottom-color:var(--coral-soft)}
+
+/* ————— shared section chrome ————— */
+.sec{max-width:1160px;margin:0 auto;padding:clamp(56px,9vh,104px) clamp(18px,4vw,32px) 0}
+.kicker{color:var(--coral-ink);display:block;margin-bottom:14px}
+.sec h2{font-size:clamp(40px,6vw,74px);font-weight:800;letter-spacing:.01em;max-width:16ch}
+.lede{max-width:62ch;margin-top:22px;font-size:clamp(17px,1.5vw,19.5px)}
+.lede + .lede{margin-top:14px}
+.statline{margin-top:26px;color:var(--glacier-ink);display:flex;flex-wrap:wrap;gap:6px 0;align-items:center}
+.statline .sep{margin:0 14px;color:var(--glacier);font-style:normal}
+
+/* route index plate */
+.route-plate{
+  margin-top:40px;border:1px solid rgba(31,58,46,.3);background:var(--cream-panel);
+  padding:clamp(20px,3vw,30px) clamp(20px,3.4vw,34px);
+}
+.route-plate .tag{color:var(--glacier-ink)}
+.route-list{list-style:none;margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px 26px}
+.route-list a{
+  display:flex;align-items:baseline;gap:12px;text-decoration:none;color:var(--ink);
+  padding:9px 2px;border-bottom:1px dashed rgba(31,58,46,.35);
+}
+.route-list a:hover .rl-name{color:var(--coral-ink)}
+.rl-no{font-family:var(--disp);font-weight:800;font-size:22px;color:var(--coral-ink)}
+.rl-name{font-family:var(--disp);font-weight:700;font-size:19px;letter-spacing:.03em;text-transform:uppercase}
+.rl-what{font-style:italic;color:var(--muted);font-size:14.5px;margin-left:auto;text-align:right}
+
+/* ————— the trail ————— */
+.trail{max-width:1160px;margin:0 auto;padding:0 clamp(18px,4vw,32px)}
+.connector{position:relative;height:clamp(120px,17vh,190px);margin:0 auto;width:min(680px,92%)}
+.connector svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.connector .c-label{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:var(--cream);border:1px solid rgba(31,58,46,.28);color:var(--glacier-ink);
+  padding:6px 13px 5px;font-size:11.5px;white-space:nowrap;
+}
+@media (max-width:700px){
+  .connector .c-label{white-space:normal;width:max-content;max-width:72vw;text-align:center;line-height:1.6}
+}
+.trail-dash{stroke:var(--coral);stroke-width:3;stroke-dasharray:9 9;stroke-linecap:round;fill:none;vector-effect:non-scaling-stroke}
+
+/* waypoint panel */
+.waypoint{
+  position:relative;background:var(--cream-panel);border:1px solid rgba(31,58,46,.32);
+  padding:clamp(26px,4vw,48px) clamp(20px,4vw,52px) clamp(30px,4vw,52px);
+  scroll-margin-top:20px;
+}
+.wp-marker{
+  position:absolute;top:-19px;left:50%;transform:translateX(-50%);
+  width:38px;height:38px;border-radius:50%;background:var(--coral);color:#FBF6E9;
+  border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;
+  font-family:var(--disp);font-weight:800;font-size:19px; /* >=14pt bold: AA large-text (3.42 on coral) */
+}
+.wp-grid{display:grid;grid-template-columns:minmax(0,10fr) minmax(0,9fr);gap:clamp(28px,4.5vw,60px);align-items:start}
+.waypoint.rev .wp-grid > .wp-media{order:-1}
+.wp-season{color:var(--coral-ink);display:block}
+.waypoint h3{font-size:clamp(38px,5vw,62px);font-weight:800;letter-spacing:.012em;margin-top:10px}
+.wp-copy{margin-top:18px;max-width:56ch}
+.wp-note{
+  margin-top:16px;display:inline-block;border-left:3px solid var(--coral);padding:2px 0 2px 12px;
+  font-style:italic;color:var(--muted);
+}
+.wp-log{list-style:none;margin-top:22px;border-top:1px solid rgba(31,58,46,.28)}
+.wp-log li{
+  display:flex;justify-content:space-between;align-items:baseline;gap:18px;
+  padding:11px 2px;border-bottom:1px dashed rgba(31,58,46,.3);
+}
+.wp-log .p-name{font-family:var(--disp);font-weight:700;font-size:18.5px;letter-spacing:.03em;text-transform:uppercase}
+.wp-log .p-meta{font-style:italic;color:var(--muted);font-size:14.5px;text-align:right}
+.wp-cta{margin-top:26px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{
+  font-family:var(--disp);font-weight:700;font-size:16.5px;letter-spacing:.06em;text-transform:uppercase;
+  padding:13px 22px 12px;cursor:pointer;transition:transform .14s ease,background-color .14s ease;
+}
+.btn-primary{background:var(--coral-ink);color:#FBF6E9;border:1px solid var(--ink)}
+.btn-primary:hover{background:#9A3C21;transform:translateY(-1px)}
+.btn-quiet{background:transparent;color:var(--ink);border:1.5px solid rgba(31,58,46,.55)}
+.btn-quiet:hover{background:rgba(31,58,46,.07)}
+.wp-fee{margin-top:12px;font-size:13.5px;color:var(--muted);font-style:italic}
+
+/* stamp badge */
+.stamp{width:clamp(122px,12vw,168px);flex:none}
+.wp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
+.wp-head .stamp{transform:rotate(-5deg);margin-top:-6px}
+.waypoint.rev .wp-head .stamp{transform:rotate(4deg)}
+.stamp svg{display:block;width:100%;height:auto}
+.here{
+  position:absolute;top:-13px;right:clamp(14px,3vw,30px);
+  background:var(--ink);color:var(--cream);padding:6px 12px 5px;font-size:11px;
+  transform:rotate(2deg);
+}
+.here b{color:var(--coral-soft);font-weight:600}
+
+/* specimens — photography is sacred: white mat, clean render */
+.wp-media{display:flex;flex-direction:column;gap:clamp(22px,3vw,34px);min-width:0}
+.specimen{position:relative;background:var(--white);padding:12px 12px 10px;box-shadow:0 10px 26px rgba(31,58,46,.16);border:1px solid rgba(31,58,46,.18)}
+.specimen.tilt-l{transform:rotate(-.7deg)}
+.specimen.tilt-r{transform:rotate(.6deg)}
+.specimen .pin{
+  position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:15px;height:15px;border-radius:50%;
+  background:radial-gradient(circle at 34% 30%,#F0A183 0 18%,var(--coral) 45%,#8E3117 100%);
+  box-shadow:0 2px 3px rgba(31,58,46,.35);
+}
+.specimen img{filter:contrast(1.03) saturate(1.04);width:100%}
+.specimen figcaption{padding:10px 4px 4px;display:flex;flex-direction:column;gap:3px}
+.specimen .s-tag{color:#51697A;font-size:11px}
+.specimen .s-cap{font-style:italic;font-size:14.5px;color:#3A4B40;line-height:1.45}
+.specimen.small{width:min(78%,420px);align-self:flex-end}
+.waypoint.rev .specimen.small{align-self:flex-start}
+
+/* terminus */
+.terminus{
+  width:min(680px,92%);margin:0 auto;text-align:center;
+  padding:clamp(30px,5vh,44px) 0 0;
+}
+.terminus .roundel{
+  width:66px;height:66px;border-radius:50%;margin:0 auto 16px;background:var(--cream-panel);
+  border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;
+  font-size:30px;color:var(--coral-ink);font-family:var(--disp);font-weight:800;
+}
+.terminus .tag{color:var(--glacier-ink)}
+.terminus p{font-style:italic;color:var(--muted);margin-top:10px}
+
+/* ————— rules board ————— */
+.rules{background:var(--ink);margin-top:clamp(64px,10vh,112px)}
+.rules .in{max-width:1160px;margin:0 auto;padding:clamp(56px,8vh,92px) clamp(18px,4vw,32px)}
+.rules .kicker{color:var(--coral-soft)}
+.rules h2{color:var(--cream);font-size:clamp(40px,5.6vw,70px);font-weight:800}
+.rules-grid{margin-top:38px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:clamp(20px,2.6vw,36px)}
+.rule-card{border-top:2px solid rgba(245,238,218,.35);padding-top:16px}
+.rule-card .no{font-family:var(--disp);font-weight:800;font-size:26px;color:var(--coral-soft)}
+.rule-card h3{color:var(--cream);font-size:21px;letter-spacing:.05em;margin-top:6px}
+.rule-card p{color:var(--soft-on-fir);font-size:15.5px;margin-top:10px;line-height:1.6}
+.rules .motto{
+  margin-top:clamp(40px,6vh,60px);color:var(--cream);font-family:var(--disp);font-weight:800;
+  font-size:clamp(30px,4.6vw,56px);text-transform:uppercase;letter-spacing:.015em;line-height:1.04;max-width:22ch;
+}
+.rules .motto em{font-style:normal;color:var(--coral-soft)}
+
+/* ————— appendix ————— */
+.appendix{max-width:1160px;margin:0 auto;padding:clamp(56px,9vh,96px) clamp(18px,4vw,32px)}
+.appendix .plate{border:1px solid rgba(31,58,46,.32);background:var(--cream-panel);padding:clamp(24px,3.6vw,44px)}
+.appendix h2{font-size:clamp(30px,3.6vw,44px);font-weight:800}
+.appendix .tag{color:var(--glacier-ink)}
+.ap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px 44px;margin-top:24px}
+.ap-item h3{font-size:15px;letter-spacing:.14em;color:var(--coral-ink);margin-bottom:8px}
+.ap-item p{font-size:15px;line-height:1.58;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:10px 18px}
+.chip{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--muted)}
+.chip i{width:22px;height:22px;border-radius:50%;border:1px solid rgba(31,58,46,.4);flex:none}
+.chip code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--glacier-ink)}
+
+/* ————— footer ————— */
+footer{background:var(--ink);color:var(--soft-on-fir)}
+footer .in{
+  max-width:1160px;margin:0 auto;padding:26px clamp(18px,4vw,32px);
+  display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between;align-items:center;
+}
+footer a{color:var(--cream);text-decoration:none;font-family:var(--disp);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:15px;border-bottom:2px solid rgba(232,135,95,.55);padding-bottom:2px}
+footer a:hover{border-bottom-color:var(--coral-soft);color:#FFF}
+footer .mid{font-size:13px;font-style:italic}
+
+/* ————— responsive ————— */
+@media (max-width:940px){
+  .wp-grid{grid-template-columns:1fr}
+  .waypoint.rev .wp-grid > .wp-media{order:0}
+  .specimen.small{align-self:flex-start}
+}
+@media (max-width:700px){
+  body{font-size:16px}
+  .wp-head{flex-direction:column-reverse}
+  .wp-head .stamp,.waypoint.rev .wp-head .stamp{transform:rotate(-3deg);width:118px;margin:0 0 4px}
+  .rl-what{margin-left:0;text-align:left}
+  .route-list a{flex-wrap:wrap}
+  .here{top:-11px;right:12px}
+}
+@media print{
+  body::before{display:none}
+  .skip{display:none}
+  .waypoint,.specimen{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- shared silhouette library: five hand-drawn tree species -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- Douglas fir · classic tiered silhouette -->
+    <path id="fir-a" d="M0,-200 L15,-172 L7,-174 L24,-146 L12,-149 L32,-118 L17,-122 L40,-88 L22,-93 L47,-58 L26,-63 L53,-30 L10,-36 L10,0 L-10,0 L-10,-36 L-53,-30 L-26,-63 L-47,-58 L-22,-93 L-40,-88 L-17,-122 L-32,-118 L-12,-149 L-24,-146 L-7,-174 L-15,-172 Z"/>
+    <!-- Western hemlock · nodding leader -->
+    <path id="fir-b" d="M8,-183 C3,-197 -5,-199 -8,-189 L-14,-168 L-6,-171 L-22,-142 L-11,-146 L-30,-114 L-15,-119 L-37,-85 L-19,-91 L-44,-54 L-22,-60 L-49,-26 L-9,-33 L-9,0 L9,0 L9,-33 L49,-26 L22,-60 L44,-54 L19,-91 L37,-85 L15,-119 L30,-114 L11,-146 L22,-142 L6,-171 L14,-168 Z"/>
+    <!-- Subalpine fir · narrow spire -->
+    <path id="fir-c" d="M0,-210 L8,-190 L4,-192 L12,-170 L6,-173 L15,-150 L8,-153 L18,-128 L9,-131 L20,-106 L10,-110 L22,-84 L11,-88 L24,-60 L12,-64 L25,-34 L6,-40 L6,0 L-6,0 L-6,-40 L-25,-34 L-12,-64 L-24,-60 L-11,-88 L-22,-84 L-10,-110 L-20,-106 L-9,-131 L-18,-128 L-8,-153 L-15,-150 L-6,-173 L-12,-170 L-4,-192 L-8,-190 Z"/>
+    <!-- Western redcedar · soft swept tiers -->
+    <path id="cedar-a" d="M0,-195 C6,-180 12,-170 20,-162 C14,-162 9,-163 6,-161 C14,-150 22,-139 30,-131 C22,-131 16,-132 11,-130 C20,-117 29,-105 38,-96 C28,-96 21,-97 15,-95 C25,-80 34,-68 44,-58 C32,-58 24,-59 18,-57 C28,-40 38,-28 48,-18 C28,-19 14,-21 10,-21 C11,-12 13,-5 16,0 L-16,0 C-13,-5 -11,-12 -10,-21 C-14,-21 -28,-19 -48,-18 C-38,-28 -28,-40 -18,-57 C-24,-59 -32,-58 -44,-58 C-34,-68 -25,-80 -15,-95 C-21,-97 -28,-96 -38,-96 C-29,-105 -20,-117 -11,-130 C-16,-132 -22,-131 -30,-131 C-22,-139 -14,-150 -6,-161 C-9,-163 -14,-162 -20,-162 C-12,-170 -6,-180 0,-195 Z"/>
+    <!-- Dead spar · old-growth snag -->
+    <path id="snag-a" d="M3,-175 L8,-160 L4,-158 L22,-132 L20,-126 L5,-138 L6,-96 L30,-84 L28,-78 L6,-86 L7,-40 L18,-30 L16,-25 L7,-30 L8,0 L-6,0 L-5,-52 L-20,-62 L-18,-68 L-5,-60 L-4,-110 L-16,-118 L-14,-124 L-4,-116 L-2,-160 L-6,-170 Z"/>
+    <!-- fog gradients -->
+    <radialGradient id="fog-r" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#F5EEDA" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#F5EEDA" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="fog-v" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F5EEDA" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#F5EEDA" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#F5EEDA" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="sky-g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6E96AC"/>
+      <stop offset=".3" stop-color="#8FB0C1"/>
+      <stop offset=".56" stop-color="#B7CDD6"/>
+      <stop offset=".78" stop-color="#E3DDC4"/>
+      <stop offset=".93" stop-color="#F2D9A8"/>
+      <stop offset="1" stop-color="#F2CFA0"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <span class="tag">Disc Northwest<span class="fg"> — Field Guide Nº 07</span></span>
+  <a href="index.html">← All directions</a>
+</header>
+
+<main id="main">
+
+  <!-- ————————— HERO · layered WPA poster ————————— -->
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="scene">
+    <div class="canvas" id="scene" role="img" aria-label="Illustrated national-park-style poster: Mount Rainier rises over blue-grey ridgelines and a bank of fog; rows of hand-drawn fir silhouettes step down to a green field where two small geometric players throw a white disc along a dashed flight path.">
+
+      <!-- L1 · sky -->
+      <div class="layer" data-depth=".56" aria-hidden="true">
+        <svg viewBox="0 0 1600 1575" preserveAspectRatio="xMidYMax slice">
+          <rect x="-10" y="-10" width="1620" height="1595" fill="url(#sky-g)"/>
+          <g fill="#F3E9CD">
+            <rect x="300" y="660" width="260" height="18" rx="9" opacity=".35"/>
+            <rect x="140" y="795" width="420" height="26" rx="13" opacity=".5"/>
+            <rect x="980" y="735" width="520" height="30" rx="15" opacity=".45"/>
+            <rect x="540" y="885" width="360" height="22" rx="11" opacity=".55"/>
+            <rect x="1180" y="965" width="300" height="20" rx="10" opacity=".4"/>
+          </g>
+          <g stroke="#1F3A2E" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".5">
+            <path d="M492,982 Q498,975 504,981 Q510,975 516,982"/>
+            <path d="M556,1017 Q561,1011 566,1016 Q571,1011 576,1017"/>
+            <path d="M1146,952 Q1152,945 1158,951 Q1164,945 1170,952"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- L2 · Mount Rainier -->
+      <div class="layer" data-depth=".46" aria-hidden="true">
+        <svg viewBox="0 0 1600 1575" preserveAspectRatio="xMidYMax slice">
+          <path fill="#E9F1F3" d="M470,1300 C575,1195 650,1090 716,1030 C743,1004 769,991 796,990 C819,990 842,1003 863,1027 C884,1051 904,1082 924,1120 C956,1182 1022,1248 1082,1300 Z"/>
+          <g fill="#B9D1DA">
+            <path d="M797,992 C790,1045 777,1120 757,1210 L772,1215 C793,1124 804,1049 809,997 Z"/>
+            <path d="M766,1012 C751,1064 729,1139 704,1224 L716,1230 C743,1146 761,1074 776,1017 Z"/>
+            <path d="M836,1017 C844,1072 856,1144 872,1228 L884,1222 C872,1144 858,1072 848,1020 Z"/>
+            <path d="M716,1030 C725,1021 734,1014 743,1008 C729,1083 710,1165 685,1258 L658,1300 L625,1300 C655,1210 688,1112 716,1030 Z" opacity=".55"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- L3 · far ridgelines -->
+      <div class="layer" data-depth=".36" aria-hidden="true">
+        <svg viewBox="0 0 1600 1575" preserveAspectRatio="xMidYMax slice">
+          <path fill="#A3B8C1" d="M-40,1575 L-40,1268 Q140,1246 320,1260 T660,1252 T1000,1266 T1340,1248 T1640,1262 L1640,1575 Z"/>
+          <path fill="#87A2AD" d="M-40,1575 L-40,1330 Q180,1310 380,1324 T740,1316 T1100,1330 T1440,1312 T1640,1324 L1640,1575 Z"/>
+        </svg>
+      </div>
+
+      <!-- L4 · fog bank -->
+      <div class="layer" data-depth=".27" aria-hidden="true">
+        <svg viewBox="0 0 1600 1575" preserveAspectRatio="xMidYMax slice">
+          <rect x="-40" y="1310" width="1680" height="64" fill="url(#fog-v)"/>
+          <ellipse cx="260" cy="1332" rx="300" ry="32" fill="url(#fog-r)" opacity=".6"/>
+          <ellipse cx="700" cy="1348" rx="340" ry="38" fill="url(#fog-r)" opacity=".7"/>
+          <ellipse cx="1150" cy="1334" rx="320" ry="34" fill="url(#fog-r)" opacity=".6"/>
+          <ellipse cx="1480" cy="1350" rx="260" ry="28" fill="url(#fog-r)" opacity=".55"/>
+        </svg>
+      </div>
+
+      <!-- L5 · far firs -->
+      <div class="layer" data-depth=".19" aria-hidden="true">
+        <svg viewBox="0 0 1600 1575" preserveAspectRatio="xMidYMax slice">
+          <g fill="#5E8172">
+            <use href="#fir-a" transform="translate(-20,1352) scale(.34)"/>
+            <use href="#fir-c" transform="translate(60,1352) scale(.30)"/>
+            <use href="#fir-a" transform="translate(150,1354) scale(.38)"/>
+            <use href="#fir-b" transform="translate(255,1350) scale(.29)"/>
+            <use href="#fir-c" transform="translate(340,1353) scale(.36)"/>
+            <use href="#fir-a" transform="translate(455,1352) scale(.33)"/>
+            <use href="#fir-b" transform="translate(560,1355) scale(.28)"/>
+            <use href="#fir-a" transform="translate(645,1351) scale(.40)"/>
+            <use href="#fir-c" transform="translate(755,1353) scale(.31)"/>
+            <use href="#fir-b" transform="translate(870,1352) scale(.36)"/>
+            <use href="#fir-a" transform="translate(985,1354) scale(.30)"/>
+            <use href="#fir-c" transform="translate(1080,1351) scale(.38)"/>
+            <use href="#fir-a" transform="translate(1195,1353) scale(.33)"/>
+            <use href="#fir-b" transform="translate(1300,1350) scale(.29)"/>
+            <use href="#fir-a" transform="translate(1395,1354) scale(.37)"/>
+            <use href="#fir-c" transform="translate(1500,1352) scale(.31)"/>
+            <use href="#fir-a" transform="translate(1590,1353) scale(.36)"/>
+          </g>
+          <rect x="-40" y="1324" width="1680" height="42" fill="url(#fog-v)" opacity=".42"/>
+        </svg>
+      </div>
+
+      <!-- L6 · mid firs -->
+      <div class="layer" data-depth=".12" aria-hidden="true">
+        <svg viewBox="0 0 1600 1575" preserveAspectRatio="xMidYMax slice">
+          <g fill="#3A6150">
+            <use href="#fir-a" transform="translate(30,1412) scale(.62)"/>
+            <use href="#fir-b" transform="translate(140,1408) scale(.5)"/>
+            <use href="#fir-c" transform="translate(250,1414) scale(.72)"/>
+            <use href="#fir-a" transform="translate(365,1410) scale(.55)"/>
+            <use href="#snag-a" transform="translate(432,1412) scale(.52)" fill="#416A57"/>
+            <use href="#fir-b" transform="translate(540,1413) scale(.66)"/>
+            <use href="#fir-a" transform="translate(680,1409) scale(.52)"/>
+            <use href="#fir-c" transform="translate(800,1414) scale(.6)"/>
+            <use href="#fir-b" transform="translate(935,1411) scale(.55)"/>
+            <use href="#fir-a" transform="translate(1055,1413) scale(.7)"/>
+            <use href="#fir-c" transform="translate(1170,1409) scale(.5)"/>
+            <use href="#fir-b" transform="translate(1285,1412) scale(.64)"/>
+            <use href="#fir-a" transform="translate(1400,1410) scale(.56)"/>
+            <use href="#fir-c" transform="translate(1520,1414) scale(.72)"/>
+            <use href="#fir-a" transform="translate(1630,1411) scale(.6)"/>
+          </g>
+          <rect x="-40" y="1394" width="1680" height="30" fill="url(#fog-v)" opacity=".2"/>
+        </svg>
+      </div>
+
+      <!-- L7 · near firs — big trees frame the field -->
+      <div class="layer" data-depth=".06" aria-hidden="true">
+        <svg viewBox="0 0 1600 1575" preserveAspectRatio="xMidYMax slice">
+          <g fill="#24473A">
+            <use href="#fir-a" transform="translate(-15,1478) scale(1.32)"/>
+            <use href="#fir-b" transform="translate(115,1478) scale(1.1)" fill="#1F4234"/>
+            <use href="#cedar-a" transform="translate(265,1478) scale(1.24)"/>
+            <use href="#fir-c" transform="translate(430,1478) scale(.92)" fill="#1F4234"/>
+            <use href="#fir-a" transform="translate(600,1478) scale(.85)"/>
+            <use href="#fir-b" transform="translate(770,1478) scale(.8)" fill="#1F4234"/>
+            <use href="#fir-c" transform="translate(945,1478) scale(.88)"/>
+            <use href="#fir-a" transform="translate(1105,1478) scale(.95)" fill="#1F4234"/>
+            <use href="#cedar-a" transform="translate(1250,1478) scale(1.18)"/>
+            <use href="#fir-b" transform="translate(1405,1478) scale(1.05)" fill="#1F4234"/>
+            <use href="#fir-a" transform="translate(1555,1478) scale(1.3)"/>
+            <use href="#fir-c" transform="translate(1655,1478) scale(1.12)" fill="#1F4234"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- L8 · the field, the players, the disc (static base of the scene) -->
+      <div class="layer" aria-hidden="true">
+        <svg viewBox="0 0 1600 1575" preserveAspectRatio="xMidYMax slice">
+          <rect x="-40" y="1474" width="1680" height="110" fill="#5B8A4A"/>
+          <rect x="-40" y="1474" width="1680" height="16" fill="#4C7440" opacity=".8"/>
+          <rect x="-40" y="1500" width="1680" height="22" fill="#4C7440" opacity=".14"/>
+          <rect x="-40" y="1544" width="1680" height="22" fill="#4C7440" opacity=".14"/>
+          <line x1="-40" y1="1497" x2="1640" y2="1497" stroke="#F5EEDA" stroke-width="2.5" opacity=".5"/>
+          <path d="M562,1508 L570,1508 L566,1495 Z" fill="#D9603B"/>
+          <path d="M1042,1508 L1050,1508 L1046,1495 Z" fill="#D9603B"/>
+          <!-- flight path: the same dashed line as the trail below -->
+          <path d="M672,1518 Q812,1450 946,1506" fill="none" stroke="#D9603B" stroke-width="3" stroke-dasharray="10 9" stroke-linecap="round" opacity=".95"/>
+          <ellipse cx="812" cy="1477" rx="11" ry="3.6" fill="#FDFBF2"/>
+          <!-- thrower -->
+          <g stroke="#1F3A2E" fill="none" stroke-linecap="round">
+            <path d="M646,1508 L637,1533" stroke-width="9"/>
+            <path d="M643,1515 L669,1521" stroke-width="6"/>
+            <path d="M645,1512 L629,1522" stroke-width="5.5"/>
+            <path d="M637,1533 L654,1545 L657,1559" stroke-width="7"/>
+            <path d="M637,1533 L620,1556" stroke-width="7"/>
+          </g>
+          <circle cx="649" cy="1500" r="7.5" fill="#1F3A2E"/>
+          <!-- receiver -->
+          <g stroke="#1F3A2E" fill="none" stroke-linecap="round">
+            <path d="M957,1503 L963,1528" stroke-width="9"/>
+            <path d="M958,1508 L941,1492" stroke-width="6"/>
+            <path d="M960,1512 L946,1499" stroke-width="5.5"/>
+            <path d="M963,1528 L977,1543 L981,1557" stroke-width="7"/>
+            <path d="M963,1528 L950,1553" stroke-width="7"/>
+          </g>
+          <circle cx="955" cy="1495" r="7.5" fill="#1F3A2E"/>
+          <!-- kid on the sideline, disc under arm -->
+          <g stroke="#1F3A2E" fill="none" stroke-linecap="round">
+            <path d="M540,1524 L540,1543" stroke-width="7.5"/>
+            <path d="M540,1529 L549,1537" stroke-width="5"/>
+            <path d="M540,1543 L534,1559" stroke-width="6"/>
+            <path d="M540,1543 L547,1559" stroke-width="6"/>
+          </g>
+          <circle cx="540" cy="1517" r="6" fill="#1F3A2E"/>
+          <ellipse cx="552" cy="1539" rx="6.5" ry="2.2" fill="#FDFBF2"/>
+        </svg>
+      </div>
+
+    </div><!-- /canvas -->
+
+      <div class="band on-dark">
+        <span class="tag">Disc Northwest · Puget Sound, Washington · est. 1995</span>
+        <h1 id="hero-h">The Understory</h1>
+        <p class="sub">A field guide to the season — where ultimate grows beneath big trees.</p>
+      </div>
+    </div><!-- /scene -->
+  </section>
+
+  <!-- conditions band -->
+  <div class="conditions on-dark" role="note" aria-label="Field conditions">
+    <div class="in">
+      <a href="#trailhead">▾ Begin at the trailhead</a>
+      <span class="tag"><b>Conditions</b> — rain likely · games on · grade: all levels, ages 7 &amp; up</span>
+      <span class="tag">Rainout hotline <b>(206)&nbsp;781-5840</b> · updated by 3 p.m.</span>
+    </div>
+  </div>
+
+  <!-- ————————— TRAILHEAD ————————— -->
+  <section class="sec" id="trailhead" aria-labelledby="th-h">
+    <span class="kicker tag">Trailhead</span>
+    <h2 id="th-h">Ultimate grows in the understory.</h2>
+    <p class="lede">In a Northwest forest, the understory is the layer where new growth happens — beneath the canopy, close to the ground, all around you. It is also a fair description of this organization. Since 1995, when a summer tournament called Potlatch grew into a nonprofit, DiscNW has held one aim above the rest: <em>an Ultimate community without barriers.</em></p>
+    <p class="lede">Ten thousand players. Four seasons. Zero referees. The route below covers one full year; registration is open at every marked junction.</p>
+    <p class="statline tag">Est. 1995 <span class="sep" aria-hidden="true">·</span> 10,000+ players <span class="sep" aria-hidden="true">·</span> sliding scale from $33 <span class="sep" aria-hidden="true">·</span> 47.68° N, 122.25° W</p>
+
+    <div class="route-plate">
+      <span class="tag">The route — four waypoints · one year · all levels</span>
+      <ul class="route-list">
+        <li><a href="#wp-spring"><span class="rl-no">01</span><span class="rl-name">Spring</span><span class="rl-what">Spring Reign</span></a></li>
+        <li><a href="#wp-summer"><span class="rl-no">02</span><span class="rl-name">Summer</span><span class="rl-what">camps · Potlatch</span></a></li>
+        <li><a href="#wp-fall"><span class="rl-no">03</span><span class="rl-name">Fall</span><span class="rl-what">school leagues</span></a></li>
+        <li><a href="#wp-winter"><span class="rl-no">04</span><span class="rl-name">Winter</span><span class="rl-what">training &amp; coaching</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ————————— THE TRAIL ————————— -->
+  <div class="trail">
+
+    <div class="connector" aria-hidden="true">
+      <svg viewBox="0 0 100 30" preserveAspectRatio="none"><path class="trail-dash" d="M50,0 C50,9 27,10 27,15 C27,20 50,21 50,30"/></svg>
+      <span class="c-label tag">From the trailhead · 0.2 mi — follow signs for Burlington</span>
+    </div>
+
+    <!-- WAYPOINT 01 · SPRING -->
+    <article class="waypoint" id="wp-spring" aria-labelledby="wp1-h">
+      <span class="wp-marker" aria-hidden="true">1</span>
+      <div class="wp-grid">
+        <div class="wp-body">
+          <div class="wp-head">
+            <div>
+              <span class="wp-season tag">Waypoint 01 · Spring · April–May</span>
+              <h3 id="wp1-h">Spring Reign</h3>
+            </div>
+            <div class="stamp" aria-hidden="true">
+              <svg viewBox="0 0 160 160">
+                <defs><path id="rp1" d="M80,80 m-63,0 a63,63 0 1,1 126,0 a63,63 0 1,1 -126,0"/></defs>
+                <circle cx="80" cy="80" r="77" fill="#FBF6E9" stroke="#AE4527" stroke-width="1.6"/>
+                <circle cx="80" cy="80" r="72.5" fill="none" stroke="#AE4527" stroke-width="1.2" stroke-dasharray="3 4"/>
+                <circle cx="80" cy="80" r="52" fill="none" stroke="#AE4527" stroke-width="1.4"/>
+                <text fill="#AE4527" font-family="'Big Shoulders','Arial Narrow',sans-serif" font-weight="700" font-size="11.5" letter-spacing="1.5"><textPath href="#rp1" textLength="392" lengthAdjust="spacingAndGlyphs">SPRING REIGN · WORLD'S LARGEST MIXED YOUTH TOURNAMENT ·</textPath></text>
+                <g fill="#AE4527">
+                  <path d="M48,98 L70,66 Q80,54 90,66 L112,98 Z"/>
+                  <circle cx="57" cy="102" r="2.4"/><circle cx="80" cy="105" r="2.4"/><circle cx="103" cy="102" r="2.4"/>
+                </g>
+                <path d="M66,72 Q80,59 94,72 L88,79 Q80,72 72,79 Z" fill="#FBF6E9"/>
+                <path d="M52,60 Q80,42 108,60" fill="none" stroke="#AE4527" stroke-width="2" stroke-dasharray="4 4"/>
+                <ellipse cx="108" cy="58" rx="6.5" ry="2.2" fill="#AE4527"/>
+                <text x="80" y="124" text-anchor="middle" fill="#AE4527" font-family="'Big Shoulders','Arial Narrow',sans-serif" font-weight="600" font-size="10" letter-spacing="2">APRIL–MAY</text>
+              </svg>
+            </div>
+          </div>
+          <p class="wp-copy">Every spring, the world's largest mixed youth ultimate tournament assembles on the fields at Burlington — one weekend, every age bracket, mountains on the horizon and a disc in the air at all times. Kids arrive quiet and leave hoarse. Every game ends in a spirit circle; nobody skips it.</p>
+          <p class="wp-note">Trail note: bring your legs.</p>
+          <ul class="wp-log">
+            <li><span class="p-name">Spring Reign</span><span class="p-meta">mixed youth tournament · the world's largest</span></li>
+            <li><span class="p-name">Spirit circles</span><span class="p-meta">after every game · self-officiated throughout</span></li>
+          </ul>
+          <div class="wp-cta">
+            <button type="button" class="btn btn-primary">Register for Spring Reign</button>
+          </div>
+          <p class="wp-fee">Sliding-scale team fees — every program from $33.</p>
+        </div>
+        <div class="wp-media">
+          <figure class="specimen tilt-l">
+            <span class="pin" aria-hidden="true"></span>
+            <img src="assets/sr26-thrower-mountains.jpg" alt="A young player at Spring Reign steps out to line up a throw, sunlit fields and a dark treeline behind her" width="1920" height="1080">
+            <figcaption><span class="s-tag tag">Specimen 01 · Spring Reign, Burlington WA</span><span class="s-cap">Lining up the throw. The foothills watch; the defense doesn't wait.</span></figcaption>
+          </figure>
+          <figure class="specimen tilt-r small">
+            <span class="pin" aria-hidden="true"></span>
+            <img src="assets/sr26-spirit-tunnel.jpg" alt="Players and coaches form a spirit tunnel of raised high-fives after a Spring Reign game" width="1920" height="1080">
+            <figcaption><span class="s-tag tag">Specimen 02 · post-game</span><span class="s-cap">The spirit tunnel. Every game ends through one.</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <div class="connector" aria-hidden="true">
+      <svg viewBox="0 0 100 30" preserveAspectRatio="none"><path class="trail-dash" d="M50,0 C50,9 73,10 73,15 C73,20 50,21 50,30"/></svg>
+      <span class="c-label tag">Continue · 0.4 mi — follow the long light</span>
+    </div>
+
+    <!-- WAYPOINT 02 · SUMMER -->
+    <article class="waypoint rev" id="wp-summer" aria-labelledby="wp2-h">
+      <span class="wp-marker" aria-hidden="true">2</span>
+      <span class="here tag" aria-label="Current season: July">You are here · <b>July</b></span>
+      <div class="wp-grid">
+        <div class="wp-body">
+          <div class="wp-head">
+            <div>
+              <span class="wp-season tag">Waypoint 02 · Summer · June–August</span>
+              <h3 id="wp2-h">The Long Light</h3>
+            </div>
+            <div class="stamp" aria-hidden="true">
+              <svg viewBox="0 0 160 160">
+                <defs><path id="rp2" d="M80,80 m-63,0 a63,63 0 1,1 126,0 a63,63 0 1,1 -126,0"/></defs>
+                <circle cx="80" cy="80" r="77" fill="#FBF6E9" stroke="#3F6B34" stroke-width="1.6"/>
+                <circle cx="80" cy="80" r="72.5" fill="none" stroke="#3F6B34" stroke-width="1.2" stroke-dasharray="3 4"/>
+                <circle cx="80" cy="80" r="52" fill="none" stroke="#3F6B34" stroke-width="1.4"/>
+                <text fill="#3F6B34" font-family="'Big Shoulders','Arial Narrow',sans-serif" font-weight="700" font-size="11.5" letter-spacing="1.5"><textPath href="#rp2" textLength="392" lengthAdjust="spacingAndGlyphs">SUMMER · CAMPS 7–18 · HAT LEAGUE · WONDER · POTLATCH ·</textPath></text>
+                <g stroke="#3F6B34" stroke-width="2" stroke-linecap="round">
+                  <line x1="80" y1="38" x2="80" y2="46"/><line x1="62" y1="43" x2="66" y2="50"/><line x1="98" y1="43" x2="94" y2="50"/>
+                  <line x1="52" y1="56" x2="59" y2="60"/><line x1="108" y1="56" x2="101" y2="60"/>
+                </g>
+                <ellipse cx="80" cy="56" rx="10" ry="3.2" fill="#3F6B34"/>
+                <path d="M56,104 L80,68 L104,104 Z" fill="none" stroke="#3F6B34" stroke-width="3"/>
+                <path d="M80,104 L80,86 L90,104 Z" fill="#3F6B34"/>
+                <text x="80" y="124" text-anchor="middle" fill="#3F6B34" font-family="'Big Shoulders','Arial Narrow',sans-serif" font-weight="600" font-size="10" letter-spacing="2">JUNE–AUGUST</text>
+              </svg>
+            </div>
+          </div>
+          <p class="wp-copy">Daylight to nine o'clock and grass stains to match. Camps run all summer for ages 7–18; the Mixed Hat League drafts strangers into teams and lets a season make them friends; the Wonder League keeps the evenings interesting; and Potlatch — the tournament this whole organization grew from — still fills a holiday weekend with three generations of ultimate.</p>
+          <p class="wp-note">Trail note: carry water. The sunscreen is communal.</p>
+          <ul class="wp-log">
+            <li><span class="p-name">Summer Youth Ultimate Camps</span><span class="p-meta">ages 7–18 · weekly sessions</span></li>
+            <li><span class="p-name">Summer Mixed Hat League</span><span class="p-meta">individual signup · teams drawn</span></li>
+            <li><span class="p-name">Summer Wonder League</span><span class="p-meta">mixed · evenings</span></li>
+            <li><span class="p-name">Potlatch</span><span class="p-meta">the 1995 original · mixed tournament</span></li>
+          </ul>
+          <div class="wp-cta">
+            <button type="button" class="btn btn-primary">Sign up for summer camps</button>
+            <button type="button" class="btn btn-quiet">See all summer programs</button>
+          </div>
+          <p class="wp-fee">Sliding-scale fees from $33 — pick the tier that fits; the season is identical at every tier.</p>
+        </div>
+        <div class="wp-media">
+          <figure class="specimen tilt-r">
+            <span class="pin" aria-hidden="true"></span>
+            <img src="assets/pnw/rainier-wildflower-meadow.jpg" alt="Mount Rainier's snowfields rise behind a subalpine meadow thick with purple lupine and white asters" width="2400" height="1800">
+            <figcaption><span class="s-tag tag">Specimen 03 · Mount Rainier, July</span><span class="s-cap">The meadows at full height. The season, likewise.</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <div class="connector" aria-hidden="true">
+      <svg viewBox="0 0 100 30" preserveAspectRatio="none"><path class="trail-dash" d="M50,0 C50,9 27,10 27,15 C27,20 50,21 50,30"/></svg>
+      <span class="c-label tag">Continue · 0.3 mi — pavement ends, fog begins</span>
+    </div>
+
+    <!-- WAYPOINT 03 · FALL -->
+    <article class="waypoint" id="wp-fall" aria-labelledby="wp3-h">
+      <span class="wp-marker" aria-hidden="true">3</span>
+      <div class="wp-grid">
+        <div class="wp-body">
+          <div class="wp-head">
+            <div>
+              <span class="wp-season tag">Waypoint 03 · Fall · September–November</span>
+              <h3 id="wp3-h">School Season</h3>
+            </div>
+            <div class="stamp" aria-hidden="true">
+              <svg viewBox="0 0 160 160">
+                <defs><path id="rp3" d="M80,80 m-63,0 a63,63 0 1,1 126,0 a63,63 0 1,1 -126,0"/></defs>
+                <circle cx="80" cy="80" r="77" fill="#FBF6E9" stroke="#1F3A2E" stroke-width="1.6"/>
+                <circle cx="80" cy="80" r="72.5" fill="none" stroke="#1F3A2E" stroke-width="1.2" stroke-dasharray="3 4"/>
+                <circle cx="80" cy="80" r="52" fill="none" stroke="#1F3A2E" stroke-width="1.4"/>
+                <text fill="#1F3A2E" font-family="'Big Shoulders','Arial Narrow',sans-serif" font-weight="700" font-size="11.5" letter-spacing="1.5"><textPath href="#rp3" textLength="392" lengthAdjust="spacingAndGlyphs">FALL · MIDDLE SCHOOL &amp; HIGH SCHOOL LEAGUES · RAIN OR SHINE ·</textPath></text>
+                <g stroke="#1F3A2E" stroke-width="2" stroke-linecap="round" opacity=".85">
+                  <line x1="58" y1="42" x2="52" y2="54"/><line x1="76" y1="38" x2="70" y2="50"/><line x1="94" y1="40" x2="88" y2="52"/><line x1="110" y1="46" x2="104" y2="58"/>
+                </g>
+                <use href="#fir-a" transform="translate(66,108) scale(.26)" fill="#1F3A2E"/>
+                <use href="#fir-c" transform="translate(95,108) scale(.24)" fill="#1F3A2E"/>
+                <text x="80" y="124" text-anchor="middle" fill="#1F3A2E" font-family="'Big Shoulders','Arial Narrow',sans-serif" font-weight="600" font-size="10" letter-spacing="2">SEPT–NOV</text>
+              </svg>
+            </div>
+          </div>
+          <p class="wp-copy">The fog comes back and so do the school buses. Middle school and high school leagues run deep into November, played in exactly the weather you'd expect and a few kinds you wouldn't. Local doctrine: there is no bad weather, only cotton.</p>
+          <p class="wp-note">Trail note: carry a layer. Then carry a second layer.</p>
+          <ul class="wp-log">
+            <li><span class="p-name">Middle School Leagues</span><span class="p-meta">fall season · school &amp; hat formats</span></li>
+            <li><span class="p-name">High School Leagues</span><span class="p-meta">fall season · school teams</span></li>
+          </ul>
+          <div class="wp-cta">
+            <button type="button" class="btn btn-primary">Join a fall league</button>
+          </div>
+          <p class="wp-fee">Sliding scale from $33 · rainouts on the hotline by 3 p.m. — (206) 781-5840.</p>
+        </div>
+        <div class="wp-media">
+          <figure class="specimen tilt-l">
+            <span class="pin" aria-hidden="true"></span>
+            <img src="assets/pnw/fog-old-growth-forest.jpg" alt="Fog drifts through an old-growth fir forest, pale light behind dark layered branches" width="2400" height="1614">
+            <figcaption><span class="s-tag tag">Specimen 04 · Okanogan-Wenatchee National Forest</span><span class="s-cap">Old growth in fog — fall's home colors.</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <div class="connector" aria-hidden="true">
+      <svg viewBox="0 0 100 30" preserveAspectRatio="none"><path class="trail-dash" d="M50,0 C50,9 73,10 73,15 C73,20 50,21 50,30"/></svg>
+      <span class="c-label tag">Continue · 0.5 mi — indoors, finally</span>
+    </div>
+
+    <!-- WAYPOINT 04 · WINTER -->
+    <article class="waypoint rev" id="wp-winter" aria-labelledby="wp4-h">
+      <span class="wp-marker" aria-hidden="true">4</span>
+      <div class="wp-grid">
+        <div class="wp-body">
+          <div class="wp-head">
+            <div>
+              <span class="wp-season tag">Waypoint 04 · Winter · Dec–Feb</span>
+              <h3 id="wp4-h">The Quiet Season</h3>
+            </div>
+            <div class="stamp" aria-hidden="true">
+              <svg viewBox="0 0 160 160">
+                <defs><path id="rp4" d="M80,80 m-63,0 a63,63 0 1,1 126,0 a63,63 0 1,1 -126,0"/></defs>
+                <circle cx="80" cy="80" r="77" fill="#FBF6E9" stroke="#3F5A6B" stroke-width="1.6"/>
+                <circle cx="80" cy="80" r="72.5" fill="none" stroke="#3F5A6B" stroke-width="1.2" stroke-dasharray="3 4"/>
+                <circle cx="80" cy="80" r="52" fill="none" stroke="#3F5A6B" stroke-width="1.4"/>
+                <text fill="#3F5A6B" font-family="'Big Shoulders','Arial Narrow',sans-serif" font-weight="700" font-size="11" letter-spacing="1.4"><textPath href="#rp4" textLength="392" lengthAdjust="spacingAndGlyphs">WINTER · INDOOR TRAINING · DISCNW COACHING COLLECTIVE ·</textPath></text>
+                <g stroke="#3F5A6B" stroke-width="2" stroke-linecap="round">
+                  <g transform="translate(56,52)"><line x1="-6" y1="0" x2="6" y2="0"/><line x1="0" y1="-6" x2="0" y2="6"/><line x1="-4.4" y1="-4.4" x2="4.4" y2="4.4"/><line x1="-4.4" y1="4.4" x2="4.4" y2="-4.4"/></g>
+                  <g transform="translate(104,46)"><line x1="-5" y1="0" x2="5" y2="0"/><line x1="0" y1="-5" x2="0" y2="5"/><line x1="-3.6" y1="-3.6" x2="3.6" y2="3.6"/><line x1="-3.6" y1="3.6" x2="3.6" y2="-3.6"/></g>
+                </g>
+                <g fill="none" stroke="#3F5A6B" stroke-width="3">
+                  <circle cx="74" cy="88" r="15"/>
+                  <path d="M86,77 L102,68 L106,76 L92,84" stroke-linejoin="round"/>
+                </g>
+                <circle cx="74" cy="88" r="4.5" fill="#3F5A6B"/>
+                <text x="80" y="124" text-anchor="middle" fill="#3F5A6B" font-family="'Big Shoulders','Arial Narrow',sans-serif" font-weight="600" font-size="10" letter-spacing="2">DEC–FEB</text>
+              </svg>
+            </div>
+          </div>
+          <p class="wp-copy">The short days belong to footwork drills in bright gyms — and to the DiscNW Coaching Collective, where this season's sideline voices train next season's. Nothing looks like it's growing in winter. Everything is.</p>
+          <p class="wp-note">Trail note: bring a friend. Gyms echo.</p>
+          <ul class="wp-log">
+            <li><span class="p-name">Indoor training</span><span class="p-meta">winter · gyms around the Sound</span></li>
+            <li><span class="p-name">DiscNW Coaching Collective</span><span class="p-meta">coach development · all levels</span></li>
+          </ul>
+          <div class="wp-cta">
+            <button type="button" class="btn btn-primary">Join the Coaching Collective</button>
+          </div>
+          <p class="wp-fee">Coaching the understory is how the canopy got here.</p>
+        </div>
+        <div class="wp-media">
+          <figure class="specimen tilt-l">
+            <span class="pin" aria-hidden="true"></span>
+            <img src="assets/pnw/puget-sound-ferry-dusk.jpg" alt="A Washington State ferry crosses Puget Sound at dusk under banded grey-blue clouds, dark hills on the horizon" width="2800" height="1412">
+            <figcaption><span class="s-tag tag">Specimen 05 · Puget Sound, dusk</span><span class="s-cap">The fields rest. The ferries don't.</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <div class="connector" aria-hidden="true" style="height:clamp(90px,12vh,130px)">
+      <svg viewBox="0 0 100 30" preserveAspectRatio="none"><path class="trail-dash" d="M50,0 C50,10 50,20 50,30"/></svg>
+    </div>
+
+    <div class="terminus">
+      <div class="roundel" aria-hidden="true">↺</div>
+      <span class="tag">End of route — it loops</span>
+      <p>Total distance: one year. Elevation gained: considerable, emotionally. Spring is always ahead.</p>
+    </div>
+  </div>
+
+  <!-- ————————— RULES OF THE TRAIL ————————— -->
+  <section class="rules on-dark" aria-labelledby="rules-h">
+    <div class="in">
+      <span class="kicker tag">Posted at every junction</span>
+      <h2 id="rules-h">Rules of the trail</h2>
+      <div class="rules-grid">
+        <div class="rule-card">
+          <span class="no">01</span>
+          <h3>Spirit of the Game</h3>
+          <p>Ultimate is self-officiated. Zero referees on any DiscNW field — players make every call, at every age, in every division. It works. It's the point.</p>
+        </div>
+        <div class="rule-card">
+          <span class="no">02</span>
+          <h3>No barriers</h3>
+          <p>Sliding-scale fees on every program, starting at $33. Choose the tier that fits your household; every tier gets the identical season.</p>
+        </div>
+        <div class="rule-card">
+          <span class="no">03</span>
+          <h3>Weather</h3>
+          <p>We play in rain; this is Puget Sound. When a field genuinely floods, the rainout hotline knows first: (206)&nbsp;781-5840, updated by 3&nbsp;p.m.</p>
+        </div>
+        <div class="rule-card">
+          <span class="no">04</span>
+          <h3>Leave no trace</h3>
+          <p>Magnuson Park and the fields around the Sound hosted ultimate before it had a nonprofit. Pack out what you packed in, cleats and all.</p>
+        </div>
+      </div>
+      <p class="motto">Carry a layer. Leave no trace. <em>Bring your legs.</em></p>
+    </div>
+  </section>
+
+  <!-- ————————— ABOUT THIS DIRECTION ————————— -->
+  <section class="appendix" aria-labelledby="ap-h">
+    <div class="plate">
+      <span class="tag">About this direction</span>
+      <h2 id="ap-h">Nº 07 — The Understory</h2>
+      <div class="ap-grid">
+        <div class="ap-item">
+          <h3 class="tag">Thesis</h3>
+          <p>A fully illustrated Pacific Northwest world in the WPA park-poster tradition: the place is the brand, and the season is a trail map through it.</p>
+        </div>
+        <div class="ap-item">
+          <h3 class="tag">Signature</h3>
+          <p>One dashed coral line that is both the disc's flight and the trail through the year; hand-cut fir silhouettes in seven gently parallaxing layers; four stamped waypoints; photographs pinned like field specimens.</p>
+        </div>
+        <div class="ap-item">
+          <h3 class="tag">Palette — poster inks</h3>
+          <div class="chips">
+            <span class="chip"><i style="background:#F5EEDA"></i>Paper Cream <code>#F5EEDA</code></span>
+            <span class="chip"><i style="background:#1F3A2E"></i>Deep Fir <code>#1F3A2E</code></span>
+            <span class="chip"><i style="background:#7E9AA8"></i>Glacier <code>#7E9AA8</code></span>
+            <span class="chip"><i style="background:#AE4527"></i>Sunset Coral <code>#AE4527</code></span>
+            <span class="chip"><i style="background:#5B8A4A"></i>Meadow (illustration) <code>#5B8A4A</code></span>
+          </div>
+        </div>
+        <div class="ap-item">
+          <h3 class="tag">Type</h3>
+          <p><strong>Big Shoulders</strong> — WPA condensed caps for display · <strong>Source Serif 4</strong> — warm humanist text for the field-guide voice.</p>
+        </div>
+        <div class="ap-item">
+          <h3 class="tag">Choose this if</h3>
+          <p>You want an identity no other sports organization in America could copy — place-first, craft-heavy, warm to parents and volunteers, and endlessly extensible into posters, patches, stamps and sideline merch.</p>
+        </div>
+        <div class="ap-item">
+          <h3 class="tag">Think twice if</h3>
+          <p>You need score-forward, sports-tech energy or fast template production — here the illustration is the brand, and every major new page asks for an illustrator's hand.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="on-dark">
+  <div class="in">
+    <a href="index.html">← All directions</a>
+    <span class="mid">Direction 07 · The Understory · prepared for DiscNW</span>
+    <a href="08-game-to-15.html">Next direction →</a>
+  </div>
+</footer>
+
+<script>
+/* THE ONE MOTION SYSTEM · gentle scroll parallax on the poster layers.
+   transform-only, rAF-throttled, clamped to the hero's height.
+   Base styles are the settled state: with no JS or with reduced motion,
+   the landscape renders fully composed and static. */
+(function(){
+  var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var scene = document.getElementById('scene');
+  if (!scene) return;
+  var layers = Array.prototype.slice.call(scene.querySelectorAll('.layer[data-depth]'));
+  var heroH = 0, ticking = false, bound = false;
+
+  function measure(){ heroH = scene.offsetHeight || 0; }
+  function frame(){
+    ticking = false;
+    var y = window.scrollY || window.pageYOffset || 0;
+    if (y < 0) y = 0;
+    if (y > heroH) y = heroH;
+    for (var i = 0; i < layers.length; i++){
+      layers[i].style.transform = 'translate3d(0,' + (y * parseFloat(layers[i].dataset.depth)).toFixed(1) + 'px,0)';
+    }
+  }
+  function onScroll(){ if (!ticking){ ticking = true; window.requestAnimationFrame(frame); } }
+  function onResize(){ measure(); onScroll(); }
+  function bind(){
+    if (bound) return; bound = true;
+    measure();
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('resize', onResize, {passive:true});
+    onScroll();
+  }
+  function unbind(){
+    if (!bound) return; bound = false;
+    window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('resize', onResize);
+    for (var i = 0; i < layers.length; i++){ layers[i].style.transform = ''; }
+  }
+  function decide(){ mq.matches ? unbind() : bind(); }
+  if (mq.addEventListener) mq.addEventListener('change', decide);
+  decide();
+})();
+</script>
+</body>
+</html>

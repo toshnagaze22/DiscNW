@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>08 · Game to 15 — DiscNW design directions</title>
+<meta name="description" content="Experimental direction 08 for the DiscNW redesign: the site is a game of Ultimate played to 15. Fifteen numbered truths, one scoreboard, one orange flood.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAFAF7;
+    --ink:#101010;
+    --accent:#FF4A00;
+    --muted:#45433F;
+    --hair:rgba(16,16,16,.16);
+    --hair-strong:rgba(16,16,16,.32);
+    --strip-h:52px;
+    --pad:clamp(20px, 5.5vw, 84px);
+    --grot:"Space Grotesk","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{overflow-x:clip;scroll-padding-top:calc(var(--strip-h) + 8px)}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--serif);
+    font-optical-sizing:auto;
+    font-size:17px;
+    line-height:28px;
+    overflow-x:clip;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  ::selection{background:var(--accent);color:var(--ink)}
+  img{display:block;max-width:100%;height:auto}
+
+  a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:3px}
+  a:hover{text-decoration-color:var(--ink)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:1px}
+  .pt-15 :focus-visible, .strip.final :focus-visible{outline-color:var(--ink)}
+
+  .visually-hidden{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .skip{position:absolute;left:var(--pad);top:-64px;z-index:60;background:var(--ink);color:var(--paper);font-family:var(--grot);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;padding:10px 16px;transition:none}
+  .skip:focus-visible{top:calc(var(--strip-h) + 10px)}
+
+  /* ---------- THE SCOREBOARD (the one system) ---------- */
+  .strip{
+    position:fixed;inset:0 0 auto 0;z-index:50;
+    height:var(--strip-h);
+    background:var(--paper);
+    border-bottom:1px solid var(--hair);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .strip-in{
+    display:inline-flex;align-items:baseline;gap:.85em;
+    font-family:var(--grot);font-weight:500;font-size:12px;
+    letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
+  }
+  .s-live,.s-final{display:none}
+  .s-team{font-weight:500}
+  .s-box{
+    position:relative;display:inline-flex;gap:.45em;
+    font-weight:700;letter-spacing:.06em;
+    font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+  }
+  .s-box::after{
+    content:"";position:absolute;left:0;right:0;bottom:-8px;height:2px;
+    background:var(--accent);opacity:0;
+  }
+  .s-dash{color:var(--ink)}
+  .s-sep{color:var(--muted)}
+  .s-meta{color:var(--muted);font-weight:500}
+  .s-final{font-weight:700;letter-spacing:.14em;font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+
+  html.play .s-static{display:none}
+  html.play .s-live{display:inline-flex;align-items:baseline;gap:.85em}
+  html.play .strip{transition:background-color .3s ease,border-color .3s ease}
+  html.play .s-box::after{transition:opacity .9s ease}
+  html.play .s-box.tick::after{opacity:1;transition:none}
+  html.play .s-box.tick .s-you{animation:tick .26s cubic-bezier(.2,.7,.2,1)}
+  @keyframes tick{from{transform:translateY(.5em);opacity:0}to{transform:translateY(0);opacity:1}}
+  html.play .strip.final{background:var(--accent);border-color:transparent}
+  html.play .strip.final .s-live{display:none}
+  html.play .strip.final .s-final{display:inline}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+  }
+
+  /* ---------- LAYOUT ---------- */
+  .wrap{max-width:1440px;margin-inline:auto;padding-inline:var(--pad)}
+  main{padding-top:var(--strip-h)}
+
+  /* hero — the pull */
+  .hero{min-height:calc(100svh - var(--strip-h));display:flex;flex-direction:column;justify-content:space-between;padding-block:clamp(48px,8vh,96px) clamp(28px,5vh,56px)}
+  .kicker{
+    font-family:var(--grot);font-size:11px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--ink);
+    margin:0 0 clamp(28px,6vh,72px);
+  }
+  .tickmark{display:inline-block;width:8px;height:8px;background:var(--accent);margin-right:10px;vertical-align:1px}
+  h1{
+    font-family:var(--grot);font-weight:700;text-transform:uppercase;
+    font-size:clamp(72px,15.5vw,224px);line-height:.9;letter-spacing:-.03em;
+    margin:0;
+    font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+  }
+  .standfirst{
+    font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:clamp(19px,2.2vw,25px);line-height:1.5;
+    max-width:34ch;margin:clamp(24px,4vh,44px) 0 0;
+  }
+  .standfirst strong{font-style:normal;font-weight:600}
+  .pull-hint{
+    font-family:var(--grot);font-size:11px;font-weight:600;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--muted);margin:0;
+  }
+
+  /* point sections — rule pinned at top, the pair commands the center */
+  .pt{min-height:92svh;display:flex}
+  .pt > .wrap{width:100%;display:flex;flex-direction:column;padding-block:clamp(40px,7vh,84px) clamp(56px,10vh,132px)}
+  .pt .ptgrid{flex:1;align-content:center}
+  .tagrow{
+    display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+    border-top:1px solid var(--ink);
+    padding-top:12px;margin-bottom:clamp(36px,7vh,88px);
+    font-family:var(--grot);font-size:11px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;
+  }
+  .run{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;font-size:12px;letter-spacing:.1em;color:var(--muted)}
+  .ptgrid{
+    display:grid;
+    grid-template-columns:minmax(280px,430px) minmax(300px,460px);
+    column-gap:clamp(48px,7vw,128px);
+    align-items:start;justify-content:start;
+  }
+  .num{
+    font-family:var(--grot);font-weight:700;
+    font-size:clamp(200px,21vw + 120px,320px);
+    line-height:.75;letter-spacing:-.045em;
+    font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+    margin-top:-.015em;
+    user-select:none;
+  }
+  .col{padding-top:.2em;max-width:38ch}
+  .col h2{
+    font-family:var(--serif);font-weight:600;font-optical-sizing:auto;
+    font-size:clamp(27px,3.2vw,42px);line-height:1.14;letter-spacing:-.008em;
+    margin:0 0 20px;text-wrap:balance;
+  }
+  .col p{margin:0}
+  .col p + p{margin-top:16px}
+  .col em{font-weight:500}
+
+  /* point 10 — the hotline (h2.hotline ties .col h2 specificity; declared later, so it wins) */
+  h2.hotline{
+    font-family:var(--grot);font-weight:700;
+    font-size:clamp(40px,5.2vw,80px);letter-spacing:-.02em;line-height:1.04;
+    font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+    margin-bottom:0;
+  }
+  h2.hotline a{color:var(--accent);text-decoration:none}
+  h2.hotline a:hover{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:4px;text-underline-offset:8px}
+  h2.hotline + p{margin-top:24px}
+
+  /* point 08 — the quote */
+  .pt-quote .ptgrid{grid-template-columns:minmax(280px,430px) minmax(300px,620px)}
+  .pt-quote .col{max-width:none}
+  .pt-quote blockquote{margin:0;max-width:20em}
+  .pt-quote blockquote p{
+    font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:clamp(22px,2.4vw,30px);line-height:1.45;margin:0;
+  }
+  .pt-quote figcaption{
+    margin-top:24px;font-family:var(--grot);font-style:normal;
+    font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+  }
+
+  /* photo breaks — sacred, untouched, breathing */
+  .break{margin:clamp(72px,12vh,160px) auto;padding:0}
+  .break-frame{max-width:2208px;margin-inline:auto}
+  .break-frame.portrait{max-width:2682px}
+  .break img{width:100%;height:auto;filter:contrast(1.03) saturate(1.04)}
+  .break-frame.portrait img{height:min(86svh,1380px);object-fit:cover;object-position:50% 26%}
+  .break figcaption{
+    max-width:1440px;margin:14px auto 0;padding-inline:var(--pad);
+    font-family:var(--grot);font-size:11px;font-weight:600;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  }
+
+  /* point 15 — the flood */
+  .pt-15{background:var(--accent);color:var(--ink);min-height:100svh}
+  .pt-15 .tagrow{border-top-color:var(--ink)}
+  .pt-15 .run{color:var(--ink)}
+  .pt-15 .ptgrid{grid-template-columns:minmax(280px,430px) minmax(300px,1fr)}
+  .pt-15 .col{max-width:none}
+  h2.game-word{
+    font-family:var(--grot);font-weight:700;text-transform:uppercase;
+    font-size:clamp(64px,10.5vw,156px);line-height:.92;letter-spacing:-.03em;
+    margin:0 0 26px;
+  }
+  .pt-15 .col p.lead{
+    font-family:var(--serif);font-style:italic;font-weight:500;
+    font-size:clamp(20px,2.3vw,26px);line-height:1.45;margin:0 0 36px;
+  }
+  .btn{
+    display:inline-block;background:var(--ink);color:var(--paper);
+    font-family:var(--grot);font-size:13px;font-weight:600;
+    letter-spacing:.16em;text-transform:uppercase;text-decoration:none;
+    padding:19px 30px;border:2px solid var(--ink);
+  }
+  .btn:hover{background:#000;border-color:#000}
+  .btn:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+  .fine{
+    margin-top:22px;font-family:var(--grot);font-size:12px;font-weight:500;
+    letter-spacing:.08em;text-transform:uppercase;
+    font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+  }
+
+  /* appendix + footer */
+  .about{border-top:1px solid var(--ink);padding-block:clamp(48px,8vh,88px)}
+  .about h2{
+    font-family:var(--grot);font-weight:700;font-size:clamp(22px,2.4vw,30px);
+    letter-spacing:-.01em;margin:14px 0 10px;text-transform:uppercase;
+    font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+  }
+  .about .thesis{max-width:62ch;margin:0 0 34px;font-size:18px;line-height:30px}
+  .spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(198px,1fr));gap:28px clamp(24px,3vw,48px);margin:0}
+  .spec > div{border-top:1px solid var(--hair);padding-top:14px}
+  .spec dt{
+    font-family:var(--grot);font-size:11px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;
+  }
+  .spec dd{margin:0;font-size:15.5px;line-height:25px}
+  .chip{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .chip .swatch{width:16px;height:16px;flex:none;border:1px solid var(--hair-strong)}
+  .chip code{
+    font-family:var(--grot);font-size:12px;letter-spacing:.06em;
+    font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;color:var(--muted);
+  }
+  .pagefoot{border-top:1px solid var(--ink);}
+  .pagefoot .wrap{
+    display:flex;justify-content:space-between;align-items:baseline;gap:18px;flex-wrap:wrap;
+    padding-block:26px;
+    font-family:var(--grot);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  }
+  .pagefoot .mid{color:var(--muted);font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+  .pagefoot a{text-decoration-thickness:2px}
+
+  /* responsive */
+  @media (max-width:880px){
+    .ptgrid,.pt-quote .ptgrid,.pt-15 .ptgrid{grid-template-columns:1fr;row-gap:24px}
+    .col{padding-top:0}
+    h2.hotline{font-size:clamp(34px,9.5vw,52px)}
+  }
+  @media (max-width:480px){
+    .strip-in{font-size:10.5px;letter-spacing:.1em;gap:.6em}
+    .s-meta{display:none}
+    .s-sep{display:none}
+    html.play .strip.final .s-meta{display:none}
+  }
+
+  @media print{
+    .strip{position:static;background:var(--paper)!important;border-bottom-color:var(--ink)}
+    html.play .s-live,html.play .s-final{display:none!important}
+    html.play .s-static{display:inline!important}
+    .pt{min-height:auto}
+    .break{page-break-inside:avoid}
+    .pt-15{min-height:auto}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="strip" id="strip" aria-label="Scoreboard — game to 15">
+  <div class="strip-in" aria-hidden="true">
+    <span class="s-static">Game to 15</span>
+    <span class="s-live">
+      <span class="s-team">DiscNW</span>
+      <span class="s-box" id="scorebox"><span>0</span><span class="s-dash">—</span><span class="s-you" id="score-you">0</span></span>
+      <span class="s-team">You</span>
+      <span class="s-sep">·</span>
+      <span class="s-meta">Game to 15</span>
+    </span>
+    <span class="s-final">15 — Game.</span>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- THE PULL -->
+  <section class="hero wrap" aria-label="Game to 15 — introduction">
+    <div>
+      <p class="kicker"><span class="tickmark" aria-hidden="true"></span>DiscNW · Design direction 08 · Experimental</p>
+      <h1>Game<br>to 15</h1>
+      <p class="standfirst">Fifteen points. Fifteen true things about Ultimate in the Northwest. <strong>DiscNW pulls; you receive.</strong> Every point you read is a point you score.</p>
+    </div>
+    <p class="pull-hint">↓ First pull</p>
+  </section>
+
+  <!-- 01 -->
+  <section class="pt" id="pt-01" data-pt="1" aria-labelledby="h01">
+    <div class="wrap">
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 01 · The vision</span><span class="run" aria-hidden="true">0 — 1</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">01</div>
+        <div class="col">
+          <h2 id="h01">An Ultimate community without barriers.</h2>
+          <p>That is DiscNW’s entire vision, in six words. No gate at the field, no fine print under the mission. The next fourteen points are what those six words cost, and what they buy.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="pt" id="pt-02" data-pt="2" aria-labelledby="h02">
+    <div class="wrap">
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 02 · The scale</span><span class="run" aria-hidden="true">0 — 2</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">02</div>
+        <div class="col">
+          <h2 id="h02">Ten thousand players. And counting.</h2>
+          <p>More than 10,000 people play with DiscNW every year, from Magnuson Park to grass fields all around Puget Sound. Less a league, more a small city that sprints.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="pt" id="pt-03" data-pt="3" aria-labelledby="h03">
+    <div class="wrap">
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 03 · The rules</span><span class="run" aria-hidden="true">0 — 3</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">03</div>
+        <div class="col">
+          <h2 id="h03">Zero referees. Since the first pull.</h2>
+          <p>Every DiscNW game is self-officiated: players make the calls, players resolve the disputes. Spirit of the Game is not a banner slogan — it is the entire officiating system, and it has held for three decades.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="pt" id="pt-04" data-pt="4" aria-labelledby="h04">
+    <div class="wrap">
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 04 · The origin</span><span class="run" aria-hidden="true">0 — 4</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">04</div>
+        <div class="col">
+          <h2 id="h04">Born at Potlatch, 1995.</h2>
+          <p>A tournament needed an organization, so the players built one. DiscNW grew out of the Potlatch tournament in 1995 and has been organizing the region’s Ultimate ever since.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="pt" id="pt-05" data-pt="5" aria-labelledby="h05">
+    <div class="wrap">
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 05 · The span</span><span class="run" aria-hidden="true">0 — 5</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">05</div>
+        <div class="col">
+          <h2 id="h05">Ages 7 to 70-plus.</h2>
+          <p>Summer Youth Ultimate Camps start at seven. Masters hat leagues never really stop. Same disc, same field lines — one game, played for a whole lifetime.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- photo break A -->
+  <figure class="break">
+    <div class="break-frame">
+      <img src="assets/sr26-spirit-tunnel.jpg" width="1920" height="1080" alt="Players and coaches raise their arms to form a post-game spirit tunnel on a sunny field at Spring Reign 2026." decoding="async">
+    </div>
+    <figcaption>Halftime — Spring Reign 2026 · The post-game spirit tunnel</figcaption>
+  </figure>
+
+  <!-- 06 -->
+  <section class="pt" id="pt-06" data-pt="6" aria-labelledby="h06">
+    <div class="wrap">
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 06 · The flagship</span><span class="run" aria-hidden="true">0 — 6</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">06</div>
+        <div class="col">
+          <h2 id="h06">The largest mixed youth tournament in the world.</h2>
+          <p>It is called Spring Reign, and it happens here every spring. Not the region’s biggest, not the country’s — the world’s. Middle schoolers headline it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section class="pt" id="pt-07" data-pt="7" aria-labelledby="h07">
+    <div class="wrap">
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 07 · The fee</span><span class="run" aria-hidden="true">0 — 7</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">07</div>
+        <div class="col">
+          <h2 id="h07">From $33. Sliding scale. No questions.</h2>
+          <p>Registration slides down to $33 so that money never keeps anyone off the field. You pay what works; nobody checks. Here, barrier-free is a budget line, not a value statement.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 — the quote -->
+  <section class="pt pt-quote" id="pt-08" data-pt="8" aria-label="Point 8 — a parent's point">
+    <div class="wrap">
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 08 · The sideline</span><span class="run" aria-hidden="true">0 — 8</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">08</div>
+        <div class="col">
+          <figure style="margin:0">
+            <blockquote>
+              <p>“My daughter came home from her first game and spent twenty minutes explaining why there are no referees — who made the calls, how they talked it out. She was sold. Honestly, so was I.”</p>
+            </blockquote>
+            <figcaption>Parent · Fall Middle School League</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 -->
+  <section class="pt" id="pt-09" data-pt="9" aria-labelledby="h09">
+    <div class="wrap">
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 09 · The season</span><span class="run" aria-hidden="true">0 — 9</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">09</div>
+        <div class="col">
+          <h2 id="h09">Fall belongs to the schools.</h2>
+          <p>Every autumn, the Middle School and High School leagues turn hallways into rosters across the region. For a lot of kids, sixth grade is where the first pull happens.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 — the hotline -->
+  <section class="pt" id="pt-10" data-pt="10" aria-labelledby="h10">
+    <div class="wrap">
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 10 · The hotline</span><span class="run" aria-hidden="true">0 — 10</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">10</div>
+        <div class="col">
+          <h2 id="h10" class="hotline"><a href="tel:+12067815840" aria-label="Call the DiscNW rainout hotline at (206) 781-5840">(206)<br>781‑5840</a></h2>
+          <p>The rainout hotline. Before apps, before push alerts, Seattle Ultimate checked the fields by phone — and this number still answers. Some institutions are ten digits long.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- photo break B -->
+  <figure class="break">
+    <div class="break-frame portrait">
+      <img src="assets/ycc-tryouts-2015-4.jpg" width="2333" height="2475" alt="Two young players contest a throw at YCC tryouts, the disc hovering mid-flight between them." decoding="async">
+    </div>
+    <figcaption>Second half — YCC tryouts, 2015 · Two of the ten thousand</figcaption>
+  </figure>
+
+  <!-- 11 -->
+  <section class="pt" id="pt-11" data-pt="11" aria-labelledby="h11">
+    <div class="wrap">
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 11 · The beach</span><span class="run" aria-hidden="true">0 — 11</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">11</div>
+        <div class="col">
+          <h2 id="h11">Washington’s only beach tournament.</h2>
+          <p>Sea Plastic: sand instead of grass, salt air instead of drizzle, and the one weekend a year the state’s Ultimate takes its cleats off.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="pt" id="pt-12" data-pt="12" aria-labelledby="h12">
+    <div class="wrap">
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 12 · The coaches</span><span class="run" aria-hidden="true">0 — 12</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">12</div>
+        <div class="col">
+          <h2 id="h12">Coaches, coached.</h2>
+          <p>The DiscNW Coaching Collective trains the people who teach the game, school team and club alike — so a kid’s first coach is a coached coach.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 -->
+  <section class="pt" id="pt-13" data-pt="13" aria-labelledby="h13">
+    <div class="wrap">
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 13 · The engine</span><span class="run" aria-hidden="true">0 — 13</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">13</div>
+        <div class="col">
+          <h2 id="h13">Run on volunteers.</h2>
+          <p>Field-liners, score reporters, tournament directors, board members. The organization runs on people who show up early, stay late, and take a shift because somebody once took one for them.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 -->
+  <section class="pt" id="pt-14" data-pt="14" aria-labelledby="h14">
+    <div class="wrap">
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 14 · The roster spot</span><span class="run" aria-hidden="true">0 — 14</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">14</div>
+        <div class="col">
+          <h2 id="h14">You.</h2>
+          <p>Fourteen points in, one thing missing. Look at the scoreboard — notice who has scored every point on this page. That is the whole model: <em>DiscNW pulls. You score.</em></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 — GAME. -->
+  <section class="pt pt-15" id="pt-15" data-pt="15" aria-labelledby="h15">
+    <div class="wrap">
+      <div class="tagrow"><span>Point 15 · Game point</span><span class="run" aria-hidden="true">0 — 15 · Game</span></div>
+      <div class="ptgrid">
+        <div class="num" aria-hidden="true">15</div>
+        <div class="col">
+          <h2 id="h15" class="game-word">Game.</h2>
+          <p class="lead">You read to 15. Now play to 15.</p>
+          <p><a class="btn" href="https://www.discnw.org/">Register at discnw.org</a></p>
+          <p class="fine">Sliding scale from $33 — point 07 always applies.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- appendix -->
+  <section class="about" aria-labelledby="about-h">
+    <div class="wrap">
+      <p class="kicker" style="margin-bottom:0"><span class="tickmark" aria-hidden="true"></span>About this direction</p>
+      <h2 id="about-h">08 — Game to 15</h2>
+      <p class="thesis">The site is a game of Ultimate played to 15: a fixed scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point — the whole personality lives in the typesetting.</p>
+      <dl class="spec">
+        <div>
+          <dt>Palette</dt>
+          <dd>
+            <span class="chip"><span class="swatch" style="background:#FAFAF7"></span>Line Chalk <code>#FAFAF7</code></span>
+            <span class="chip"><span class="swatch" style="background:#101010"></span>Stat Ink <code>#101010</code></span>
+            <span class="chip"><span class="swatch" style="background:#FF4A00"></span>Universe Orange <code>#FF4A00</code></span>
+          </dd>
+        </div>
+        <div>
+          <dt>Type</dt>
+          <dd>Space Grotesk — colossal tabular numerals &amp; scoreboard. Newsreader — the editorial columns, sharp and small.</dd>
+        </div>
+        <div>
+          <dt>Signature</dt>
+          <dd>The score strip: “DISCNW 0 — 0 YOU” ticking up as you scroll, ending at “15 — Game.” Reading progress is the score.</dd>
+        </div>
+        <div>
+          <dt>Choose this if</dt>
+          <dd>You want the page a jury retells in one sentence — “the site is a game to 15” — pure typography, cheapest to build flawlessly, and the sport’s own structure doing the branding.</dd>
+        </div>
+        <div>
+          <dt>Think twice if</dt>
+          <dd>You need a working homepage, not a manifesto: schedules, standings, and registration paths still require one of the grounded directions underneath this voice.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <nav class="wrap" aria-label="Direction navigation">
+    <a href="index.html">← All directions</a>
+    <span class="mid" aria-hidden="true">08 · Game to 15</span>
+    <a href="01-evergreen.html">Next direction →</a>
+  </nav>
+</footer>
+
+<script>
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return; /* static strip per spec */
+  var root=document.documentElement;
+  root.classList.add('play');
+  var pts=[].slice.call(document.querySelectorAll('[data-pt]'));
+  var you=document.getElementById('score-you');
+  var box=document.getElementById('scorebox');
+  var strip=document.getElementById('strip');
+  var current=0,t,raf=0;
+  /* a point is scored once its section reaches the middle of the viewport,
+     and un-scored if you scroll back above it — recomputed exactly from
+     geometry on every scroll frame, so fast flicks and long jumps can
+     never leave a stale score */
+  function recompute(){
+    var mid=window.innerHeight*0.5,n=0,i,r;
+    for(i=0;i<pts.length;i++){
+      r=pts[i].getBoundingClientRect();
+      if(r.top<=mid)n=+pts[i].getAttribute('data-pt');
+    }
+    if(n===current)return;
+    current=n;
+    you.textContent=String(n);
+    strip.classList.toggle('final',n===15);
+    box.classList.remove('tick');void box.offsetWidth;box.classList.add('tick');
+    clearTimeout(t);t=setTimeout(function(){box.classList.remove('tick');},700);
+  }
+  function schedule(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;recompute();});}
+  window.addEventListener('scroll',schedule,{passive:true});
+  window.addEventListener('resize',schedule,{passive:true});
+  recompute();
+})();
+</script>
+</body>
+</html>

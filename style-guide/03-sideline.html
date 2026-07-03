@@ -26,6 +26,8 @@
   --r-lg:20px;
   --r-md:14px;
   --shadow:0 8px 24px rgba(27,48,34,.08);
+  --die-cut:5px;   /* the one die-cut white width, all five stickers */
+  --die-shadow:drop-shadow(0 6px 12px rgba(27,48,34,.18)); /* the one sticker shadow, cast from the die-cut silhouette */
   --disp:'Baloo 2','Trebuchet MS',sans-serif;
   --body:'Atkinson Hyperlegible','Verdana',sans-serif;
   --display-size:clamp(64px, 9vw, 120px); /* the one display moment */
@@ -68,15 +70,19 @@ p{margin:0 0 1em}
 .ph-cap b{font-weight:700; color:var(--ink)}
 
 /* ================= THE SIGNATURE — DIE-CUT STICKERS =================
-   Exactly five on the whole page. White die-cut edge, evergreen outline,
-   one soft shadow, three angles only (−3°, 2°, −2°). Never on a face,
-   never under text. */
-.die{filter:drop-shadow(0 6px 12px rgba(27,48,34,.18)); transform:rotate(var(--rot,-3deg))}
+   Exactly five on the whole page. One die-cut white width (--die-cut, 5px
+   at sheet size), one evergreen outline, one soft shadow (--die-shadow —
+   a drop-shadow, so it hugs the die-cut silhouette on every shape), and
+   three angles only. The five rotations, exactly: sheet starburst −3°,
+   club badge 2°, duck −2°, hero starburst 2°, event pill −2°.
+   Never on a face, never under text. */
+.die{filter:var(--die-shadow); transform:rotate(var(--rot,-3deg))}
 .stkr{
   display:inline-block; font:700 13px/1 var(--disp); letter-spacing:.05em; text-transform:uppercase;
   background:var(--marigold); color:var(--ink);
   border:2px solid var(--ink); border-radius:999px; padding:9px 15px 10px;
-  box-shadow:0 0 0 4px var(--white), 0 6px 12px rgba(27,48,34,.18);
+  box-shadow:0 0 0 var(--die-cut) var(--white); /* the die-cut ring… */
+  filter:var(--die-shadow); /* …and the same shadow as the SVG stickers, wrapping ring and all */
   transform:rotate(var(--rot,-2deg));
 }
 
@@ -157,7 +163,7 @@ p{margin:0 0 1em}
 .sheet-item{display:flex; flex-direction:column; align-items:center; gap:22px; margin:0; max-width:230px}
 .sheet-item figcaption{font-size:14px; line-height:1.55; color:var(--muted); text-align:center}
 .sheet-item figcaption b{display:block; font:700 15px/1.4 var(--disp); color:var(--ink); letter-spacing:.01em}
-.sheet-duck{background:var(--white); border-radius:50%; padding:7px}
+.sheet-duck{background:var(--white); border-radius:50%; padding:var(--die-cut)} /* same 5px die-cut as the rest of the sheet */
 .sheet-rules{
   display:grid; grid-template-columns:repeat(3,1fr); gap:24px 40px;
   list-style:none; margin:48px 0 0; padding:0;
@@ -197,10 +203,15 @@ p{margin:0 0 1em}
 .mock-h1 span{display:block}
 .hero-doodle{width:min(400px,68%); height:auto; color:var(--green); margin:20px 0 0}
 .mock-sub{font-size:20px; color:var(--muted); max-width:56ch; margin:36px 0 32px}
-.mock-ctas{display:flex; gap:16px; flex-wrap:wrap; align-items:center}
+.mock-ctas{display:flex; gap:14px 18px; flex-wrap:wrap; align-items:center}
+.mock-ctas .btn{font-size:18px; padding:17px 32px 18px} /* hero-scale pair: equal heights, primary reads first */
 .mock-reassure{font:400 15px/1.6 var(--body); color:var(--muted); margin:26px 0 0}
 .mock-reassure b{color:var(--green-deep)}
 .mock-figure{position:relative; margin:0}
+/* Crop verified: the 16/9 slot matches the 1920×1080 native exactly, so the
+   photo never crops at any viewport — both faces (left and center-left) and
+   the disc (lower left) always sit fully in frame, and the sticker's corner
+   is blurred fence, never a person. Renders ≤1069px, well under native. */
 .mock-ph{aspect-ratio:16/9; border-radius:0; background:#E9EFE9; overflow:hidden}
 .mock-ph img{width:100%; height:100%; object-fit:cover; object-position:50% 50%; filter:contrast(1.03) saturate(1.04)}
 .mock-stkr{position:absolute; top:-26px; right:40px; z-index:2; width:128px; height:128px}
@@ -299,14 +310,22 @@ p{margin:0 0 1em}
 .film{margin:64px 0 0} /* zero the UA figure side margins so the frame aligns with the container */
 .film .ph{position:relative; aspect-ratio:16/9}
 .film-btn{
-  position:absolute; right:14px; bottom:14px; z-index:2;
-  display:inline-flex; align-items:center;
+  position:absolute; right:16px; bottom:16px; z-index:2;
+  display:inline-flex; align-items:center; gap:9px;
   font:700 14px/1 var(--disp); color:var(--ink);
-  background:rgba(255,255,255,.95); border:2px solid var(--ink); border-radius:999px;
-  padding:10px 16px 11px; cursor:pointer;
+  background:var(--white); border:2px solid var(--ink); border-radius:999px;
+  padding:11px 18px 12px; cursor:pointer;
+  box-shadow:0 2px 10px rgba(27,48,34,.22); /* lifts the control off bright grass */
+  transition:background-color .15s ease;
 }
 .film-btn:hover{background:var(--wash-grass)}
 .film-btn[hidden]{display:none}
+/* the ▶ / ❚❚ glyph rides the aria-pressed state — no extra JS */
+.film-btn .fb-pause{display:none}
+.film-btn[aria-pressed="true"] .fb-play{display:none}
+.film-btn[aria-pressed="true"] .fb-pause{display:inline}
+@media (prefers-reduced-motion:reduce){ .film-btn{transition:none} }
+@media print{ .film-btn{display:none} } /* print gets the clean poster frame */
 
 /* ================= 9 · UI COMPONENTS ================= */
 .ui-grid{display:grid; grid-template-columns:1fr 1.1fr .9fr; gap:24px; margin-top:56px; align-items:start}
@@ -410,6 +429,8 @@ p{margin:0 0 1em}
   .mock-links{gap:16px}
   .mock-hero{padding:52px 20px 44px}
   .mock-h1{font-size:clamp(40px,10.8vw,64px)}
+  .mock-ctas{gap:12px}
+  .mock-ctas .btn{width:100%; padding:16px 22px 17px} /* full-width stack — one thumb, no ragged wrap */
   .mock-figcap{padding:12px 20px 20px}
   .mock-sat{padding:22px 20px 24px; gap:12px}
   .sat-list{gap:10px 24px}
@@ -434,7 +455,8 @@ p{margin:0 0 1em}
     <path d="M7.2 12.4l3.2 3.2 6.2-7" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
   </symbol>
   <symbol id="starburst" viewBox="0 0 190 190">
-    <polygon points="95.0,2.0 112.4,19.0 135.4,11.2 143.6,34.0 167.7,37.0 165.3,61.2 185.7,74.3 173.0,95.0 185.7,115.7 165.3,128.8 167.7,153.0 143.6,156.0 135.4,178.8 112.4,171.0 95.0,188.0 77.6,171.0 54.6,178.8 46.4,156.0 22.3,153.0 24.7,128.8 4.3,115.7 17.0,95.0 4.3,74.3 24.7,61.2 22.3,37.0 46.4,34.0 54.6,11.2 77.6,19.0" fill="#fff"/>
+    <!-- white blank scaled up 1% around center so the die-cut rim measures the same 5px as the rest of the sheet -->
+    <polygon transform="translate(95 95) scale(1.01) translate(-95 -95)" points="95.0,2.0 112.4,19.0 135.4,11.2 143.6,34.0 167.7,37.0 165.3,61.2 185.7,74.3 173.0,95.0 185.7,115.7 165.3,128.8 167.7,153.0 143.6,156.0 135.4,178.8 112.4,171.0 95.0,188.0 77.6,171.0 54.6,178.8 46.4,156.0 22.3,153.0 24.7,128.8 4.3,115.7 17.0,95.0 4.3,74.3 24.7,61.2 22.3,37.0 46.4,34.0 54.6,11.2 77.6,19.0" fill="#fff"/>
     <polygon points="95.0,9.0 111.0,24.8 132.3,17.5 139.9,38.7 162.2,41.4 159.9,63.8 178.8,75.9 167.0,95.0 178.8,114.1 159.9,126.2 162.2,148.6 139.9,151.3 132.3,172.5 111.0,165.2 95.0,181.0 79.0,165.2 57.7,172.5 50.1,151.3 27.8,148.6 30.1,126.2 11.2,114.1 23.0,95.0 11.2,75.9 30.1,63.8 27.8,41.4 50.1,38.7 57.7,17.5 79.0,24.8" fill="#FFB61E" stroke="#1B3022" stroke-width="3"/>
     <text x="95" y="82" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="17" fill="#1B3022">NO</text>
     <text x="95" y="103" text-anchor="middle" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="16.5" letter-spacing=".5" fill="#1B3022">EXPERIENCE</text>
@@ -580,7 +602,8 @@ p{margin:0 0 1em}
       <figure class="sheet-item">
         <svg class="die" style="--rot:2deg" width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="Round white club sticker with three evergreen trees and a small marigold disc, reading: Puget Sound Ultimate, rain or shine">
           <circle cx="75" cy="75" r="73" fill="#fff"/>
-          <circle cx="75" cy="75" r="67" fill="#fff" stroke="#1B3022" stroke-width="3"/>
+          <!-- r 66.5 + 1.5 half-stroke leaves exactly 5px of die-cut white inside the r-73 blank -->
+          <circle cx="75" cy="75" r="66.5" fill="#fff" stroke="#1B3022" stroke-width="3"/>
           <path id="badgearc" d="M21,75 A54,54 0 0 1 129,75" fill="none"/>
           <text font-family="'Baloo 2',sans-serif" font-weight="800" font-size="11" letter-spacing="1.4" fill="#1B3022">
             <textPath href="#badgearc" startOffset="50%" text-anchor="middle">PUGET SOUND ULTIMATE</textPath>
@@ -774,9 +797,15 @@ p{margin:0 0 1em}
             aria-label="Muted film loop: the post-game spirit tunnel at Spring Reign — players trade high fives down a sunlit line of raised arms.">
             <source src="assets/video/loop-ms-spirit-tunnel.mp4" type="video/mp4">
           </video>
-          <button class="film-btn" type="button" hidden aria-pressed="false">Play the film</button>
+          <button class="film-btn" type="button" hidden aria-pressed="false">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" focusable="false">
+              <path class="fb-play" d="M3.6 1.8v10.4L12.2 7Z"/>
+              <g class="fb-pause"><rect x="2.8" y="1.9" width="3.2" height="10.2" rx="1.1"/><rect x="8" y="1.9" width="3.2" height="10.2" rx="1.1"/></g>
+            </svg>
+            <span class="fb-txt">Play the film</span>
+          </button>
         </div>
-        <figcaption class="ph-cap"><b>Step 5, in the wild.</b> The post-game spirit tunnel at Spring Reign — both teams, every game, rain or shine. The film runs clean: no tint, no titles, just the day.</figcaption>
+        <figcaption class="ph-cap"><b>Step 5, in the wild.</b> The post-game spirit tunnel at Spring Reign — both teams, every game, rain or shine. A silent six-second loop, shown clean: no tint, no titles, just the day.</figcaption>
       </figure>
     </div>
   </div>
@@ -957,9 +986,10 @@ p{margin:0 0 1em}
   var btn  = document.querySelector(".film-btn");
   if (film && btn){
     var userPaused = !motionOK;
+    var txt = btn.querySelector(".fb-txt");
     var label = function(playing){
-      btn.textContent = playing ? "Pause the film" : "Play the film";
-      btn.setAttribute("aria-pressed", playing ? "true" : "false");
+      txt.textContent = playing ? "Pause the film" : "Play the film";
+      btn.setAttribute("aria-pressed", playing ? "true" : "false"); /* CSS swaps the ▶/❚❚ glyph off this */
     };
     btn.hidden = false;
     film.muted = true; /* belt and suspenders for autoplay policies */

@@ -153,11 +153,13 @@
      Settles unconditionally ≤2.5s (JS failsafe below); static without JS or with reduced motion. */
   @media (prefers-reduced-motion: no-preference){
     .js .play-anim .flight{stroke-dasharray:900; stroke-dashoffset:900; opacity:0}
-    .js .play-anim.in .flight{animation:huckdraw 1.2s cubic-bezier(.4,0,.2,1) .2s forwards}
+    /* flight easing: hot off the hand, then the disc floats — heavy ease-out,
+       with the catch flash cued to the arrival, not the keyframe end */
+    .js .play-anim.in .flight{animation:huckdraw 1.35s cubic-bezier(.18,.72,.22,1) .2s forwards}
     @keyframes huckdraw{0%{opacity:1} 100%{stroke-dashoffset:0; opacity:1}}
     .js .play-anim.in .catch-flash{
       transform-box:fill-box; transform-origin:center;
-      animation:catchpop .4s ease-out 1.35s forwards;
+      animation:catchpop .45s cubic-bezier(.22,.61,.36,1) 1.42s forwards;
     }
     @keyframes catchpop{0%{opacity:.95; transform:scale(.35)} 100%{opacity:0; transform:scale(1.6)}}
   }
@@ -187,18 +189,21 @@
   }
   .site{background:var(--navy)}
   .site-nav{
-    display:flex; align-items:center; gap:32px; padding:20px 48px;
+    display:flex; align-items:center; gap:40px; padding:22px 48px;
     border-bottom:1px solid var(--line-soft); background:var(--night);
   }
   @media (max-width:900px){ .site-nav{padding:16px 20px; gap:18px} }
   .site-logo{display:flex; align-items:center; text-decoration:none}
   .site-logo img{display:block; width:132px; height:auto; filter:brightness(0) invert(1); opacity:.96}
-  .site-links{display:flex; gap:28px; margin-left:auto; align-items:center}
-  .site-links a{
-    font-family:var(--disp); font-weight:600; font-size:16px; letter-spacing:.14em; text-transform:uppercase;
-    color:var(--chalk); text-decoration:none; padding:4px 2px; border-bottom:2px solid transparent;
+  .site-links{display:flex; gap:30px; margin-left:auto; align-items:center}
+  /* :not(.btn) keeps the Register CTA a true button — link padding and
+     link-hover color must never flatten it */
+  .site-links a:not(.btn){
+    font-family:var(--disp); font-weight:600; font-size:15px; letter-spacing:.17em; text-transform:uppercase;
+    color:var(--chalk); text-decoration:none; padding:5px 1px 6px; border-bottom:2px solid transparent;
   }
-  .site-links a:hover{color:var(--cone); border-bottom-color:var(--cone)}
+  .site-links a:not(.btn):hover{color:var(--cone); border-bottom-color:var(--cone)}
+  .site-links .btn{margin-left:10px}
   @media (max-width:900px){ .site-links a:not(.btn){display:none} }
   .hero{
     display:grid; grid-template-columns:minmax(0,1fr) minmax(0,440px);
@@ -215,11 +220,15 @@
   .hero h1{
     grid-column:1 / -1;
     font-family:var(--disp); font-weight:700; text-transform:uppercase;
-    font-size:clamp(54px, 8.2vw, 112px); line-height:.93; letter-spacing:.01em;
-    margin:0 0 14px; font-variant-numeric:tabular-nums;
+    font-size:clamp(54px, 8.2vw, 112px); line-height:.93; letter-spacing:.002em;
+    margin:0 0 14px; font-kerning:normal; font-variant-numeric:proportional-nums;
+    /* proportional figures at jersey scale: "10,000" kerns like a headline,
+       not a box score — tabular-nums stays on the scorestrip where it belongs */
   }
   .hero-sub{color:var(--slate); font-size:18px; max-width:46ch; margin:0 0 32px}
-  .hero-ctas{display:flex; flex-wrap:wrap; gap:14px; align-items:center}
+  .hero-ctas{display:flex; flex-wrap:wrap; gap:16px; align-items:center}
+  .hero-ctas .btn{font-size:18px; padding:15px 30px 14px}
+  @media (max-width:640px){ .hero-ctas .btn{font-size:17px; padding:13px 26px 12px} }
   /* the signature's only echo: the same play, faint chalk on the flat navy, static */
   .hero-art{min-width:0; align-self:end}
   .hero-art svg{width:100%; height:auto; display:block}
@@ -250,9 +259,11 @@
   .filmrow-head a:hover{color:var(--cone); border-color:var(--cone)}
   .filmgrid{display:grid; grid-template-columns:1fr 1fr; gap:24px}
   @media (max-width:820px){ .filmgrid{grid-template-columns:1fr} }
-  .film{margin:0; border:1px solid var(--line-soft); border-radius:10px; overflow:hidden; background:var(--navy)}
-  .film-frame{position:relative; background:#000}
-  .film-frame video{display:block; width:100%; height:auto; aspect-ratio:16/9; object-fit:cover}
+  .film{margin:0; display:flex; flex-direction:column; border:1px solid var(--line-soft); border-radius:10px; overflow:hidden; background:var(--navy)}
+  /* ratio lives on the frame, not the video: the slot holds a strict 16/9
+     before metadata arrives, so the two cards always cut to the same size */
+  .film-frame{position:relative; background:#000; aspect-ratio:16/9}
+  .film-frame video{display:block; width:100%; height:100%; object-fit:cover}
   .film-toggle{
     position:absolute; left:12px; bottom:12px; z-index:2; display:none;
     align-items:center; justify-content:center; width:32px; height:32px;
@@ -271,18 +282,18 @@
     background:rgba(5,11,20,.88); border-radius:4px; padding:3px 8px;
     font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1;
   }
-  .film figcaption{padding:14px 18px 16px; font-size:13.5px; color:var(--slate); line-height:1.55; border-top:1px solid var(--line-soft)}
-  .film figcaption b{display:block; color:var(--chalk); font-family:var(--disp); font-weight:600; letter-spacing:.14em; font-size:15px; text-transform:uppercase; margin-bottom:3px}
+  .film figcaption{flex:1; padding:15px 20px 17px; font-size:14px; color:var(--slate); line-height:1.55; border-top:1px solid var(--line-soft)}
+  .film figcaption b{display:block; color:var(--chalk); font-family:var(--disp); font-weight:600; letter-spacing:.12em; font-size:16px; line-height:1.25; text-transform:uppercase; margin-bottom:5px}
 
   /* ---------- buttons ---------- */
   .btn{
     display:inline-block; font-family:var(--disp); font-weight:700; letter-spacing:.1em; text-transform:uppercase;
     font-size:17px; text-decoration:none; border-radius:8px; padding:13px 26px 12px; line-height:1;
-    border:2px solid transparent; cursor:pointer; transition:background .18s ease, color .18s ease, border-color .18s ease;
+    border:2px solid transparent; cursor:pointer; transition:background .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
   }
   @media (prefers-reduced-motion: reduce){ .btn{transition:none} }
-  .btn-primary{background:var(--cone); color:var(--night)}
-  .btn-primary:hover, .btn-primary.is-hover{background:var(--cone-hi)}
+  .btn-primary{background:var(--cone); color:var(--night); box-shadow:0 10px 26px -14px rgba(255,107,28,.55)}
+  .btn-primary:hover, .btn-primary.is-hover{background:var(--cone-hi); box-shadow:0 12px 30px -12px rgba(255,107,28,.6)}
   .btn-secondary{background:transparent; color:var(--chalk); border-color:rgba(242,246,248,.5)}
   .btn-secondary:hover, .btn-secondary.is-hover{background:var(--chalk); color:var(--night); border-color:var(--chalk)}
   .btn-quiet{
@@ -596,25 +607,25 @@
 
     <div class="sig-board play-anim">
       <svg class="play-svg" viewBox="0 0 1120 520" role="img" aria-label="Ultimate play diagram: a vertical stack offense drawn in chalk on navy. The deepest cutter breaks toward the end zone on a dashed line while the handler's huck, drawn in orange, arcs downfield to meet the cut for a score.">
-        <!-- field: boundary, end zones, brick marks — chalk only -->
-        <rect x="24" y="26" width="1072" height="468" fill="none" stroke="#F2F6F8" stroke-width="2" opacity=".85"/>
-        <line x1="247" y1="26" x2="247" y2="494" stroke="#F2F6F8" stroke-width="2" opacity=".85"/>
-        <line x1="873" y1="26" x2="873" y2="494" stroke="#F2F6F8" stroke-width="2" opacity=".85"/>
-        <g stroke="#F2F6F8" stroke-width="2" opacity=".5">
+        <!-- field: boundary, end zones, brick marks — chalk context, one weight lighter than the players -->
+        <rect x="24" y="26" width="1072" height="468" fill="none" stroke="#F2F6F8" stroke-width="1.75" opacity=".65"/>
+        <line x1="247" y1="26" x2="247" y2="494" stroke="#F2F6F8" stroke-width="1.75" opacity=".65"/>
+        <line x1="873" y1="26" x2="873" y2="494" stroke="#F2F6F8" stroke-width="1.75" opacity=".65"/>
+        <g stroke="#F2F6F8" stroke-width="1.75" stroke-linecap="round" opacity=".45">
           <path d="M418 260 h16 M426 252 v16"/>
           <path d="M686 260 h16 M694 252 v16"/>
         </g>
         <text x="984" y="260" transform="rotate(-90 984 260)" text-anchor="middle" fill="#8FA3BA" font-family="Barlow Condensed, sans-serif" font-size="16" font-weight="600" letter-spacing="5">END ZONE</text>
-        <!-- defense: chalk X's, one stop dimmer -->
-        <g stroke="#F2F6F8" stroke-width="2.5" stroke-linecap="round" opacity=".55">
-          <path d="M580 118 l16 16 M596 118 l-16 16"/>
-          <path d="M580 192 l16 16 M596 192 l-16 16"/>
-          <path d="M580 266 l16 16 M596 266 l-16 16"/>
-          <path d="M580 340 l16 16 M596 340 l-16 16"/>
-          <path d="M364 290 l16 16 M380 290 l-16 16"/>
+        <!-- defense: chalk X's sized to the O's optical diameter, one stop dimmer -->
+        <g stroke="#F2F6F8" stroke-width="2.75" stroke-linecap="round" opacity=".6">
+          <path d="M578 116 l20 20 M598 116 l-20 20"/>
+          <path d="M578 190 l20 20 M598 190 l-20 20"/>
+          <path d="M578 264 l20 20 M598 264 l-20 20"/>
+          <path d="M578 338 l20 20 M598 338 l-20 20"/>
+          <path d="M362 288 l20 20 M382 288 l-20 20"/>
         </g>
         <!-- offense: chalk O's -->
-        <g fill="none" stroke="#F2F6F8" stroke-width="2.5">
+        <g fill="none" stroke="#F2F6F8" stroke-width="3">
           <circle cx="560" cy="126" r="13"/>
           <circle cx="560" cy="200" r="13"/>
           <circle cx="560" cy="274" r="13"/>
@@ -622,11 +633,11 @@
           <circle cx="340" cy="282" r="13"/>
         </g>
         <!-- the disc, in hand -->
-        <circle cx="358" cy="272" r="5" fill="#FF6B1C"/>
-        <!-- deep cut: dashed chalk -->
-        <path d="M574 116 C 660 78, 764 66, 856 84" fill="none" stroke="#F2F6F8" stroke-width="2.5" stroke-dasharray="8 9" marker-end="url(#ah-chalk)"/>
-        <!-- the huck: the one orange line on the page -->
-        <path class="flight" pathLength="900" d="M362 266 C 490 140, 720 62, 916 96" fill="none" stroke="#FF6B1C" stroke-width="3.5" marker-end="url(#ah-cone)"/>
+        <circle cx="358" cy="272" r="5.5" fill="#FF6B1C"/>
+        <!-- deep cut: dashed chalk, finishing inside the end zone where the disc comes down -->
+        <path d="M576 114 C 666 72, 786 58, 882 76" fill="none" stroke="#F2F6F8" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 12" marker-end="url(#ah-chalk)"/>
+        <!-- the huck: the one orange line on the page, heaviest stroke on the board -->
+        <path class="flight" pathLength="900" d="M362 266 C 490 140, 720 62, 916 96" fill="none" stroke="#FF6B1C" stroke-width="4" stroke-linecap="round" marker-end="url(#ah-cone)"/>
         <!-- goal flash at the catch point -->
         <circle class="catch-flash" cx="916" cy="96" r="16" fill="none" stroke="#FF6B1C" stroke-width="3"/>
         <!-- chalk labels -->
@@ -688,26 +699,26 @@
             <!-- the signature's single echo: same play, faint chalk, static -->
             <svg viewBox="0 0 620 460" focusable="false">
               <g opacity=".38" stroke="#F2F6F8" fill="none">
-                <path d="M0 20 H600 V440 H0" stroke-width="2"/>
-                <line x1="470" y1="20" x2="470" y2="440" stroke-width="2"/>
-                <g stroke-width="2.5">
+                <path d="M0 20 H600 V440 H0" stroke-width="1.75"/>
+                <line x1="470" y1="20" x2="470" y2="440" stroke-width="1.75"/>
+                <g stroke-width="2.75">
                   <circle cx="300" cy="90" r="12"/>
                   <circle cx="300" cy="160" r="12"/>
                   <circle cx="300" cy="230" r="12"/>
                   <circle cx="300" cy="300" r="12"/>
                   <circle cx="120" cy="250" r="12"/>
                 </g>
-                <g stroke-width="2.2" stroke-linecap="round" opacity=".7">
-                  <path d="M318 82 l14 14 M332 82 l-14 14"/>
-                  <path d="M318 152 l14 14 M332 152 l-14 14"/>
-                  <path d="M318 222 l14 14 M332 222 l-14 14"/>
-                  <path d="M318 292 l14 14 M332 292 l-14 14"/>
+                <g stroke-width="2.4" stroke-linecap="round" opacity=".7">
+                  <path d="M316 81 l18 18 M334 81 l-18 18"/>
+                  <path d="M316 151 l18 18 M334 151 l-18 18"/>
+                  <path d="M316 221 l18 18 M334 221 l-18 18"/>
+                  <path d="M316 291 l18 18 M334 291 l-18 18"/>
                 </g>
-                <path d="M312 80 C 390 52, 480 44, 556 60" stroke-width="2.2" stroke-dasharray="7 8"/>
+                <path d="M312 80 C 390 52, 480 44, 556 60" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="7 10"/>
               </g>
               <g opacity=".9">
                 <circle cx="136" cy="242" r="4.5" fill="#FF6B1C"/>
-                <path d="M138 238 C 250 120, 430 42, 568 68" fill="none" stroke="#FF6B1C" stroke-width="3" marker-end="url(#ah-cone)"/>
+                <path d="M138 238 C 250 120, 430 42, 568 68" fill="none" stroke="#FF6B1C" stroke-width="3" stroke-linecap="round" marker-end="url(#ah-cone)"/>
               </g>
             </svg>
           </div>
@@ -955,9 +966,9 @@
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     /* the ONE motion moment: the signature huck draws itself, once.
-       Unconditional settle: a 700ms failsafe forces the final state even with no
-       scroll (draw 1.4s + flash → everything sharp well inside 2.5s). Reduced
-       motion or no JS renders the finished diagram, static. */
+       Unconditional settle: a 550ms failsafe forces the final state even with no
+       scroll (550ms + 1.55s draw + flash ends 1.87s in → sharp by 2.42s, inside
+       the 2.5s budget). Reduced motion or no JS renders the finished diagram, static. */
     var boards = document.querySelectorAll('.play-anim');
     if (reduce || !('IntersectionObserver' in window)) {
       boards.forEach(function(b){ b.classList.add('in'); });
@@ -968,7 +979,7 @@
         });
       }, {threshold:.3});
       boards.forEach(function(b){ io.observe(b); });
-      setTimeout(function(){ boards.forEach(function(b){ b.classList.add('in'); }); }, 700);
+      setTimeout(function(){ boards.forEach(function(b){ b.classList.add('in'); }); }, 550);
     }
 
     /* run it back — replay only the animated strokes */
