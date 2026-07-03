@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction 9 · Rain or Shine — DiscNW redesign</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<meta name="description" content="Rain or Shine: the conditions almanac. DiscNW plays through Seattle weather — the site reads like the region's most trusted field report.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#161D24;            /* front ink — the charcoal-slate ground */
+    --panel:#1C242D;          /* radar panel — cards on dark */
+    --panel-2:#10161C;        /* board chrome, station chip ground */
+    --paper:#EDF0F1;          /* overcast paper — cool off-white */
+    --card:#F8FAFA;           /* cloud white — cards on paper */
+    --radar:#3BD97F;          /* radar green — signal on dark, never decoration */
+    --radar-deep:#0C6E3E;     /* wet season green — the signal stepped down for light grounds */
+    --radar-deeper:#0A5A33;
+    --sunbreak:#F5AE3D;       /* the warm break — shine moments only */
+    --slate:#46545F;          /* barometer slate — secondary text on light */
+    --dim:#8DA0AC;            /* dim mono labels on dark */
+    --ondark:#CBD6DD;         /* body text on dark */
+    --line:#D8DEE1;           /* hairlines on light */
+    --line-dark:rgba(203,214,221,.16); /* hairlines on dark */
+    --wrap:1160px;
+
+    /* house easing — default 'ease' is banned on this page.
+       snap: micro moves · lux: reveals · front: photo curtains, slow as weather */
+    --ease-snap:cubic-bezier(.4,0,.1,1);
+    --ease-lux:cubic-bezier(.16,1,.3,1);
+    --ease-front:cubic-bezier(.65,.05,0,1);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  [id]{ scroll-margin-top:24px; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Space Grotesk', system-ui, -apple-system, sans-serif;
+    font-size:17px; line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--radar); color:var(--panel-2); }
+  img,svg{ display:block; max-width:100%; }
+  a{ color:var(--radar-deep); text-decoration:underline; text-underline-offset:3px; }
+  a:hover{ color:var(--ink); }
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible{
+    outline:3px solid var(--radar-deep); outline-offset:2px; border-radius:3px;
+  }
+  .on-dark a:focus-visible, .on-dark button:focus-visible{ outline-color:var(--radar); }
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+  }
+
+  /* ---------- shared rhythm: a ruled bulletin, not a brochure ---------- */
+  .sec{ max-width:var(--wrap); margin:0 auto; padding:104px 32px; }
+  .sec + .sec{ border-top:1px solid var(--line); }
+  .mono{ font-family:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .kicker{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--radar-deep);
+    display:flex; align-items:center; gap:10px;
+    margin:0 0 16px;
+  }
+  .kicker::before{
+    content:""; width:8px; height:8px; background:var(--radar-deep); flex:none;
+  }
+  .on-dark .kicker{ color:var(--radar); }
+  .on-dark .kicker::before{ background:var(--radar); }
+  .sec-title{
+    font-weight:700; font-size:clamp(30px, 3.4vw, 42px);
+    line-height:1.06; letter-spacing:-.015em;
+    margin:0 0 16px; text-wrap:balance;
+  }
+  .sec-intro{ max-width:66ch; margin:0 0 44px; color:var(--slate); font-size:17.5px; }
+  .on-dark .sec-title{ color:var(--paper); }
+  .on-dark .sec-intro{ color:var(--ondark); }
+  .note{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-size:12.5px; color:var(--slate); line-height:1.6;
+    margin:18px 2px 0; max-width:92ch;
+  }
+  .on-dark .note{ color:var(--dim); }
+
+  /* ---------- photos: clean, full color, captions below, never on top ---------- */
+  .ph{ display:block; width:100%; object-fit:cover; }
+  .clip{ display:block; overflow:hidden; background:var(--ink); }
+
+  /* ---------- buttons: instrument-panel, square-ish, honest ---------- */
+  .btn{
+    display:inline-block; border:0; cursor:pointer; text-decoration:none;
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15.5px; line-height:1;
+    padding:15px 22px; border-radius:6px;
+    transition:background-color .28s var(--ease-snap), color .28s var(--ease-snap),
+               box-shadow .28s var(--ease-snap);
+  }
+  .btn-primary{ background:var(--radar-deep); color:#fff; }
+  .btn-primary:hover, .btn-primary.demo-hover{ background:var(--radar-deeper); }
+  /* magnetic primaries: JS drives transform, so the curve here must not fight the lerp */
+  .btn-primary.magnet, .mock-register.magnet{ transition:background-color .28s var(--ease-snap), color .28s var(--ease-snap); }
+  .btn-secondary{ background:transparent; color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--ink); }
+  .btn-secondary:hover, .btn-secondary.demo-hover{ background:var(--ink); color:var(--paper); }
+  .btn-quiet{
+    background:none; padding:15px 2px; border-radius:3px;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:13.5px; letter-spacing:.04em;
+    color:var(--radar-deep);
+    text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1.5px;
+  }
+  .btn-quiet:hover, .btn-quiet.demo-hover{ color:var(--ink); text-decoration-thickness:3px; }
+
+  /* ---------- hover roll: duplicate-and-shift labels (fine pointers get it) ---------- */
+  .roll{ position:relative; display:inline-block; overflow:hidden; vertical-align:top; }
+  .roll-a, .roll-b{ display:block; transition:transform .42s var(--ease-snap); }
+  .roll-b{ position:absolute; top:100%; left:0; }
+  .roll:hover .roll-a, .roll:focus-visible .roll-a,
+  .roll:hover .roll-b, .roll:focus-visible .roll-b{ transform:translateY(-100%); }
+
+  /* ---------- THE CONDITIONS BOARD — the signature ----------
+     An airfield-METAR / ferry-departures panel for league fields.
+     Dark chrome, mono data, one green signal per row. The station chip
+     (the formline mark on solid ink) is this page's deeper brand moment. */
+  .board{
+    background:var(--panel);
+    border:1px solid var(--line-dark);
+    border-radius:10px; overflow:hidden;
+    color:var(--ondark);
+  }
+  .board-head{
+    display:flex; flex-wrap:wrap; align-items:center; gap:12px 20px;
+    padding:14px 20px;
+    background:var(--panel-2);
+    border-bottom:1px solid var(--line-dark);
+  }
+  .station{
+    display:flex; align-items:center; gap:10px;
+    padding:7px 12px 7px 9px;
+    background:var(--ink);
+    border:1px solid var(--line-dark);
+    border-radius:6px;
+  }
+  .station img{ width:22px; height:auto; flex:none; }
+  .station .call{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--paper); line-height:1.35; white-space:nowrap;
+  }
+  .station .call small{ display:block; font-size:9.5px; font-weight:500; color:var(--dim); letter-spacing:.14em; }
+  .board-title{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:12.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--paper);
+  }
+  .board-updated{
+    margin-left:auto;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:500; font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--dim); font-variant-numeric:tabular-nums;
+  }
+  .board-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .board-table{ width:100%; min-width:520px; border-collapse:collapse; }
+  .board-table caption{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+  .board-table th{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:500; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--dim); text-align:left;
+    padding:12px 20px 10px;
+    border-bottom:1px solid var(--line-dark);
+  }
+  .board-table th.b-status{ text-align:right; }
+  .board-table td{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:500; font-size:13.5px; letter-spacing:.02em;
+    font-variant-numeric:tabular-nums;
+    padding:13px 20px;
+    border-bottom:1px solid var(--line-dark);
+    white-space:nowrap;
+  }
+  .board-table tr:last-child td{ border-bottom:0; }
+  .board-table .b-field{ color:var(--paper); font-weight:600; }
+  .board-table .b-cond{ color:var(--ondark); }
+  .board-table .b-status{ text-align:right; }
+  .st{ display:inline-flex; align-items:center; gap:9px; font-weight:600; letter-spacing:.06em; }
+  .st::before{ content:""; width:7px; height:7px; border-radius:50%; flex:none; }
+  .st-on{ color:var(--radar); }
+  .st-on::before{ background:var(--radar); }
+  .st-watch{ color:var(--sunbreak); }
+  .st-watch::before{ background:var(--sunbreak); border-radius:1px; }
+  .st-off{ color:var(--dim); }
+  .st-off::before{ background:var(--dim); border-radius:1px; }
+  .board-foot{
+    display:flex; flex-wrap:wrap; gap:6px 28px;
+    padding:12px 20px 14px;
+    background:var(--panel-2);
+    border-top:1px solid var(--line-dark);
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:500; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--dim);
+  }
+  .board-foot b{ color:var(--ondark); font-weight:600; }
+  .board-foot .foot-on b{ color:var(--radar); }
+
+  /* ---------- 1 · masthead: the bulletin opens ---------- */
+  .masthead{ background:var(--ink); color:var(--ondark); }
+  .masthead-in{ max-width:var(--wrap); margin:0 auto; padding:84px 32px 72px; }
+  .mast-series{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--dim); margin:0 0 26px;
+  }
+  .mast-issue{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:500; font-size:13px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--radar); margin:0 0 18px; min-height:1.5em;
+    font-variant-numeric:tabular-nums;
+  }
+  .mast-issue .type-caret::after{
+    content:""; display:inline-block; width:.55em; height:1.05em;
+    background:var(--radar); margin-left:2px; vertical-align:-.18em; opacity:0;
+  }
+  .mast-issue .typing.type-caret::after{ animation:caret 1s steps(2,start) infinite; }
+  @keyframes caret{ 0%,49%{ opacity:1; } 50%,100%{ opacity:0; } }
+  .mast-name{
+    font-weight:700; font-size:clamp(52px, 7.2vw, 96px);
+    line-height:.98; letter-spacing:-.03em; color:var(--paper);
+    margin:0 0 22px;
+  }
+  .mast-thesis{ margin:0 0 26px; font-size:18.5px; line-height:1.6; color:var(--ondark); max-width:62ch; }
+  .mast-nav{
+    display:flex; flex-wrap:wrap; gap:8px 10px; list-style:none;
+    margin:0 0 56px; padding:0;
+  }
+  .mast-nav a{
+    display:block; text-decoration:none;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:500; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--ondark);
+    border:1px solid var(--line-dark); border-radius:999px;
+    padding:6px 13px;
+    transition:color .28s var(--ease-snap), border-color .28s var(--ease-snap), background-color .28s var(--ease-snap);
+  }
+  .mast-nav a:hover{ color:var(--panel-2); background:var(--radar); border-color:var(--radar); }
+  .mast-board{ box-shadow:0 26px 60px -40px rgba(0,0,0,.7); }
+
+  /* the page's one orchestrated entrance — pure CSS keyframes, base = settled state,
+     everything still by 2.1s. Board rows tick in like a departures board updating. */
+  .mline{ display:block; overflow:hidden; padding-bottom:.14em; margin-bottom:-.14em; }
+  .mline-in{ display:block; }
+  @media (prefers-reduced-motion: no-preference){
+    @keyframes mask-rise{ from{ transform:translateY(120%); } }
+    @keyframes fade-rise{ from{ opacity:0; transform:translateY(14px); } }
+    .mast-series{ animation:fade-rise .7s var(--ease-lux) .05s backwards; }
+    .mast-issue{ animation:fade-rise .7s var(--ease-lux) .16s backwards; }
+    .mast-name .mline-in{ animation:mask-rise .9s var(--ease-lux) .24s backwards; }
+    .mast-thesis{ animation:fade-rise .8s var(--ease-lux) .42s backwards; }
+    .mast-nav{ animation:fade-rise .8s var(--ease-lux) .52s backwards; }
+    .mast-board .board-head{ animation:fade-rise .6s var(--ease-lux) .6s backwards; }
+    .mast-board .board-table thead th{ animation:fade-rise .6s var(--ease-lux) .68s backwards; }
+    .mast-board .board-table tbody tr{ animation:fade-rise .55s var(--ease-lux) backwards; animation-delay:calc(.76s + var(--r,0) * 90ms); }
+    .mast-board .board-foot{ animation:fade-rise .6s var(--ease-lux) 1.45s backwards; }
+  }
+
+  /* ---------- full-bleed weather-front bands: photo, then a plate below ---------- */
+  .band{ margin:0; background:var(--ink); }
+  .band .ph{ max-width:1920px; margin:0 auto; height:clamp(340px, 42vw, 620px); }
+  .band-wide .ph{ max-width:2400px; }
+  .band-plate{ background:var(--ink); color:var(--ondark); }
+  .band-plate-in{
+    max-width:var(--wrap); margin:0 auto; padding:18px 32px 26px;
+    display:flex; flex-wrap:wrap; gap:6px 32px; align-items:baseline; justify-content:space-between;
+  }
+  .band-cap{ margin:0; font-size:15px; color:var(--ondark); max-width:72ch; }
+  .band-meta{
+    margin:0; font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:500; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--dim); font-variant-numeric:tabular-nums;
+  }
+
+  /* ---------- 3 · palette ---------- */
+  .swatches{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; list-style:none; }
+  .swatch{ border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--card); }
+  .swatch-chip{ height:104px; position:relative; }
+  .swatch-chip.chip-outline{ box-shadow:inset 0 0 0 1px var(--line); }
+  .swatch-flag{
+    position:absolute; left:12px; bottom:11px;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:9.5px; letter-spacing:.16em; text-transform:uppercase;
+    padding:4px 8px; border-radius:3px;
+  }
+  .swatch-info{ padding:16px 18px 18px; }
+  .swatch-name{ margin:0 0 3px; font-size:16.5px; font-weight:600; color:var(--ink); }
+  .swatch-hex{
+    display:inline-block; margin:0 0 9px;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:500; font-size:12.5px; letter-spacing:.05em; color:var(--slate);
+  }
+  .swatch-use{ margin:0; font-size:14px; color:var(--slate); line-height:1.5; }
+
+  /* ---------- 4 · typography ---------- */
+  .type-cards{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:44px; }
+  .type-card{ border:1px solid var(--line); border-radius:12px; padding:26px 28px; background:var(--card); }
+  .type-card .role{
+    display:block; margin:0 0 14px;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--radar-deep);
+  }
+  .type-card h3{ margin:0 0 6px; font-weight:700; font-size:26px; color:var(--ink); }
+  .type-card h3.mono-face{ font-family:'IBM Plex Mono', ui-monospace, monospace; font-weight:600; font-size:23px; }
+  .type-card p{ margin:0; color:var(--slate); font-size:15px; }
+  .type-card .glyphs{ margin:16px 0 0; font-size:19px; color:var(--ink); word-break:break-word; }
+  .type-card .glyphs.mono-face{ font-family:'IBM Plex Mono', ui-monospace, monospace; }
+  .specimen{
+    margin:0 0 16px; font-weight:700;
+    font-size:clamp(38px, 5.4vw, 74px); line-height:1.02; letter-spacing:-.03em;
+    color:var(--ink); text-wrap:balance;
+  }
+  .specimen em{ font-style:normal; color:var(--radar-deep); }
+  .specimen-mono{
+    margin:0 0 40px; padding:20px 22px;
+    background:var(--panel); border:1px solid var(--line-dark); border-radius:10px;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-size:14px; line-height:1.7; color:var(--ondark); letter-spacing:.02em;
+    overflow-x:auto;
+  }
+  .specimen-mono .k{ color:var(--dim); }
+  .specimen-mono .g{ color:var(--radar); }
+  .specimen-mono .w{ color:var(--sunbreak); }
+  .scale{ border-top:1px solid var(--line); }
+  .scale-row{
+    display:flex; align-items:baseline; justify-content:space-between; gap:24px;
+    padding:18px 2px; border-bottom:1px solid var(--line);
+  }
+  .scale-sample{ margin:0; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .s-display{ font-weight:700; font-size:clamp(32px,4.4vw,56px); line-height:1; letter-spacing:-.03em; }
+  .s-h2{ font-weight:700; font-size:clamp(26px,3vw,36px); line-height:1.1; letter-spacing:-.02em; }
+  .s-h3{ font-weight:600; font-size:22px; line-height:1.25; }
+  .s-body{ font-size:17px; font-weight:400; }
+  .s-mono{ font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:13.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--slate); }
+  .scale-spec{
+    flex-shrink:0; font-size:12px; color:var(--slate);
+    font-family:'IBM Plex Mono', ui-monospace, monospace; letter-spacing:.04em; text-align:right;
+  }
+
+  /* ---------- 5 · signature: the board demonstrated ---------- */
+  .sig-lead{ margin-bottom:36px; }
+  .sig-cells{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:36px; }
+  .sig-cell{ border:1px solid var(--line); border-radius:10px; padding:24px 26px; background:var(--card); }
+  .sig-cell h3{
+    margin:0 0 12px; display:flex; align-items:center; gap:9px;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--radar-deep);
+  }
+  .sig-cell h3 .n{
+    font-size:11px; color:var(--slate); border:1px solid var(--line); border-radius:4px;
+    padding:2px 6px; letter-spacing:.08em;
+  }
+  .sig-cell p{ margin:0; font-size:14.5px; color:var(--slate); line-height:1.55; }
+  .sig-chip-demo{
+    display:inline-flex; align-items:center; gap:10px; margin:2px 0 14px;
+    padding:8px 13px 8px 10px; background:var(--ink); border:1px solid var(--line-dark); border-radius:7px;
+  }
+  .sig-chip-demo img{ width:26px; height:auto; }
+  .sig-chip-demo .call{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--paper); line-height:1.35;
+  }
+  .sig-chip-demo .call small{ display:block; font-size:9.5px; color:var(--dim); letter-spacing:.14em; }
+
+  /* ---------- 6 · homepage mockup ---------- */
+  .browser{
+    border:1px solid var(--line); border-radius:12px; overflow:hidden;
+    box-shadow:0 34px 70px -40px rgba(22,29,36,.5);
+    background:var(--card);
+  }
+  .browser-bar{
+    display:flex; align-items:center; gap:14px;
+    background:#E2E7E9; border-bottom:1px solid var(--line); padding:10px 16px;
+  }
+  .browser-dots{ display:flex; gap:6px; }
+  .browser-dots i{ width:10px; height:10px; border-radius:50%; background:#BCC6CA; display:block; }
+  .browser-url{
+    flex:1; max-width:320px; background:var(--card); border:1px solid var(--line); border-radius:999px;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-size:12.5px; color:var(--slate); padding:5px 16px; text-align:center; letter-spacing:.03em;
+  }
+  .mock-nav{ display:flex; align-items:center; gap:26px; background:var(--ink); padding:15px clamp(16px,3vw,30px); }
+  .mock-logo img{ display:block; width:132px; height:auto; }
+  .mock-links{ display:flex; gap:4px; margin-left:auto; list-style:none; }
+  .mock-links a{ display:block; padding:8px 11px; color:var(--ondark); text-decoration:none; font-size:14.5px; font-weight:500; }
+  .mock-links a:hover{ color:#fff; }
+  .mock-register{
+    background:var(--radar-deep); color:#fff; font-weight:600; font-size:14.5px;
+    padding:11px 20px; border-radius:6px; text-decoration:none; white-space:nowrap;
+    transition:background-color .28s var(--ease-snap);
+  }
+  .mock-register:hover{ background:var(--radar-deeper); }
+  .mock-burger{ display:none; margin-left:auto; }
+  .mock-burger i{ display:block; width:22px; height:2px; background:var(--ondark); margin:5px 0; border-radius:2px; }
+  .mock-strip{
+    display:flex; flex-wrap:wrap; align-items:center; gap:6px 22px;
+    background:var(--panel-2); color:var(--dim); padding:9px clamp(16px,3vw,30px);
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:500; font-size:12px; letter-spacing:.05em; text-transform:uppercase;
+    border-top:1px solid var(--line-dark);
+  }
+  .mock-strip .lbl{ color:var(--radar); font-weight:600; letter-spacing:.14em; }
+  .mock-strip b{ color:var(--ondark); font-weight:500; }
+  .mock-strip .dot{ display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--radar); margin-right:6px; vertical-align:1px; }
+  .mock-strip .rain{ margin-left:auto; color:var(--dim); }
+  .mock-hero{ background:var(--card); padding:clamp(40px,5vw,64px) clamp(16px,3vw,30px); }
+  .mock-hero-grid{ display:grid; grid-template-columns:1.02fr .98fr; gap:clamp(28px,4vw,48px); align-items:center; }
+  .mock-eyebrow{
+    margin:0 0 16px; font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--radar-deep);
+  }
+  .mock-h1{
+    margin:0 0 18px; font-weight:700; font-size:clamp(38px,5.2vw,62px);
+    line-height:1.0; letter-spacing:-.03em; color:var(--ink); text-wrap:balance;
+  }
+  .mock-sub{ margin:0 0 24px; color:var(--slate); font-size:17px; max-width:46ch; }
+  .mock-ctas{ display:flex; flex-wrap:wrap; gap:12px 16px; align-items:center; margin:0 0 24px; }
+  .mock-trust{ list-style:none; display:flex; flex-direction:column; gap:7px; }
+  .mock-trust li{
+    position:relative; padding-left:18px;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-size:12px; color:var(--slate); letter-spacing:.03em;
+  }
+  .mock-trust li::before{ content:"→"; position:absolute; left:0; color:var(--radar-deep); }
+  .mock-figure{ margin:0; background:var(--ink); }
+  .mock-figure .ph{ width:100%; height:clamp(280px,32vw,430px); object-position:50% 28%; }
+  .mock-figure figcaption{
+    display:flex; flex-wrap:wrap; gap:4px 24px; justify-content:space-between;
+    padding:12px clamp(16px,3vw,30px) 14px; background:var(--ink);
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-size:11.5px; color:var(--dim); letter-spacing:.08em; text-transform:uppercase;
+  }
+  .mock-reg{
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 22px;
+    background:var(--panel-2); color:var(--ondark); padding:20px clamp(16px,3vw,30px);
+    font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:13px; letter-spacing:.02em;
+    border-top:1px solid var(--line-dark);
+  }
+  .mock-reg .lbl{ color:var(--radar); font-weight:600; font-size:11px; letter-spacing:.16em; text-transform:uppercase; flex:none; }
+  .mock-reg ul{ list-style:none; display:flex; flex-wrap:wrap; }
+  .mock-reg li{ white-space:nowrap; }
+  .mock-reg li + li::before{ content:"·"; color:var(--dim); padding:0 12px; }
+  .mock-reg .more{ margin-left:auto; color:var(--radar); }
+  .mock-foot{
+    display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px;
+    background:var(--ink); padding:24px clamp(16px,3vw,30px);
+    border-top:1px solid var(--line-dark);
+  }
+  .mock-foot .signoff{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-size:11.5px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; line-height:1.6;
+  }
+  .mock-foot .vision{ margin-left:auto; font-weight:500; font-size:16px; color:var(--paper); letter-spacing:-.01em; }
+  /* the mock board rides a ~480px hero column — let it shrink to fit so STATUS is never clipped */
+  .mock-hero-grid .board-table{ min-width:0; }
+  .mock-hero-grid .board-table th{ padding-left:16px; padding-right:16px; }
+  .mock-hero-grid .board-table td{ padding-left:16px; padding-right:16px; }
+
+  /* ---------- 7 · front doors ---------- */
+  .doors{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .door{ border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--card); display:flex; flex-direction:column; }
+  .door .ph{ height:200px; }
+  .door-body{ padding:22px 24px 26px; display:flex; flex-direction:column; flex:1; align-items:flex-start; }
+  .door-tag{
+    margin:0 0 12px; display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--radar-deep);
+  }
+  .door-tag::before{ content:""; width:7px; height:7px; background:var(--radar-deep); border-radius:50%; }
+  .door h3{ margin:0 0 10px; font-weight:700; font-size:22px; line-height:1.2; color:var(--ink); text-wrap:balance; }
+  .door p{ margin:0 0 22px; font-size:15px; color:var(--slate); flex:1; }
+
+  /* ---------- 8 · dispatches (dark) ---------- */
+  .dark-stripe{ background:var(--ink); color:var(--ondark); }
+  .dark-stripe .sec{ border-top:0; }
+  .story-grid{ display:grid; grid-template-columns:1.12fr .88fr; gap:24px; align-items:start; }
+  .dispatch{ background:var(--card); color:var(--ink); border-radius:12px; overflow:hidden; }
+  .dispatch .ph{ height:290px; object-position:50% 24%; }
+  .dispatch-body{ padding:24px 28px 28px; }
+  .dispatch-meta{
+    display:flex; flex-wrap:wrap; gap:6px 18px; margin:0 0 14px;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:500; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--radar-deep);
+  }
+  .dispatch-meta .cond{ color:var(--slate); }
+  .dispatch h3{ margin:0 0 14px; font-weight:700; font-size:27px; line-height:1.1; letter-spacing:-.02em; color:var(--ink); }
+  .dispatch blockquote{ margin:0 0 16px; padding:2px 0 2px 18px; border-left:3px solid var(--radar-deep); font-size:18px; line-height:1.5; color:var(--ink); }
+  .dispatch .byline{ margin:0; font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:12.5px; color:var(--slate); letter-spacing:.04em; }
+  .almanac{ background:var(--panel); border:1px solid var(--line-dark); border-radius:12px; padding:28px 28px 30px; }
+  .almanac h3{
+    margin:0 0 18px; font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--radar);
+  }
+  .alm-num{ display:inline-block; font-family:'IBM Plex Mono', ui-monospace, monospace; font-weight:500; font-size:clamp(64px,10vw,104px); line-height:1; color:var(--radar); font-variant-numeric:tabular-nums; }
+  .alm-unit{ display:block; margin:8px 0 14px; font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:12.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--dim); }
+  .alm-line{ margin:0 0 24px; font-size:15px; color:var(--ondark); line-height:1.55; max-width:46ch; }
+  .alm-list{ list-style:none; margin:0; padding:0; border-top:1px solid var(--line-dark); }
+  .alm-list li{
+    display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+    padding:12px 0; border-bottom:1px solid var(--line-dark);
+    font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--dim);
+  }
+  .alm-list li:last-child{ border-bottom:0; }
+  .alm-list b{ color:var(--paper); font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .alm-list .g{ color:var(--radar); }
+
+  /* odometer reels — base is the settled digit; the roll lives only under html.anim */
+  .odo{ display:inline-flex; height:1em; overflow:hidden; line-height:1; vertical-align:bottom; }
+  .odo-reel{ display:inline-flex; flex-direction:column; transform:translateY(calc(var(--d) * -1em)); }
+  .odo-reel span{ display:block; height:1em; line-height:1em; text-align:center; }
+
+  /* ---------- 9 · working parts ---------- */
+  .ui-grid{ display:grid; grid-template-columns:.95fr 1.05fr; gap:18px; align-items:start; }
+  .ui-cell{ border:1px solid var(--line); border-radius:12px; padding:26px 28px; background:var(--card); }
+  .ui-cell h3{
+    margin:0 0 20px; font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--radar-deep);
+  }
+  .btn-row{ display:flex; flex-wrap:wrap; gap:12px 14px; align-items:center; margin-bottom:10px; }
+  .btn-note{ width:62px; flex:none; font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--slate); }
+  .ev-card{ border:1px solid var(--line); border-radius:10px; padding:24px; background:var(--paper); }
+  .ev-top{ display:flex; flex-wrap:wrap; gap:8px 14px; align-items:baseline; margin-bottom:14px; }
+  .ev-open{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--panel-2); background:var(--radar); border-radius:4px; padding:5px 10px;
+  }
+  .ev-tags{ font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:12px; color:var(--slate); letter-spacing:.04em; }
+  .ev-card h4{ margin:0 0 12px; font-weight:700; font-size:23px; letter-spacing:-.01em; color:var(--ink); }
+  .ev-meta{ list-style:none; margin:0 0 20px; padding:0; }
+  .ev-meta li{ position:relative; padding:4px 0 4px 18px; font-size:14.5px; color:var(--slate); }
+  .ev-meta li::before{ content:""; position:absolute; left:0; top:12px; width:7px; height:7px; border-radius:50%; background:var(--radar-deep); }
+  .ev-cap{ padding:16px 0 18px; border-top:1px solid var(--line); }
+  .ev-cap-row{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; margin-bottom:10px; }
+  .ev-cap-row b{ font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:13.5px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; }
+  .ev-cap-row span{ font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:11.5px; color:var(--slate); letter-spacing:.04em; }
+  .ev-bar{ height:6px; border-radius:999px; background:#DDE3E4; overflow:hidden; }
+  .ev-bar i{ display:block; height:100%; width:79%; border-radius:999px; background:var(--radar-deep); }
+  .ev-actions{ display:flex; flex-wrap:wrap; gap:12px 16px; align-items:center; margin-top:18px; }
+  .finder{ background:var(--paper); border-radius:10px; padding:24px 26px; }
+  .finder .flegend{ margin:0 0 18px; font-weight:700; font-size:18px; color:var(--ink); letter-spacing:-.01em; }
+  .filter-row{ display:flex; flex-wrap:wrap; gap:16px; align-items:end; }
+  .f-field{ display:flex; flex-direction:column; gap:6px; flex:1; min-width:132px; }
+  .f-field label{ font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--slate); }
+  .f-field select{
+    font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:500; color:var(--ink);
+    border:1.5px solid #A8B4BB; border-radius:8px; background:var(--card); padding:11px 12px;
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.5 L6 6.5 L11 1.5' fill='none' stroke='%230C6E3E' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 12px center; padding-right:34px;
+  }
+  .filter-row .btn{ flex:none; }
+
+  /* ---------- 10 · voice ---------- */
+  .voice-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .voice-cell{ border:1px solid var(--line); border-radius:10px; padding:24px 26px; background:var(--card); }
+  .voice-cell h3{
+    margin:0 0 14px; font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--radar-deep);
+  }
+  .voice-cell .v-hero{ margin:0; font-weight:700; font-size:26px; line-height:1.12; letter-spacing:-.02em; color:var(--ink); }
+  .voice-cell p{ margin:0; font-size:15.5px; color:var(--ink); line-height:1.55; }
+
+  /* ---------- 11 · verdict + footer ---------- */
+  .prop-footer{ background:var(--ink); color:var(--ondark); }
+  .prop-in{ max-width:var(--wrap); margin:0 auto; padding:88px 32px 56px; }
+  .verdicts{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:52px; }
+  .verdict{ border:1px solid var(--line-dark); border-radius:10px; padding:26px 28px; background:var(--panel); }
+  .verdict h2{
+    margin:0 0 12px; display:flex; align-items:center; gap:9px;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:600; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--radar);
+  }
+  .verdict.twice h2{ color:var(--sunbreak); }
+  .verdict p{ margin:0; font-size:15.5px; line-height:1.6; color:var(--ondark); }
+  .prop-nav{
+    display:flex; flex-wrap:wrap; gap:14px 28px; align-items:center; justify-content:space-between;
+    border-top:1px solid var(--line-dark); padding-top:28px;
+  }
+  .prop-nav a{ color:var(--radar); font-weight:600; font-size:15.5px; text-decoration:none; }
+  .prop-nav a.roll{ text-decoration:none; }
+  .prop-nav a:hover{ color:var(--paper); }
+  .prop-nav small{ font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:12px; color:var(--dim); letter-spacing:.06em; text-transform:uppercase; }
+
+  /* ---------- motion: scroll reveals, armed only under html.anim ----------
+     Base styles ARE the settled page — no JS, print, reduced motion all render complete.
+     Each target fires once via IntersectionObserver, then is unobserved. */
+  html.anim [data-wipe] .ph{ clip-path:inset(0 0 0 0); transition:clip-path 1.15s var(--ease-front), transform 1.6s var(--ease-lux); }
+  html.anim [data-wipe]:not(.in) .ph{ clip-path:inset(0 0 100% 0); transform:scale(1.05); }
+  html.anim [data-rise]{ transition:opacity .8s var(--ease-lux), transform .8s var(--ease-lux); transition-delay:calc(var(--i,0) * 80ms); }
+  html.anim [data-rise]:not(.in){ opacity:0; transform:translateY(16px); }
+  html.anim .kicker::before{ transition:transform .5s var(--ease-snap) .1s; transform-origin:center; }
+  html.anim .kicker:not(.in)::before{ transform:scale(0); }
+  /* the board rows tick in like a departures board when the panel arrives */
+  html.anim [data-ticks] tbody tr{ transition:opacity .5s var(--ease-lux), transform .5s var(--ease-lux); transition-delay:calc(var(--r,0) * 80ms); }
+  html.anim [data-ticks]:not(.in) tbody tr{ opacity:0; transform:translateY(10px); }
+  /* the odometer rolls up from zero to its settled digit */
+  html.anim [data-rise] .odo-reel{ transition:transform 1.15s var(--ease-lux); transition-delay:calc(.12s + var(--k,0) * .14s); }
+  html.anim [data-rise]:not(.in) .odo-reel{ transform:translateY(0); }
+
+  /* unconditional settle — JS stamps html.settled by 2.3s so a screenshot or print
+     never catches a half-rendered page, and it is the catch for any failure path */
+  html.settled [data-rise]{ opacity:1 !important; transform:none !important; transition:none !important; }
+  html.settled [data-wipe] .ph{ clip-path:inset(0 0 0 0) !important; transform:none !important; transition:none !important; }
+  html.settled [data-ticks] tbody tr{ opacity:1 !important; transform:none !important; transition:none !important; }
+  html.settled .odo-reel{ transform:translateY(calc(var(--d) * -1em)) !important; transition:none !important; }
+  html.settled .kicker::before{ transform:none !important; transition:none !important; }
+
+  @media print{
+    .masthead, .dark-stripe, .prop-footer, .board, .mock-nav, .mock-strip, .mock-reg, .mock-foot, .band, .band-plate{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    [data-rise]{ opacity:1 !important; transform:none !important; }
+    [data-wipe] .ph{ clip-path:none !important; transform:none !important; }
+    [data-ticks] tbody tr{ opacity:1 !important; transform:none !important; }
+    .odo-reel{ transform:translateY(calc(var(--d) * -1em)) !important; }
+    *{ animation:none !important; }
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 980px){
+    .swatches{ grid-template-columns:repeat(2,1fr); }
+    .type-cards{ grid-template-columns:1fr; }
+    .sig-cells{ grid-template-columns:1fr; }
+    .mock-hero-grid{ grid-template-columns:1fr; }
+    .doors{ grid-template-columns:1fr; }
+    .door{ max-width:460px; }
+    .story-grid{ grid-template-columns:1fr; }
+    .ui-grid{ grid-template-columns:1fr; }
+    .voice-grid{ grid-template-columns:1fr; }
+    .verdicts{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 760px){
+    .mock-links{ display:none; }
+    .mock-register{ margin-left:auto; }
+    .mock-burger{ display:block; margin-left:14px; }
+    .mock-strip .rain{ margin-left:0; width:100%; }
+    .scale-row{ flex-direction:column; gap:4px; }
+    .scale-sample{ white-space:normal; }
+    .scale-spec{ text-align:left; }
+    .mock-foot .vision{ margin-left:0; width:100%; }
+  }
+  @media (max-width: 560px){
+    .sec{ padding:64px 20px; }
+    .masthead-in{ padding:60px 20px 52px; }
+    .band-plate-in{ padding:16px 20px 22px; }
+    .swatches{ grid-template-columns:1fr; }
+    .mast-nav{ margin-bottom:44px; }
+    .prop-in{ padding:64px 20px 44px; }
+    .dispatch-body{ padding:20px 20px 24px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *, *::before, *::after{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 1 · DIRECTION HEADER — the bulletin opens ============
+     Type rises out of masks, then the conditions board ticks in row by row,
+     like a departures board refreshing on the hour. -->
+<header class="masthead">
+  <div class="masthead-in">
+    <p class="mast-series">DiscNW website redesign · Direction 09 of 13</p>
+    <p class="mast-issue"><span class="issue-line type-caret">ISSUED 06:12 PST · DISCNW FIELD BULLETIN · GREATER SEATTLE</span></p>
+    <h1 class="mast-name"><span class="mline"><span class="mline-in">Rain or Shine</span></span></h1>
+    <p class="mast-thesis">DiscNW plays through Seattle weather — so the site should read like the region&rsquo;s most trusted field report. A meteorological bulletin that loves the sport: every field, every condition, every status, set in honest monospace. The proof is in the data. Read straight down the status column and you keep finding the same word &mdash; <strong style="color:var(--radar)">ON</strong>.</p>
+    <ul class="mast-nav" aria-label="On this page">
+      <li><a href="#idea">The idea</a></li>
+      <li><a href="#palette">Palette</a></li>
+      <li><a href="#type">Type</a></li>
+      <li><a href="#board">The board</a></li>
+      <li><a href="#home">Homepage</a></li>
+      <li><a href="#doors">Front doors</a></li>
+      <li><a href="#dispatch">Dispatches</a></li>
+      <li><a href="#parts">Parts</a></li>
+      <li><a href="#voice">Voice</a></li>
+      <li><a href="#verdict">Verdict</a></li>
+    </ul>
+
+    <div class="board mast-board">
+      <div class="board-head">
+        <span class="station">
+          <img src="assets/brand/logo-mark-white.png" alt="DiscNW formline disc mark" width="590" height="616">
+          <span class="call">DiscNW<small>STATION KDNW</small></span>
+        </span>
+        <span class="board-title">League field status</span>
+        <span class="board-updated">UPD 06:12 · AUTO 15 MIN</span>
+      </div>
+      <div class="board-scroll">
+        <table class="board-table">
+          <caption>Current playing conditions and game status by field</caption>
+          <thead>
+            <tr><th scope="col" class="b-field">Field</th><th scope="col" class="b-cond">Conditions</th><th scope="col" class="b-status">Status</th></tr>
+          </thead>
+          <tbody>
+            <tr style="--r:0"><td class="b-field">MAGNUSON NE</td><td class="b-cond">LIGHT RAIN 54&deg;F WND 09SW</td><td class="b-status"><span class="st st-on">ALL GAMES ON</span></td></tr>
+            <tr style="--r:1"><td class="b-field">60 ACRES G7&ndash;11</td><td class="b-cond">OVERCAST 52&deg;F WND 12S</td><td class="b-status"><span class="st st-on">ALL GAMES ON</span></td></tr>
+            <tr style="--r:2"><td class="b-field">MARYMOOR 6&ndash;9</td><td class="b-cond">DRIZZLE 51&deg;F WND 07SW</td><td class="b-status"><span class="st st-on">ALL GAMES ON</span></td></tr>
+            <tr style="--r:3"><td class="b-field">LWR WOODLAND TRF</td><td class="b-cond">MIST 49&deg;F WND CALM</td><td class="b-status"><span class="st st-on">ALL GAMES ON</span></td></tr>
+            <tr style="--r:4"><td class="b-field">FORT DENT 3</td><td class="b-cond">WND 24 GUST 31 W</td><td class="b-status"><span class="st st-watch">WIND HOLD 20M</span></td></tr>
+            <tr style="--r:5"><td class="b-field">GENESEE</td><td class="b-cond">CLEARING 57&deg;F SUNBREAK</td><td class="b-status"><span class="st st-on">ALL GAMES ON</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="board-foot">
+        <span class="foot-on"><b>6 FIELDS</b> &middot; <b>5 ON</b> &middot; 1 WIND HOLD &middot; 0 RAINOUTS</span>
+        <span>RAINOUT LINE <b>(206) 781-5840</b></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- weather-front band: a still that opens like a front moving through -->
+<figure class="band">
+  <div class="clip" data-wipe>
+    <img class="ph" src="assets/sr26-thrower-mountains.jpg" width="1920" height="1080" alt="A player brings the disc in with both hands on open tournament grass at Spring Reign, sideline tents and a dark treeline under a heavy storm sky behind her.">
+  </div>
+  <figcaption class="band-plate">
+    <div class="band-plate-in">
+      <p class="band-cap">Storm light over the Skagit Valley. Six hundred kids played the whole weekend; the weather never got a vote.</p>
+      <p class="band-meta">SPRING REIGN 2026 · BURLINGTON WA · 52&deg;F · WND 14S · LGT RAIN</p>
+    </div>
+  </figcaption>
+</figure>
+
+<main>
+
+  <!-- ============ 2 · THE IDEA ============ -->
+  <section class="sec" id="idea" aria-labelledby="idea-title">
+    <p class="kicker">02 · The idea</p>
+    <h2 class="sec-title" id="idea-title">The conditions almanac</h2>
+    <p class="idea-copy" style="max-width:68ch; font-size:20px; line-height:1.65; color:var(--ink);">Most league sites treat Seattle weather like an apology. This one treats it like a credential. DiscNW has run games through drizzle since 1995, and the honest local truth is undramatic: it&rsquo;s about 37 inches of rain a year &mdash; less than New York &mdash; spread thin across roughly 150 grey days, and it&rsquo;s the <em style="font-style:normal;color:var(--radar-deep);font-weight:600">wind</em>, not the rain, that ever moves a game. Rain or Shine builds the whole interface as a field report: a sturdy grotesk for the headlines, real monospace carrying every temperature, timestamp, and condition string, and a live-feeling conditions board at the center. The payoff is quiet and it&rsquo;s the entire argument &mdash; when you read the data honestly, it proves the devotion. Almost every status says ON.</p>
+    <p class="note">This is data as a love letter. The almanac isn&rsquo;t here to scare a parent off the field &mdash; it&rsquo;s here to prove we&rsquo;re already out there, and to make &ldquo;we play rain or shine&rdquo; something you can check for yourself at 6 a.m.</p>
+  </section>
+
+  <!-- ============ 3 · PALETTE ============ -->
+  <section class="sec" id="palette" aria-labelledby="palette-title">
+    <p class="kicker">03 · Palette</p>
+    <h2 class="sec-title" id="palette-title">Pulled from radar and overcast</h2>
+    <p class="sec-intro">Two grounds do the everyday work &mdash; charcoal-slate ink and a cool overcast paper. Green is used like radar: a signal, never a decoration, bright on dark and stepped down for light. One warm break color is reserved for the rare exception. Photographs keep their own color; the palette frames them and never sits on top.</p>
+    <ul class="swatches">
+      <li class="swatch" data-rise style="--i:0">
+        <div class="swatch-chip" style="background:#161D24"><span class="swatch-flag" style="background:var(--panel-2);color:var(--dim)">Ground</span></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Front Ink</h3>
+          <span class="swatch-hex">#161D24</span>
+          <p class="swatch-use">The charcoal-slate of a radar screen at rest. Boards, dark sections, and headline ink.</p>
+        </div>
+      </li>
+      <li class="swatch" data-rise style="--i:1">
+        <div class="swatch-chip chip-outline" style="background:#EDF0F1"><span class="swatch-flag" style="background:#fff;color:var(--slate);box-shadow:inset 0 0 0 1px var(--line)">Paper</span></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Overcast Paper</h3>
+          <span class="swatch-hex">#EDF0F1</span>
+          <p class="swatch-use">The cool grey-white of a low sky. The page ground &mdash; never a pure white.</p>
+        </div>
+      </li>
+      <li class="swatch" data-rise style="--i:2">
+        <div class="swatch-chip" style="background:#3BD97F"><span class="swatch-flag" style="background:rgba(16,22,28,.82);color:#fff">Signal</span></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Radar Green</h3>
+          <span class="swatch-hex">#3BD97F</span>
+          <p class="swatch-use">Used like radar &mdash; live status, on dark only. The word ON, the pulse, the return.</p>
+        </div>
+      </li>
+      <li class="swatch" data-rise style="--i:3">
+        <div class="swatch-chip" style="background:#0C6E3E"><span class="swatch-flag" style="background:rgba(255,255,255,.14);color:#fff">Action</span></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Wet-Season Green</h3>
+          <span class="swatch-hex">#0C6E3E</span>
+          <p class="swatch-use">The signal stepped down for light grounds &mdash; links, kickers, primary buttons.</p>
+        </div>
+      </li>
+      <li class="swatch" data-rise style="--i:4">
+        <div class="swatch-chip" style="background:#F5AE3D"><span class="swatch-flag" style="background:rgba(16,22,28,.78);color:#fff">Exception</span></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Sunbreak</h3>
+          <span class="swatch-hex">#F5AE3D</span>
+          <p class="swatch-use">The warm break in the overcast. Reserved for the rare exception &mdash; a wind hold, a delay.</p>
+        </div>
+      </li>
+      <li class="swatch" data-rise style="--i:5">
+        <div class="swatch-chip" style="background:#46545F"><span class="swatch-flag" style="background:rgba(255,255,255,.14);color:#fff">Reading</span></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Barometer Slate</h3>
+          <span class="swatch-hex">#46545F</span>
+          <p class="swatch-use">Secondary text and metadata on light &mdash; the quiet reading on the dial.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============ 4 · TYPOGRAPHY ============ -->
+  <section class="sec" id="type" aria-labelledby="type-title">
+    <p class="kicker">04 · Typography</p>
+    <h2 class="sec-title" id="type-title">The monospace is the personality</h2>
+    <p class="sec-intro">A sturdy grotesk carries the headlines with instrument-panel confidence. Then a real monospace takes over every number the site knows &mdash; temperatures, timestamps, capacities, condition strings &mdash; so the data reads like a live feed, not a caption. Both load from Google Fonts and hold up soaked.</p>
+
+    <div class="type-cards">
+      <div class="type-card" data-rise style="--i:0">
+        <span class="role">Display &amp; headings</span>
+        <h3>Space Grotesk</h3>
+        <p>A sturdy grotesk with just enough character to feel engineered, not corporate. Run at 700 with tight tracking for headlines; 500 for large numerals.</p>
+        <p class="glyphs" aria-hidden="true">AaGgRr 0123456789 &mdash; huck, hold, on</p>
+      </div>
+      <div class="type-card" data-rise style="--i:1">
+        <span class="role">Data · timestamps · UI</span>
+        <h3 class="mono-face">IBM Plex Mono</h3>
+        <p>The voice of the instrument. Every condition string, field name, temperature, and time is set here, tabular and exact. It is the sound the brand makes.</p>
+        <p class="glyphs mono-face" aria-hidden="true">54&deg;F WND 09SW · 06:12 · ALL GAMES ON</p>
+      </div>
+    </div>
+
+    <p class="specimen">We play <em>rain</em> or shine.</p>
+    <div class="specimen-mono" aria-label="Example METAR-style condition string, annotated">
+      <div><span class="k">METAR</span> KDNW 141412Z <span class="g">AUTO</span> 22009KT 6SM -RA OVC012 <span class="g">12/11</span> Q1011</div>
+      <div><span class="k">DECODED</span> Magnuson NE &middot; light rain &middot; 54&deg;F &middot; wind 9 from SW &middot; overcast 1,200ft</div>
+      <div><span class="k">STATUS &nbsp;</span> <span class="g">ALL GAMES ON</span> &middot; next update 06:27 &middot; <span class="w">wind hold threshold 25KT</span></div>
+    </div>
+
+    <div class="scale">
+      <div class="scale-row">
+        <p class="scale-sample s-display">Rain or shine</p>
+        <span class="scale-spec">Display · Space Grotesk 700 · 52&ndash;96px</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-h2">Three front doors</p>
+        <span class="scale-spec">H2 · Space Grotesk 700 · 30&ndash;42px</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-h3">Summer Mixed Hat League</p>
+        <span class="scale-spec">H3 · Space Grotesk 600 · 22px</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-body">Bring cleats and a rain shell &mdash; the grass will be wet, and that&rsquo;s the point.</p>
+        <span class="scale-spec">Body · Space Grotesk 400 · 17px</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-mono">Magnuson NE &middot; 54&deg;F &middot; all games on</p>
+        <span class="scale-spec">Data · IBM Plex Mono 500 · 13.5px</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5 · SIGNATURE ELEMENT ============ -->
+  <section class="sec" id="board" aria-labelledby="board-title">
+    <p class="kicker">05 · Signature element</p>
+    <h2 class="sec-title" id="board-title">The conditions board</h2>
+    <p class="sec-intro sig-lead">One device carries the whole direction: an airfield-METAR / ferry-terminal departures panel for league fields, in three columns &mdash; FIELD, CONDITIONS, STATUS. It reads live, it tells the truth, and it delivers the joke by simple repetition. Here is a Saturday in April, every site reporting at once.</p>
+
+    <div class="board" data-ticks data-rise style="--i:0">
+      <div class="board-head">
+        <span class="station">
+          <img src="assets/brand/logo-mark-white.png" alt="DiscNW formline disc mark" width="590" height="616">
+          <span class="call">DiscNW<small>STATION KDNW</small></span>
+        </span>
+        <span class="board-title">Saturday league &middot; all sites</span>
+        <span class="board-updated">SAT APR 11 · 08:45</span>
+      </div>
+      <div class="board-scroll">
+        <table class="board-table">
+          <caption>Saturday league field status across all sites</caption>
+          <thead>
+            <tr><th scope="col" class="b-field">Field</th><th scope="col" class="b-cond">Conditions</th><th scope="col" class="b-status">Status</th></tr>
+          </thead>
+          <tbody>
+            <tr style="--r:0"><td class="b-field">MAGNUSON NE</td><td class="b-cond">RAIN 50&deg;F WND 08SW</td><td class="b-status"><span class="st st-on">GAMES ON</span></td></tr>
+            <tr style="--r:1"><td class="b-field">MAGNUSON SW</td><td class="b-cond">RAIN 50&deg;F WND 08SW</td><td class="b-status"><span class="st st-on">GAMES ON</span></td></tr>
+            <tr style="--r:2"><td class="b-field">60 ACRES G1&ndash;6</td><td class="b-cond">OVERCAST 52&deg;F</td><td class="b-status"><span class="st st-on">GAMES ON</span></td></tr>
+            <tr style="--r:3"><td class="b-field">60 ACRES G7&ndash;11</td><td class="b-cond">DRIZZLE 51&deg;F</td><td class="b-status"><span class="st st-on">GAMES ON</span></td></tr>
+            <tr style="--r:4"><td class="b-field">MARYMOOR 6&ndash;9</td><td class="b-cond">MIST 49&deg;F WND CALM</td><td class="b-status"><span class="st st-on">GAMES ON</span></td></tr>
+            <tr style="--r:5"><td class="b-field">FORT DENT 1&ndash;4</td><td class="b-cond">RAIN 53&deg;F WND 10S</td><td class="b-status"><span class="st st-on">GAMES ON</span></td></tr>
+            <tr style="--r:6"><td class="b-field">GENESEE UPPER</td><td class="b-cond">SHOWERS 52&deg;F</td><td class="b-status"><span class="st st-on">GAMES ON</span></td></tr>
+            <tr style="--r:7"><td class="b-field">LWR WOODLAND TRF</td><td class="b-cond">RAIN 50&deg;F (TURF)</td><td class="b-status"><span class="st st-on">GAMES ON</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="board-foot">
+        <span class="foot-on"><b>8 FIELDS</b> &middot; <b>8 ON</b> &middot; 0 HOLDS &middot; 0 RAINOUTS</span>
+        <span>IT&rsquo;S RAINING. <b>WE&rsquo;RE PLAYING.</b></span>
+      </div>
+    </div>
+
+    <div class="sig-cells">
+      <div class="sig-cell" data-rise style="--i:0">
+        <h3><span class="n">01</span> The row</h3>
+        <p>FIELD, CONDITIONS, STATUS &mdash; a departures-board line for every league site. Rows tick in one after another on arrival, mono digits rolling into place like an odometer, then hold still.</p>
+      </div>
+      <div class="sig-cell" data-rise style="--i:1">
+        <h3><span class="n">02</span> The signal</h3>
+        <p>Green means go, and it is the only green on a dark board. A wind hold turns Sunbreak amber; a true rainout would go grey. You will almost never see either &mdash; that is the whole point.</p>
+      </div>
+      <div class="sig-cell" data-rise style="--i:2">
+        <h3><span class="n">03</span> The station ID</h3>
+        <span class="sig-chip-demo">
+          <img src="assets/brand/logo-mark-white.png" alt="DiscNW formline disc mark on a solid ink chip" width="590" height="616">
+          <span class="call">DiscNW<small>STATION KDNW</small></span>
+        </span>
+        <p>The formline mark signs every board like a broadcast station ID &mdash; small, consistent, on solid ink with clearspace. Never stretched, recolored, or set over a photo.</p>
+      </div>
+    </div>
+    <p class="note">Motion rule: the board updates like a real departures panel &mdash; a staggered tick per row on the house lux curve, digits rolling odometer-style, then dead still. No looping pulse, no fake refresh spinner. The data is calm because the sport is reliable.</p>
+  </section>
+
+  <!-- ============ 6 · HOMEPAGE MOCKUP ============ -->
+  <section class="sec" id="home" aria-labelledby="home-title">
+    <p class="kicker">06 · Homepage</p>
+    <h2 class="sec-title" id="home-title">discnw.org, redesigned</h2>
+    <p class="sec-intro">The top of the new homepage. A site-wide status ribbon rides under the nav; the hero pairs one clear headline with the live conditions board, because the first question a Seattle player has is always the same &mdash; <em style="font-style:normal;color:var(--radar-deep);font-weight:600">are we on?</em> The answer is right there, and it&rsquo;s almost always yes.</p>
+
+    <div class="browser">
+      <div class="browser-bar">
+        <span class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="browser-url">discnw.org</span>
+      </div>
+
+      <div role="img" aria-label="Mockup of the redesigned DiscNW homepage: a dark charcoal navigation bar with the white DiscNW logo lockup, a monospace field-status ribbon reading fields open, a headline 'We play rain or shine.' beside a live conditions board where every status reads games on, a full-color photo of players celebrating a catch, a registering-now strip, and a signing-off footer with the formline station chip.">
+        <nav class="mock-nav" aria-hidden="true">
+          <span class="mock-logo"><img src="assets/brand/logo-full-white.png" alt="" width="1446" height="616"></span>
+          <ul class="mock-links">
+            <li><a href="#home"><span class="roll"><span class="roll-a">Play</span><span class="roll-b">Play</span></span></a></li>
+            <li><a href="#home"><span class="roll"><span class="roll-a">Youth</span><span class="roll-b">Youth</span></span></a></li>
+            <li><a href="#home"><span class="roll"><span class="roll-a">Coaching</span><span class="roll-b">Coaching</span></span></a></li>
+            <li><a href="#home"><span class="roll"><span class="roll-a">Events</span><span class="roll-b">Events</span></span></a></li>
+            <li><a href="#home"><span class="roll"><span class="roll-a">About</span><span class="roll-b">About</span></span></a></li>
+          </ul>
+          <a class="mock-register" href="#home">Register</a>
+          <span class="mock-burger" aria-hidden="true"><i></i><i></i><i></i></span>
+        </nav>
+
+        <div class="mock-strip" aria-hidden="true">
+          <span class="lbl">Fields now</span>
+          <span><span class="dot"></span>Magnuson <b>ON</b></span>
+          <span><span class="dot"></span>60 Acres <b>ON</b></span>
+          <span><span class="dot"></span>Marymoor <b>ON</b></span>
+          <span class="rain">Rainout line (206) 781-5840 · Sunset 21:02</span>
+        </div>
+
+        <div class="mock-hero">
+          <div class="mock-hero-grid">
+            <div>
+              <p class="mock-eyebrow">Ultimate across the Puget Sound region</p>
+              <h2 class="mock-h1">We play rain or shine.</h2>
+              <p class="mock-sub">Leagues, camps, and tournaments for 10,000+ players a year &mdash; on wet grass, under grey skies, in the long light of June. Check the board, grab a shell, and come find your team.</p>
+              <div class="mock-ctas">
+                <a class="btn btn-primary" href="#home">Find your league</a>
+                <a class="btn btn-quiet" href="#home">New here? Start with the guide</a>
+              </div>
+              <ul class="mock-trust">
+                <li>Self-officiated &mdash; players make their own calls</li>
+                <li>Sliding-scale fees from $33, no questions asked</li>
+              </ul>
+            </div>
+
+            <div class="board" data-ticks data-rise style="--i:0" aria-hidden="true">
+              <div class="board-head">
+                <span class="station">
+                  <img src="assets/brand/logo-mark-white.png" alt="" width="590" height="616">
+                  <span class="call">DiscNW<small>KDNW</small></span>
+                </span>
+                <span class="board-title">Your fields</span>
+                <span class="board-updated">06:12</span>
+              </div>
+              <div class="board-scroll">
+                <table class="board-table">
+                  <caption>Live field status for your leagues</caption>
+                  <thead>
+                    <tr><th scope="col" class="b-field">Field</th><th scope="col" class="b-cond">Cond</th><th scope="col" class="b-status">Status</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr style="--r:0"><td class="b-field">MAGNUSON</td><td class="b-cond">LGT RAIN 54&deg;</td><td class="b-status"><span class="st st-on">ON</span></td></tr>
+                    <tr style="--r:1"><td class="b-field">60 ACRES</td><td class="b-cond">OVERCAST 52&deg;</td><td class="b-status"><span class="st st-on">ON</span></td></tr>
+                    <tr style="--r:2"><td class="b-field">MARYMOOR</td><td class="b-cond">DRIZZLE 51&deg;</td><td class="b-status"><span class="st st-on">ON</span></td></tr>
+                    <tr style="--r:3"><td class="b-field">FORT DENT</td><td class="b-cond">WND 24 G31</td><td class="b-status"><span class="st st-watch">HOLD</span></td></tr>
+                    <tr style="--r:4"><td class="b-field">GENESEE</td><td class="b-cond">CLEARING 57&deg;</td><td class="b-status"><span class="st st-on">ON</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="board-foot">
+                <span class="foot-on"><b>5 ON</b> &middot; 1 HOLD</span>
+                <span>WIND, NOT RAIN</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <figure class="mock-figure">
+          <div class="clip" data-wipe>
+            <img class="ph" src="assets/sr26-catch-celebration.jpg" width="1920" height="1080" alt="Players erupting in celebration around a teammate who has just come down with an overhead catch on wet tournament grass.">
+          </div>
+          <figcaption>
+            <span>Spring Reign 2026 &middot; the point after</span>
+            <span>Full color &middot; no treatment</span>
+          </figcaption>
+        </figure>
+
+        <div class="mock-reg" aria-hidden="true">
+          <span class="lbl">Registering now</span>
+          <ul>
+            <li>Summer Mixed Hat League</li>
+            <li>Summer Wonder League</li>
+            <li>Summer Youth Ultimate Camps</li>
+            <li>Sea Plastic &mdash; Ocean Shores</li>
+          </ul>
+          <span class="more">See all programs &rarr;</span>
+        </div>
+
+        <div class="mock-foot" aria-hidden="true">
+          <span class="station">
+            <img src="assets/brand/logo-mark-white.png" alt="" width="590" height="616">
+            <span class="call">DiscNW<small>STATION KDNW</small></span>
+          </span>
+          <span class="signoff">FIELD BULLETIN &middot; SIGNING OFF 21:02<br>SEATTLE 501(C)(3) &middot; FOUNDED 1995</span>
+          <span class="vision">An Ultimate community without barriers.</span>
+        </div>
+      </div>
+    </div>
+    <p class="note">Component note: the status ribbon and the board are the same live data at two scales &mdash; a glance under the nav, the full read in the hero. The lockup in the nav is the real white asset, undistorted; the formline mark signs the board and the footer as a station ID. The photograph runs clean, full color, captioned on its own plate. Nav labels roll on hover; Register leans up to six pixels toward the cursor.</p>
+  </section>
+
+  <!-- ============ 7 · FRONT DOORS ============ -->
+  <section class="sec" id="doors" aria-labelledby="doors-title">
+    <p class="kicker">07 · Front doors</p>
+    <h2 class="sec-title" id="doors-title">Three front doors</h2>
+    <p class="sec-intro">Players, coaches, parents &mdash; each gets a door in their own language, a few seconds after the page loads. Photography above, plain words below; the two never fight, and neither pretends the weather is different than it is.</p>
+
+    <div class="doors">
+      <article class="door" data-rise style="--i:0">
+        <img class="ph" src="assets/sr26-sprint-race.jpg" width="1920" height="1080" style="object-position:50% 38%" alt="Two players at a flat-out sprint down the field, tournament canopy tents and a grey sky behind them.">
+        <div class="door-body">
+          <p class="door-tag">Players</p>
+          <h3>Your next team is one signup away.</h3>
+          <p>Hat league, team league, pickup, or a beach weekend at Sea Plastic &mdash; year-round, rec to competitive. Tell us the season and how you like to play; the board tells you if you&rsquo;re on.</p>
+          <a class="btn btn-primary" href="#doors">See what&rsquo;s registering</a>
+        </div>
+      </article>
+
+      <article class="door" data-rise style="--i:1">
+        <img class="ph" src="assets/sr26-spirit-huddle.jpg" width="1920" height="1080" style="object-position:50% 30%" alt="High school players packed shoulder to shoulder in a tight post-game huddle, a few fists raised.">
+        <div class="door-body">
+          <p class="door-tag">Coaches &amp; volunteers</p>
+          <h3>You don&rsquo;t have to be elite. You have to show up.</h3>
+          <p>The DiscNW Coaching Collective backs you with trainings, practice plans, and a bench of coaches to lean on &mdash; from your first background check to the season&rsquo;s last spirit circle, rain and all.</p>
+          <a class="btn btn-secondary" href="#doors">Start the coaching checklist</a>
+        </div>
+      </article>
+
+      <article class="door" data-rise style="--i:2">
+        <img class="ph" src="assets/sr26-sideline-friends.jpg" width="1920" height="1080" style="object-position:50% 40%" alt="Two young players side by side on the sideline, one holding a disc, the field soft behind them.">
+        <div class="door-body">
+          <p class="door-tag">Parents &amp; families</p>
+          <h3>New to ultimate? Most of our parents were.</h3>
+          <p>Learn the game in five minutes, get the honest gear list for a wet field, and hear the real answer to &ldquo;where are the referees?&rdquo; &mdash; there aren&rsquo;t any, and it&rsquo;s the best thing about this sport.</p>
+          <a class="btn btn-secondary" href="#doors">Read the field guide</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- chapter turn: one clean still carries the page from light into dark, slow as a front -->
+  <figure class="band">
+  <div class="clip" data-wipe>
+    <img class="ph" src="assets/sr26-open-field-chase.jpg" width="1920" height="1080" style="object-position:50% 60%" alt="A lone player chasing a disc across a wide open field of wet grass under a flat overcast sky, the far treeline low on the horizon.">
+  </div>
+  <figcaption class="band-plate">
+    <div class="band-plate-in">
+      <p class="band-cap">Open grass, low sky, nobody going home. This is what &ldquo;rain or shine&rdquo; actually looks like &mdash; and it looks like most Saturdays.</p>
+      <p class="band-meta">SPRING REIGN 2026 · SKAGIT VALLEY · OVC 49&deg;F · WND CALM</p>
+    </div>
+  </figcaption>
+</figure>
+
+<!-- ============ 8 · STORYTELLING / DISPATCHES (dark) ============ -->
+<section class="dark-stripe on-dark" id="dispatch" aria-labelledby="dispatch-title">
+  <div class="sec">
+    <p class="kicker">08 · Dispatches</p>
+    <h2 class="sec-title" id="dispatch-title">Field dispatches &amp; the almanac</h2>
+    <p class="sec-intro">The story unit is a field dispatch &mdash; one photo, a mono conditions header, one true voice. Beside it, the almanac: the numbers that quietly prove the whole thesis. Data as a love letter, tagged by field and weather so the archive becomes a map of where and when this community plays.</p>
+
+    <div class="story-grid">
+      <article class="dispatch" data-rise style="--i:0">
+        <img class="ph" src="assets/ycc-tryouts-2015-4.jpg" width="2333" height="2475" alt="A youth player snaps off a forehand past a defender at tryouts, the white disc frozen in the air between them.">
+        <div class="dispatch-body">
+          <p class="dispatch-meta">
+            <span>Dispatch &middot; Spring Reign 2026</span>
+            <span class="cond">Burlington &middot; 52&deg;F &middot; light rain</span>
+          </p>
+          <h3>Arms up, rain down</h3>
+          <blockquote>&ldquo;Six hundred kids played through showers all weekend, and not one asked me when it would stop. At the last huddle every arm went up before I said a word. That&rsquo;s the part I can&rsquo;t coach &mdash; they learn it from each other.&rdquo;</blockquote>
+          <p class="byline">&mdash; DANA R. &middot; SECOND-YEAR COACH &middot; DISCNW COACHING COLLECTIVE</p>
+        </div>
+      </article>
+
+      <div class="almanac" data-rise style="--i:1">
+        <h3>Seattle ultimate almanac</h3>
+        <p class="alm-marquee">
+          <span class="alm-num" data-rise style="--i:0">
+            <span class="odo" aria-hidden="true">
+              <span class="odo-reel" style="--k:0;--d:3"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></span><span class="odo-reel" style="--k:1;--d:7"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></span>
+            </span>
+            <span class="sr-only">37</span>
+          </span>
+          <span class="alm-unit">inches of rain a year</span>
+        </p>
+        <p class="alm-line">Less than New York &mdash; spread thin across roughly 150 grey days. Thin rain doesn&rsquo;t stop a game; it just tells you what to wear.</p>
+        <ul class="alm-list">
+          <li><span>Days with measurable rain</span><b>~150 / YR</b></li>
+          <li><span>June sunset &mdash; long light</span><b class="g">21:00+</b></li>
+          <li><span>December sunset</span><b>16:20</b></li>
+          <li><span>Playing since Potlatch</span><b>1995</b></li>
+          <li><span>What actually holds a game</span><b class="g">WIND</b></li>
+          <li><span>Games canceled for drizzle</span><b class="g">~NONE</b></li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">Component note: dispatches are 300&ndash;500 words with one photo, submitted through a community story form &mdash; a sustainable pipeline, not a staff burden. Every almanac figure here is a real regional number, warm-framed. The odometer rolls once on arrival, then holds; reduced motion and print show it already landed on 37.</p>
+  </div>
+</section>
+
+  <!-- ============ 9 · WORKING PARTS ============ -->
+  <section class="sec" id="parts" aria-labelledby="parts-title">
+    <p class="kicker">09 · Working parts</p>
+    <h2 class="sec-title" id="parts-title">The working parts</h2>
+    <p class="sec-intro">Registration is the site&rsquo;s day job. These pieces keep it fast and honest &mdash; green means &ldquo;this does something,&rdquo; capacity reads as a plain bar, and every number wears monospace so it never lies about precision.</p>
+
+    <div class="ui-grid">
+      <div class="ui-cell">
+        <h3>Buttons</h3>
+        <div class="btn-row">
+          <span class="btn-note">Primary</span>
+          <button type="button" class="btn btn-primary">Register for summer league</button>
+          <button type="button" class="btn btn-primary demo-hover">Register for summer league</button>
+        </div>
+        <div class="btn-row">
+          <span class="btn-note">Second</span>
+          <button type="button" class="btn btn-secondary">See the schedule</button>
+          <button type="button" class="btn btn-secondary demo-hover">See the schedule</button>
+        </div>
+        <div class="btn-row">
+          <span class="btn-note">Quiet</span>
+          <button type="button" class="btn btn-quiet">View league rules</button>
+          <button type="button" class="btn btn-quiet demo-hover">View league rules</button>
+        </div>
+        <p class="note">Rows show rest / hover. Focus draws a 3px Wet-Season ring (Radar on dark). The primary leans up to six pixels toward the cursor on fine pointers only &mdash; touch and reduced motion get the plain button.</p>
+      </div>
+
+      <div class="ui-cell">
+        <h3>Event card</h3>
+        <article class="ev-card">
+          <div class="ev-top">
+            <span class="ev-open">Registering now</span>
+            <span class="ev-tags">#adult · #hat · #mixed</span>
+          </div>
+          <h4>Summer Mixed Hat League</h4>
+          <ul class="ev-meta">
+            <li>Mondays · Jun 1 – Aug 10 · Magnuson Park, Seattle</li>
+            <li>Individual signup — teams drawn from a hat</li>
+            <li>Sliding-scale fees from $33, no questions asked</li>
+          </ul>
+          <div class="ev-cap">
+            <div class="ev-cap-row">
+              <b>142 of 180 spots filled</b>
+              <span>closes May 30 · waitlist after</span>
+            </div>
+            <div class="ev-bar" role="img" aria-label="Capacity: 142 of 180 spots filled"><i></i></div>
+          </div>
+          <div class="ev-actions">
+            <button type="button" class="btn btn-primary">Register</button>
+            <button type="button" class="btn btn-quiet">League details</button>
+          </div>
+        </article>
+      </div>
+
+      <div class="ui-cell" style="grid-column:1/-1">
+        <h3>League finder</h3>
+        <form class="finder" action="#" onsubmit="return false">
+          <p class="flegend">Find your league</p>
+          <div class="filter-row">
+            <div class="f-field">
+              <label for="f-season">Season</label>
+              <select id="f-season" name="season">
+                <option>Summer — registering now</option><option>Fall</option><option>Winter</option><option>Spring</option>
+              </select>
+            </div>
+            <div class="f-field">
+              <label for="f-age">Who&rsquo;s playing</label>
+              <select id="f-age" name="age">
+                <option>Adults</option><option>High school</option><option>Middle school</option><option>Youth (ages 7–18)</option>
+              </select>
+            </div>
+            <div class="f-field">
+              <label for="f-div">Division</label>
+              <select id="f-div" name="division">
+                <option>Mixed</option><option>Women&rsquo;s</option><option>Open</option><option>Everyone</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-secondary">Show leagues</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10 · VOICE & TONE ============ -->
+  <section class="sec" id="voice" aria-labelledby="voice-title">
+    <p class="kicker">10 · Voice &amp; tone</p>
+    <h2 class="sec-title" id="voice-title">How Rain or Shine sounds</h2>
+    <p class="sec-intro">Calm, factual, quietly devoted &mdash; a meteorologist who happens to love the sport. It states the weather plainly, then tells you the game is on anyway, because it almost always is.</p>
+
+    <div class="voice-grid">
+      <div class="voice-cell" data-rise style="--i:0">
+        <h3>Hero headline</h3>
+        <p class="v-hero">We play rain or shine.</p>
+      </div>
+      <div class="voice-cell" data-rise style="--i:1">
+        <h3>Registration confirmation</h3>
+        <p>You&rsquo;re on the roster for Summer Mixed Hat League. First pull is Monday, June 1 at Magnuson &mdash; 5:55 p.m., rain likely, games on. Your schedule lives under your name, top right.</p>
+      </div>
+      <div class="voice-cell" data-rise style="--i:2">
+        <h3>To a nervous first-time parent</h3>
+        <p>The forecast says rain. So does most of the season, and we play through it &mdash; it&rsquo;s drizzle, not lightning. Send cleats, a warm layer, and a thermos; the sideline will save you a chair.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ 11 · VERDICT + FOOTER ============ -->
+<footer class="prop-footer on-dark" id="verdict">
+  <div class="prop-in">
+    <div class="verdicts">
+      <div class="verdict choose">
+        <h2>Choose this direction if&hellip;</h2>
+        <p>You want a brand no other league could wear &mdash; Seattle weather turned from an excuse into a credential, a live conditions board that answers the only question players ask at dawn, and data warm enough to reassure a parent. It could only belong to ultimate in the Puget Sound rain.</p>
+      </div>
+      <div class="verdict twice">
+        <h2>Think twice if&hellip;</h2>
+        <p>Your front door needs sun-and-smiles reassurance first. A monospace bulletin leads with facts and instruments, and its charm is dry &mdash; it can read cool to a brand-new family for a beat before the devotion in the data lands.</p>
+      </div>
+    </div>
+    <nav class="prop-nav" aria-label="Direction navigation">
+      <a class="roll" href="index.html"><span class="roll-a">&larr; All directions</span><span class="roll-b" aria-hidden="true">&larr; All directions</span></a>
+      <small>Direction 09 of 13 · Rain or Shine · prepared for DiscNW</small>
+      <a class="roll" href="10-route-map.html"><span class="roll-a">Next direction &rarr;</span><span class="roll-b" aria-hidden="true">Next direction &rarr;</span></a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+/* Meteorological precision — progressive enhancement only.
+   Base styles are the settled page: no JS, print, screenshots, and reduced
+   motion all get the complete bulletin with zero motion. */
+(function(){
+  'use strict';
+  var root=document.documentElement;
+  var mq=window.matchMedia;
+  var allow=mq&&mq('(prefers-reduced-motion: no-preference)').matches;
+
+  /* Issue line types in like a live feed. The full string is already in the HTML,
+     so no-JS, print, and reduced motion all show it complete and still. */
+  try{
+    var line=document.querySelector('.mast-issue .issue-line');
+    if(line&&allow){
+      var full=line.textContent,i=0;
+      line.textContent='';
+      line.classList.add('typing');
+      var done=function(){ line.textContent=full; line.classList.remove('typing'); };
+      var settle=setTimeout(done,2000);
+      (function tick(){
+        if(i<full.length){ line.textContent=full.slice(0,++i); setTimeout(tick,24); }
+        else{ clearTimeout(settle); line.classList.remove('typing'); }
+      })();
+    }
+  }catch(e){}
+
+  if(!allow||!('IntersectionObserver' in window)){ return; } /* settled base page */
+
+  /* Scroll reveals: photo curtains, card rises, board ticks, kicker squares, the
+     odometer. html.anim arms the hidden states; each target fires once, then unobserves. */
+  try{
+    var io=new IntersectionObserver(function(es){
+      for(var j=0;j<es.length;j++){ if(es[j].isIntersecting){ es[j].target.classList.add('in'); io.unobserve(es[j].target); } }
+    },{threshold:.16,rootMargin:'0px 0px -6% 0px'});
+    var nodes=document.querySelectorAll('[data-wipe],[data-rise],[data-ticks],.kicker');
+    for(var n=0;n<nodes.length;n++){ io.observe(nodes[n]); }
+    root.classList.add('anim');
+    /* unconditional settle: the whole page is landed by 2.3s so a screenshot or
+       print never catches a half-rendered frame — also the catch for any failure. */
+    setTimeout(function(){ root.classList.add('settled'); },2300);
+  }catch(err){ root.classList.remove('anim'); root.classList.add('settled'); }
+
+  /* Magnetic primary CTAs — fine pointers only, rAF-throttled, transform-only. */
+  try{
+    if(mq('(hover: hover) and (pointer: fine)').matches){
+      var mags=document.querySelectorAll('.btn-primary, .mock-register');
+      Array.prototype.forEach.call(mags,function(el){
+        el.classList.add('magnet');
+        var raf=0,tx=0,ty=0,x=0,y=0;
+        function step(){
+          x+=(tx-x)*.18; y+=(ty-y)*.18;
+          if(Math.abs(tx-x)<.1&&Math.abs(ty-y)<.1){ x=tx; y=ty; raf=0; } else { raf=requestAnimationFrame(step); }
+          el.style.transform=(x||y)?'translate('+x.toFixed(2)+'px,'+y.toFixed(2)+'px)':'';
+        }
+        el.addEventListener('pointermove',function(e){
+          var r=el.getBoundingClientRect();
+          tx=Math.max(-6,Math.min(6,(e.clientX-r.left-r.width/2)*.16));
+          ty=Math.max(-6,Math.min(6,(e.clientY-r.top-r.height/2)*.3));
+          if(!raf){ raf=requestAnimationFrame(step); }
+        });
+        el.addEventListener('pointerleave',function(){ tx=0; ty=0; if(!raf){ raf=requestAnimationFrame(step); } });
+      });
+    }
+  }catch(e){}
+})();
+</script>
+
+</body>
+</html>

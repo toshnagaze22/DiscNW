@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>13 · Last Light — DiscNW design directions</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<meta name="description" content="Experimental direction 13 for the DiscNW redesign: the page is a year-long light clock — five real Seattle skies crossfaded by scroll, every program placed at the hour of light it is actually played in.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Spline+Sans+Mono:wght@300..700&display=swap" rel="stylesheet">
+<style>
+/* ————————————————————————————————————————————————————————————
+   DIRECTION 13 · LAST LIGHT  (experimental · SOTY pass)
+   The page is a year of Seattle sky. Five program chapters,
+   each set against the CSS gradient of its real hour of light,
+   labeled with its real sunset time. No drawn suns, no drawn
+   skylines — only gradient skies, real photography, and data.
+
+   Contrast audit (WCAG AA, computed):
+     cream #FFF7EA on zenith #14112A ............ 15.9
+     cream #FFF7EA on June dusk #A05257 ......... 5.4
+     white #FFFFFF on noon zenith #1B4F86 ....... 8.4
+     white #FFFFFF on noon mid #4E8CC0 .......... 3.6  (display sizes only)
+     card text #F1E5CD on card ink #1A1530 ...... 13.1
+     card muted #C9B694 on card ink ............. 8.9
+     chip text #F3D6A4 on chip ink #131022 ...... 12.5
+     btn ink #241708 on btn gold #F2B368 ........ 9.5
+     warm ink #241708 on warm card #F6E7CB ...... 14.3
+     warm muted #6B4A26 on warm card ............ 6.5
+     paper ink #241B38 on paper #F7F1E4 ......... 14.4
+     paper muted #5A4E6A on paper ............... 6.8
+     footer text #EDE3CE on footer #14112A ...... 13.2
+———————————————————————————————————————————————————————————— */
+:root{
+  --zenith:#14112A;        /* the dark the year starts and ends in     */
+  --gold:#E1955A;          /* nine-p.m. June gold                      */
+  --amber:#D08238;         /* October, 6 p.m., low                     */
+  --bluehour:#3C5480;      /* December, 4:20 p.m.                      */
+  --peach:#F0B87E;         /* April, the light returning               */
+  --cream:#FFF7EA;         /* text on sky                              */
+  --card-ink:#1A1530;      /* the almanac card                         */
+  --card-text:#F1E5CD;
+  --card-muted:#C9B694;
+  --chip-ink:#131022;
+  --chip-text:#F3D6A4;
+  --btn-gold:#F2B368;
+  --btn-ink:#241708;
+  --warm-card:#F6E7CB;     /* winter's one warm room                   */
+  --warm-ink:#241708;
+  --warm-muted:#6B4A26;
+  --paper:#F7F1E4;         /* the appendix leaves the sky              */
+  --paper-ink:#241B38;
+  --paper-muted:#5A4E6A;
+  --hair:rgba(242,200,140,.16);
+  --barh:56px;
+  --pad:clamp(20px,5vw,72px);
+  --disp:"Fraunces",Georgia,"Iowan Old Style",serif;
+  --mono:"Spline Sans Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  /* house easing — two curves, used everywhere; 'ease' appears nowhere */
+  --ease-snap:cubic-bezier(.4,0,.1,1);   /* micro: 240–400ms hovers, ticks   */
+  --ease-lux:cubic-bezier(.16,1,.3,1);   /* macro: 700–900ms masks and rises */
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--zenith);scroll-behavior:smooth;scroll-padding-top:calc(var(--barh) + 12px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  margin:0;background:var(--zenith);color:var(--cream);
+  font-family:var(--disp);font-optical-sizing:auto;
+  font-size:17px;line-height:1.66;
+  overflow-x:clip;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+img{display:block;max-width:100%;height:auto}
+video{display:block;max-width:100%;height:auto}
+a{color:inherit}
+::selection{background:var(--btn-gold);color:var(--btn-ink)}
+:focus-visible{outline:3px solid var(--btn-gold);outline-offset:3px;border-radius:2px}
+.on-paper :focus-visible,.card.warm :focus-visible{outline-color:#8A4A16}
+h1,h2,h3{margin:0;font-weight:440;line-height:1.02}
+
+.vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:var(--pad);top:-64px;z-index:90;background:var(--chip-ink);color:var(--chip-text);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:10px 16px;border:1px solid var(--hair)}
+.skip:focus-visible{top:calc(var(--barh) + 12px)}
+
+/* mono label voice — the ephemeris */
+.mono{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase}
+
+/* almanac chip — solid plate so small type stays AA over any sky state */
+.chip{
+  display:inline-flex;align-items:baseline;gap:.9em;
+  background:var(--chip-ink);color:var(--chip-text);
+  border:1px solid rgba(242,200,140,.3);
+  padding:8px 14px 7px;
+  font-family:var(--mono);font-weight:500;font-size:11.5px;
+  letter-spacing:.16em;text-transform:uppercase;white-space:normal;
+}
+.chip b{font-weight:700;color:#FBE9C4}
+/* chip tick mask — the sunset time rises like an almanac flipping a line */
+.chip .t{display:inline-block;overflow:hidden;vertical-align:bottom}
+.chip .t>span{display:inline-block}
+
+/* text roll (primary CTAs + footer links) — clone parked below the mask */
+.roll{display:inline-block}
+.roll .r{position:relative;display:block;overflow:hidden}
+.roll .r>span{display:block}
+.roll .r>span:last-child{position:absolute;inset:0;transform:translateY(100%)}
+
+/* ————— fixed chrome: the bar ————— */
+.bar{
+  position:fixed;inset:0 0 auto 0;z-index:60;height:var(--barh);
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:0 clamp(14px,2.6vw,28px);
+  background:rgba(14,11,26,.84);border-bottom:1px solid var(--hair);
+}
+.bar .lockup{width:132px;height:auto;flex:none}
+.bar .b-mid{color:#CBBFA6;flex:1;text-align:center}
+.bar .b-side{display:flex;align-items:center;gap:20px}
+.alm{overflow:hidden;display:inline-block;color:var(--chip-text)}
+.alm-in{display:inline-block}
+.bar a.b-link{
+  font-family:var(--mono);font-weight:600;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(242,179,104,.5);padding-bottom:2px;white-space:nowrap;
+}
+.bar a.b-link:hover{border-bottom-color:var(--btn-gold)}
+@media (max-width:900px){.bar .b-mid{display:none}}
+@media (max-width:620px){.alm{display:none}.bar .lockup{width:116px}}
+
+/* the evening's constant — the formline mark holds one corner all year */
+.constant{
+  position:fixed;top:calc(var(--barh) + 18px);right:clamp(16px,2.6vw,30px);
+  z-index:55;width:38px;pointer-events:none;
+}
+.constant img{width:100%;height:auto}
+@media (max-width:620px){.constant{width:30px}}
+
+/* ————— the sky deck (JS mode only) — five gradient layers, crossfaded ————— */
+.skydeck{display:none}
+.sky{position:fixed;inset:0;will-change:opacity}
+.sky-0{background:linear-gradient(180deg,#14112A 0%,#3A2650 30%,#8C4560 58%,#C4674F 76%,#E1955A 90%,#EDAC66 100%)}
+.sky-1{background:linear-gradient(180deg,#1B4F86 0%,#2F6DA8 34%,#4E8CC0 58%,#8CB8DA 82%,#C9DDEC 100%);opacity:0}
+.sky-2{background:linear-gradient(180deg,#241B38 0%,#472C48 32%,#7A3F48 54%,#B26038 74%,#D08238 88%,#DB9440 100%);opacity:0}
+.sky-3{background:linear-gradient(180deg,#0D1122 0%,#16203A 34%,#24345A 62%,#3C5480 86%,#46608C 100%);opacity:0}
+.sky-4{background:linear-gradient(180deg,#3A4C82 0%,#5C69A2 26%,#8B7FAE 46%,#C08D9A 64%,#E8AE84 82%,#F6CE96 100%);opacity:0}
+
+/* ————— sections: static stacked skies ARE the base (no-JS = complete) ————— */
+.skysec{position:relative}
+.ch-june{background:linear-gradient(180deg,#14112A 0%,#2E2148 14%,#55305A 30%,#8C4560 44%,#C4674F 54%,#E1955A 62%,#A05257 74%,#45284C 88%,#221A3E 100%)}
+.br-1{background:linear-gradient(180deg,#221A3E 0%,#263C6C 55%,#1B4F86 100%)}
+.ch-noon{background:linear-gradient(180deg,#1B4F86 0%,#2F6DA8 26%,#4E8CC0 48%,#86B4D8 72%,#B7D2E6 88%,#CFE0EE 100%)}
+.br-2{background:linear-gradient(180deg,#CFE0EE 0%,#9CA9C6 38%,#5D5574 70%,#241B38 100%)}
+.ch-fall{background:linear-gradient(180deg,#241B38 0%,#472C48 22%,#7A3F48 42%,#B26038 58%,#D08238 68%,#8A4A3A 80%,#3A2438 100%)}
+.br-3{background:linear-gradient(180deg,#3A2438 0%,#26243F 52%,#0D1122 100%)}
+.ch-blue{background:linear-gradient(180deg,#0D1122 0%,#16203A 30%,#24345A 56%,#3C5480 78%,#2A3A5E 92%,#141B32 100%)}
+.br-4{background:linear-gradient(180deg,#141B32 0%,#2A3560 55%,#3A4C82 100%)}
+.ch-spring{background:linear-gradient(180deg,#3A4C82 0%,#5C69A2 22%,#8B7FAE 42%,#C08D9A 60%,#E8AE84 78%,#F4C68E 92%,#F8D9A8 100%)}
+
+.wrap{max-width:1280px;margin-inline:auto;padding-inline:var(--pad)}
+
+/* ————— masthead ————— */
+.mast{
+  min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;
+  padding-top:calc(var(--barh) + clamp(28px,6vh,64px));
+  padding-bottom:clamp(36px,7vh,84px);
+}
+.kicker{
+  font-family:var(--mono);font-weight:600;font-size:11.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:#E9C98F;margin:0 0 clamp(20px,4vh,40px);
+}
+.mast h1{
+  font-size:clamp(78px,15.5vw,224px);
+  font-weight:420;letter-spacing:-.015em;line-height:.9;
+  color:var(--cream);text-transform:none;
+}
+.mast h1 .it{font-style:italic;font-weight:380}
+.fx-line{display:block;overflow:hidden}
+.fx-line>span{display:block}
+.mast .eph-row{margin:clamp(18px,3vh,30px) 0 0}
+.standfirst{
+  max-width:46ch;margin:clamp(20px,3.4vh,36px) 0 0;
+  font-size:clamp(17.5px,1.85vw,22px);line-height:1.56;color:var(--cream);
+}
+.standfirst em{font-style:italic}
+.mast .hint{margin:clamp(26px,5vh,52px) 0 0;color:#E9C98F}
+
+/* ————— the daylight chart — the year at a glance, and the nav ————— */
+.daychart{
+  max-width:1280px;margin:clamp(40px,8vh,88px) auto 0;padding-inline:var(--pad);
+}
+.dc-plate{
+  background:var(--card-ink);border:1px solid var(--hair);
+  padding:clamp(20px,3vw,34px) clamp(20px,3.2vw,38px) clamp(16px,2.4vw,26px);
+  box-shadow:0 24px 60px rgba(8,6,20,.35);
+}
+.dc-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;color:var(--chip-text)}
+.dc-head .soft{color:#B7A98C}
+.dc-track{
+  list-style:none;margin:22px 0 0;padding:0;
+  display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(6px,1.2vw,14px);
+  align-items:end;height:150px;
+}
+.dc-track>li{height:100%}   /* bare link-<li> needs a definite height so its .dc-link's 100% resolves and the bar's % height renders */
+.dc-col,.dc-link{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px;height:100%}
+.dc-link{text-decoration:none}
+.dc-bar{
+  display:block;width:100%;max-width:44px;height:var(--h);
+  background:#57496B;transform-origin:50% 100%;
+}
+.dc-link .dc-bar{background:var(--btn-gold)}
+.dc-link:hover .dc-bar{background:#F8C88A}
+.dc-m{font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.1em;color:#B7A98C}
+.dc-link .dc-m{color:var(--chip-text);font-weight:700}
+.dc-note{margin:14px 0 0;font-size:13px;font-style:italic;color:var(--card-muted)}
+.dc-note b{font-weight:600;color:var(--card-text)}
+
+/* ————— photography — clean render, framed by its own sky ————— */
+.photo{margin:clamp(56px,10vh,120px) auto;padding:0}
+.photo .frame{margin-inline:auto}
+.photo img{width:100%;filter:contrast(1.03) saturate(1.04)}
+.frame-2400{max-width:2760px}   /* 2400px natives — never above 1.15x  */
+.frame-2800{max-width:2760px}   /* comfortably under the 2800px native */
+.frame-1920{max-width:2208px}   /* 1920px natives at exactly ≤1.15x    */
+.photo figcaption{max-width:1280px;margin:14px auto 0;padding-inline:var(--pad)}
+.ph{overflow:hidden}
+.ph img,.ph video{transform-origin:50% 30%}
+
+/* film frames — the loops, held to their native scale */
+.filmframe{margin:clamp(44px,8vh,96px) 0 0;padding:0}
+.filmframe .ph{max-width:1400px}  /* 1280px posters/loops ≤1.15x */
+.filmframe video{width:100%}
+.filmframe figcaption{margin:14px 0 0}
+
+/* ————— chapters ————— */
+.chapter{padding:clamp(72px,14vh,168px) 0 clamp(84px,15vh,184px);scroll-margin-top:calc(var(--barh) + 8px)}
+.chead{max-width:1280px;margin-inline:auto;padding-inline:var(--pad)}
+.chead .eph-row{margin:0 0 clamp(18px,3vh,28px)}
+.chapter h2{
+  font-size:clamp(44px,6.6vw,104px);font-weight:430;letter-spacing:-.012em;line-height:1;
+  max-width:18ch;color:var(--cream);
+}
+.chapter h2 .it{font-style:italic;font-weight:380}
+.rv-mask{display:block;overflow:hidden}
+.rv-mask>span{display:block}
+.lede{
+  max-width:58ch;margin:clamp(20px,3.4vh,34px) 0 0;
+  font-size:clamp(17px,1.6vw,19.5px);line-height:1.66;color:var(--cream);
+}
+.lede strong{font-weight:600}
+.duo{
+  max-width:1280px;margin:clamp(48px,9vh,104px) auto 0;padding-inline:var(--pad);
+  display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);
+  gap:clamp(28px,4.5vw,72px);align-items:start;
+}
+.duo .fig-side{min-width:0}
+.duo .fig-side .ph img{width:100%}
+.duo .fig-side figcaption{margin:12px 0 0}
+figure{margin:0}
+
+/* small figures inside duo — 1280px natives kept small */
+.fig-small .ph{max-width:640px}
+
+/* the almanac card — where registration lives, solid and constant */
+.card{
+  background:var(--card-ink);color:var(--card-text);
+  border:1px solid var(--hair);
+  padding:clamp(24px,3.4vw,42px);
+  box-shadow:0 24px 60px rgba(8,6,20,.35);
+}
+.card .c-k{color:#B7A98C;display:block}
+.card h3{
+  font-size:clamp(24px,2.4vw,32px);font-weight:480;letter-spacing:-.008em;
+  margin:12px 0 0;color:var(--card-text);
+}
+.card .log{list-style:none;margin:22px 0 0;padding:0;border-top:1px solid rgba(242,200,140,.22)}
+.card .log li{
+  display:flex;justify-content:space-between;align-items:baseline;gap:18px;
+  padding:12px 2px;border-bottom:1px dashed rgba(242,200,140,.24);
+}
+.card .p-name{font-weight:560;font-size:17px;letter-spacing:.002em}
+.card .p-meta{font-style:italic;color:var(--card-muted);font-size:14px;text-align:right}
+.card .cta{margin:26px 0 0;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{
+  display:inline-block;background:var(--btn-gold);color:var(--btn-ink);
+  font-family:var(--mono);font-weight:600;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
+  text-decoration:none;padding:16px 24px;border:1px solid rgba(36,23,8,.4);
+}
+.btn:hover{background:#EAA653}
+.card .fine{margin:16px 0 0;font-size:13.5px;font-style:italic;color:var(--card-muted);line-height:1.6}
+.card .fine b{font-style:normal;font-weight:600;color:var(--card-text)}
+
+/* winter's counterpoint — the one warm room in the blue hour */
+.card.warm{
+  background:var(--warm-card);color:var(--warm-ink);border-color:rgba(36,23,8,.28);
+  box-shadow:0 0 110px rgba(255,186,100,.3),0 24px 60px rgba(8,6,20,.4);
+}
+.card.warm .c-k{color:var(--warm-muted)}
+.card.warm h3{color:var(--warm-ink)}
+.card.warm .log{border-top-color:rgba(36,23,8,.3)}
+.card.warm .log li{border-bottom-color:rgba(36,23,8,.28)}
+.card.warm .p-meta{color:var(--warm-muted)}
+.card.warm .btn{background:var(--btn-ink);color:var(--warm-card);border-color:var(--btn-ink)}
+.card.warm .btn:hover{background:#3A2810}
+.card.warm .fine{color:var(--warm-muted)}
+.card.warm .fine b{color:var(--warm-ink)}
+
+/* ————— bridges — the sky passing between hours ————— */
+.bridge{
+  min-height:46svh;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  gap:16px;padding:clamp(48px,9vh,96px) var(--pad);text-align:center;
+}
+.bridge .b-note{margin:0;font-style:italic;font-size:15.5px;color:var(--cream);max-width:44ch}
+
+/* the rain plate — data, not weather art */
+.rainplate{
+  width:min(660px,100%);background:var(--card-ink);border:1px solid var(--hair);
+  padding:clamp(20px,3vw,32px);text-align:left;box-shadow:0 24px 60px rgba(8,6,20,.35);
+}
+.rainplate .c-k{color:#B7A98C;display:block}
+.rainrow{margin:18px 0 0}
+.rainrow .r-lab{display:flex;justify-content:space-between;gap:14px;color:var(--card-text);font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase}
+.rainrow .r-lab b{font-weight:700;color:var(--chip-text)}
+.rainrow .track{margin:8px 0 0;height:10px;background:rgba(242,200,140,.14)}
+.rainrow .fill{display:block;height:100%;width:var(--w);background:#7E9AC2;transform-origin:0 50%}
+.rainrow.sea .fill{background:var(--btn-gold)}
+.rainplate .fine{margin:18px 0 0;font-size:13.5px;font-style:italic;color:var(--card-muted);line-height:1.6}
+.rainplate .fine b{font-style:normal;font-weight:600;color:var(--card-text)}
+
+/* ————— the spring landing — the constant comes home ————— */
+.crest-land{width:clamp(120px,13vw,176px);height:auto;margin:0 0 clamp(22px,3.6vh,36px)}
+.ch-spring .chead{padding-top:clamp(24px,5vh,56px)}
+.ch-spring .closing{
+  max-width:1280px;margin:clamp(52px,9vh,104px) auto 0;padding-inline:var(--pad);
+}
+.ch-spring .closing p{
+  margin:0;max-width:30ch;font-size:clamp(22px,2.6vw,32px);line-height:1.4;
+  font-style:italic;color:#2A1C33;
+}
+
+/* ————— appendix — the page leaves the sky ————— */
+.about{background:var(--paper);color:var(--paper-ink)}
+.about .wrap{padding-block:clamp(64px,10vh,112px)}
+.about .lockup-dark{width:clamp(128px,12vw,150px);height:auto;margin:0 0 30px}
+.about .kicker{color:#8A4A16}
+.about h2{font-size:clamp(32px,3.8vw,48px);font-weight:480;letter-spacing:-.01em;color:var(--paper-ink)}
+.about .thesis{max-width:62ch;margin:18px 0 40px;font-size:18px;line-height:1.7}
+.spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:30px clamp(24px,3vw,52px);margin:0}
+.spec>div{border-top:1px solid rgba(36,27,56,.25);padding-top:16px}
+.spec dt{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8A4A16;margin:0 0 10px}
+.spec dd{margin:0;font-size:15.5px;line-height:1.62;color:var(--paper-ink)}
+.spec dd em{font-style:italic}
+.swatches{display:flex;flex-direction:column;gap:8px}
+.sw{display:flex;align-items:center;gap:10px}
+.sw i{width:16px;height:16px;flex:none;border:1px solid rgba(36,27,56,.35)}
+.sw code{font-family:var(--mono);font-size:12px;letter-spacing:.05em;color:var(--paper-muted)}
+
+/* ————— footer ————— */
+.pagefoot{background:var(--zenith);color:#EDE3CE;border-top:1px solid var(--hair)}
+.pagefoot .wrap{
+  display:flex;justify-content:space-between;align-items:baseline;gap:16px 28px;flex-wrap:wrap;
+  padding-block:26px;
+}
+.pagefoot a{
+  font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(242,179,104,.5);padding-bottom:2px;
+}
+.pagefoot a:hover{border-bottom-color:var(--btn-gold)}
+.pagefoot .mid{font-size:13px;font-style:italic;color:#CBBFA6}
+
+/* ————————————————————————————————————————————————————————————
+   MOTION — "the light moves." Everything below is doubly gated:
+   inside prefers-reduced-motion:no-preference AND behind html.anim,
+   which only JS adds (and removes if the preference flips). Without
+   JS, in print, or with reduced motion, the static stacked skies
+   above ARE the finished page. A settle sweep lands everything
+   on-screen by ≤2.3s.
+———————————————————————————————————————————————————————————— */
+@media screen and (prefers-reduced-motion:no-preference){
+
+  /* JS mode: sections go clear and the fixed deck carries the sky.
+     The deck sits behind everything; appendix and footer keep their
+     own solid grounds and simply cover it. */
+  html.anim .skydeck{display:block;position:fixed;inset:0;z-index:-1}
+  html.anim .skysec{background:transparent}
+
+  /* entrance — bar drops, constant fades on late, masthead lines rise
+     from overflow masks on 90ms staggers */
+  html.anim .bar{opacity:0;transform:translateY(-12px)}
+  html.anim.go .bar{opacity:1;transform:none;transition:opacity .6s var(--ease-lux) .08s,transform .7s var(--ease-lux) .08s}
+  html.anim .constant{opacity:0}
+  html.anim.go .constant{opacity:1;transition:opacity .8s var(--ease-lux) 1s}
+  html.anim .fx-line>span{transform:translateY(112%)}
+  html.anim.go .fx-line>span{transform:none;transition:transform .9s var(--ease-lux) calc(.26s + var(--i)*.09s)}
+  html.anim .mast .fade{opacity:0;transform:translateY(14px)}
+  html.anim.go .mast .fade{opacity:1;transform:none;transition:opacity .7s var(--ease-lux) calc(.3s + var(--i)*.09s),transform .8s var(--ease-lux) calc(.3s + var(--i)*.09s)}
+
+  /* the constant dims while its landed twin holds the spring sky */
+  html.anim .constant{transition:opacity .5s var(--ease-snap)}
+  html.anim.go .constant.veil{opacity:0;transition:opacity .5s var(--ease-snap)}
+
+  /* generic scroll reveals — IO adds .in once, then unobserves */
+  html.anim .rv{opacity:0;transform:translateY(20px)}
+  html.anim .rv.in{opacity:1;transform:none;transition:opacity .7s var(--ease-lux),transform .85s var(--ease-lux)}
+  html.anim .rv-mask>span{transform:translateY(110%)}
+  html.anim .rv-mask.in>span,
+  html.anim .in .rv-mask>span{transform:none;transition:transform .9s var(--ease-lux) .05s}
+
+  /* chip tick — the sunset time flips up like an almanac line */
+  html.anim .chip .t>span{transform:translateY(115%)}
+  html.anim .chip.in .t>span,
+  html.anim .in .chip .t>span{transform:none;transition:transform .7s var(--ease-lux) .2s}
+
+  /* photographs — clip-path curtain with a 1.05 scale settle */
+  html.anim .rv-photo .ph{clip-path:inset(0 0 100% 0)}
+  html.anim .rv-photo .ph img,
+  html.anim .rv-photo .ph video{transform:scale(1.05)}
+  html.anim .rv-photo.in .ph{clip-path:inset(0 0 0 0);transition:clip-path 1.05s var(--ease-lux)}
+  html.anim .rv-photo.in .ph img,
+  html.anim .rv-photo.in .ph video{transform:none;transition:transform 1.3s var(--ease-lux)}
+  html.anim .rv-photo figcaption{opacity:0;transform:translateY(10px)}
+  html.anim .rv-photo.in figcaption{opacity:1;transform:none;transition:opacity .6s var(--ease-lux) .35s,transform .7s var(--ease-lux) .35s}
+
+  /* card choreography — children rise on offset clocks (≤.35s) */
+  html.anim .card>*{opacity:0;transform:translateY(18px)}
+  html.anim .card.in>*{opacity:1;transform:none;transition:opacity .6s var(--ease-lux),transform .75s var(--ease-lux)}
+  html.anim .card.in>:nth-child(2){transition-delay:.09s}
+  html.anim .card.in>:nth-child(3){transition-delay:.18s}
+  html.anim .card.in>:nth-child(4){transition-delay:.27s}
+  html.anim .card.in>:nth-child(5){transition-delay:.35s}
+
+  /* daylight bars grow from the ground, 40ms staggers */
+  html.anim .dc-bar{transform:scaleY(0)}
+  html.anim .daychart.in .dc-bar{transform:none;transition:transform .7s var(--ease-lux) calc(var(--i)*.04s)}
+  html.anim .dc-head,html.anim .dc-note{opacity:0}
+  html.anim .daychart.in .dc-head,
+  html.anim .daychart.in .dc-note{opacity:1;transition:opacity .7s var(--ease-lux) .15s}
+
+  /* rain bars pour in */
+  html.anim .rainrow .fill{transform:scaleX(0)}
+  html.anim .rainplate.in .rainrow .fill{transform:none;transition:transform .9s var(--ease-lux) .2s}
+
+  /* the crest lands on April */
+  html.anim .crest-land{opacity:0;transform:translateY(12px) scale(.94)}
+  html.anim .crest-land.in{opacity:1;transform:none;transition:opacity .7s var(--ease-lux) .1s,transform .9s var(--ease-lux) .1s}
+
+  /* topbar almanac readout — rolls when the sky changes hour */
+  .alm-in{transition:transform .3s var(--ease-snap),opacity .3s var(--ease-snap)}
+  .alm-in.out{transform:translateY(-115%);opacity:0}
+  .alm-in.in-from{transition:none;transform:translateY(115%);opacity:0}
+}
+
+/* micro-interactions — pointer-fine, hover-capable, motion-OK only */
+@media screen and (prefers-reduced-motion:no-preference) and (hover:hover) and (pointer:fine){
+  .roll .r>span{transition:transform .36s var(--ease-snap)}
+  .roll:hover .r>span:first-child,.roll:focus-visible .r>span:first-child{transform:translateY(-100%)}
+  .roll:hover .r>span:last-child,.roll:focus-visible .r>span:last-child{transform:translateY(0)}
+  .btn{transition:transform .3s var(--ease-snap),background-color .3s var(--ease-snap),box-shadow .3s var(--ease-snap)}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(8,6,20,.35)}
+  .btn:active{transform:translateY(0);box-shadow:none}
+  .dc-bar{transition:background-color .3s var(--ease-snap)}
+  .bar a.b-link,.pagefoot a{transition:border-color .3s var(--ease-snap)}
+}
+
+/* ————— responsive ————— */
+@media (max-width:940px){
+  .duo{grid-template-columns:1fr}
+  .duo .card{order:2}
+  .dc-track{height:120px}
+}
+@media (max-width:700px){
+  body{font-size:16px}
+  .chapter h2{letter-spacing:-.008em}
+  .card .p-meta{text-align:left}
+  .card .log li{flex-wrap:wrap;gap:4px 18px}
+  .dc-track{gap:5px}
+  .dc-m{font-size:9px;letter-spacing:.04em}
+  .chip{gap:.6em;letter-spacing:.1em}
+}
+
+/* ————— print — the settled year, stacked ————— */
+@media print{
+  .skip,.skydeck{display:none!important}
+  .bar{position:static;background:var(--zenith)}
+  .constant{position:absolute}
+  .photo,.card,.rainplate,.daychart{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- the sky deck — five real Seattle skies; JS crossfades them under your scroll -->
+<div class="skydeck" aria-hidden="true">
+  <div class="sky sky-0"></div>
+  <div class="sky sky-1" data-sky-layer="1"></div>
+  <div class="sky sky-2" data-sky-layer="2"></div>
+  <div class="sky sky-3" data-sky-layer="3"></div>
+  <div class="sky sky-4" data-sky-layer="4"></div>
+</div>
+
+<header class="bar">
+  <img class="lockup" src="assets/brand/logo-full-white.png" alt="DiscNW — Disc Northwest" width="1446" height="616">
+  <span class="b-mid mono">DiscNW · Design direction 13 of 13 · Experimental</span>
+  <span class="b-side">
+    <span class="alm mono" aria-hidden="true"><span class="alm-in" id="alm-in">Seattle · 47.6° N</span></span>
+    <a class="b-link" href="index.html">← All directions</a>
+  </span>
+</header>
+
+<!-- the evening's constant — the formline mark holds this corner all year,
+     then lands large on the April chapter -->
+<div class="constant" id="constant" aria-hidden="true">
+  <img src="assets/brand/logo-mark-white.png" alt="" width="590" height="616">
+</div>
+
+<main id="main">
+
+  <!-- ————————————— JUNE · sunset 9:11 PM ————————————— -->
+  <section class="skysec chapter ch-june" id="ch-june" data-sky="0" aria-labelledby="mast-h">
+
+    <div class="mast wrap">
+      <p class="kicker fx-line" style="--i:0"><span>DiscNW · Design direction 13 of 13 · Experimental</span></p>
+      <h1 id="mast-h">
+        <span class="fx-line" style="--i:1"><span>Last</span></span>
+        <span class="fx-line" style="--i:2"><span class="it">Light</span></span>
+      </h1>
+      <p class="eph-row fade" style="--i:3">
+        <span class="chip"><b>Seattle almanac</b><span class="t"><span>One year · five sunsets</span></span></span>
+      </p>
+      <p class="standfirst fade" style="--i:4">In the Northwest, the season <em>is</em> the light. June games end past nine in gold; December practice starts after a 4:20 sunset. This page is one year of Seattle sky — scroll it, and every DiscNW program is waiting at the hour it&rsquo;s actually played.</p>
+      <p class="hint mono fade" style="--i:5">↓ Begin at the solstice</p>
+    </div>
+
+    <!-- the year, in daylight — the chart is the table of contents -->
+    <nav class="daychart rv" aria-label="The year in daylight — chapter navigation">
+      <div class="dc-plate">
+        <div class="dc-head mono">
+          <span><b>The year, in daylight</b> · hours of light per day</span>
+          <span class="soft">Seattle · 47.6° N — gold months are chapters</span>
+        </div>
+        <ul class="dc-track">
+          <li class="dc-col"><span class="dc-bar" style="--h:56%;--i:0"></span><span class="dc-m" aria-hidden="true">J</span><span class="vh">January — about 8.9 hours of daylight</span></li>
+          <li class="dc-col"><span class="dc-bar" style="--h:64%;--i:1"></span><span class="dc-m" aria-hidden="true">F</span><span class="vh">February — about 10.2 hours of daylight</span></li>
+          <li class="dc-col"><span class="dc-bar" style="--h:74%;--i:2"></span><span class="dc-m" aria-hidden="true">M</span><span class="vh">March — about 11.9 hours of daylight</span></li>
+          <li><a class="dc-link" href="#ch-spring"><span class="dc-bar" style="--h:85%;--i:3"></span><span class="dc-m" aria-hidden="true">A</span><span class="vh">April — about 13.6 hours of daylight — jump to the Spring Reign chapter</span></a></li>
+          <li class="dc-col"><span class="dc-bar" style="--h:95%;--i:4"></span><span class="dc-m" aria-hidden="true">M</span><span class="vh">May — about 15.2 hours of daylight</span></li>
+          <li><a class="dc-link" href="#june-league"><span class="dc-bar" style="--h:100%;--i:5"></span><span class="dc-m" aria-hidden="true">J</span><span class="vh">June — about 16 hours of daylight — jump to the summer league chapter</span></a></li>
+          <li><a class="dc-link" href="#ch-noon"><span class="dc-bar" style="--h:98%;--i:6"></span><span class="dc-m" aria-hidden="true">J</span><span class="vh">July — about 15.6 hours of daylight — jump to the summer camps chapter</span></a></li>
+          <li class="dc-col"><span class="dc-bar" style="--h:89%;--i:7"></span><span class="dc-m" aria-hidden="true">A</span><span class="vh">August — about 14.2 hours of daylight</span></li>
+          <li class="dc-col"><span class="dc-bar" style="--h:78%;--i:8"></span><span class="dc-m" aria-hidden="true">S</span><span class="vh">September — about 12.5 hours of daylight</span></li>
+          <li><a class="dc-link" href="#ch-fall"><span class="dc-bar" style="--h:68%;--i:9"></span><span class="dc-m" aria-hidden="true">O</span><span class="vh">October — about 10.8 hours of daylight — jump to the fall school leagues chapter</span></a></li>
+          <li class="dc-col"><span class="dc-bar" style="--h:58%;--i:10"></span><span class="dc-m" aria-hidden="true">N</span><span class="vh">November — about 9.3 hours of daylight</span></li>
+          <li><a class="dc-link" href="#ch-blue"><span class="dc-bar" style="--h:53%;--i:11"></span><span class="dc-m" aria-hidden="true">D</span><span class="vh">December — about 8.4 hours of daylight — jump to the winter chapter</span></a></li>
+        </ul>
+        <p class="dc-note">Seattle keeps <b>16 hours</b> of light at the solstice and <b>8.4</b> at the floor. Every DiscNW season below is shaped by exactly this chart.</p>
+      </div>
+    </nav>
+
+    <!-- the literal last light -->
+    <figure class="photo rv-photo">
+      <div class="frame frame-2400 ph">
+        <img src="assets/pnw/edmonds-sundown.jpg" alt="The sun going down over Puget Sound near Edmonds — a long gold path of light laid across the water under a clear evening sky" width="2400" height="1594">
+      </div>
+      <figcaption><span class="chip"><b>Exhibit</b><span class="t"><span>Puget Sound at Edmonds · the hour this page is named for</span></span></span></figcaption>
+    </figure>
+
+    <div class="chead" id="june-league">
+      <p class="eph-row rv">
+        <span class="chip"><b>Ch. 01 · June 21</b><span class="t"><span>Sunset 9:11 PM · daylight 15h 59m</span></span></span>
+      </p>
+      <h2><span class="rv-mask rv"><span>The nine-o&rsquo;clock game,</span></span><span class="rv-mask rv"><span>played in <span class="it">gold.</span></span></span></h2>
+      <p class="lede rv">At the solstice, Seattle holds almost sixteen hours of daylight, and the <strong>Summer Mixed Hat League</strong> spends the best of them. You register alone; a draft turns strangers into a team; a season turns the team into your people. First pull at 6:30 — the game ends, and the light still hasn&rsquo;t.</p>
+    </div>
+
+    <div class="duo">
+      <figure class="fig-side filmframe rv-photo" aria-label="Looping game film: a high school player rises above a defender to catch the disc">
+        <div class="ph">
+          <video autoplay muted loop playsinline poster="assets/video/poster-zLzKRCbhIAg.jpg" width="1280" height="720">
+            <source src="assets/video/loop-hs-catch.mp4" type="video/mp4">
+          </video>
+        </div>
+        <figcaption><span class="chip"><b>Game film</b><span class="t"><span>The evening catch · loop, 6.8s</span></span></span></figcaption>
+      </figure>
+      <aside class="card rv" aria-label="Register for summer evening programs">
+        <span class="c-k mono">Register at this hour</span>
+        <h3>Summer evenings, 6:30 PM</h3>
+        <ul class="log">
+          <li><span class="p-name">Summer Mixed Hat League</span><span class="p-meta">individual signup · teams drawn</span></li>
+          <li><span class="p-name">Summer Wonder League</span><span class="p-meta">mixed · easy-going evenings</span></li>
+          <li><span class="p-name">Potlatch</span><span class="p-meta">the 1995 original · a full July weekend</span></li>
+        </ul>
+        <div class="cta">
+          <a class="btn roll" href="https://www.discnw.org/"><span class="r"><span>Register for summer</span><span aria-hidden="true">Register for summer</span></span></a>
+        </div>
+        <p class="fine">Games start at 6:30 and end in daylight. Sliding scale from <b>$33</b> — no questions asked.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- bridge · the light holds -->
+  <div class="skysec bridge br-1">
+    <p class="eph-row"><span class="chip rv"><b>Midsummer</b><span class="t"><span>After the solstice, the evenings give back ~2 minutes a day</span></span></span></p>
+    <p class="b-note rv">Nobody notices in July. The games are too good.</p>
+  </div>
+
+  <!-- ————————————— JULY · high afternoon ————————————— -->
+  <section class="skysec chapter ch-noon" id="ch-noon" data-sky="1" aria-labelledby="noon-h">
+    <div class="chead">
+      <p class="eph-row rv">
+        <span class="chip"><b>Ch. 02 · July 15</b><span class="t"><span>1:30 PM, full sun · sunset not until 9:01</span></span></span>
+      </p>
+      <h2 id="noon-h"><span class="rv-mask rv"><span>The top of the day</span></span><span class="rv-mask rv"><span>belongs to the <span class="it">kids.</span></span></span></h2>
+      <p class="lede rv"><strong>Summer Youth Ultimate Camps</strong> run at the day&rsquo;s full height — ages 7 to 18, all levels, a week at a time, under the only reliably blue sky Seattle issues all year. A camper arrives owning zero throws and leaves arguing hammer technique. And when grass gets too easy, <strong>Sea Plastic</strong> moves the whole thing to sand.</p>
+    </div>
+
+    <figure class="photo rv-photo">
+      <div class="frame frame-1920 ph">
+        <img src="assets/sr26-sprint-race.jpg" alt="Two young players at full sprint chase down a throw across a sunlit grass field, spectators' tents along the far sideline" width="1920" height="1080">
+      </div>
+      <figcaption><span class="chip"><b>Exhibit</b><span class="t"><span>Full speed at full daylight · Spring Reign 2026 stills, camp energy year-round</span></span></span></figcaption>
+    </figure>
+
+    <div class="duo">
+      <figure class="fig-side fig-small rv-photo">
+        <div class="ph">
+          <img src="assets/sr26-two-player-sky.jpg" alt="Two players leap shoulder to shoulder for a floating disc against an open sky" width="1280" height="720">
+        </div>
+        <figcaption><span class="chip"><b>Exhibit</b><span class="t"><span>The first sky-ball of somebody&rsquo;s life</span></span></span></figcaption>
+      </figure>
+      <aside class="card rv" aria-label="Register for summer camps">
+        <span class="c-k mono">Register at this hour</span>
+        <h3>Camp weeks, ages 7–18</h3>
+        <ul class="log">
+          <li><span class="p-name">Summer Youth Ultimate Camps</span><span class="p-meta">ages 7–18 · weekly · all levels</span></li>
+          <li><span class="p-name">Sea Plastic</span><span class="p-meta">beach tournament · cleats off</span></li>
+        </ul>
+        <div class="cta">
+          <a class="btn roll" href="https://www.discnw.org/"><span class="r"><span>Sign up for camps</span><span aria-hidden="true">Sign up for camps</span></span></a>
+        </div>
+        <p class="fine">Sliding scale from <b>$33</b>. Every tier gets the identical week — the scale is about your budget, not the program.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- bridge · September -->
+  <div class="skysec bridge br-2">
+    <p class="eph-row"><span class="chip rv"><b>September</b><span class="t"><span>School starts · by late month, sunset slips under 7</span></span></span></p>
+    <p class="b-note rv" style="color:#241B38">The light starts leaving early. The season just moves to meet it.</p>
+  </div>
+
+  <!-- ————————————— OCTOBER · sunset 6:31 PM ————————————— -->
+  <section class="skysec chapter ch-fall" id="ch-fall" data-sky="2" aria-labelledby="fall-h">
+    <div class="chead">
+      <p class="eph-row rv">
+        <span class="chip"><b>Ch. 03 · October 8</b><span class="t"><span>Sunset 6:31 PM · daylight 11h 26m</span></span></span>
+      </p>
+      <h2 id="fall-h"><span class="rv-mask rv"><span>After the last bell,</span></span><span class="rv-mask rv"><span>before the last <span class="it">light.</span></span></span></h2>
+      <p class="lede rv">School lets out around three; October keeps the field lit until 6:31. The <strong>fall middle school and high school leagues</strong> fit entire seasons into that amber window — and every game, at every age, runs on Spirit of the Game: <strong>zero referees</strong>, players making their own calls, seasons that teach the talking as much as the throwing.</p>
+    </div>
+
+    <figure class="photo rv-photo">
+      <div class="frame frame-1920 ph">
+        <img src="assets/sr26-open-field-chase.jpg" alt="A player streaks into open field after the disc, defenders strung out behind, low light raking across the grass" width="1920" height="1080">
+      </div>
+      <figcaption><span class="chip"><b>Exhibit</b><span class="t"><span>The open-field chase · the hour homework waits</span></span></span></figcaption>
+    </figure>
+
+    <div class="duo">
+      <figure class="fig-side filmframe rv-photo" aria-label="Looping game film: middle school teams form a spirit tunnel and trade high-fives after a game">
+        <div class="ph">
+          <video autoplay muted loop playsinline poster="assets/video/poster--vM_JH6IbDo.jpg" width="1280" height="720">
+            <source src="assets/video/loop-ms-spirit-tunnel.mp4" type="video/mp4">
+          </video>
+        </div>
+        <figcaption><span class="chip"><b>Game film</b><span class="t"><span>Middle school spirit tunnel · every game ends through one</span></span></span></figcaption>
+      </figure>
+      <aside class="card rv" aria-label="Register for fall school leagues">
+        <span class="c-k mono">Register at this hour</span>
+        <h3>Fall leagues, after school</h3>
+        <ul class="log">
+          <li><span class="p-name">Middle School Leagues</span><span class="p-meta">fall · school &amp; hat formats</span></li>
+          <li><span class="p-name">High School Leagues</span><span class="p-meta">fall · school teams</span></li>
+        </ul>
+        <div class="cta">
+          <a class="btn roll" href="https://www.discnw.org/"><span class="r"><span>Join a fall league</span><span aria-hidden="true">Join a fall league</span></span></a>
+        </div>
+        <p class="fine">Rainouts are rarer than you&rsquo;d think — when one happens, the hotline knows first: <b>(206)&nbsp;781-5840</b>.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- bridge · the rain, measured -->
+  <div class="skysec bridge br-3">
+    <div class="rainplate rv" role="figure" aria-label="Annual rainfall compared: Seattle about 37 inches, New York about 46 inches">
+      <span class="c-k mono">What falls between · the rain, measured</span>
+      <div class="rainrow sea">
+        <p class="r-lab"><span>Seattle</span><b>≈ 37 in / yr</b></p>
+        <div class="track"><span class="fill" style="--w:80%"></span></div>
+      </div>
+      <div class="rainrow">
+        <p class="r-lab"><span>New York</span><b>≈ 46 in / yr</b></p>
+        <div class="track"><span class="fill" style="--w:100%"></span></div>
+      </div>
+      <p class="fine">Less rain than New York — just spread across roughly <b>150 days</b>. Drizzle rarely cancels ultimate here. <b>Wind changes more games than rain ever has.</b></p>
+    </div>
+  </div>
+
+  <!-- ————————————— DECEMBER · sunset 4:20 PM ————————————— -->
+  <section class="skysec chapter ch-blue" id="ch-blue" data-sky="3" aria-labelledby="blue-h">
+    <div class="chead">
+      <p class="eph-row rv">
+        <span class="chip"><b>Ch. 04 · December 21</b><span class="t"><span>Sunset 4:20 PM · daylight 8h 25m</span></span></span>
+      </p>
+      <h2 id="blue-h"><span class="rv-mask rv"><span>The blue hour</span></span><span class="rv-mask rv"><span><span class="it">season.</span></span></span></h2>
+      <p class="lede rv">The shortest day gives Seattle eight hours and twenty-five minutes, and hands the evening to the gyms. Winter is when the <strong>DiscNW Coaching Collective</strong> builds next season&rsquo;s sideline voices, and when footwork gets quietly better under bright indoor light while the Sound goes blue outside the door.</p>
+    </div>
+
+    <figure class="photo rv-photo">
+      <div class="frame frame-2800 ph">
+        <img src="assets/pnw/puget-sound-ferry-dusk.jpg" alt="A Washington State ferry crosses Puget Sound at dusk beneath banded blue-grey clouds, dark hills along the horizon" width="2800" height="1412">
+      </div>
+      <figcaption><span class="chip"><b>Exhibit</b><span class="t"><span>Puget Sound, 4:40 PM in December · the fields rest, the ferries don&rsquo;t</span></span></span></figcaption>
+    </figure>
+
+    <div class="duo">
+      <div>
+        <p class="lede rv" style="margin-top:0">Nothing looks like it&rsquo;s growing in winter. Everything is. The coach who runs your kid&rsquo;s April practice is in a gym right now, being coached — that&rsquo;s the Collective&rsquo;s whole trade: this season&rsquo;s players into next season&rsquo;s teachers, school teams and club alike.</p>
+      </div>
+      <aside class="card warm rv" aria-label="Register for winter programs — the warm room in the blue hour">
+        <span class="c-k mono">The one warm room</span>
+        <h3>Winter, indoors, lit</h3>
+        <ul class="log">
+          <li><span class="p-name">Winter indoor training</span><span class="p-meta">gyms around the Sound</span></li>
+          <li><span class="p-name">DiscNW Coaching Collective</span><span class="p-meta">coach development · all levels</span></li>
+        </ul>
+        <div class="cta">
+          <a class="btn roll" href="https://www.discnw.org/"><span class="r"><span>Join the Coaching Collective</span><span aria-hidden="true">Join the Coaching Collective</span></span></a>
+        </div>
+        <p class="fine">Your first coach was somebody&rsquo;s winter project. <b>Pass it on.</b></p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- bridge · the turn -->
+  <div class="skysec bridge br-4">
+    <p class="eph-row"><span class="chip rv"><b>The turn · Dec 21</b><span class="t"><span>8h 25m is the floor — every day after this one is longer</span></span></span></p>
+    <p class="b-note rv">By February the evenings grow about three minutes a day. You can feel it from the sideline before you can prove it.</p>
+  </div>
+
+  <!-- ————————————— APRIL · sunset 8:14 PM ————————————— -->
+  <section class="skysec chapter ch-spring" id="ch-spring" data-sky="4" aria-labelledby="spring-h">
+    <div class="chead">
+      <img class="crest-land rv" id="crest-land" src="assets/brand/logo-mark-white.png" alt="DiscNW formline mark — a flying disc held in a circular Coast Salish-style formline design" width="590" height="616">
+      <p class="eph-row rv">
+        <span class="chip"><b>Ch. 05 · April 25</b><span class="t"><span>Sunset 8:14 PM · gaining ~3 minutes a day</span></span></span>
+      </p>
+      <h2 id="spring-h"><span class="rv-mask rv"><span>The light comes back.</span></span><span class="rv-mask rv"><span>So do <span class="it">we.</span></span></span></h2>
+      <p class="lede rv">By late April the sunset is past eight again, and the fields at Burlington fill with <strong>Spring Reign — the world&rsquo;s largest mixed youth ultimate tournament</strong>, played here every spring. One weekend, every age bracket, a disc in the air at all times. Ten thousand players get their seasons back this month.</p>
+    </div>
+
+    <figure class="photo rv-photo">
+      <div class="frame frame-1920 ph">
+        <img src="assets/sr26-catch-celebration.jpg" alt="A player holds the disc overhead as teammates sprint in to celebrate a score at Spring Reign 2026" width="1920" height="1080">
+      </div>
+      <figcaption><span class="chip"><b>Exhibit</b><span class="t"><span>Spring Reign 2026, Burlington WA · the year starts over</span></span></span></figcaption>
+    </figure>
+
+    <div class="duo">
+      <figure class="fig-side fig-small rv-photo">
+        <div class="ph">
+          <img src="assets/sr26-sky-battle-mountains.jpg" alt="Players from both teams rise together for a floating disc, foothills on the horizon behind them" width="1280" height="720">
+        </div>
+        <figcaption><span class="chip"><b>Exhibit</b><span class="t"><span>Everyone up · the mountains watching</span></span></span></figcaption>
+      </figure>
+      <aside class="card rv" aria-label="Register for Spring Reign">
+        <span class="c-k mono">Register at this hour</span>
+        <h3>Spring Reign, late April</h3>
+        <ul class="log">
+          <li><span class="p-name">Spring Reign</span><span class="p-meta">the world&rsquo;s largest mixed youth tournament</span></li>
+          <li><span class="p-name">Spirit circles</span><span class="p-meta">after every game · zero referees</span></li>
+        </ul>
+        <div class="cta">
+          <a class="btn roll" href="https://www.discnw.org/"><span class="r"><span>Register for Spring Reign</span><span aria-hidden="true">Register for Spring Reign</span></span></a>
+        </div>
+        <p class="fine">From <b>$33</b>, sliding scale, no questions. 10,000+ players — and one more seat.</p>
+      </aside>
+    </div>
+
+    <div class="closing">
+      <p class="rv">The year on this page never ends in the dark. Neither does the real one — since 1995, at Potlatch, it has always come back around to spring.</p>
+    </div>
+  </section>
+
+  <!-- ————————————— ABOUT THIS DIRECTION ————————————— -->
+  <section class="about on-paper" aria-labelledby="about-h">
+    <div class="wrap">
+      <img class="lockup-dark" src="assets/brand/logo-full.png" alt="DiscNW — Disc Northwest" width="1446" height="616">
+      <p class="kicker" style="margin-bottom:6px">About this direction</p>
+      <h2 id="about-h">13 — Last Light</h2>
+      <p class="thesis">The page is a year-long light clock. In the Pacific Northwest the season is the light — June games end past 9 PM, December practice starts after a 4:20 sunset — so the whole site becomes one continuous vertical sky, and every DiscNW program lives at the hour of light it is actually played in. The year deliberately closes brightening, at Spring Reign, not darkening: the emotional arc is <em>the light comes back — register for spring</em>.</p>
+      <dl class="spec">
+        <div>
+          <dt>The mechanism</dt>
+          <dd>Five real Seattle skies as pure CSS gradients, crossfaded by an eased rAF loop under your scroll — no drawn suns, no illustrated skylines, only gradient light, real photography, and data. Every chapter is labeled with its real sunset time; the gradients are the calendar. Without JS or with reduced motion, the skies simply stack — the settled year, complete.</dd>
+        </div>
+        <div>
+          <dt>Signature</dt>
+          <dd>The ephemeris everywhere: a topbar almanac readout that ticks over as the sky changes hour, sunset-time chips that flip up like almanac lines, a daylight-hours bar chart that doubles as chapter navigation — and the white formline mark holding the top corner as the evening&rsquo;s constant until it lands, large, on April.</dd>
+        </div>
+        <div>
+          <dt>Palette — the five skies</dt>
+          <dd class="swatches">
+            <span class="sw"><i style="background:#14112A"></i>Zenith Ink <code>#14112A</code></span>
+            <span class="sw"><i style="background:#E1955A"></i>Nine-PM Gold <code>#E1955A</code></span>
+            <span class="sw"><i style="background:#D08238"></i>October Amber <code>#D08238</code></span>
+            <span class="sw"><i style="background:#3C5480"></i>Blue Hour <code>#3C5480</code></span>
+            <span class="sw"><i style="background:#F0B87E"></i>Returning Peach <code>#F0B87E</code></span>
+          </dd>
+        </div>
+        <div>
+          <dt>Type</dt>
+          <dd><strong>Fraunces</strong> — optical-size display serif, warm at enormous scale, italic where the light turns · <strong>Spline Sans Mono</strong> — the ephemeris voice: sunset times, chips, buttons, and the almanac readout.</dd>
+        </div>
+        <div>
+          <dt>Motion</dt>
+          <dd>Two house curves. The sky eases after your scroll on a damped rAF crossfade (opacity only, layers never repaint); headlines rise from masks as their sky arrives; photographs open under clip-path curtains with a 1.05 settle; the winter card glows warm against the blue. Base styles are the settled page; a sweep lands everything on-screen by 2.3 seconds.</dd>
+        </div>
+        <div>
+          <dt>Choose this if</dt>
+          <dd>The calendar is your best argument — you want visitors to <em>feel</em> why a Seattle season is worth registering for before anyone tells them, and one scroll to explain the entire year, ending on the spring CTA.</dd>
+        </div>
+        <div>
+          <dt>Think twice if</dt>
+          <dd>You need a dense utility homepage — standings, schedules, dozens of links above the fold. A light clock wants very few things on stage at once, and its gradients ask for restraint from every future content editor.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<footer class="pagefoot">
+  <nav class="wrap" aria-label="Direction navigation">
+    <a class="roll" href="index.html"><span class="r"><span>← All directions</span><span aria-hidden="true">← All directions</span></span></a>
+    <span class="mid">Direction 13 of 13 · Last Light · prepared for DiscNW</span>
+    <a class="roll" href="index.html"><span class="r"><span>Next direction →</span><span aria-hidden="true">Next direction →</span></span></a>
+  </nav>
+</footer>
+
+<script>
+/* LAST LIGHT — the light moves.
+   · the sky: five fixed gradient layers; scroll sets a continuous position
+     0–4 from chapter centers; a damped rAF loop eases layer opacities toward
+     it (crossfade only — layers never repaint, transforms never touched)
+   · the almanac: the topbar readout rolls to the current chapter's sunset
+   · reveals: IntersectionObserver adds .in once, then unobserves
+   · the constant: the corner mark yields while its landed twin is on stage
+   · guarantees: base styles are the settled page (no JS / print / reduced
+     motion); html.anim arms pre-states only when motion is allowed and is
+     removed live if the preference flips; a sweep settles everything
+     on-screen by ≤2.3s; native scroll is never touched. */
+(function(){
+  if(!('IntersectionObserver' in window)) return;            /* base page stands */
+  var doc=document.documentElement;
+  var mq=window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* ————— reveals (always wired; harmless without html.anim) ————— */
+  var revs=Array.prototype.slice.call(document.querySelectorAll('.rv, .rv-photo, .daychart, .rainplate, .card'));
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  },{rootMargin:'0px 0px -10% 0px',threshold:.06});
+  revs.forEach(function(el){ io.observe(el); });
+
+  /* ————— the sky engine ————— */
+  var secs=Array.prototype.slice.call(document.querySelectorAll('[data-sky]'));
+  var layers=Array.prototype.slice.call(document.querySelectorAll('[data-sky-layer]')); /* skies 1–4 */
+  var anchors=[],pos=0,target=0,raf=0,bound=false;
+
+  function measure(){
+    anchors=secs.map(function(s){ return s.offsetTop + s.offsetHeight*.5; });
+  }
+  function computeTarget(){
+    var c=(window.scrollY||window.pageYOffset||0)+window.innerHeight*.5,i;
+    if(!anchors.length) return 0;
+    if(c<=anchors[0]) return 0;
+    if(c>=anchors[anchors.length-1]) return anchors.length-1;
+    for(i=0;i<anchors.length-1;i++){
+      if(c<anchors[i+1]) return i+(c-anchors[i])/(anchors[i+1]-anchors[i]);
+    }
+    return anchors.length-1;
+  }
+  function apply(p){
+    for(var i=0;i<layers.length;i++){
+      var o=p-i; o=o<0?0:o>1?1:o;              /* layer i+1 fades in over i */
+      layers[i].style.opacity=o.toFixed(3);
+    }
+  }
+  function tick(){
+    target=computeTarget();
+    pos+=(target-pos)*.12;                      /* the sky eases, never snaps */
+    if(Math.abs(target-pos)<.0015){ pos=target; apply(pos); updateAlm(); raf=0; return; }
+    apply(pos); updateAlm();
+    raf=window.requestAnimationFrame(tick);
+  }
+  function wake(){ if(bound&&!raf) raf=window.requestAnimationFrame(tick); }
+  function onResize(){ measure(); wake(); }
+
+  /* ————— the almanac readout ————— */
+  var almIn=document.getElementById('alm-in');
+  var ALM=['Jun 21 · sunset 9:11 pm','Jul 15 · sunset 9:01 pm','Oct 8 · sunset 6:31 pm','Dec 21 · sunset 4:20 pm','Apr 25 · sunset 8:14 pm'];
+  var almIdx=-1,almT=0;
+  function updateAlm(){
+    var idx=Math.round(target);
+    if(idx===almIdx||!almIn) return;
+    almIdx=idx;
+    var txt=ALM[idx]||ALM[0];
+    almIn.classList.add('out');
+    window.clearTimeout(almT);
+    almT=window.setTimeout(function(){
+      almIn.textContent=txt;
+      almIn.classList.remove('out');
+      almIn.classList.add('in-from');
+      window.requestAnimationFrame(function(){window.requestAnimationFrame(function(){
+        almIn.classList.remove('in-from');
+      });});
+    },200);
+  }
+
+  /* ————— the constant yields to its landed twin ————— */
+  var constant=document.getElementById('constant');
+  var crestLand=document.getElementById('crest-land');
+  if(constant&&crestLand){
+    var cio=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ constant.classList.toggle('veil',e.isIntersecting); });
+    },{threshold:.05});
+    cio.observe(crestLand);
+  }
+
+  /* ————— the film loops: play in view, rest offscreen, still under reduce ————— */
+  var vids=Array.prototype.slice.call(document.querySelectorAll('.filmframe video'));
+  function syncVid(v){
+    if(mq.matches||v.dataset.on!=='1'){ v.pause(); }
+    else{ var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
+  }
+  var vio=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ e.target.dataset.on=e.isIntersecting?'1':'0'; syncVid(e.target); });
+  },{rootMargin:'160px 0px'});
+  vids.forEach(function(v){ vio.observe(v); if(mq.matches){ v.removeAttribute('autoplay'); v.pause(); } });
+
+  /* ————— arm / disarm with the motion preference ————— */
+  function bind(){
+    if(bound) return; bound=true;
+    doc.classList.add('anim');
+    measure(); pos=target=computeTarget(); apply(pos); updateAlm();
+    window.addEventListener('scroll',wake,{passive:true});
+    window.addEventListener('resize',onResize,{passive:true});
+    window.requestAnimationFrame(function(){window.requestAnimationFrame(function(){
+      doc.classList.add('go');
+    });});
+  }
+  function unbind(){
+    if(!bound) return; bound=false;
+    doc.classList.remove('anim');
+    window.removeEventListener('scroll',wake);
+    window.removeEventListener('resize',onResize);
+    if(raf){ window.cancelAnimationFrame(raf); raf=0; }
+    for(var i=0;i<layers.length;i++){ layers[i].style.opacity=''; }
+    vids.forEach(syncVid);
+  }
+  function decide(){ if(mq.matches){ unbind(); } else { bind(); vids.forEach(syncVid); } }
+  if(mq.addEventListener) mq.addEventListener('change',decide);
+  decide();
+
+  /* ————— unconditional settle: on-screen is landed by ≤2.3s ————— */
+  window.setTimeout(function(){
+    doc.classList.add('go');
+    var vh=window.innerHeight;
+    revs.forEach(function(el){
+      if(!el.classList.contains('in')&&el.getBoundingClientRect().top<vh){
+        el.classList.add('in'); io.unobserve(el);
+      }
+    });
+    if(bound){ measure(); pos=target=computeTarget(); apply(pos); updateAlm(); }
+  },1150);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction 10 · The Route Map — DiscNW redesign</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<meta name="description" content="The Route Map: transit-system wayfinding for DiscNW. Four color-coded program lines, real programs as stations, signage typography — the site as the map that shows your route into ultimate.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600;700;800;900&family=Overpass+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* signage neutrals */
+    --ink:#14181D;        /* enamel signage black — boards, navs, headline ink */
+    --ink-panel:#1E242C;  /* raised panel on ink */
+    --ink-deep:#0D1014;   /* deepest strip — service notices */
+    --paper:#F6F4EF;      /* the map sheet — warm service white */
+    --card:#FFFFFF;
+    --hair:#DDD8CE;       /* hairline rules on paper */
+    --grey:#55606B;       /* platform grey — metadata, subs. AA on white & paper */
+
+    /* the four lines — transit-grade, all pass AA against white */
+    --ly:#0C7A3F;  --ly-dark:#0A6836;  --ly-tint:#E3F1E8;   /* Youth green */
+    --ls:#C2410C;  --ls-tint:#FBEAE0;                        /* School orange */
+    --la:#235BA8;  --la-tint:#E5EDF8;                        /* Adult blue, from DiscNW navy */
+    --lp:#7C2D8E;  --lp-tint:#F2E7F5;                        /* Spirit plum */
+
+    /* light variants for small accents on ink only */
+    --ly-l:#5BC48B; --ls-l:#F0824D; --la-l:#7FADE3; --lp-l:#C687D6;
+
+    --wrap:1200px;
+
+    /* house easing — the kit's two curves plus the draw curve for route strokes.
+       default 'ease' is banned on this page. */
+    --ease-snap:cubic-bezier(.4,0,.1,1);   /* 240–400ms micro moves */
+    --ease-lux:cubic-bezier(.16,1,.3,1);   /* 700–900ms reveals */
+    --ease-draw:cubic-bezier(.45,0,.2,1);  /* route strokes drawing */
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  [id]{ scroll-margin-top:24px; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', system-ui, -apple-system, sans-serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--ly); color:#fff; }
+  img{ max-width:100%; }
+
+  a{ color:var(--la); text-decoration:underline; text-underline-offset:3px; }
+  a:hover{ color:var(--ink); }
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible{
+    outline:3px solid var(--la);
+    outline-offset:2px;
+    border-radius:4px;
+  }
+  .sec-dark a:focus-visible, .sec-dark button:focus-visible,
+  .masthead a:focus-visible, .site-foot a:focus-visible,
+  .mock-dark a:focus-visible{ outline-color:var(--la-l); }
+
+  /* ---------- layout: one container, one rhythm ---------- */
+  .sec{ max-width:var(--wrap); margin:0 auto; padding:116px 32px; }
+  .kicker{
+    font-family:'Overpass',sans-serif;
+    font-weight:800; font-size:12px;
+    letter-spacing:.18em; text-transform:uppercase;
+    color:var(--grey);
+    margin:0 0 14px; padding-bottom:10px;
+    position:relative;
+  }
+  /* the platform-edge tick under every section label — swept in on arrival */
+  .kicker::after{
+    content:""; position:absolute; left:0; bottom:0;
+    width:44px; height:3px; background:var(--ink);
+    transform-origin:0 50%;
+  }
+  .sec-title{
+    font-family:'Overpass',sans-serif;
+    font-weight:800;
+    font-size:clamp(30px, 3.6vw, 44px);
+    line-height:1.04; letter-spacing:-.02em;
+    color:var(--ink);
+    margin:0 0 16px;
+    text-wrap:balance;
+  }
+  .sec-intro{ max-width:64ch; margin:0 0 48px; color:var(--grey); font-size:18px; }
+  .note{
+    font-size:13px; font-style:italic; color:var(--grey);
+    margin:16px 2px 0; max-width:84ch;
+  }
+  .mono{ font-family:'Overpass Mono', ui-monospace, 'SF Mono', Menlo, monospace; }
+
+  /* ---------- photos: clean, full color, captions below, never on top ---------- */
+  .ph{ display:block; width:100%; object-fit:cover; }
+
+  /* ---------- buttons: sign plates ---------- */
+  .btn{
+    display:inline-block; border:0; cursor:pointer;
+    font-family:'Overpass',sans-serif; font-weight:700; font-size:16px; line-height:1;
+    padding:16px 24px; border-radius:8px;
+    text-decoration:none;
+    transition:background-color .3s var(--ease-snap), color .3s var(--ease-snap),
+               box-shadow .3s var(--ease-snap), transform .3s var(--ease-snap);
+  }
+  .btn-primary{ background:var(--ly); color:#fff; }
+  .btn-primary:hover, .btn-primary.demo-hover{ background:var(--ly-dark); }
+  /* magnetic primaries: JS drives transform — keep the curve off transform so the lerp owns it */
+  .magnet{ transition:background-color .3s var(--ease-snap), color .3s var(--ease-snap); }
+  .btn-secondary{
+    background:transparent; color:var(--ink);
+    box-shadow:inset 0 0 0 2px var(--ink);
+  }
+  .btn-secondary:hover, .btn-secondary.demo-hover{ background:var(--ink); color:var(--paper); transform:translateY(-1px); }
+  .btn-secondary:active{ transform:translateY(0); }
+  .btn-quiet{
+    background:none; padding:16px 4px;
+    color:var(--la); font-weight:700;
+    text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1.5px;
+    border-radius:4px;
+  }
+  .btn-quiet:hover, .btn-quiet.demo-hover{ color:var(--ink); text-decoration-thickness:3px; }
+
+  /* ---------- hover roll: duplicate-and-shift labels (footer nav) ---------- */
+  .roll{ position:relative; display:inline-block; overflow:hidden; vertical-align:top; }
+  .roll-a, .roll-b{ display:block; transition:transform .45s var(--ease-snap); }
+  .roll-b{ position:absolute; top:100%; left:0; }
+  .roll:hover .roll-a, .roll:focus-visible .roll-a,
+  .roll:hover .roll-b, .roll:focus-visible .roll-b{ transform:translateY(-100%); }
+
+  /* ---------- 1 · masthead: the station sign ---------- */
+  .masthead{ background:var(--ink); color:#C9CFD6; }
+  .masthead-in{ max-width:var(--wrap); margin:0 auto; padding:96px 32px 64px; }
+  .mast-series{
+    margin:0 0 22px;
+    font-family:'Overpass',sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:.2em; text-transform:uppercase; color:#9AA6B2;
+  }
+  .mast-name{
+    margin:0 0 22px;
+    font-family:'Overpass',sans-serif; font-weight:900;
+    font-size:clamp(50px, 7vw, 92px); line-height:.98; letter-spacing:-.03em;
+    color:#fff; text-transform:uppercase;
+  }
+  .mast-thesis{ margin:0 0 40px; font-size:19px; line-height:1.55; color:#C9CFD6; max-width:60ch; }
+  .mline{ display:block; overflow:hidden; padding-bottom:.15em; margin-bottom:-.15em; }
+  .mline-in{ display:block; }
+
+  /* mini nav: the page itself as a route — stops with a running line */
+  .stops{ overflow-x:auto; padding-bottom:6px; }
+  .stops ul{ display:flex; align-items:center; margin:0; padding:0; list-style:none; }
+  .stops li{ display:flex; align-items:center; flex-shrink:0; }
+  .stops li::after{ content:""; width:26px; height:2px; background:#39424C; flex-shrink:0; }
+  .stops li:last-child::after{ display:none; }
+  .stops a{
+    display:flex; align-items:center; gap:8px;
+    color:#C9CFD6; text-decoration:none; white-space:nowrap;
+    font-family:'Overpass',sans-serif; font-weight:700; font-size:12.5px;
+    letter-spacing:.08em; text-transform:uppercase;
+    padding:6px 2px; border-radius:4px;
+  }
+  .stop-dot{
+    width:11px; height:11px; border-radius:50%; flex-shrink:0;
+    border:2.5px solid #87929D; background:var(--ink);
+    transition:border-color .3s var(--ease-snap), background-color .3s var(--ease-snap);
+  }
+  .stops a:hover{ color:#fff; }
+  .stops a:hover .stop-dot, .stops a:focus-visible .stop-dot{ border-color:#fff; background:#fff; }
+
+  /* the system ribbon — the four lines, run as a strip along the sign's base */
+  .mast-ribbon{ display:flex; height:10px; }
+  .mast-ribbon i{ flex:1; }
+  .r-y{ background:var(--ly); } .r-s{ background:var(--ls); }
+  .r-a{ background:var(--la); } .r-p{ background:var(--lp); }
+
+  /* the masthead's one orchestrated entrance — pure CSS, backwards fill; base styles are
+     the settled state, so no-JS, print, and screenshots are whole, and all is still by 1.6s. */
+  @keyframes mask-rise{ from{ transform:translateY(130%); } }
+  @keyframes fade-rise{ from{ opacity:0; transform:translateY(16px); } }
+  @keyframes ribbon-run{ from{ transform:scaleX(0); } }
+  .mast-series .mline-in{ animation:mask-rise .85s var(--ease-lux) .08s backwards; }
+  .mast-name .mline-in{ animation:mask-rise .95s var(--ease-lux) .17s backwards; }
+  .mast-thesis{ animation:fade-rise .9s var(--ease-lux) .34s backwards; }
+  .stops{ animation:fade-rise .9s var(--ease-lux) .46s backwards; }
+  .mast-ribbon{ transform-origin:0 50%; animation:ribbon-run .9s var(--ease-draw) .5s backwards; }
+
+  /* ---------- 2 · idea ---------- */
+  .idea-grid{ display:grid; grid-template-columns:1.25fr .75fr; gap:32px 56px; align-items:start; }
+  .idea-copy{ font-size:20px; line-height:1.65; color:var(--ink); margin:0; }
+  .idea-copy p{ margin:0 0 20px; }
+  .idea-copy p:last-child{ margin-bottom:0; }
+  .idea-aside{
+    background:var(--card); border:1px solid var(--hair); border-radius:14px;
+    padding:26px 28px 14px;
+  }
+  .idea-aside h3{
+    margin:0 0 6px;
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:13px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--grey);
+  }
+  .idea-aside ul{ margin:0; padding:0; list-style:none; }
+  .idea-aside li{ padding:14px 0; font-size:15.5px; line-height:1.5; border-top:1px solid var(--hair); }
+  .idea-aside li:first-of-type{ border-top:0; }
+
+  /* ---------- 3 · color ---------- */
+  .swatches{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin:0; padding:0; list-style:none; }
+  .swatch{ border-radius:14px; overflow:hidden; background:var(--card); border:1px solid var(--hair); }
+  .swatch-chip{ height:120px; display:flex; align-items:center; }
+  .swatch-chip svg{ width:100%; height:60px; display:block; }
+  .swatch-info{ padding:18px 20px 20px; }
+  .swatch-name{ margin:0 0 2px; font-family:'Overpass',sans-serif; font-weight:800; font-size:18px; color:var(--ink); }
+  .swatch-hex{
+    display:inline-block; margin:0 0 8px;
+    font-family:'Overpass Mono',ui-monospace,monospace; font-weight:600; font-size:13px; letter-spacing:.04em;
+    color:var(--grey);
+  }
+  .swatch-use{ margin:0; font-size:14.5px; color:var(--grey); line-height:1.45; }
+
+  /* ---------- 4 · typography ---------- */
+  .type-cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-bottom:64px; }
+  .type-card{ border-radius:14px; background:var(--card); border:1px solid var(--hair); padding:26px 28px; }
+  .type-card h3{ margin:0 0 6px; font-family:'Overpass',sans-serif; font-weight:800; font-size:22px; color:var(--ink); }
+  .type-card h3.tf-mono{ font-family:'Overpass Mono',ui-monospace,monospace; font-weight:700; font-size:19px; }
+  .type-card h3.tf-body{ font-family:'Inter',sans-serif; font-weight:700; }
+  .type-card .role{
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:11.5px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--grey); margin:0 0 12px; display:block;
+  }
+  .type-card p{ margin:0; color:var(--grey); font-size:15px; }
+  .type-card .glyphs{ margin:16px 0 0; font-size:19px; color:var(--ink); word-break:break-all; }
+  .type-card.tc-display .glyphs{ font-family:'Overpass',sans-serif; font-weight:900; }
+  .type-card.tc-mono .glyphs{ font-family:'Overpass Mono',ui-monospace,monospace; font-weight:600; font-size:16px; }
+  .specimen{
+    margin:0 0 12px;
+    font-family:'Overpass',sans-serif; font-weight:900;
+    font-size:clamp(42px, 6vw, 82px); line-height:1; letter-spacing:-.025em;
+    color:var(--ink); text-wrap:balance; text-transform:uppercase;
+  }
+  .specimen-sub{
+    margin:0 0 32px;
+    font-family:'Overpass',sans-serif; font-weight:700; font-size:clamp(20px,2.4vw,26px);
+    line-height:1.25; color:var(--grey); max-width:36ch;
+  }
+  .specimen-body{ max-width:62ch; font-size:17px; margin:0 0 56px; }
+
+  /* the live station sign — signage type doing its day job at 1:1 */
+  .plate-demo{
+    background:var(--ink); color:#fff; border-radius:14px;
+    padding:34px 38px 30px; margin:0 0 56px;
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:12px 40px;
+  }
+  .plate-demo .plate-name{
+    margin:0;
+    font-family:'Overpass',sans-serif; font-weight:800;
+    font-size:clamp(28px,3.4vw,40px); line-height:1.05; letter-spacing:-.015em;
+  }
+  .plate-demo .plate-sub{
+    margin:0; flex:1; min-width:240px;
+    font-family:'Overpass Mono',ui-monospace,monospace; font-size:13.5px; letter-spacing:.04em;
+    color:#B9C2CC;
+  }
+  .plate-demo .plate-sub b{ color:var(--ly-l); font-weight:700; }
+
+  .scale{ border-top:1px solid var(--hair); }
+  .scale-row{
+    display:flex; align-items:baseline; justify-content:space-between; gap:24px;
+    padding:18px 2px; border-bottom:1px solid var(--hair);
+  }
+  .scale-sample{ margin:0; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .s-display{ font-family:'Overpass',sans-serif; font-weight:900; font-size:clamp(34px,4.6vw,60px); line-height:1; letter-spacing:-.02em; text-transform:uppercase; }
+  .s-h2{ font-family:'Overpass',sans-serif; font-weight:800; font-size:clamp(28px,3vw,40px); line-height:1.08; letter-spacing:-.015em; }
+  .s-h3{ font-family:'Overpass',sans-serif; font-weight:700; font-size:23px; line-height:1.25; }
+  .s-body{ font-size:17px; }
+  .s-caption{
+    font-family:'Overpass Mono',ui-monospace,monospace; font-weight:600; font-size:12.5px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--grey);
+  }
+  .scale-spec{
+    flex-shrink:0; font-size:13.5px; color:var(--grey);
+    font-family:'Overpass Mono',ui-monospace,monospace; letter-spacing:.02em; text-align:right;
+  }
+
+  /* ---------- 5 · signature: the route diagram ---------- */
+  .legend{ display:flex; flex-wrap:wrap; gap:10px 28px; margin:0 0 24px; padding:0; list-style:none; }
+  .legend li{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Overpass',sans-serif; font-weight:700; font-size:13px;
+    letter-spacing:.06em; color:var(--ink);
+  }
+  .legend .seg{ width:34px; height:8px; border-radius:99px; flex-shrink:0; }
+  .legend small{ font-family:'Inter',sans-serif; font-weight:500; font-size:13px; color:var(--grey); letter-spacing:0; }
+
+  .sig-frame{
+    background:var(--card); border:1px solid var(--hair); border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 24px 48px -34px rgba(20,24,29,.4);
+  }
+  .sig-map{ overflow-x:auto; padding:36px 20px 8px; }
+  .sig-map svg{ display:block; width:100%; min-width:920px; height:auto; }
+  .sig-base{
+    background:var(--ink); color:#B9C2CC;
+    padding:20px 30px 22px;
+    display:flex; flex-wrap:wrap; gap:8px 32px; align-items:baseline; justify-content:space-between;
+    font-size:14.5px;
+  }
+  .sig-base strong{ color:#fff; font-family:'Overpass',sans-serif; font-weight:700; }
+  .sig-uses{
+    margin:24px 0 0;
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:12px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--grey);
+  }
+  .sig-uses span{ color:#B7B0A4; padding:0 8px; }
+
+  /* diagram type — signage at two sizes, one family */
+  .rm-name{ font-family:'Overpass',sans-serif; font-weight:700; font-size:16px; fill:var(--ink); text-anchor:middle; }
+  .rm-sub{ font-family:'Inter',sans-serif; font-weight:500; font-size:12.5px; fill:var(--grey); text-anchor:middle; }
+  .rm-tag{ font-family:'Overpass',sans-serif; font-weight:800; font-size:12px; letter-spacing:.14em; text-anchor:start; }
+  .rm-int-name{ font-family:'Overpass',sans-serif; font-weight:800; font-size:18px; fill:var(--ink); text-anchor:start; }
+  .rm-int-sub{ font-family:'Inter',sans-serif; font-weight:500; font-size:12.5px; fill:var(--grey); text-anchor:start; }
+  .rm-org{ font-family:'Overpass',sans-serif; font-weight:800; font-size:11px; letter-spacing:.16em; fill:var(--grey); text-anchor:middle; }
+  .rm-here{ font-family:'Overpass',sans-serif; font-weight:800; font-size:12.5px; letter-spacing:.14em; fill:var(--ink); text-anchor:middle; }
+  .rm-dot, .rm-int, .rm-origin{ transform-box:fill-box; transform-origin:center; }
+  .rm-pulse{ opacity:0; transform-box:fill-box; transform-origin:center; }
+
+  /* ---------- 6 · homepage mockup ---------- */
+  .browser{
+    border-radius:14px; overflow:hidden;
+    box-shadow:0 32px 64px -36px rgba(20,24,29,.5);
+    background:var(--card); border:1px solid var(--hair);
+  }
+  .browser-bar{
+    display:flex; align-items:center; gap:14px;
+    background:#E9E5DC; padding:11px 18px;
+  }
+  .browser-dots{ display:flex; gap:6px; }
+  .browser-dots span{ width:10px; height:10px; border-radius:50%; background:#C2BBAD; display:block; }
+  .browser-url{
+    flex:1; max-width:340px; background:var(--card); border-radius:999px;
+    font-size:13px; color:var(--grey); padding:5px 16px;
+    font-family:'Overpass Mono',ui-monospace,monospace;
+  }
+
+  .m-service{
+    background:var(--ink-deep); color:#B9C2CC;
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 26px;
+    padding:10px 40px;
+    font-family:'Overpass Mono',ui-monospace,monospace; font-size:12.5px; letter-spacing:.03em;
+  }
+  .m-service .svc-ok{ color:var(--ly-l); font-weight:700; }
+  .m-service .svc-dot{
+    display:inline-block; width:8px; height:8px; border-radius:50%;
+    background:var(--ly-l); margin-right:8px; vertical-align:0;
+  }
+  .m-service .svc-right{ margin-left:auto; }
+  .m-service a{ color:#fff; text-decoration:none; font-weight:600; }
+  .m-service a:hover{ text-decoration:underline; text-underline-offset:3px; }
+
+  .mock-nav{
+    background:var(--ink);
+    display:flex; align-items:center; gap:32px;
+    padding:16px 40px;
+  }
+  .mock-logo img{ display:block; width:140px; height:auto; }
+  .mock-links{ display:flex; gap:26px; margin-left:auto; }
+  .mock-links span{ color:#D6DBE1; font-family:'Overpass',sans-serif; font-weight:600; font-size:15.5px; }
+  .m-register{
+    background:var(--ly); color:#fff;
+    font-family:'Overpass',sans-serif; font-weight:700; font-size:15px;
+    padding:12px 24px; border-radius:8px; text-decoration:none;
+    transition:background-color .3s var(--ease-snap);
+  }
+  .m-register:hover{ background:var(--ly-dark); }
+  .mock-burger{ display:none; margin-left:auto; }
+  .mock-burger span{ display:block; width:22px; height:2.5px; background:#D6DBE1; margin:4px 0; border-radius:2px; }
+  .nav-ribbon{ display:flex; height:8px; }
+  .nav-ribbon i{ flex:1; }
+
+  .mock-hero{ background:var(--ink); color:#C9CFD6; padding:72px 48px 0; }
+  .mock-eyebrow{
+    margin:0 0 20px;
+    font-family:'Overpass',sans-serif; font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; color:#9AA6B2;
+  }
+  .mock-h1{
+    margin:0 0 22px;
+    font-family:'Overpass',sans-serif; font-weight:900;
+    font-size:clamp(56px, 8.4vw, 112px); line-height:.96; letter-spacing:-.03em;
+    color:#fff; max-width:12ch; text-transform:uppercase;
+  }
+  .mock-sub{ margin:0 0 48px; max-width:56ch; font-size:18px; line-height:1.55; color:#C9CFD6; }
+
+  /* the departure board — four lines as huge tappable signage rows */
+  .m-board{ margin:0 -48px; border-top:1px solid #2B333D; }
+  .m-board-head{
+    display:flex; flex-wrap:wrap; gap:4px 24px; align-items:baseline;
+    padding:12px 48px;
+    font-family:'Overpass Mono',ui-monospace,monospace; font-size:12px; letter-spacing:.08em;
+    color:#87929D; text-transform:uppercase; border-bottom:1px solid #2B333D;
+  }
+  .m-board-head .ok{ color:var(--ly-l); font-weight:700; }
+  .m-board-head .upd{ margin-left:auto; }
+  .m-row{
+    display:grid; grid-template-columns:56px minmax(0,1fr) auto 30px;
+    align-items:center; gap:24px;
+    padding:22px 48px; text-decoration:none;
+    border-bottom:1px solid #2B333D;
+    background-color:transparent;
+    transition:background-color .35s var(--ease-snap);
+  }
+  /* backlit-sign hover: the panel lights, the arrow leans toward the platform */
+  .m-row:hover, .m-row:focus-visible{ background-color:rgba(255,255,255,.06); }
+  .m-bullet{
+    width:46px; height:46px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:16px; color:#fff;
+    letter-spacing:.02em;
+  }
+  .mb-y{ background:var(--ly); } .mb-s{ background:var(--ls); }
+  .mb-a{ background:var(--la); } .mb-p{ background:var(--lp); }
+  .m-row-name{
+    display:block;
+    font-family:'Overpass',sans-serif; font-weight:800;
+    font-size:clamp(22px,2.6vw,30px); line-height:1.05; letter-spacing:-.01em;
+    color:#fff; text-transform:uppercase;
+  }
+  .m-row-route{ display:block; margin-top:5px; font-size:14.5px; color:#9AA6B2; }
+  .m-row-dep{ text-align:right; }
+  .m-dep-label{
+    display:block;
+    font-family:'Overpass Mono',ui-monospace,monospace; font-size:11px;
+    letter-spacing:.14em; text-transform:uppercase; color:#87929D;
+  }
+  .m-dep-val{
+    display:block; margin-top:4px;
+    font-family:'Overpass Mono',ui-monospace,monospace; font-size:13.5px; color:#D6DBE1;
+    transition:color .35s var(--ease-snap);
+  }
+  .m-row:hover .m-dep-val, .m-row:focus-visible .m-dep-val{ color:#fff; }
+  .m-row-arrow{
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:22px; color:#87929D;
+    transition:transform .35s var(--ease-snap), color .35s var(--ease-snap);
+  }
+  .m-row:hover .m-row-arrow, .m-row:focus-visible .m-row-arrow{ transform:translateX(6px); color:#fff; }
+
+  /* destination poster: the photograph is the arrival, captioned on an ink plate below */
+  .band-clip{ display:block; overflow:hidden; background:var(--ink); }
+  .m-dest .ph{ height:clamp(300px, 36vw, 480px); object-position:50% 38%; }
+  .m-dest-plate{ background:var(--ink); color:#C9CFD6; padding:22px 48px 26px; }
+  .m-dest-kicker{
+    margin:0 0 8px;
+    font-family:'Overpass Mono',ui-monospace,monospace; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--ly-l);
+  }
+  .m-dest-line{
+    margin:0 0 6px;
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:clamp(22px,2.6vw,30px);
+    line-height:1.1; color:#fff;
+  }
+  .m-dest-meta{ margin:0; font-size:14.5px; color:#9AA6B2; max-width:74ch; }
+
+  .m-boarding{
+    background:var(--card); color:var(--ink);
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 24px;
+    padding:22px 40px 24px;
+    font-size:15px; line-height:1.6; border-top:1px solid var(--hair);
+  }
+  .m-boarding strong{
+    flex-shrink:0; color:var(--ly-dark);
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:12px;
+    letter-spacing:.16em; text-transform:uppercase;
+  }
+  .m-boarding ul{ margin:0; padding:0; list-style:none; display:flex; flex-wrap:wrap; gap:4px 0; }
+  .m-boarding li{ white-space:nowrap; }
+  .m-boarding li + li::before{ content:"·"; color:var(--grey); padding:0 12px; }
+  .m-boarding .brd-more{ margin-left:auto; color:var(--la); font-weight:700; font-size:14px; }
+
+  /* ---------- 7 · three front doors ---------- */
+  .paths{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .path-card{
+    background:var(--card); border:1px solid var(--hair); border-radius:14px; overflow:hidden;
+    display:flex; flex-direction:column;
+    border-top-width:6px;
+  }
+  .door-a{ border-top-color:var(--la); }
+  .door-p{ border-top-color:var(--lp); }
+  .door-y{ border-top-color:var(--ly); }
+  .path-card .ph{ height:210px; }
+  .path-body{ padding:24px 26px 28px; display:flex; flex-direction:column; flex:1; align-items:flex-start; }
+  .path-tag{
+    margin:0 0 12px;
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:11.5px;
+    letter-spacing:.16em; text-transform:uppercase;
+    border-radius:4px; padding:4px 9px;
+  }
+  .door-a .path-tag{ color:var(--la); background:var(--la-tint); }
+  .door-p .path-tag{ color:var(--lp); background:var(--lp-tint); }
+  .door-y .path-tag{ color:var(--ly-dark); background:var(--ly-tint); }
+  .path-card h3{
+    margin:0 0 10px;
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:23px; line-height:1.15; color:var(--ink);
+    text-wrap:balance;
+  }
+  .path-card p{ margin:0 0 24px; font-size:15.5px; color:var(--grey); flex:1; }
+
+  /* ---------- chapter turn: the region already thinks in routes ---------- */
+  .band-divider{ margin:0; background:var(--ink); }
+  .band-divider .ph{
+    max-width:2400px; margin:0 auto; /* native width — never upscaled */
+    height:clamp(340px, 40vw, 620px);
+    object-position:50% 55%;
+  }
+  .band-plate{ background:var(--ink); }
+  .band-plate-in{ max-width:var(--wrap); margin:0 auto; padding:20px 32px 28px; }
+  .band-cap{ margin:0; font-size:15px; font-style:italic; color:#B9C2CC; max-width:76ch; }
+
+  /* ---------- 8 · storytelling (dark) ---------- */
+  .sec-dark{ background:var(--ink); color:#D6DBE1; }
+  .sec-dark .kicker{ color:#9AA6B2; }
+  .sec-dark .kicker::after{ background:var(--ly-l); }
+  .sec-dark .sec-title{ color:#fff; }
+  .sec-dark .sec-intro{ color:#9AA6B2; }
+  .sec-dark .note{ color:#87929D; }
+  .story-grid{ display:grid; grid-template-columns:1.15fr .85fr; gap:32px; align-items:start; }
+  .journey{ background:var(--card); color:var(--ink); border-radius:16px; overflow:hidden; }
+  .journey .ph{ height:260px; object-position:50% 30%; }
+  .journey-body{ padding:26px 30px 30px; }
+  .journey-meta{
+    display:flex; flex-wrap:wrap; gap:6px 20px;
+    margin:0 0 14px;
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--grey);
+  }
+  .journey h3{
+    margin:0 0 14px;
+    font-family:'Overpass',sans-serif; font-weight:800;
+    font-size:29px; line-height:1.08; color:var(--ink);
+  }
+  .journey blockquote{
+    margin:0 0 18px; padding:2px 0 2px 20px;
+    border-left:4px solid var(--lp);
+    font-size:18px; line-height:1.55; color:var(--ink);
+  }
+  .journey blockquote p{ margin:0; }
+  .journey .byline{ margin:0 0 22px; font-size:14.5px; color:var(--grey); }
+  /* the rider's route, printed — a vertical line of real stops */
+  .ride{ margin:0; padding:0 0 0 6px; list-style:none; border-left:0; position:relative; }
+  .ride::before{
+    content:""; position:absolute; left:11px; top:8px; bottom:8px; width:4px;
+    border-radius:99px;
+    background:linear-gradient(180deg, var(--ly) 0 46%, var(--lp) 54% 100%);
+  }
+  .ride li{
+    position:relative; padding:5px 0 5px 30px;
+    font-size:14.5px; color:var(--ink);
+  }
+  .ride li::before{
+    content:""; position:absolute; left:8px; top:50%; transform:translateY(-50%);
+    width:10px; height:10px; border-radius:50%;
+    background:#fff; border:3px solid var(--ly);
+  }
+  .ride li.ride-p::before{ border-color:var(--lp); }
+  .ride li.ride-x::before{
+    left:5px; width:14px; height:14px; border:3px solid var(--ink);
+  }
+  .ride .yr{
+    display:inline-block; min-width:74px;
+    font-family:'Overpass Mono',ui-monospace,monospace; font-size:12.5px; color:var(--grey);
+  }
+  .stats{ display:grid; gap:16px; margin:0; padding:0; list-style:none; }
+  .stat{ border-radius:14px; background:var(--ink-panel); padding:22px 26px; }
+  .stat .num{
+    display:block;
+    font-family:'Overpass',sans-serif; font-weight:900;
+    font-size:clamp(28px,3vw,38px); line-height:1.05; color:#fff;
+    margin-bottom:6px; font-variant-numeric:tabular-nums;
+  }
+  .stat .why{ margin:0; font-size:15px; color:#B9C2CC; line-height:1.5; }
+  .stat-y .num{ color:var(--ly-l); } .stat-s .num{ color:var(--ls-l); }
+  .stat-a .num{ color:var(--la-l); } .stat-p .num{ color:var(--lp-l); }
+
+  /* ---------- 9 · UI components ---------- */
+  .ui-grid{ display:grid; grid-template-columns:.9fr 1.1fr; gap:24px; align-items:start; }
+  .ui-block{ background:var(--card); border:1px solid var(--hair); border-radius:16px; padding:28px 30px; }
+  .ui-block h3{ margin:0 0 20px; font-family:'Overpass',sans-serif; font-weight:800; font-size:19px; color:var(--ink); }
+  .btn-row{ display:flex; flex-wrap:wrap; gap:12px 14px; align-items:center; margin-bottom:8px; }
+  .btn-label{
+    display:block; margin:16px 0 10px;
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:11.5px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--grey);
+  }
+  .event-card{ border-radius:14px; padding:24px; background:var(--paper); border:1px solid var(--hair); }
+  .event-strip{
+    display:flex; align-items:center; gap:12px; margin:0 0 16px;
+  }
+  .event-bullet{
+    width:34px; height:34px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--la); color:#fff;
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:14px;
+  }
+  .event-line{
+    font-family:'Overpass Mono',ui-monospace,monospace; font-size:12px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--la);
+  }
+  .chip{
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    border-radius:999px; padding:5px 13px; margin-left:auto;
+    color:#fff; background:var(--ly);
+  }
+  .event-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+  .event-card h4{
+    margin:0 0 6px;
+    font-family:'Overpass',sans-serif; font-weight:800;
+    font-size:24px; line-height:1.15; color:var(--ink);
+  }
+  .event-meta{
+    margin:0 0 12px;
+    font-family:'Overpass Mono',ui-monospace,monospace; font-size:13px; color:var(--grey);
+    letter-spacing:.02em;
+  }
+  .event-desc{ margin:0 0 8px; font-size:15.5px; color:var(--ink); }
+  .event-fee{ margin:0 0 20px; font-size:14.5px; color:var(--grey); }
+  .event-foot{
+    display:flex; flex-wrap:wrap; gap:12px 16px; align-items:center;
+    border-top:1px solid var(--hair); padding-top:16px;
+  }
+  .event-deadline{
+    font-family:'Overpass Mono',ui-monospace,monospace; font-weight:600; font-size:12.5px;
+    letter-spacing:.04em; color:var(--ink); margin-right:auto;
+  }
+  .filter{ display:flex; flex-wrap:wrap; gap:16px 18px; align-items:end; }
+  .filter label{ display:flex; flex-direction:column; gap:6px; font-weight:600; font-size:14px; color:var(--grey); }
+  .filter select{
+    font-family:'Inter',sans-serif; font-size:15.5px; color:var(--ink);
+    background:var(--card); border:1.5px solid #8B95A0; border-radius:8px;
+    padding:11px 12px; min-width:180px;
+  }
+
+  /* ---------- 10 · voice ---------- */
+  .voice-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .voice-card{ background:var(--card); border:1px solid var(--hair); border-radius:14px; padding:26px 28px; }
+  .voice-card .vlabel{
+    display:block; margin:0 0 14px;
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:11.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--grey);
+  }
+  .voice-card .vhero{
+    margin:0; font-family:'Overpass',sans-serif; font-weight:900;
+    font-size:30px; line-height:1.05; color:var(--ink); text-transform:uppercase; letter-spacing:-.01em;
+  }
+  .voice-card p{ margin:0; font-size:16px; color:var(--ink); }
+  .voice-card p .mono{ font-size:13.5px; color:var(--grey); }
+
+  /* ---------- 11 · footer ---------- */
+  .site-foot{ background:var(--ink); color:#C9CFD6; }
+  .site-foot .foot-in{ max-width:var(--wrap); margin:0 auto; padding:88px 32px 56px; }
+  .verdicts{ display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:56px; }
+  .verdict{ border-radius:14px; background:var(--ink-panel); padding:26px 30px; }
+  .verdict h2{
+    margin:0 0 10px;
+    font-family:'Overpass',sans-serif; font-weight:800; font-size:17px; color:var(--ly-l);
+  }
+  .verdict h2.v-warn{ color:var(--ls-l); }
+  .verdict p{ margin:0; font-size:16px; line-height:1.55; color:#D6DBE1; }
+  .foot-ribbon{ display:flex; height:8px; border-radius:99px; overflow:hidden; margin-bottom:32px; }
+  .foot-ribbon i{ flex:1; }
+  .foot-nav{
+    display:flex; flex-wrap:wrap; gap:14px 30px; align-items:center; justify-content:space-between;
+    border-top:1px solid #2B333D; padding-top:28px;
+  }
+  .foot-nav a{ color:#fff; font-family:'Overpass',sans-serif; font-weight:700; font-size:16px; }
+  .foot-nav a.roll{ text-decoration:none; }
+  .foot-nav a:hover{ color:var(--ly-l); }
+  .foot-meta{
+    font-size:12.5px; color:#87929D;
+    font-family:'Overpass Mono',ui-monospace,monospace; letter-spacing:.06em;
+  }
+
+  /* ---------- wayfinding choreography: scroll reveals ----------
+     Armed only when JS adds html.anim (observers live, motion allowed).
+     Without it — no JS, print, reduced motion — every base style below is
+     already the settled page. Each reveal fires once, then unobserves. */
+  html.anim [data-wipe] .ph{
+    clip-path:inset(0 0 0 0);
+    transition:clip-path 1.05s var(--ease-lux), transform 1.5s var(--ease-lux);
+  }
+  html.anim [data-wipe]:not(.in) .ph{ clip-path:inset(0 0 100% 0); transform:scale(1.05); }
+
+  html.anim [data-rise]{
+    transition:opacity .8s var(--ease-lux), transform .8s var(--ease-lux);
+    transition-delay:calc(var(--i, 0) * 80ms);
+  }
+  html.anim [data-rise]:not(.in){ opacity:0; transform:translateY(18px); }
+
+  html.anim .kicker::after{ transition:transform .7s var(--ease-snap) .12s; }
+  html.anim .kicker:not(.in)::after{ transform:scaleX(0); }
+
+  /* the route diagram draws itself: lines pull out of the origin on the draw curve,
+     stations pop in travel order, labels post last, YOU ARE HERE pulses exactly once */
+  html.anim .sig-map .rm-line{
+    stroke-dasharray:1 1.06;
+    transition:stroke-dashoffset 1.05s var(--ease-draw);
+    transition-delay:calc(var(--l, 0) * 150ms);
+  }
+  html.anim .sig-map:not(.in) .rm-line{ stroke-dashoffset:1.03; }
+  html.anim .sig-map.in .rm-line{ stroke-dashoffset:0; }
+  html.anim .sig-map .rm-dot,
+  html.anim .sig-map .rm-int,
+  html.anim .sig-map .rm-origin{
+    transition:transform .4s var(--ease-snap), opacity .4s var(--ease-snap);
+    transition-delay:calc(.55s + var(--d, 0) * 140ms);
+  }
+  html.anim .sig-map:not(.in) .rm-dot,
+  html.anim .sig-map:not(.in) .rm-int{ transform:scale(0); }
+  html.anim .sig-map:not(.in) .rm-origin{ transform:scale(.75); opacity:0; }
+  html.anim .sig-map .rm-lab{ transition:opacity .5s var(--ease-lux) 1.25s; }
+  html.anim .sig-map:not(.in) .rm-lab{ opacity:0; }
+  @keyframes rm-pulse{
+    0%{ opacity:.5; transform:scale(.68); }
+    100%{ opacity:0; transform:scale(1.22); }
+  }
+  html.anim .sig-map.in .rm-pulse{ animation:rm-pulse .8s var(--ease-lux) 1.5s 1 both; }
+  /* diagram settle failsafe — stamped 2.4s after the draw begins */
+  .sig-map.set-done .rm-line{ transition:none; stroke-dasharray:none; stroke-dashoffset:0; }
+  .sig-map.set-done .rm-dot, .sig-map.set-done .rm-int,
+  .sig-map.set-done .rm-origin, .sig-map.set-done .rm-lab{ transition:none; transform:none; opacity:1; }
+  .sig-map.set-done .rm-pulse{ animation:none; opacity:0; }
+
+  /* the homepage boot: service strip, nav, headline masks, then the board rows
+     slide in like platform placards — 90ms apart on the house curves */
+  html.anim .browser [data-mb]{
+    transition:opacity .6s var(--ease-lux), transform .6s var(--ease-lux);
+    transition-delay:calc(var(--i, 0) * 90ms);
+  }
+  html.anim .browser:not(.in) [data-mb]{ opacity:0; transform:translateY(14px); }
+  html.anim .browser .mock-h1 .mline-in{
+    transition:transform .9s var(--ease-lux);
+    transition-delay:calc(.16s + var(--l, 0) * 100ms);
+  }
+  html.anim .browser:not(.in) .mock-h1 .mline-in{ transform:translateY(115%); }
+  html.anim .browser .m-row{
+    transition:background-color .35s var(--ease-snap),
+               opacity .65s var(--ease-lux), transform .65s var(--ease-lux);
+    transition-delay:0s, calc(.4s + var(--i, 0) * 90ms), calc(.4s + var(--i, 0) * 90ms);
+  }
+  html.anim .browser:not(.in) .m-row{ opacity:0; transform:translateX(-28px); }
+  /* mock settle failsafe — stamped 2.4s after the boot begins */
+  .browser.set-done [data-mb], .browser.set-done .m-row{ opacity:1; transform:none; transition-delay:0s; }
+  .browser.set-done .mline-in{ transform:none; }
+
+  /* print & screenshots always get the finished page */
+  @media print{
+    [data-rise], .browser [data-mb], .browser .m-row{ opacity:1 !important; transform:none !important; transition:none !important; }
+    [data-wipe] .ph{ clip-path:inset(0 0 0 0) !important; transform:none !important; }
+    .mline-in{ transform:none !important; animation:none !important; }
+    .sig-map .rm-line{ stroke-dasharray:none !important; stroke-dashoffset:0 !important; }
+    .sig-map .rm-dot, .sig-map .rm-int, .sig-map .rm-origin, .sig-map .rm-lab{ transform:none !important; opacity:1 !important; }
+    .rm-pulse{ opacity:0 !important; animation:none !important; }
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 980px){
+    .idea-grid{ grid-template-columns:1fr; }
+    .swatches{ grid-template-columns:repeat(2,1fr); }
+    .type-cards{ grid-template-columns:1fr; }
+    .paths{ grid-template-columns:1fr; }
+    .path-card{ width:100%; max-width:440px; margin:0 auto; }
+    .story-grid{ grid-template-columns:1fr; }
+    .ui-grid{ grid-template-columns:1fr; }
+    .voice-grid{ grid-template-columns:1fr; }
+    .verdicts{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 880px){
+    .mock-links{ display:none; }
+    .m-register{ margin-left:auto; }
+    .mock-burger{ display:block; margin-left:16px; }
+    .mock-nav{ padding:12px 24px; }
+    .m-service{ padding:10px 24px; }
+    .m-service .svc-right{ margin-left:0; }
+    .mock-hero{ padding:56px 28px 0; }
+    .m-board{ margin:0 -28px; }
+    .m-board-head, .m-row{ padding-left:28px; padding-right:28px; }
+    .m-row{ grid-template-columns:44px minmax(0,1fr) 24px; gap:16px; }
+    .m-bullet{ width:40px; height:40px; font-size:14px; }
+    .m-row-dep{ grid-column:2; text-align:left; margin-top:8px; }
+    .m-row-arrow{ grid-row:1; grid-column:3; }
+    .m-dest-plate{ padding:20px 28px 24px; }
+    .m-boarding{ padding:18px 24px 20px; }
+    .m-boarding .brd-more{ margin-left:0; }
+  }
+  @media (max-width: 560px){
+    .sec{ padding:72px 20px; }
+    .masthead-in{ padding:64px 20px 44px; }
+    .swatches{ grid-template-columns:1fr; }
+    .mock-nav{ gap:16px; padding:12px 16px; }
+    .mock-logo img{ width:104px; }
+    .mock-hero{ padding:48px 18px 0; }
+    .m-board{ margin:0 -18px; }
+    .m-board-head, .m-row{ padding-left:18px; padding-right:18px; }
+    .m-dest-plate{ padding:18px 18px 22px; }
+    .m-boarding li{ white-space:normal; }
+    .scale-row{ flex-direction:column; gap:4px; }
+    .scale-sample{ white-space:normal; }
+    .scale-spec{ text-align:left; }
+    .plate-demo{ padding:26px 24px 24px; }
+    .site-foot .foot-in{ padding:64px 20px 44px; }
+    .journey-body{ padding:22px 20px 26px; }
+    .band-plate-in{ padding:16px 20px 24px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *, *::before, *::after{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 1 · DIRECTION HEADER — the page opens like a station sign: series and name
+     rise out of masks, the thesis and the page's own route settle in, and the
+     four-line system ribbon runs across the base of the sign. -->
+<header class="masthead">
+  <div class="masthead-in">
+    <p class="mast-series"><span class="mline"><span class="mline-in">DiscNW · Design direction 10 of 13</span></span></p>
+    <h1 class="mast-name"><span class="mline"><span class="mline-in">The Route Map</span></span></h1>
+    <p class="mast-thesis">Every player has a route into ultimate — the site is the transit map that shows yours. Four color-coded lines turn DiscNW&rsquo;s dozens of programs into one legible system: real programs as stations, the big tournaments as interchanges, and signage that always tells you what&rsquo;s next.</p>
+    <nav class="stops" aria-label="Page sections">
+      <ul>
+        <li><a href="#idea"><span class="stop-dot"></span>02 Idea</a></li>
+        <li><a href="#color"><span class="stop-dot"></span>03 Color</a></li>
+        <li><a href="#type"><span class="stop-dot"></span>04 Type</a></li>
+        <li><a href="#signature"><span class="stop-dot"></span>05 Route diagram</a></li>
+        <li><a href="#home"><span class="stop-dot"></span>06 Homepage</a></li>
+        <li><a href="#doors"><span class="stop-dot"></span>07 Front doors</a></li>
+        <li><a href="#stories"><span class="stop-dot"></span>08 Stories</a></li>
+        <li><a href="#ui"><span class="stop-dot"></span>09 Working parts</a></li>
+        <li><a href="#voice"><span class="stop-dot"></span>10 Voice</a></li>
+        <li><a href="#verdict"><span class="stop-dot"></span>11 Verdict</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="mast-ribbon" aria-hidden="true"><i class="r-y"></i><i class="r-s"></i><i class="r-a"></i><i class="r-p"></i></div>
+</header>
+
+<main>
+
+  <!-- 2 · THE IDEA -->
+  <section class="sec" id="idea" aria-labelledby="idea-title">
+    <p class="kicker">02 — The idea</p>
+    <h2 class="sec-title" id="idea-title">Nobody gets lost on a transit map</h2>
+    <div class="idea-grid">
+      <div class="idea-copy">
+        <p>The current discnw.org is a capable league-management database with a front door problem: a brand-new parent and a twenty-season captain get the same wall of links, and both have to already know what they&rsquo;re looking for. The honest diagnosis isn&rsquo;t &ldquo;too many programs&rdquo; — it&rsquo;s no map.</p>
+        <p>Transit systems solved exactly this. In 1933, London&rsquo;s tangle of tracks became legible overnight — not with more detail, but with less: colored lines, evenly spaced stations, interchange rings where routes actually meet. The Route Map applies that discipline to DiscNW. Four lines cover everything the organization runs, every program becomes a station with an address, and no program is a dead-end link anymore — camps sit on a line that runs through Wonder League to Spring Reign and onward. The site stops describing the system and starts being it.</p>
+      </div>
+      <aside class="idea-aside" data-rise aria-label="Why this fits DiscNW">
+        <h3>Why this fits</h3>
+        <ul>
+          <li>The real problem is navigational, not aesthetic — wayfinding is the one direction that treats the site&rsquo;s density as the design brief.</li>
+          <li>The routes already exist: camps feed Wonder League, middle school feeds high school, hat league feeds Potlatch. The map only draws what happens.</li>
+          <li>Staff can extend it without a designer: a new program is a new station on an existing line, not a new page design.</li>
+          <li>Signage neutrals keep the interface quiet, so destination photography is the only scenery — and it lands loud.</li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 3 · COLOR -->
+  <section class="sec" id="color" aria-labelledby="color-title">
+    <p class="kicker">03 — Color</p>
+    <h2 class="sec-title" id="color-title">Signage neutrals, four working lines</h2>
+    <p class="sec-intro">Ink and warm white do the everyday work; four transit-grade line colors do the pointing. Every line color passes AA against white — they&rsquo;re information, so they are never allowed to be too pretty to read. Photography keeps its own color.</p>
+    <ul class="swatches">
+      <li class="swatch" data-rise style="--i:0">
+        <div class="swatch-chip" style="background:#14181D"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Signal Ink</h3>
+          <span class="swatch-hex">#14181D</span>
+          <p class="swatch-use">Station boards, navs, and headline ink — the near-black of enamel signage.</p>
+        </div>
+      </li>
+      <li class="swatch" data-rise style="--i:1">
+        <div class="swatch-chip" style="background:#F6F4EF; border-bottom:1px solid #DDD8CE"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Service White</h3>
+          <span class="swatch-hex">#F6F4EF</span>
+          <p class="swatch-use">The map sheet — page grounds and cards, warm rather than clinical.</p>
+        </div>
+      </li>
+      <li class="swatch" data-rise style="--i:2">
+        <div class="swatch-chip" style="background:#E3F1E8">
+          <svg viewBox="0 0 200 60" aria-hidden="true" focusable="false"><path d="M14 30 H186" stroke="#0C7A3F" stroke-width="8" stroke-linecap="round" fill="none"/><circle cx="100" cy="30" r="7" fill="#fff" stroke="#0C7A3F" stroke-width="4"/></svg>
+        </div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Youth Line</h3>
+          <span class="swatch-hex">#0C7A3F</span>
+          <p class="swatch-use">Camps (7–18) → Wonder League → Spring Reign. Also the system&rsquo;s &ldquo;go&rdquo;: primary buttons.</p>
+        </div>
+      </li>
+      <li class="swatch" data-rise style="--i:3">
+        <div class="swatch-chip" style="background:#FBEAE0">
+          <svg viewBox="0 0 200 60" aria-hidden="true" focusable="false"><path d="M14 30 H186" stroke="#C2410C" stroke-width="8" stroke-linecap="round" fill="none"/><circle cx="100" cy="30" r="7" fill="#fff" stroke="#C2410C" stroke-width="4"/></svg>
+        </div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">School Line</h3>
+          <span class="swatch-hex">#C2410C</span>
+          <p class="swatch-use">Fall middle school → high school leagues — the season-ticket orange.</p>
+        </div>
+      </li>
+      <li class="swatch" data-rise style="--i:4">
+        <div class="swatch-chip" style="background:#E5EDF8">
+          <svg viewBox="0 0 200 60" aria-hidden="true" focusable="false"><path d="M14 30 H186" stroke="#235BA8" stroke-width="8" stroke-linecap="round" fill="none"/><circle cx="100" cy="30" r="7" fill="#fff" stroke="#235BA8" stroke-width="4"/></svg>
+        </div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Adult Line</h3>
+          <span class="swatch-hex">#235BA8</span>
+          <p class="swatch-use">Hat league → Sea Plastic → Potlatch. Brightened straight from DiscNW&rsquo;s heritage navy.</p>
+        </div>
+      </li>
+      <li class="swatch" data-rise style="--i:5">
+        <div class="swatch-chip" style="background:#F2E7F5">
+          <svg viewBox="0 0 200 60" aria-hidden="true" focusable="false"><path d="M14 30 H186" stroke="#7C2D8E" stroke-width="8" stroke-linecap="round" fill="none"/><circle cx="100" cy="30" r="7" fill="#fff" stroke="#7C2D8E" stroke-width="4"/></svg>
+        </div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Spirit Line</h3>
+          <span class="swatch-hex">#7C2D8E</span>
+          <p class="swatch-use">Volunteer → Coaching Collective → community — the line that staffs all the others.</p>
+        </div>
+      </li>
+    </ul>
+    <p class="note">Supporting derivations: Platform Grey #55606B for metadata and captions; a 10% tint of each line color for chips and panels. On ink surfaces the lines switch to their backlit variants so small labels keep AA contrast.</p>
+  </section>
+
+  <!-- 4 · TYPOGRAPHY -->
+  <section class="sec" id="type" aria-labelledby="type-title">
+    <p class="kicker">04 — Typography</p>
+    <h2 class="sec-title" id="type-title">Signage heritage, not signage cosplay</h2>
+    <p class="sec-intro">Overpass descends directly from Highway Gothic, the face on every U.S. road sign since the 1940s — its wayfinding credentials are provenance, not mood. Inter carries the reading; Overpass Mono keeps the timetables honest.</p>
+
+    <div class="type-cards">
+      <div class="type-card tc-display" data-rise style="--i:0">
+        <span class="role">Signage · headings</span>
+        <h3>Overpass</h3>
+        <p>Born from Highway Gothic, the U.S. interstate lettering. Set big, uppercase, tight-tracked — station-sign confidence at every size. Weights 700–900.</p>
+        <p class="glyphs" aria-hidden="true">AaBbGgRr 0123456789 →</p>
+      </div>
+      <div class="type-card" data-rise style="--i:1">
+        <span class="role">Body · UI</span>
+        <h3 class="tf-body">Inter</h3>
+        <p>The proven workhorse for rosters, waivers, and registration flows. Weights 400–700, comfortable at schedule-table sizes.</p>
+        <p class="glyphs" aria-hidden="true">AaBbGgRr 0123456789 — huck, layout, pull</p>
+      </div>
+      <div class="type-card tc-mono" data-rise style="--i:2">
+        <span class="role">Timetables · codes</span>
+        <h3 class="tf-mono">Overpass Mono</h3>
+        <p>Same family, fixed pitch — departure times, station codes, fare tables, and service notices line up like they should.</p>
+        <p class="glyphs" aria-hidden="true">Y1 · JUL 12 · 7:00 PM · $33</p>
+      </div>
+    </div>
+
+    <p class="specimen">Next stop: your first pull.</p>
+    <p class="specimen-sub">Four lines. Dozens of programs. One map — and you&rsquo;re already on it.</p>
+    <p class="specimen-body">Every route in the system is run by the people riding it: 10,000+ players a year, zero referees, every call made on the field. The signage speaks the way good signage does — calmly, briefly, and always about what happens next.</p>
+
+    <div class="plate-demo" data-rise>
+      <p class="plate-name">Magnuson Park</p>
+      <p class="plate-sub"><b>A</b> ADULT LINE · MONDAYS · SERVICE UNTIL SUNSET — <b>9:00+ PM IN JUNE</b>, 4:20 PM IN DECEMBER</p>
+    </div>
+
+    <div class="scale">
+      <div class="scale-row">
+        <p class="scale-sample s-display">Where are you going?</p>
+        <span class="scale-spec">Display · Overpass 900 caps · 56–112px</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-h2">Three front doors</p>
+        <span class="scale-spec">H2 · Overpass 800 · 40/44</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-h3">Summer Wonder League</p>
+        <span class="scale-spec">H3 · Overpass 700 · 23/29</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-body">Individual signup — we draw balanced teams, and you&rsquo;ll know everyone&rsquo;s name by week two.</p>
+        <span class="scale-spec">Body · Inter 400 · 17/27</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-caption">Y1 · Summer Youth Ultimate Camps · weekly</p>
+        <span class="scale-spec">Timetable · Overpass Mono 600 · 12.5/16</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · SIGNATURE ELEMENT: THE ROUTE DIAGRAM -->
+  <section class="sec" id="signature" aria-labelledby="sig-title">
+    <p class="kicker">05 — Signature element</p>
+    <h2 class="sec-title" id="sig-title">The route diagram</h2>
+    <p class="sec-intro">The whole organization on one sheet, drawn with a real transit diagram&rsquo;s discipline: one line weight, one station-dot size, rounded right angles, interchange rings only where lines truly meet. It isn&rsquo;t an illustration of the region — it&rsquo;s a diagram of the community.</p>
+
+    <ul class="legend" aria-hidden="true">
+      <li><span class="seg" style="background:var(--ly)"></span>YOUTH <small>camps → Wonder League → Spring Reign</small></li>
+      <li><span class="seg" style="background:var(--ls)"></span>SCHOOL <small>middle school → high school → Spring Reign</small></li>
+      <li><span class="seg" style="background:var(--la)"></span>ADULT <small>hat league → Sea Plastic → Potlatch</small></li>
+      <li><span class="seg" style="background:var(--lp)"></span>SPIRIT <small>volunteer → Coaching Collective → Potlatch</small></li>
+    </ul>
+
+    <div class="sig-frame">
+      <div class="sig-map">
+        <svg viewBox="0 0 1240 640" role="img" aria-label="Transit-style system map. Four color-coded lines leave one origin station marked with the DiscNW formline roundel and the words YOU ARE HERE. The green Youth Line runs through Summer Youth Ultimate Camps and Summer Wonder League; the orange School Line runs through Middle School Leagues and High School Leagues; the two meet at the Spring Reign interchange, the world's largest mixed youth ultimate tournament. The blue Adult Line runs through Summer Mixed Hat League and Sea Plastic, the beach tournament; the plum Spirit Line runs through Volunteer Crew and the DiscNW Coaching Collective; those two meet at the Potlatch interchange, where DiscNW was founded in 1995.">
+          <!-- the four lines: one weight, rounded corners, drawn from the origin -->
+          <path class="rm-line" style="--l:0" pathLength="1" d="M 152 296 H 200 Q 226 296 226 270 V 126 Q 226 100 252 100 H 978 Q 1004 100 1004 126 V 177" fill="none" stroke="#0C7A3F" stroke-width="10" stroke-linecap="round"/>
+          <path class="rm-line" style="--l:1" pathLength="1" d="M 152 318 H 252 Q 278 318 278 292 V 276 Q 278 250 304 250 H 978 Q 1004 250 1004 224 V 177" fill="none" stroke="#C2410C" stroke-width="10" stroke-linecap="round"/>
+          <path class="rm-line" style="--l:2" pathLength="1" d="M 152 340 H 252 Q 278 340 278 366 V 404 Q 278 430 304 430 H 978 Q 1004 430 1004 456 V 503" fill="none" stroke="#235BA8" stroke-width="10" stroke-linecap="round"/>
+          <path class="rm-line" style="--l:3" pathLength="1" d="M 152 362 H 200 Q 226 362 226 388 V 554 Q 226 580 252 580 H 978 Q 1004 580 1004 554 V 503" fill="none" stroke="#7C2D8E" stroke-width="10" stroke-linecap="round"/>
+
+          <!-- origin: the transit-authority roundel — the real formline mark, clearspaced on solid white -->
+          <circle class="rm-pulse" cx="120" cy="329" r="58" fill="none" stroke="#14181D" stroke-width="2" aria-hidden="true"/>
+          <g class="rm-origin" style="--d:0">
+            <rect x="88" y="272" width="64" height="114" rx="32" fill="#fff" stroke="#14181D" stroke-width="5"/>
+            <image href="assets/brand/logo-mark.png" x="98" y="306" width="44" height="46" aria-hidden="true"/>
+          </g>
+
+          <!-- stations: one dot size, white fill, line-color ring -->
+          <circle class="rm-dot" style="--d:1" cx="400" cy="100" r="7.5" fill="#fff" stroke="#0C7A3F" stroke-width="4.5"/>
+          <circle class="rm-dot" style="--d:2" cx="660" cy="100" r="7.5" fill="#fff" stroke="#0C7A3F" stroke-width="4.5"/>
+          <circle class="rm-dot" style="--d:1" cx="400" cy="250" r="7.5" fill="#fff" stroke="#C2410C" stroke-width="4.5"/>
+          <circle class="rm-dot" style="--d:2" cx="660" cy="250" r="7.5" fill="#fff" stroke="#C2410C" stroke-width="4.5"/>
+          <circle class="rm-dot" style="--d:1" cx="400" cy="430" r="7.5" fill="#fff" stroke="#235BA8" stroke-width="4.5"/>
+          <circle class="rm-dot" style="--d:2" cx="660" cy="430" r="7.5" fill="#fff" stroke="#235BA8" stroke-width="4.5"/>
+          <circle class="rm-dot" style="--d:1" cx="400" cy="580" r="7.5" fill="#fff" stroke="#7C2D8E" stroke-width="4.5"/>
+          <circle class="rm-dot" style="--d:2" cx="660" cy="580" r="7.5" fill="#fff" stroke="#7C2D8E" stroke-width="4.5"/>
+
+          <!-- interchanges: rings only where lines truly meet -->
+          <circle class="rm-int" style="--d:3" cx="1004" cy="177" r="14" fill="#fff" stroke="#14181D" stroke-width="5"/>
+          <circle class="rm-int" style="--d:3" cx="1004" cy="503" r="14" fill="#fff" stroke="#14181D" stroke-width="5"/>
+
+          <!-- labels: signage at two sizes, one family -->
+          <g class="rm-lab">
+            <text class="rm-org" x="120" y="256">SYSTEM ORIGIN</text>
+            <text class="rm-here" x="120" y="412">YOU ARE HERE</text>
+            <text class="rm-sub" x="120" y="432">discnw.org</text>
+
+            <text class="rm-tag" x="252" y="134" fill="#0C7A3F">YOUTH LINE</text>
+            <text class="rm-tag" x="304" y="284" fill="#C2410C">SCHOOL LINE</text>
+            <text class="rm-tag" x="304" y="464" fill="#235BA8">ADULT LINE</text>
+            <text class="rm-tag" x="252" y="614" fill="#7C2D8E">SPIRIT LINE</text>
+
+            <text class="rm-sub" x="400" y="58">ages 7–18 · first throw here</text>
+            <text class="rm-name" x="400" y="78">Summer Youth Ultimate Camps</text>
+            <text class="rm-sub" x="660" y="58">your first team draft</text>
+            <text class="rm-name" x="660" y="78">Summer Wonder League</text>
+
+            <text class="rm-sub" x="400" y="208">fall · school-based</text>
+            <text class="rm-name" x="400" y="228">Middle School Leagues</text>
+            <text class="rm-sub" x="660" y="208">fall · JV to varsity</text>
+            <text class="rm-name" x="660" y="228">High School Leagues</text>
+
+            <text class="rm-sub" x="400" y="388">individual signup · teams from a hat</text>
+            <text class="rm-name" x="400" y="408">Summer Mixed Hat League</text>
+            <text class="rm-sub" x="660" y="388">the beach tournament</text>
+            <text class="rm-name" x="660" y="408">Sea Plastic</text>
+
+            <text class="rm-sub" x="400" y="538">scorekeepers · field setup · TDs</text>
+            <text class="rm-name" x="400" y="558">Volunteer Crew</text>
+            <text class="rm-sub" x="660" y="538">trainings &amp; practice plans</text>
+            <text class="rm-name" x="660" y="558">DiscNW Coaching Collective</text>
+
+            <text class="rm-int-name" x="1030" y="168">Spring Reign</text>
+            <text class="rm-int-sub" x="1030" y="190">Youth ⇄ School interchange</text>
+            <text class="rm-int-sub" x="1030" y="208">world&rsquo;s largest mixed youth</text>
+            <text class="rm-int-sub" x="1030" y="226">ultimate tournament</text>
+
+            <text class="rm-int-name" x="1030" y="496">Potlatch</text>
+            <text class="rm-int-sub" x="1030" y="518">Adult ⇄ Spirit interchange</text>
+            <text class="rm-int-sub" x="1030" y="536">DiscNW was founded here, 1995</text>
+          </g>
+        </svg>
+      </div>
+      <div class="sig-base">
+        <span><strong>Drawn like a real system map.</strong> One line weight, one dot size, interchange rings only where lines truly meet — and the formline mark as the authority roundel at the origin.</span>
+        <span>Draws once on arrival · then holds still</span>
+      </div>
+    </div>
+
+    <p class="sig-uses">System page hero<span>·</span>Program headers — one line, enlarged<span>·</span>Confirmations — your stop, circled<span>·</span>Season recaps — the route you rode</p>
+    <p class="note">Motion rule: the four lines pull out of the origin on the draw curve (stroke-dashoffset, 150ms apart), stations pop in travel order, labels post last, and YOU ARE HERE pulses exactly once. Then the map holds still — because maps hold still. A 2.4s failsafe lands everything regardless.</p>
+  </section>
+
+  <!-- 6 · HOMEPAGE MOCKUP: the departure board -->
+  <section class="sec" id="home" aria-labelledby="home-title">
+    <p class="kicker">06 — Homepage</p>
+    <h2 class="sec-title" id="home-title">discnw.org as a station board</h2>
+    <p class="sec-intro">The hero is a departure board, not a poster: four huge tappable line rows, each with its next departure. Field status reads as service status, photography arrives as the destination, and the whole board boots like a platform sign coming online at 5:55 on a league night.</p>
+
+    <div class="browser" role="group" aria-label="Mockup of the redesigned discnw.org homepage">
+      <div class="browser-bar" aria-hidden="true">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">discnw.org</div>
+      </div>
+
+      <p class="m-service mock-dark" data-mb style="--i:0"><span class="svc-ok"><span class="svc-dot" aria-hidden="true"></span>GOOD SERVICE · ALL LINES</span><span>MAGNUSON — OPEN · MARYMOOR — OPEN · WIND 8 MPH SW</span><span class="svc-right">RAINOUT HOTLINE <a href="tel:+12067815840">(206)&nbsp;781-5840</a></span></p>
+
+      <div class="mock-nav mock-dark" data-mb style="--i:1">
+        <div class="mock-logo">
+          <img src="assets/brand/logo-full-white.png" alt="DiscNW — Disc Northwest" width="1446" height="616">
+        </div>
+        <div class="mock-links" aria-hidden="true">
+          <span>Events</span>
+          <span>Youth</span>
+          <span>Adult Leagues</span>
+          <span>Coaching</span>
+          <span>About</span>
+        </div>
+        <a class="m-register" href="#ui">Register</a>
+        <div class="mock-burger" aria-hidden="true"><span></span><span></span><span></span></div>
+      </div>
+      <div class="nav-ribbon" aria-hidden="true"><i class="r-y"></i><i class="r-s"></i><i class="r-a"></i><i class="r-p"></i></div>
+
+      <div class="mock-hero mock-dark">
+        <p class="mock-eyebrow" data-mb style="--i:2">Ultimate across Puget Sound · Seattle 501(c)(3) · est. 1995</p>
+        <p class="mock-h1"><span class="mline"><span class="mline-in" style="--l:0">Where are</span></span><span class="mline"><span class="mline-in" style="--l:1">you going?</span></span></p>
+        <p class="mock-sub" data-mb style="--i:3">10,000+ players a year ride four lines to the same place — a field, a disc, and a game you call yourselves. Pick a line; the map handles the rest.</p>
+
+        <div class="m-board">
+          <p class="m-board-head" data-mb style="--i:4"><span>Departures</span><span class="ok">● All lines running</span><span class="upd">Updated 5:55 PM</span></p>
+          <a class="m-row" href="#doors" style="--i:0">
+            <span class="m-bullet mb-y" aria-hidden="true">Y</span>
+            <span>
+              <span class="m-row-name">Youth Line</span>
+              <span class="m-row-route">Camps (ages 7–18) → Summer Wonder League → Spring Reign</span>
+            </span>
+            <span class="m-row-dep">
+              <span class="m-dep-label">Next departure</span>
+              <span class="m-dep-val">Summer camps · weekly thru Aug 21</span>
+            </span>
+            <span class="m-row-arrow" aria-hidden="true">→</span>
+          </a>
+          <a class="m-row" href="#doors" style="--i:1">
+            <span class="m-bullet mb-s" aria-hidden="true">S</span>
+            <span>
+              <span class="m-row-name">School Line</span>
+              <span class="m-row-route">Middle school → high school leagues, every fall</span>
+            </span>
+            <span class="m-row-dep">
+              <span class="m-dep-label">Next departure</span>
+              <span class="m-dep-val">Fall MS League · rosters open Aug 18</span>
+            </span>
+            <span class="m-row-arrow" aria-hidden="true">→</span>
+          </a>
+          <a class="m-row" href="#doors" style="--i:2">
+            <span class="m-bullet mb-a" aria-hidden="true">A</span>
+            <span>
+              <span class="m-row-name">Adult Line</span>
+              <span class="m-row-route">Hat league → Sea Plastic → Potlatch</span>
+            </span>
+            <span class="m-row-dep">
+              <span class="m-dep-label">Next departure</span>
+              <span class="m-dep-val">Summer Mixed Hat — starts July 12</span>
+            </span>
+            <span class="m-row-arrow" aria-hidden="true">→</span>
+          </a>
+          <a class="m-row" href="#doors" style="--i:3">
+            <span class="m-bullet mb-p" aria-hidden="true">SP</span>
+            <span>
+              <span class="m-row-name">Spirit Line</span>
+              <span class="m-row-route">Volunteer → Coaching Collective → every field in the system</span>
+            </span>
+            <span class="m-row-dep">
+              <span class="m-dep-label">Next departure</span>
+              <span class="m-dep-val">Coaching clinic · Sat Jul 26</span>
+            </span>
+            <span class="m-row-arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+
+      <figure class="m-dest" style="margin:0">
+        <div class="band-clip" data-wipe>
+          <img class="ph" src="assets/sr26-spirit-tunnel.jpg" width="1920" height="1080" alt="Players and coaches raise their arms into a post-game spirit tunnel on a sunny Spring Reign field as the other team runs through.">
+        </div>
+        <figcaption class="m-dest-plate">
+          <p class="m-dest-kicker">Now arriving · Spring Reign — Burlington</p>
+          <p class="m-dest-line">The Youth and School lines meet here.</p>
+          <p class="m-dest-meta">The world&rsquo;s largest mixed youth ultimate tournament — and the interchange every young rider is quietly heading toward. Photography is the destination; the signage never stands in front of it.</p>
+        </figcaption>
+      </figure>
+
+      <div class="m-boarding">
+        <strong>Boarding now</strong>
+        <ul>
+          <li>Summer Mixed Hat League</li>
+          <li>Summer Wonder League</li>
+          <li>Summer Youth Ultimate Camps (ages 7–18)</li>
+          <li>Sea Plastic — beach tournament</li>
+        </ul>
+        <span class="brd-more">Full timetable →</span>
+      </div>
+    </div><!-- /browser -->
+    <p class="note">Component note: the service strip is real utility — DiscNW already runs a rainout hotline, and &ldquo;good service, all lines&rdquo; is the honest Seattle default: about 37 inches of rain a year falls on roughly 150 days, and drizzle rarely cancels ultimate. Rows light on hover like backlit signs; the register plate leans up to 6px toward the cursor on fine pointers only.</p>
+  </section>
+
+  <!-- 7 · THREE FRONT DOORS -->
+  <section class="sec" id="doors" aria-labelledby="doors-title">
+    <p class="kicker">07 — Audience pathways</p>
+    <h2 class="sec-title" id="doors-title">Three front doors, three lines</h2>
+    <p class="sec-intro">Players, coaches, parents — each door is color-coded to the line they&rsquo;ll actually ride, labeled in their own language, three seconds after the page loads.</p>
+
+    <div class="paths">
+      <article class="path-card door-a" data-rise style="--i:0">
+        <img class="ph" src="assets/sr26-open-field-chase.jpg" width="1920" height="1080" style="object-position:50% 45%" alt="Two players in a flat-out chase across open tournament grass at Spring Reign, the disc hanging in the air ahead of them.">
+        <div class="path-body">
+          <p class="path-tag">Players · Adult Line</p>
+          <h3>Pick a line. We&rsquo;ll draw the team.</h3>
+          <p>Hat league on Mondays, Sea Plastic on the sand, Potlatch in July — one line, rec to competitive. Tell us the season; we&rsquo;ll show you where you board.</p>
+          <button type="button" class="btn btn-primary">See what&rsquo;s boarding now</button>
+        </div>
+      </article>
+
+      <article class="path-card door-p" data-rise style="--i:1">
+        <img class="ph" src="assets/sr26-spirit-huddle.jpg" width="1920" height="1080" style="object-position:50% 30%" alt="High school players stand arm in arm in a tight post-game huddle at Spring Reign, a few fists raised.">
+        <div class="path-body">
+          <p class="path-tag">Coaches &amp; volunteers · Spirit Line</p>
+          <h3>The Spirit Line runs on people like you.</h3>
+          <p>Start at scorekeeping or field setup, transfer to the DiscNW Coaching Collective — trainings, practice plans, and a bench of experienced coaches behind you the whole route.</p>
+          <button type="button" class="btn btn-secondary">Start the coaching checklist</button>
+        </div>
+      </article>
+
+      <article class="path-card door-y" data-rise style="--i:2">
+        <img class="ph" src="assets/sr26-sideline-friends.jpg" width="1920" height="1080" style="object-position:50% 42%" alt="Two young players shoulder to shoulder on the sideline, one holding a disc, teammates soft-focus behind them.">
+        <div class="path-body">
+          <p class="path-tag">Parents &amp; families · Youth Line</p>
+          <h3>Your kid&rsquo;s route is already mapped.</h3>
+          <p>Camps at seven, Wonder League at ten, Spring Reign before high school. There are no referees anywhere on the line — players make their own calls, and they learn why that matters.</p>
+          <button type="button" class="btn btn-secondary">Read the parents&rsquo; guide</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- chapter turn: the region already thinks in routes -->
+  <figure class="band-divider">
+    <div class="band-clip" data-wipe>
+      <img class="ph" src="assets/pnw/rainier-seattle-skyline-ferry.jpg" width="2400" height="1600" alt="A Washington State Ferry crossing Puget Sound with the Seattle skyline and Mount Rainier stacked behind it.">
+    </div>
+    <figcaption class="band-plate">
+      <div class="band-plate-in">
+        <p class="band-cap">Elliott Bay, one ferry, one mountain — this region already thinks in routes and crossings. We&rsquo;re just adding four lines to the map it carries in its head.</p>
+      </div>
+    </figcaption>
+  </figure>
+
+  <!-- 8 · STORYTELLING (dark) -->
+  <section class="sec-dark" id="stories" aria-labelledby="stories-title">
+    <div class="sec">
+      <p class="kicker">08 — Storytelling</p>
+      <h2 class="sec-title" id="stories-title">Transfer stories</h2>
+      <p class="sec-intro">Every rider&rsquo;s history is a route, so the story unit prints it like one: a voice up top, the actual stations underneath. The archive slowly becomes a map of how people move through this community.</p>
+
+      <div class="story-grid">
+        <article class="journey" data-rise style="--i:0">
+          <img class="ph" src="assets/sr26-catch-celebration.jpg" width="1920" height="1080" alt="A player comes down with an overhead catch at Spring Reign 2026 as teammates rush in to celebrate around him.">
+          <div class="journey-body">
+            <p class="journey-meta">
+              <span>Transfer story · Youth → Spirit</span>
+              <span>7 seasons · 2 lines</span>
+            </p>
+            <h3>Same fields, different line</h3>
+            <blockquote>
+              <p>&ldquo;We boarded the Youth Line when my daughter was nine. Somewhere around her third Spring Reign I stopped watching from the sideline and started running the scoreboard, then the warm-ups. Last fall the Coaching Collective handed me a practice plan and fourteen seventh-graders. Same fields, different line — and I still can&rsquo;t throw a forehand in wind.&rdquo;</p>
+            </blockquote>
+            <p class="byline">— Priya S., middle school coach · transferred at Volunteer Crew, 2024</p>
+            <ul class="ride" aria-label="Priya's route through DiscNW, 2019 to now">
+              <li><span class="yr">2019</span>Summer Youth Ultimate Camps — her daughter&rsquo;s first throw</li>
+              <li><span class="yr">2021</span>Summer Wonder League</li>
+              <li><span class="yr">2022–24</span>Spring Reign, three Aprils running</li>
+              <li class="ride-x"><span class="yr">2024</span>Transfer — Volunteer Crew</li>
+              <li class="ride-p"><span class="yr">2025</span>DiscNW Coaching Collective</li>
+              <li class="ride-p"><span class="yr">Now</span>Head coach, fall Middle School League</li>
+            </ul>
+          </div>
+        </article>
+
+        <ul class="stats">
+          <li class="stat stat-y" data-rise style="--i:0">
+            <span class="num">10,000+</span>
+            <p class="why">riders a year — third-grade campers to masters hat leaguers, on the same system.</p>
+          </li>
+          <li class="stat stat-s" data-rise style="--i:1">
+            <span class="num">0</span>
+            <p class="why">referees, anywhere on the map. Players make their own calls — Spirit of the Game is how the whole system runs.</p>
+          </li>
+          <li class="stat stat-a" data-rise style="--i:2">
+            <span class="num">$33</span>
+            <p class="why">the lowest fare — sliding scale, no questions asked. Every tier rides the same season.</p>
+          </li>
+          <li class="stat stat-p" data-rise style="--i:3">
+            <span class="num">1995</span>
+            <p class="why">first service — founded at Potlatch, the interchange the Adult and Spirit lines still share.</p>
+          </li>
+        </ul>
+      </div>
+      <p class="note">Component note: transfer stories are 400–600 words plus one photo and one route strip, submitted through a story form — a sustainable pipeline, not a staff burden. The route strip is generated from real registration history, which is the quiet magic: the org already has everyone&rsquo;s map.</p>
+    </div>
+  </section>
+
+  <!-- 9 · UI COMPONENTS -->
+  <section class="sec" id="ui" aria-labelledby="ui-title">
+    <p class="kicker">09 — UI components</p>
+    <h2 class="sec-title" id="ui-title">The working parts</h2>
+    <p class="sec-intro">Registration is the site&rsquo;s day job, so the components read like a timetable: Youth-green means go, ink means information, and the mono face keeps every date and fare lined up.</p>
+
+    <div class="ui-grid">
+      <div class="ui-block">
+        <h3>Buttons</h3>
+        <span class="btn-label">Primary — rest / hover · leans ≤6px toward the cursor</span>
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary">Register — Summer Mixed Hat</button>
+          <button type="button" class="btn btn-primary demo-hover">Register — Summer Mixed Hat</button>
+        </div>
+        <span class="btn-label">Secondary — rest / hover</span>
+        <div class="btn-row">
+          <button type="button" class="btn btn-secondary">See the full timetable</button>
+          <button type="button" class="btn btn-secondary demo-hover">See the full timetable</button>
+        </div>
+        <span class="btn-label">Quiet — rest / hover</span>
+        <div class="btn-row">
+          <button type="button" class="btn btn-quiet">How sliding-scale fares work</button>
+          <button type="button" class="btn btn-quiet demo-hover">How sliding-scale fares work</button>
+        </div>
+        <p class="note">Keyboard focus draws a 3px Adult-blue ring (backlit blue on ink). The magnetic lean is pointer-only — touch and reduced-motion get the plain plate.</p>
+      </div>
+
+      <div>
+        <div class="ui-block" style="margin-bottom:24px">
+          <h3>Event card — a stop on the line</h3>
+          <article class="event-card">
+            <div class="event-strip">
+              <span class="event-bullet" aria-hidden="true">A</span>
+              <span class="event-line">Adult Line · Stop 1</span>
+              <span class="chip">Boarding now</span>
+            </div>
+            <div class="event-head">
+              <div>
+                <h4>Summer Mixed Hat League</h4>
+                <p class="event-meta">DEP JUL 12 · MONDAYS 7:00 PM · MAGNUSON PARK · 10 WKS</p>
+              </div>
+            </div>
+            <p class="event-desc">Individual signup — we draw balanced teams from the hat. You&rsquo;ll know everyone&rsquo;s name by week two. Continues toward Sea Plastic and Potlatch.</p>
+            <p class="event-fee">Fare: $33–$495 sliding scale — pick the tier that fits your household, no questions asked. Every tier rides the same season.</p>
+            <div class="event-foot">
+              <span class="event-deadline">DOORS CLOSE JUL 5</span>
+              <button type="button" class="btn btn-primary">Register</button>
+              <button type="button" class="btn btn-quiet">League details</button>
+            </div>
+          </article>
+        </div>
+
+        <div class="ui-block">
+          <h3>Route finder</h3>
+          <form class="filter">
+            <label>I&rsquo;m&hellip;
+              <select>
+                <option>New to ultimate</option>
+                <option>A returning player</option>
+                <option>A parent</option>
+                <option>Ready to coach or volunteer</option>
+              </select>
+            </label>
+            <label>Age group
+              <select>
+                <option>Adult</option>
+                <option>High school</option>
+                <option>Middle school</option>
+                <option>Ages 7–18 (camps)</option>
+              </select>
+            </label>
+            <label>Season
+              <select>
+                <option>Summer — boarding now</option>
+                <option>Fall</option>
+                <option>Winter</option>
+                <option>Spring</option>
+              </select>
+            </label>
+            <button type="button" class="btn btn-secondary">Show my route</button>
+          </form>
+          <p class="note">The result renders as a route — your line, your next three stations — not another list of links.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · VOICE & TONE -->
+  <section class="sec" id="voice" aria-labelledby="voice-title">
+    <p class="kicker">10 — Voice &amp; tone</p>
+    <h2 class="sec-title" id="voice-title">How the Route Map sounds</h2>
+    <p class="sec-intro">Good signage voice: calm, brief, always about what happens next — with a conductor&rsquo;s warmth underneath. It never sounds like league-management software, and it never wastes a rider&rsquo;s time.</p>
+
+    <div class="voice-grid">
+      <div class="voice-card" data-rise style="--i:0">
+        <span class="vlabel">Hero headline</span>
+        <p class="vhero">Where are you going?</p>
+      </div>
+      <div class="voice-card" data-rise style="--i:1">
+        <span class="vlabel">Registration confirmation</span>
+        <p>You&rsquo;re aboard — Summer Mixed Hat League, departing July 12 at Magnuson Park. Fourteen teammates board with you; your schedule is posted under your name. Bring cleats and a rain shell. Service runs in drizzle.</p>
+      </div>
+      <div class="voice-card" data-rise style="--i:2">
+        <span class="vlabel">Weather service notice</span>
+        <p><span class="mono">SERVICE NOTICE · SAT ·</span> Rain, the usual kind — Seattle&rsquo;s 37 inches a year is less than New York gets, just spread across 150 days. All lines running. Watch the wind on the pull, not the sky. Real cancellations only: (206)&nbsp;781-5840.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- 11 · FOOTER -->
+<footer class="site-foot" id="verdict">
+  <div class="foot-in">
+    <div class="verdicts">
+      <div class="verdict">
+        <h2>Choose this direction if&hellip;</h2>
+        <p>The loudest complaint about the current site is getting lost. The Route Map makes navigation itself the brand: every program gets an address on a line, every audience gets a door, and the system grows by adding stations — not redesigning pages.</p>
+      </div>
+      <div class="verdict">
+        <h2 class="v-warn">Think twice if&hellip;</h2>
+        <p>You want the first feeling to be atmosphere and emotion. Signage is proudly utilitarian — if the destination photography ever thins out, this direction can read schedule-first, community-second.</p>
+      </div>
+    </div>
+    <div class="foot-ribbon" aria-hidden="true"><i class="r-y"></i><i class="r-s"></i><i class="r-a"></i><i class="r-p"></i></div>
+    <nav class="foot-nav" aria-label="Direction navigation">
+      <a class="roll" href="index.html"><span class="roll-a">← All directions</span><span class="roll-b" aria-hidden="true">← All directions</span></a>
+      <span class="foot-meta">DIRECTION 10 OF 13 · THE ROUTE MAP · PREPARED FOR DISCNW</span>
+      <a class="roll" href="11-first-names.html"><span class="roll-a">Next direction →</span><span class="roll-b" aria-hidden="true">Next direction →</span></a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+/* Wayfinding choreography — progressive enhancement only.
+   Base styles are the settled page: no JS, print, screenshots, and
+   reduced motion all get the complete layout with zero motion. */
+(function(){
+  'use strict';
+  var reduce = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : null;
+  if (!window.matchMedia || reduce.matches) return;
+
+  var root = document.documentElement;
+
+  /* Scroll reveals: photo curtains, card rises, kicker sweeps — plus the two
+     orchestrated set pieces (the route diagram and the homepage board boot).
+     html.anim arms the hidden states only once observers are live; every
+     target fires once, then is unobserved. Each set piece stamps its own
+     .set-done failsafe 2.4s after it begins, so nothing is ever caught half-drawn. */
+  if ('IntersectionObserver' in window){
+    try{
+      var reveal = function(el){
+        el.classList.add('in');
+        if (el.classList.contains('sig-map') || el.classList.contains('browser')){
+          setTimeout(function(){ el.classList.add('set-done'); }, 2400);
+        }
+      };
+      var io = new IntersectionObserver(function(entries){
+        for (var i = 0; i < entries.length; i++){
+          if (entries[i].isIntersecting){
+            reveal(entries[i].target);
+            io.unobserve(entries[i].target);
+          }
+        }
+      }, { threshold:.15 });
+      /* tall set pieces arm on first sight, not at 15% — a board should boot
+         the moment its top edge clears the platform */
+      var big = new IntersectionObserver(function(entries){
+        for (var j = 0; j < entries.length; j++){
+          if (entries[j].isIntersecting){
+            reveal(entries[j].target);
+            big.unobserve(entries[j].target);
+          }
+        }
+      }, { threshold:0, rootMargin:'0px 0px -12% 0px' });
+
+      var small = [].slice.call(document.querySelectorAll('[data-wipe], [data-rise], .kicker'));
+      for (var t = 0; t < small.length; t++) io.observe(small[t]);
+      var large = [].slice.call(document.querySelectorAll('.sig-map, .browser'));
+      for (var u = 0; u < large.length; u++) big.observe(large[u]);
+
+      root.classList.add('anim');
+
+      /* unconditional settle sweep — house rule: by 2.4s nothing in view is
+         still armed, so screenshots and print never catch a half-drawn sign.
+         Targets genuinely below the viewport keep their single reveal for later. */
+      setTimeout(function(){
+        var vh = window.innerHeight || 768;
+        small.concat(large).forEach(function(el){
+          if (!el.classList.contains('in') && el.getBoundingClientRect().top < vh){
+            el.classList.add('in');
+            el.classList.add('set-done');
+            io.unobserve(el); big.unobserve(el);
+          }
+        });
+      }, 2400);
+    }catch(err){
+      root.classList.remove('anim'); /* any failure: the page stays fully settled */
+    }
+  }
+
+  /* Magnetic primary plates: the button leans ≤6px toward the cursor and
+     glides home on leave. Fine pointers only; rAF-throttled; transform-only. */
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches){
+    var magnets = [].slice.call(document.querySelectorAll('.btn-primary, .m-register'));
+    magnets.forEach(function(el){
+      el.classList.add('magnet');
+      var raf = 0, x = 0, y = 0, tx = 0, ty = 0;
+      function step(){
+        x += (tx - x) * .16;
+        y += (ty - y) * .16;
+        if (Math.abs(tx - x) < .08 && Math.abs(ty - y) < .08){ x = tx; y = ty; raf = 0; }
+        else { raf = requestAnimationFrame(step); }
+        el.style.transform = (x || y) ? 'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px)' : '';
+      }
+      el.addEventListener('pointermove', function(e){
+        if (reduce.matches) return;
+        var r = el.getBoundingClientRect();
+        tx = Math.max(-6, Math.min(6, (e.clientX - r.left - r.width / 2) * .14));
+        ty = Math.max(-6, Math.min(6, (e.clientY - r.top - r.height / 2) * .28));
+        if (!raf) raf = requestAnimationFrame(step);
+      });
+      el.addEventListener('pointerleave', function(){
+        tx = 0; ty = 0;
+        if (!raf) raf = requestAnimationFrame(step);
+      });
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

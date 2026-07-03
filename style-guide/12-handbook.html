@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction 12 — The Handbook · DiscNW redesign</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<meta name="description" content="The Handbook: ultimate is self-officiated — the whole sport runs on a shared text — so discnw.org becomes the community's beautifully typeset reference shelf. Numbered clauses, marginalia, cross-references; calm, authoritative, kind.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* the bookshelf — warm paper, printer's ink, one regulation color, one highlighter */
+    --vellum:#FAF6EC;      /* the page */
+    --plate:#F3EDDF;       /* photo-plate strips, quiet panels */
+    --buckram:#EDE4D2;     /* book-cloth tan — contents bands, asides */
+    --white:#FFFDF6;       /* cards and inputs on vellum */
+    --ink:#221E18;         /* text ink; appendix grounds */
+    --ink-2:#3A342B;       /* dark-panel step */
+    --pencil:#665E51;      /* marginalia, captions */
+    --oxblood:#77202C;     /* the regulation color: clause numbers, links, actions */
+    --oxblood-deep:#5A1620;
+    --highlight:#FFE45C;   /* cross-reference swipes only — never a text color */
+    --dots:#C9BEA8;        /* index dot-leaders */
+    --d-text:#EFE8DA;      /* body text on ink */
+    --d-soft:#BDB3A0;      /* secondary text on ink */
+    --wrap:1120px;
+
+    /* house easing — two curves, used everywhere; default 'ease' is banned.
+       snap: micro moves 240–400ms · lux: reveals 700–900ms */
+    --ease-snap:cubic-bezier(.4,0,.1,1);
+    --ease-lux:cubic-bezier(.16,1,.3,1);
+
+    --serif:'Literata', Georgia, 'Times New Roman', serif;
+    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--vellum);
+    color:var(--ink);
+    font-family:var(--serif);
+    font-optical-sizing:auto;
+    font-size:18px;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--highlight); color:var(--ink); }
+  img{ max-width:100%; }
+
+  a{ color:var(--oxblood); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1.5px; }
+  a:hover{ color:var(--oxblood-deep); }
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible{
+    outline:3px solid var(--oxblood);
+    outline-offset:2px;
+    border-radius:3px;
+  }
+  .sec-ink a:focus-visible, .sec-ink button:focus-visible,
+  .site-foot a:focus-visible, .site-foot button:focus-visible,
+  .m-util a:focus-visible, .m-foot a:focus-visible{
+    outline-color:var(--highlight);
+  }
+  .vh{
+    position:absolute; width:1px; height:1px; margin:-1px;
+    clip-path:inset(50%); overflow:hidden; white-space:nowrap;
+  }
+
+  /* ---------- layout: one measure, one rhythm, no rules ----------
+     The Handbook separates with weight and space, not hairlines:
+     panels, indents, and margins do the work borders would. */
+  .sec{ max-width:var(--wrap); margin:0 auto; padding:112px 32px; }
+  .kicker{
+    font-family:var(--mono);
+    font-weight:600; font-size:12.5px;
+    letter-spacing:.14em; text-transform:uppercase;
+    color:var(--pencil);
+    margin:0 0 18px;
+  }
+  .kicker .ink{ display:inline-block; color:var(--oxblood); }
+  .sec-title{
+    font-weight:600;
+    font-size:clamp(30px, 3.5vw, 42px);
+    line-height:1.12; letter-spacing:-.01em;
+    color:var(--ink);
+    margin:0 0 16px;
+    text-wrap:balance;
+  }
+  .sec-intro{ max-width:64ch; margin:0 0 48px; color:var(--ink-2); font-size:18.5px; }
+  .note{
+    font-family:var(--mono);
+    font-size:12.5px; color:var(--pencil); line-height:1.65;
+    margin:20px 2px 0; max-width:92ch;
+  }
+
+  /* ---------- plates: photographs render clean, captioned below, never typed over ---------- */
+  .ph{ display:block; width:100%; object-fit:cover; }
+  .plate-strip{ margin:0; background:var(--plate); }
+  .plate-clip{ display:block; overflow:hidden; background:var(--plate); }
+  .plate-cap{
+    max-width:var(--wrap); margin:0 auto; padding:18px 32px 26px;
+    font-family:var(--mono); font-size:12.5px; line-height:1.65; color:var(--pencil);
+  }
+  .plate-cap b{ font-weight:600; color:var(--ink); }
+
+  /* ---------- cross-reference: the highlighter draws under a live reference ---------- */
+  .xref{
+    font-family:var(--mono); font-weight:500; font-size:.86em;
+    color:var(--oxblood); text-decoration:underline;
+    text-decoration-thickness:1.5px; text-underline-offset:4px;
+    padding:1px 3px; border-radius:2px;
+    background:linear-gradient(var(--highlight), var(--highlight)) no-repeat left calc(100% - 1px) / 0% 42%;
+    transition:background-size .35s var(--ease-snap), color .3s var(--ease-snap);
+  }
+  .xref:hover, .xref:focus-visible{ color:var(--oxblood-deep); background-size:100% 42%; }
+
+  /* ---------- buttons: rubber-stamp certainty, no chrome ---------- */
+  .btn{
+    display:inline-block; border:0; cursor:pointer;
+    font-family:var(--mono); font-weight:600; font-size:15px; line-height:1;
+    letter-spacing:.01em;
+    padding:16px 26px; border-radius:6px;
+    text-decoration:none;
+    transition:background-color .3s var(--ease-snap), color .3s var(--ease-snap),
+               box-shadow .3s var(--ease-snap);
+  }
+  .btn-primary{ background:var(--oxblood); color:var(--vellum); }
+  .btn-primary:hover, .btn-primary.demo-hover{ background:var(--oxblood-deep); }
+  .btn-secondary{
+    background:transparent; color:var(--ink);
+    box-shadow:inset 0 0 0 2px var(--ink);
+  }
+  .btn-secondary:hover, .btn-secondary.demo-hover{ background:var(--ink); color:var(--vellum); }
+  .btn-quiet{
+    background:none; padding:16px 4px; border-radius:3px;
+    color:var(--oxblood); font-weight:600;
+    text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1.5px;
+  }
+  .btn-quiet:hover, .btn-quiet.demo-hover{ color:var(--oxblood-deep); text-decoration-thickness:3px; }
+
+  /* ---------- text roll: the one CTA flourish (labels roll on hover) ---------- */
+  .roll{ position:relative; display:inline-block; overflow:hidden; vertical-align:top; }
+  .roll-a, .roll-b{ display:block; }
+  .roll-b{ position:absolute; top:100%; left:0; }
+  @media (prefers-reduced-motion: no-preference){
+    .roll-a, .roll-b{ transition:transform .4s var(--ease-snap); }
+    .roll:hover .roll-a, a:hover .roll .roll-a, button:hover .roll .roll-a,
+    a:focus-visible .roll .roll-a, button:focus-visible .roll .roll-a,
+    .roll:hover .roll-b, a:hover .roll .roll-b, button:hover .roll .roll-b,
+    a:focus-visible .roll .roll-b, button:focus-visible .roll .roll-b{ transform:translateY(-100%); }
+  }
+
+  /* ---------- 1 · masthead: the title page ---------- */
+  .masthead{ background:var(--vellum); }
+  .masthead-in{
+    max-width:var(--wrap); margin:0 auto;
+    padding:104px 32px 72px;
+    text-align:center;
+  }
+  .mast-series{
+    margin:0 0 26px;
+    font-family:var(--mono); font-weight:600; font-size:12.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--pencil);
+  }
+  .mast-series b{ font-weight:600; color:var(--oxblood); }
+  .mast-name{
+    margin:0 0 24px;
+    font-weight:500;
+    font-size:clamp(52px, 7.5vw, 104px); line-height:1.02; letter-spacing:-.015em;
+    color:var(--ink);
+  }
+  .mast-thesis{
+    margin:0 auto 40px; max-width:62ch;
+    font-size:19px; line-height:1.7; color:var(--ink-2);
+  }
+  /* the deep brand moment: the formline mark as the handbook's title-page seal —
+     the real asset at crest scale on solid vellum, generous clearspace, captioned like an imprint */
+  .mast-seal{ margin:0 0 44px; }
+  .mast-seal img{
+    display:block; margin:0 auto 16px;
+    width:clamp(104px, 11vw, 138px); height:auto;
+  }
+  .mast-seal figcaption{
+    font-family:var(--mono); font-size:12px; letter-spacing:.08em;
+    color:var(--pencil);
+  }
+  .mast-tags{
+    margin:0 0 56px;
+    font-family:var(--mono); font-weight:500; font-size:12.5px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--pencil);
+  }
+  .mast-tags span{ color:var(--dots); padding:0 10px; }
+
+  /* kit chrome: the mini nav is a table of contents */
+  .toc{
+    max-width:720px; margin:0 auto; padding:36px 36px 40px;
+    background:var(--buckram); border-radius:10px;
+    text-align:left;
+  }
+  .toc h2{
+    margin:0 0 18px;
+    font-family:var(--mono); font-weight:600; font-size:12.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--pencil);
+  }
+  .toc ol{ margin:0; padding:0; list-style:none; columns:2; column-gap:44px; }
+  .toc li{ break-inside:avoid; }
+  .toc a{
+    display:flex; gap:14px; align-items:baseline;
+    padding:7px 2px;
+    font-size:16.5px; color:var(--ink); text-decoration:none;
+  }
+  .toc a .n{
+    font-family:var(--mono); font-weight:500; font-size:13px;
+    color:var(--oxblood); flex-shrink:0; width:26px;
+  }
+  .toc a .t{
+    background:linear-gradient(var(--highlight), var(--highlight)) no-repeat left calc(100% - 2px) / 0% 42%;
+    padding:0 2px; border-radius:2px;
+    transition:background-size .35s var(--ease-snap);
+  }
+  .toc a:hover .t, .toc a:focus-visible .t{ background-size:100% 42%; }
+
+  /* masthead plate — Plate 1 opens the book */
+  .mast-plate .ph{
+    max-width:1920px; margin:0 auto; /* native width — never upscaled */
+    height:clamp(340px, 42vw, 620px);
+    object-position:50% 42%;
+  }
+
+  /* the title page composes itself once: eyebrow and title rise from masks,
+     the seal and contents settle, Plate 1 turns open left-to-right — all pure CSS
+     keyframes with backwards fill, so no-JS, print, and screenshots are whole,
+     and everything is still by 2.2s. */
+  .mline{ display:block; overflow:hidden; padding-bottom:.15em; margin-bottom:-.15em; }
+  .mline-in{ display:block; }
+  @media (prefers-reduced-motion: no-preference){
+    @keyframes mask-rise{ from{ transform:translateY(125%); } }
+    @keyframes fade-rise{ from{ opacity:0; transform:translateY(14px); } }
+    @keyframes page-turn{ from{ clip-path:inset(0 100% 0 0); } to{ clip-path:inset(0 0 0 0); } }
+    @keyframes plate-settle{ from{ transform:scale(1.045); } }
+    .mast-series .mline-in{ animation:mask-rise .85s var(--ease-lux) .08s backwards; }
+    .mast-name .mline-in{ animation:mask-rise .95s var(--ease-lux) .18s backwards; }
+    .mast-thesis{ animation:fade-rise .85s var(--ease-lux) .36s backwards; }
+    .mast-seal{ animation:fade-rise .85s var(--ease-lux) .48s backwards; }
+    .mast-tags{ animation:fade-rise .85s var(--ease-lux) .56s backwards; }
+    .toc{ animation:fade-rise .85s var(--ease-lux) .64s backwards; }
+    .mast-plate .plate-clip{ animation:page-turn 1.05s var(--ease-lux) .5s backwards; }
+    .mast-plate .ph{ animation:plate-settle 1.5s var(--ease-lux) .5s backwards; }
+    .mast-plate .plate-cap{ animation:fade-rise .8s var(--ease-lux) 1.15s backwards; }
+  }
+
+  /* ---------- 2 · the idea ---------- */
+  .idea-grid{ display:grid; grid-template-columns:1.25fr .75fr; gap:32px 64px; align-items:start; }
+  .idea-copy p{ max-width:62ch; margin:0 0 18px; font-size:19px; line-height:1.75; color:var(--ink); }
+  .idea-copy p:last-child{ margin-bottom:0; }
+  .idea-aside{
+    background:var(--buckram); border-radius:10px; padding:30px 32px 26px;
+  }
+  .idea-aside h3{
+    margin:0 0 14px;
+    font-family:var(--mono); font-weight:600; font-size:12.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--pencil);
+  }
+  .idea-aside ul{ margin:0; padding:0; list-style:none; }
+  .idea-aside li{ padding:11px 0; font-size:15.5px; line-height:1.6; color:var(--ink-2); }
+  .idea-aside li b{ font-family:var(--mono); font-weight:600; font-size:13px; color:var(--oxblood); }
+
+  /* ---------- 3 · palette ---------- */
+  .swatches{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin:0; padding:0; list-style:none; }
+  .swatch{ border-radius:10px; overflow:hidden; background:var(--white); box-shadow:0 14px 32px -24px rgba(34,30,24,.35); }
+  .swatch-chip{ height:112px; }
+  .swatch-info{ padding:18px 20px 20px; }
+  .swatch-name{ margin:0 0 2px; font-weight:600; font-size:18px; color:var(--ink); }
+  .swatch-hex{
+    display:inline-block; margin:0 0 8px;
+    font-family:var(--mono); font-weight:500; font-size:12.5px; letter-spacing:.05em;
+    color:var(--pencil);
+  }
+  .swatch-use{ margin:0; font-size:14.5px; color:var(--pencil); line-height:1.55; }
+
+  /* ---------- 4 · typography ---------- */
+  .type-cards{ display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:64px; }
+  .type-card{ border-radius:10px; background:var(--white); padding:28px 30px; box-shadow:0 14px 32px -24px rgba(34,30,24,.35); }
+  .type-card h3{ margin:0 0 4px; font-weight:600; font-size:26px; color:var(--ink); }
+  .type-card.tc-mono h3{ font-family:var(--mono); font-weight:600; font-size:22px; }
+  .type-card .role{
+    display:block; margin:0 0 12px;
+    font-family:var(--mono); font-weight:600; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--oxblood);
+  }
+  .type-card p{ margin:0; color:var(--pencil); font-size:15px; line-height:1.6; }
+  .type-card .glyphs{ margin:16px 0 0; font-size:21px; color:var(--ink); word-break:break-all; }
+  .type-card.tc-mono .glyphs{ font-family:var(--mono); font-size:17px; }
+
+  .specimen{
+    margin:0 0 14px;
+    font-weight:500;
+    font-size:clamp(38px, 5.2vw, 72px); line-height:1.08; letter-spacing:-.012em;
+    color:var(--ink); max-width:22ch; text-wrap:balance;
+  }
+  .specimen-sub{
+    margin:0 0 28px;
+    font-family:var(--mono); font-weight:500; font-size:clamp(14px,1.5vw,16px);
+    line-height:1.6; color:var(--oxblood); max-width:52ch;
+  }
+  .specimen-body{ max-width:60ch; font-size:18px; margin:0 0 64px; color:var(--ink); }
+  .specimen-body .xref{ white-space:nowrap; }
+
+  .scale{ background:var(--white); border-radius:10px; padding:8px 30px; box-shadow:0 14px 32px -24px rgba(34,30,24,.35); }
+  .scale-row{
+    display:flex; align-items:baseline; justify-content:space-between; gap:24px;
+    padding:22px 2px;
+  }
+  .scale-sample{ margin:0; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .s-display{ font-weight:500; font-size:clamp(34px,4.2vw,56px); line-height:1.05; letter-spacing:-.012em; }
+  .s-h2{ font-weight:600; font-size:clamp(26px,2.8vw,34px); line-height:1.15; }
+  .s-h3{ font-weight:600; font-size:22px; line-height:1.3; }
+  .s-body{ font-size:18px; }
+  .s-clause{ font-family:var(--mono); font-weight:500; font-size:15px; color:var(--oxblood); }
+  .s-caption{
+    font-family:var(--mono); font-weight:600; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--pencil);
+  }
+  .scale-spec{
+    flex-shrink:0; font-family:var(--mono); font-size:12.5px; color:var(--pencil);
+    letter-spacing:.03em; text-align:right;
+  }
+
+  /* ---------- 5 · the signature: THE CLAUSE ---------- */
+  .clause-spec{
+    display:grid; grid-template-columns:minmax(0,1fr) 264px; gap:32px 56px;
+    background:var(--white); border-radius:12px;
+    padding:clamp(36px,5vw,64px);
+    box-shadow:0 24px 48px -32px rgba(34,30,24,.4);
+  }
+  .cs-num{
+    margin:0 0 10px;
+    font-family:var(--mono); font-weight:600;
+    font-size:clamp(52px, 8vw, 112px); line-height:1;
+    color:var(--oxblood);
+  }
+  .cs-num .ink{ display:inline-block; }
+  .cs-text{
+    margin:0;
+    font-weight:500;
+    font-size:clamp(27px, 3.6vw, 46px); line-height:1.22; letter-spacing:-.008em;
+    color:var(--ink); max-width:21ch; text-wrap:balance;
+  }
+  .cs-text em{ font-style:italic; font-weight:500; }
+  .cs-margin{ padding-top:10px; }
+  .cs-note{
+    margin:0 0 18px;
+    font-family:var(--mono); font-size:12.5px; line-height:1.7; color:var(--pencil);
+  }
+  .cs-note b{ font-weight:600; color:var(--ink); }
+
+  .anatomy{ display:grid; grid-template-columns:repeat(4,1fr); gap:24px; margin-top:56px; }
+  .ana-cell{ background:var(--buckram); border-radius:10px; padding:24px 26px 26px; }
+  .ana-cell h3{
+    margin:0 0 14px;
+    font-family:var(--mono); font-weight:600; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--oxblood);
+  }
+  .ana-demo{ margin:0 0 12px; min-height:44px; display:flex; align-items:center; }
+  .ana-demo .d-num{ font-family:var(--mono); font-weight:600; font-size:30px; color:var(--oxblood); }
+  .ana-demo .d-clause{ font-weight:500; font-size:18px; line-height:1.4; color:var(--ink); }
+  .ana-demo .d-margin{ font-family:var(--mono); font-size:12px; line-height:1.6; color:var(--pencil); }
+  .ana-cell p{ margin:0; font-size:14px; line-height:1.6; color:var(--ink-2); }
+
+  .chap-map{ margin:56px 0 0; padding:0; list-style:none; display:grid; gap:14px; }
+  .chap-map li{
+    display:flex; flex-wrap:wrap; gap:6px 22px; align-items:baseline;
+    background:var(--white); border-radius:8px; padding:16px 24px;
+  }
+  .chap-map .cm-num{ font-family:var(--mono); font-weight:600; font-size:17px; color:var(--oxblood); width:44px; flex-shrink:0; }
+  .chap-map b{ font-weight:600; font-size:18px; color:var(--ink); }
+  .chap-map span{ font-size:14.5px; color:var(--pencil); }
+  .sig-uses{
+    margin:26px 0 0;
+    font-family:var(--mono); font-weight:500; font-size:12.5px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--pencil);
+  }
+  .sig-uses span{ color:var(--dots); padding:0 8px; }
+
+  /* ---------- 6 · homepage mock: the reference desk ---------- */
+  .browser{
+    border-radius:12px; overflow:hidden;
+    box-shadow:0 32px 64px -36px rgba(34,30,24,.5);
+    background:var(--white);
+  }
+  .browser-bar{
+    display:flex; align-items:center; gap:14px;
+    background:var(--buckram); padding:11px 18px;
+  }
+  .browser-dots{ display:flex; gap:6px; }
+  .browser-dots span{ width:10px; height:10px; border-radius:50%; background:var(--dots); display:block; }
+  .browser-url{
+    flex:1; max-width:320px; background:var(--white); border-radius:999px;
+    font-family:var(--mono); font-size:12.5px; color:var(--pencil); padding:5px 16px;
+  }
+
+  .m-util{
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 26px;
+    background:var(--ink); color:var(--d-soft);
+    padding:10px 40px;
+    font-family:var(--mono); font-size:12px; line-height:1.7; letter-spacing:.02em;
+  }
+  .m-util .lbl{ font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--highlight); }
+  .m-util b{ font-weight:500; color:var(--d-text); }
+  .m-util a{ margin-left:auto; color:var(--d-text); text-decoration-color:var(--d-soft); white-space:nowrap; }
+  .m-util a:hover{ color:#fff; }
+
+  .m-nav{
+    background:var(--vellum);
+    display:flex; align-items:center; gap:32px;
+    padding:18px 40px;
+  }
+  .m-logo img{ display:block; width:140px; height:auto; }
+  .m-links{ display:flex; gap:26px; margin-left:auto; margin-bottom:0; margin-top:0; padding:0; list-style:none; }
+  .m-links a{
+    font-family:var(--mono); font-weight:500; font-size:13.5px; letter-spacing:.04em;
+    color:var(--ink); text-decoration:none;
+    padding:2px; border-radius:2px;
+    background:linear-gradient(var(--highlight), var(--highlight)) no-repeat left calc(100% - 1px) / 0% 40%;
+    transition:background-size .35s var(--ease-snap);
+  }
+  .m-links a:hover, .m-links a:focus-visible{ background-size:100% 40%; }
+  .m-register{ font-size:14px; padding:13px 22px; }
+  .m-burger{ display:none; margin-left:auto; }
+  .m-burger span{ display:block; width:22px; height:2.5px; background:var(--ink); margin:4px 0; border-radius:2px; }
+
+  .m-hero{
+    background:var(--vellum);
+    padding:clamp(56px,7vw,92px) 48px clamp(48px,6vw,72px);
+    text-align:center;
+  }
+  .m-eyebrow{
+    margin:0 0 22px;
+    font-family:var(--mono); font-weight:600; font-size:12.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--oxblood);
+  }
+  .m-h{
+    margin:0 auto 30px;
+    font-weight:500;
+    font-size:clamp(40px, 6vw, 76px); line-height:1.06; letter-spacing:-.012em;
+    color:var(--ink); max-width:16ch; text-wrap:balance;
+  }
+  .desk-search{
+    display:flex; gap:12px; max-width:640px; margin:0 auto 14px;
+  }
+  .desk-search input{
+    flex:1; min-width:0;
+    font-family:var(--serif); font-size:18px; color:var(--ink);
+    background:var(--white); border:2px solid var(--ink); border-radius:8px;
+    padding:16px 20px;
+  }
+  .desk-search input::placeholder{ color:var(--pencil); font-style:italic; }
+  .desk-hint{
+    margin:0 0 44px;
+    font-family:var(--mono); font-size:12.5px; color:var(--pencil);
+  }
+  .desk-answers{
+    margin:0; padding:0; list-style:none;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:20px;
+    text-align:left;
+  }
+  .qa{ background:var(--white); border-radius:10px; padding:24px 26px 22px; box-shadow:0 14px 32px -26px rgba(34,30,24,.45); }
+  .qa-q{ margin:0 0 12px; font-style:italic; font-weight:500; font-size:19px; line-height:1.4; color:var(--ink); }
+  .qa-a{ margin:0 0 16px; font-size:15px; line-height:1.65; color:var(--ink-2); }
+  .qa-a .qn{ font-family:var(--mono); font-weight:600; font-size:13px; color:var(--oxblood); padding-right:6px; }
+
+  .m-band-label{
+    margin:0 0 22px;
+    font-family:var(--mono); font-weight:600; font-size:12.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--pencil);
+  }
+  .m-chapters{ background:var(--buckram); padding:clamp(44px,5vw,64px) 40px; }
+  .chap-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+  .chap{
+    display:block; background:var(--vellum); border-radius:10px; padding:24px 24px 22px;
+    color:var(--ink); text-decoration:none;
+  }
+  .chap-num{
+    display:block; margin:0 0 8px;
+    font-family:var(--mono); font-weight:600; font-size:40px; line-height:1;
+    color:var(--oxblood);
+  }
+  .chap-num .ink{ display:inline-block; }
+  .chap-title{ display:block; font-weight:600; font-size:19px; line-height:1.3; margin:0 0 6px; }
+  .chap-sub{ display:block; font-size:13.5px; line-height:1.55; color:var(--pencil); margin:0 0 14px; }
+  .chap-refs{
+    display:inline-block;
+    font-family:var(--mono); font-weight:500; font-size:12px; color:var(--oxblood);
+    padding:1px 3px; border-radius:2px;
+    background:linear-gradient(var(--highlight), var(--highlight)) no-repeat left calc(100% - 1px) / 0% 42%;
+    transition:background-size .35s var(--ease-snap);
+  }
+  .chap:hover .chap-refs, .chap:focus-visible .chap-refs{ background-size:100% 42%; }
+
+  .m-plate .ph{
+    height:clamp(280px, 34vw, 440px);
+    object-position:50% 38%;
+  }
+  .m-plate .plate-cap{ padding:16px 40px 24px; }
+
+  .m-index{ background:var(--vellum); padding:clamp(44px,5vw,60px) 40px; }
+  .idx{ margin:0; padding:0; list-style:none; max-width:760px; }
+  .idx a{
+    display:flex; align-items:baseline; gap:14px;
+    padding:12px 2px;
+    color:var(--ink); text-decoration:none; font-size:17px;
+  }
+  .idx .idx-name{ font-weight:500; }
+  .idx a:hover .idx-name, .idx a:focus-visible .idx-name{ color:var(--oxblood); }
+  .idx .leader{ flex:1; min-width:32px; border-bottom:2px dotted var(--dots); transform:translateY(-5px); }
+  .idx .idx-ref{
+    font-family:var(--mono); font-weight:500; font-size:12.5px; color:var(--pencil);
+    white-space:nowrap;
+  }
+  .idx .idx-ref b{ font-weight:600; color:var(--oxblood); }
+
+  .m-foot{
+    background:var(--ink); color:var(--d-soft); text-align:center;
+    padding:clamp(52px,6vw,72px) 40px;
+  }
+  .m-foot-vision{
+    margin:0 0 14px;
+    font-weight:500; font-size:clamp(21px,2.4vw,27px); line-height:1.3; color:#fff;
+  }
+  .m-foot-meta{ margin:0 0 8px; font-family:var(--mono); font-size:12.5px; line-height:1.8; }
+  .m-foot-meta a{ color:var(--d-text); text-decoration-color:var(--d-soft); }
+  .m-foot-meta a:hover{ color:#fff; }
+
+  /* ---------- 7 · three front doors ---------- */
+  .paths{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .path-card{
+    background:var(--white); border-radius:10px; padding:30px 30px 30px;
+    display:flex; flex-direction:column; align-items:flex-start;
+    box-shadow:0 14px 32px -24px rgba(34,30,24,.35);
+  }
+  .path-num{
+    margin:0 0 14px;
+    font-family:var(--mono); font-weight:600; font-size:36px; line-height:1;
+    color:var(--oxblood);
+  }
+  .path-num .ink{ display:inline-block; }
+  .path-tag{
+    margin:0 0 10px;
+    font-family:var(--mono); font-weight:600; font-size:12px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--pencil);
+  }
+  .path-card h3{
+    margin:0 0 10px;
+    font-weight:600; font-size:23px; line-height:1.25; color:var(--ink);
+    text-wrap:balance;
+  }
+  .path-card p{ margin:0 0 22px; font-size:15.5px; line-height:1.65; color:var(--ink-2); flex:1; }
+
+  /* ---------- 8 · storytelling: Appendix A (ink) ---------- */
+  .sec-ink{ background:var(--ink); color:var(--d-text); }
+  .sec-ink .kicker{ color:var(--d-soft); }
+  .sec-ink .kicker .ink{ color:var(--highlight); }
+  .sec-ink .sec-title{ color:#fff; }
+  .sec-ink .sec-intro{ color:var(--d-soft); }
+  .sec-ink .note{ color:var(--d-soft); }
+  .record-grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:28px; align-items:start; }
+  .record{
+    background:var(--vellum); color:var(--ink); border-radius:12px;
+    padding:clamp(30px,4vw,48px);
+  }
+  .record-meta{
+    margin:0 0 22px;
+    font-family:var(--mono); font-weight:600; font-size:12.5px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--oxblood);
+  }
+  .record blockquote{
+    margin:0 0 22px; padding:0;
+    font-style:italic; font-weight:500;
+    font-size:clamp(20px,2.2vw,25px); line-height:1.5; color:var(--ink);
+  }
+  .record .byline{ margin:0; font-family:var(--mono); font-size:13px; color:var(--pencil); }
+  .record-photo{ margin:0; }
+  .record-photo .plate-clip{ border-radius:12px; background:var(--ink-2); }
+  .record-photo .ph{ height:clamp(280px,30vw,400px); object-position:50% 40%; }
+  .record-photo figcaption{
+    padding:14px 2px 0;
+    font-family:var(--mono); font-size:12.5px; line-height:1.65; color:var(--d-soft);
+  }
+  .record-photo figcaption b{ font-weight:600; color:var(--d-text); }
+  .footnotes{
+    margin:56px 0 0; padding:0; list-style:none;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:24px;
+  }
+  .footnote{ background:var(--ink-2); border-radius:10px; padding:24px 26px; }
+  .footnote .fn-mark{
+    display:block; margin:0 0 10px;
+    font-family:var(--mono); font-weight:600; font-size:22px; color:var(--highlight);
+  }
+  .footnote .fn-num{
+    display:block; margin:0 0 6px;
+    font-weight:500; font-size:clamp(24px,2.6vw,32px); line-height:1.1; color:#fff;
+    font-variant-numeric:tabular-nums;
+  }
+  .footnote p{ margin:0; font-size:14.5px; line-height:1.6; color:var(--d-soft); }
+  .footnote p .fx{ color:var(--d-text); font-family:var(--mono); font-size:12.5px; }
+
+  /* ---------- 9 · working parts ---------- */
+  .ui-grid{ display:grid; grid-template-columns:.92fr 1.08fr; gap:24px; align-items:start; }
+  .ui-grid > *{ min-width:0; } /* selects' intrinsic width must not stretch the track on small screens */
+  .ui-block{ background:var(--white); border-radius:12px; padding:28px 30px; box-shadow:0 14px 32px -24px rgba(34,30,24,.35); }
+  .ui-block h3{ margin:0 0 20px; font-weight:600; font-size:20px; color:var(--ink); }
+  .btn-row{ display:flex; flex-wrap:wrap; gap:12px 14px; align-items:center; margin-bottom:8px; }
+  .btn-label{
+    display:block; margin:18px 0 10px;
+    font-family:var(--mono); font-weight:600; font-size:11.5px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--pencil);
+  }
+  .btn-label:first-of-type{ margin-top:0; }
+
+  .event-card{ border-radius:10px; padding:26px 28px; background:var(--vellum); }
+  .event-clause{
+    margin:0 0 10px;
+    font-family:var(--mono); font-weight:600; font-size:15px; color:var(--oxblood);
+  }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+  .chip{
+    font-family:var(--mono); font-weight:600; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    border-radius:999px; padding:5px 12px;
+    color:var(--ink-2); background:var(--buckram);
+  }
+  .chip-live{ background:var(--oxblood); color:var(--vellum); }
+  .event-card h4{
+    margin:0 0 6px;
+    font-weight:600; font-size:25px; line-height:1.2; color:var(--ink);
+  }
+  .event-meta{ margin:0 0 12px; font-family:var(--mono); font-size:13px; color:var(--pencil); }
+  .event-desc{ margin:0 0 10px; font-size:15.5px; line-height:1.65; color:var(--ink); }
+  .event-fee{ margin:0 0 22px; font-size:14.5px; line-height:1.65; color:var(--ink-2); }
+  .event-foot{
+    display:flex; flex-wrap:wrap; gap:12px 16px; align-items:center;
+    background:var(--white); border-radius:8px; padding:14px 16px;
+  }
+  .event-deadline{
+    font-family:var(--mono); font-weight:600; font-size:12.5px;
+    letter-spacing:.04em; color:var(--oxblood); margin-right:auto;
+  }
+  .lookup{ display:grid; gap:18px; }
+  .lookup label{
+    display:flex; flex-direction:column; gap:7px;
+    font-family:var(--mono); font-weight:600; font-size:11.5px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--pencil);
+  }
+  .lookup input[type="search"], .lookup select{
+    font-family:var(--serif); font-size:16.5px; color:var(--ink);
+    background:var(--white); border:2px solid var(--ink); border-radius:8px;
+    padding:13px 14px;
+  }
+  .lookup input::placeholder{ color:var(--pencil); font-style:italic; }
+  .lookup .check{
+    flex-direction:row; align-items:center; gap:10px;
+    font-family:var(--serif); font-weight:400; font-size:15.5px;
+    letter-spacing:0; text-transform:none; color:var(--ink);
+  }
+  .lookup input[type="checkbox"]{ width:19px; height:19px; accent-color:var(--oxblood); }
+  .lookup .row{ display:flex; flex-wrap:wrap; gap:16px; min-width:0; }
+  .lookup .row label{ flex:1; min-width:150px; }
+  .lookup label, .lookup input[type="search"], .lookup select{ min-width:0; } /* shrink path below the selects' longest option */
+
+  /* ---------- 10 · voice & tone ---------- */
+  .voice-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .voice-card{ background:var(--white); border-radius:10px; padding:26px 28px; box-shadow:0 14px 32px -24px rgba(34,30,24,.35); }
+  .voice-card .vlabel{
+    display:block; margin:0 0 14px;
+    font-family:var(--mono); font-weight:600; font-size:12px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--oxblood);
+  }
+  .voice-card .vhero{
+    margin:0; font-weight:500;
+    font-size:30px; line-height:1.2; letter-spacing:-.01em; color:var(--ink);
+  }
+  .voice-card p{ margin:0; font-size:16px; line-height:1.7; color:var(--ink); }
+  .voice-card p .fx{ font-family:var(--mono); font-size:13.5px; color:var(--oxblood); }
+
+  /* ---------- 11 · footer ---------- */
+  .site-foot{ background:var(--ink); color:var(--d-text); }
+  .site-foot .foot-in{ max-width:var(--wrap); margin:0 auto; padding:88px 32px 56px; }
+  .verdicts{ display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:56px; }
+  .verdict{ border-radius:10px; background:var(--ink-2); padding:28px 30px; }
+  .verdict h2{
+    margin:0 0 10px;
+    font-family:var(--mono); font-weight:600; font-size:14px;
+    letter-spacing:.04em; color:var(--highlight);
+  }
+  .verdict p{ margin:0; font-size:15.5px; line-height:1.65; color:var(--d-text); }
+  .foot-nav{
+    display:flex; flex-wrap:wrap; gap:14px 30px; align-items:center; justify-content:space-between;
+    padding-top:8px;
+  }
+  .foot-nav a{ color:#fff; font-family:var(--mono); font-weight:600; font-size:14.5px; text-decoration:none; }
+  .foot-nav a:hover{ color:var(--highlight); }
+  .foot-meta{ font-family:var(--mono); font-size:12px; letter-spacing:.05em; color:var(--d-soft); }
+
+  /* ---------- "the page turns": scroll choreography ----------
+     Armed only when JS adds html.anim (observers live, motion allowed).
+     Without it — no JS, print, reduced motion — every base style below is
+     already the settled page. Each reveal fires once, then unobserves.
+     The observed element is never clipped itself: numbers and plates clip a
+     child, so the target always reports a real intersection. */
+  @media (prefers-reduced-motion: no-preference){
+    /* sections settle like laid pages */
+    html.anim [data-page]{
+      transition:opacity .75s var(--ease-lux), transform .75s var(--ease-lux);
+      transition-delay:calc(var(--i, 0) * 90ms);
+    }
+    html.anim [data-page]:not(.in){ opacity:0; transform:translateY(14px); }
+
+    /* plates turn open left-to-right, then settle from 1.04 */
+    html.anim [data-plate] .ph{
+      clip-path:inset(0 0 0 0);
+      transition:clip-path .95s var(--ease-lux), transform 1.4s var(--ease-lux);
+    }
+    html.anim [data-plate]:not(.in) .ph{ clip-path:inset(0 100% 0 0); transform:scale(1.04); }
+
+    /* clause numbers ink in left-to-right — the signature stroke */
+    html.anim [data-ink] .ink{
+      clip-path:inset(-8% -6% -12% 0);
+      transition:clip-path .7s var(--ease-lux) .12s;
+    }
+    html.anim [data-ink]:not(.in) .ink{ clip-path:inset(-8% 104% -12% 0); }
+  }
+
+  /* unconditional settle: by 2.4s the sweep timer has stamped html.settled and
+     marked everything on screen .in — screenshots and print never catch a half page */
+  html.settled .mast-series .mline-in, html.settled .mast-name .mline-in,
+  html.settled .mast-thesis, html.settled .mast-seal, html.settled .mast-tags,
+  html.settled .toc, html.settled .mast-plate .plate-clip,
+  html.settled .mast-plate .ph, html.settled .mast-plate .plate-cap{ animation:none; }
+  @media print{
+    [data-page], [data-plate] .ph, [data-ink] .ink{
+      opacity:1 !important; transform:none !important; clip-path:none !important; transition:none !important;
+    }
+    .mline-in, .mast-thesis, .mast-seal, .mast-tags, .toc,
+    .mast-plate .plate-clip, .mast-plate .ph, .mast-plate .plate-cap{ animation:none !important; }
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 1020px){
+    .idea-grid{ grid-template-columns:1fr; }
+    .anatomy{ grid-template-columns:repeat(2,1fr); }
+    .chap-grid{ grid-template-columns:repeat(2,1fr); }
+    .desk-answers{ grid-template-columns:1fr; max-width:560px; margin:0 auto; }
+    .clause-spec{ grid-template-columns:1fr; }
+    .cs-margin{ padding-top:0; }
+    .record-grid{ grid-template-columns:1fr; }
+    .footnotes{ grid-template-columns:1fr; }
+    .ui-grid{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 880px){
+    .m-links{ display:none; }
+    .m-register{ margin-left:auto; }
+    .m-burger{ display:block; margin-left:16px; }
+    .m-nav{ padding:14px 24px; }
+    .m-util{ padding:10px 24px; }
+    .m-util a{ margin-left:0; }
+    .m-hero{ padding-left:24px; padding-right:24px; }
+    .m-chapters, .m-index{ padding-left:24px; padding-right:24px; }
+    .m-plate .plate-cap{ padding:14px 24px 22px; }
+    .m-foot{ padding-left:24px; padding-right:24px; }
+    .paths{ grid-template-columns:1fr; }
+    .path-card{ max-width:460px; }
+    .voice-grid{ grid-template-columns:1fr; }
+    .type-cards{ grid-template-columns:1fr; }
+    .swatches{ grid-template-columns:repeat(2,1fr); }
+    .verdicts{ grid-template-columns:1fr; }
+    .toc ol{ columns:1; }
+  }
+  @media (max-width: 560px){
+    .sec{ padding:72px 20px; }
+    .masthead-in{ padding:72px 20px 52px; }
+    /* the tag line has no spaces between segments (separators carry the gaps),
+       so let it wrap as items on narrow pages */
+    .mast-tags{ display:flex; flex-wrap:wrap; justify-content:center; }
+    .plate-cap{ padding-left:20px; padding-right:20px; }
+    .swatches{ grid-template-columns:1fr; }
+    .anatomy{ grid-template-columns:1fr; }
+    .chap-grid{ grid-template-columns:1fr; }
+    .desk-search{ flex-direction:column; }
+    .scale-row{ flex-direction:column; align-items:flex-start; gap:6px; }
+    .scale-sample{ white-space:normal; }
+    .scale-spec{ text-align:left; }
+    .site-foot .foot-in{ padding:64px 20px 44px; }
+    .m-nav{ gap:16px; padding:12px 16px; }
+    .m-logo img{ width:112px; }
+    .m-hero{ padding-left:18px; padding-right:18px; }
+    .idx a{ flex-wrap:wrap; }
+    .idx .leader{ display:none; }
+    .chap-map li{ padding:14px 18px; }
+    .record{ padding:26px 22px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *, *::before, *::after{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 1 · DIRECTION HEADER — the style guide opens like the handbook's own title page:
+     eyebrow and title rise from masks, the formline seal and contents settle,
+     and Plate 1 turns open left-to-right. -->
+<header class="masthead">
+  <div class="masthead-in">
+    <p class="mast-series"><span class="mline"><span class="mline-in">DiscNW website redesign · <b>Design direction 12 of 13</b> · Grounded system</span></span></p>
+    <h1 class="mast-name"><span class="mline"><span class="mline-in">The Handbook</span></span></h1>
+    <p class="mast-thesis">Ultimate has no referees — the whole sport runs on a shared handbook and the good faith to apply it. So the site becomes that text: the community&rsquo;s beautifully typeset reference shelf, where every answer has a number, and the parent at 9&nbsp;p.m. and the coach mid-practice both find their clause in seconds. Calm, numbered, authoritative, kind.</p>
+
+    <!-- the deep brand moment: the real formline mark as the title-page seal —
+         crest scale, solid vellum ground, generous clearspace, imprint caption -->
+    <figure class="mast-seal">
+      <img src="assets/brand/logo-mark.png" alt="DiscNW circular formline disc mark — two Coast Salish-style birds forming a disc" width="590" height="616">
+      <figcaption>Registered mark of the Disc Northwest community · est. 1995</figcaption>
+    </figure>
+
+    <p class="mast-tags">Numbered<span>·</span>Calm<span>·</span>Authoritative<span>·</span>Kind<span>·</span>Look-it-up fast</p>
+
+    <nav class="toc" aria-label="Sections of this direction">
+      <h2>Contents</h2>
+      <ol>
+        <li><a href="#idea"><span class="n">02</span><span class="t">The idea</span></a></li>
+        <li><a href="#palette"><span class="n">03</span><span class="t">Palette</span></a></li>
+        <li><a href="#type"><span class="n">04</span><span class="t">Typography</span></a></li>
+        <li><a href="#clause"><span class="n">05</span><span class="t">The clause</span></a></li>
+        <li><a href="#homepage"><span class="n">06</span><span class="t">Homepage</span></a></li>
+        <li><a href="#doors"><span class="n">07</span><span class="t">Three front doors</span></a></li>
+        <li><a href="#record"><span class="n">08</span><span class="t">The community record</span></a></li>
+        <li><a href="#parts"><span class="n">09</span><span class="t">Working parts</span></a></li>
+        <li><a href="#voice"><span class="n">10</span><span class="t">Voice &amp; tone</span></a></li>
+        <li><a href="#verdict"><span class="n">11</span><span class="t">Verdict</span></a></li>
+      </ol>
+    </nav>
+  </div>
+
+  <figure class="mast-plate plate-strip">
+    <div class="plate-clip">
+      <img class="ph" src="assets/sr26-open-field-chase.jpg" width="1920" height="1080" alt="A cutter breaks into open tournament grass at Spring Reign ahead of the chasing pack, canopy tents and a dark treeline along the far sideline.">
+    </div>
+    <figcaption class="plate-cap"><b>Plate 1 — Spring Reign, Burlington.</b> The world&rsquo;s largest mixed youth ultimate tournament: a full weekend of games, zero referees, every call made on the field.</figcaption>
+  </figure>
+</header>
+
+<main>
+
+  <!-- 2 · THE IDEA -->
+  <section class="sec" id="idea" aria-labelledby="idea-title">
+    <p class="kicker" data-ink><span class="ink">§ 02</span> · The idea</p>
+    <h2 class="sec-title" id="idea-title">A sport that runs on a text deserves a site that reads like one.</h2>
+    <div class="idea-grid">
+      <div class="idea-copy">
+        <p>Every other sport outsources its rules to a referee. Ultimate hands them to the players: on every DiscNW field, at every level, all 10,000+ players&rsquo; worth, each call is made, discussed, and resolved by the people playing. A community that already governs itself through a shared text and mutual respect has the best possible excuse to become one — so The Handbook turns discnw.org into the community&rsquo;s reference shelf: numbered clauses, marginalia, cross-references, set with the restraint of a fine manual. Weight and space do the work; there is almost nothing on these pages that isn&rsquo;t an answer.</p>
+        <p>The numbering is not decoration — it is the information architecture. Chapter&nbsp;1 is what ultimate is. Chapter&nbsp;2 is how seasons work. Chapter&nbsp;3 is what it costs. Chapter&nbsp;4 is spirit and self-officiating. A parent can be told &ldquo;start at <a class="xref" href="#clause">§ 1.4</a>&rdquo; in a two-line email; a new coach can bookmark <a class="xref" href="#record">§ 4.2</a> and open it mid-practice; staff can answer half the inbox with a clause number. This is the direction for people who arrive with a question and a deadline — which, at a league that registers thousands of households a season, is nearly everyone.</p>
+      </div>
+      <aside class="idea-aside" aria-label="Who the Handbook serves" data-page>
+        <h3>Who it serves at 9 p.m.</h3>
+        <ul>
+          <li><b>§ 1.4</b> — the parent whose kid starts Tuesday and who has never seen a game.</li>
+          <li><b>§ 2.3</b> — the family that needs one date: when does fall league actually start?</li>
+          <li><b>§ 3.1</b> — the household that needs the honest number before it registers.</li>
+          <li><b>§ 4.2</b> — the new coach who needs the self-officiating answer on a phone, on a sideline.</li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 3 · PALETTE -->
+  <section class="sec" id="palette" aria-labelledby="palette-title">
+    <p class="kicker" data-ink><span class="ink">§ 03</span> · Palette</p>
+    <h2 class="sec-title" id="palette-title">Paper, ink, one regulation color, one highlighter.</h2>
+    <p class="sec-intro">A bookish palette that stays out of photography&rsquo;s way. Oxblood is the single authority color — clause numbers, links, actions — used like a rubber stamp, never as wallpaper. The highlighter belongs to cross-references alone.</p>
+    <ul class="swatches">
+      <li class="swatch" data-page style="--i:0">
+        <div class="swatch-chip" style="background:#FAF6EC; box-shadow:inset 0 0 0 2px #EDE4D2"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Vellum</h3>
+          <span class="swatch-hex">#FAF6EC</span>
+          <p class="swatch-use">The page. A warm paper white that reads printed, not backlit — everything sits on it.</p>
+        </div>
+      </li>
+      <li class="swatch" data-page style="--i:1">
+        <div class="swatch-chip" style="background:#221E18"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Ink</h3>
+          <span class="swatch-hex">#221E18</span>
+          <p class="swatch-use">Text and the appendix bands — near-black with a little umber, like set type.</p>
+        </div>
+      </li>
+      <li class="swatch" data-page style="--i:2">
+        <div class="swatch-chip" style="background:#77202C"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Regulation Oxblood</h3>
+          <span class="swatch-hex">#77202C</span>
+          <p class="swatch-use">The authority color: clause numbers, links, primary actions. One stamp, used sparingly.</p>
+        </div>
+      </li>
+      <li class="swatch" data-page style="--i:3">
+        <div class="swatch-chip" style="background:#FFE45C"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Highlighter</h3>
+          <span class="swatch-hex">#FFE45C</span>
+          <p class="swatch-use">The cross-reference swipe on paper; the small accent ink of the appendix. Never body text, never a surface.</p>
+        </div>
+      </li>
+      <li class="swatch" data-page style="--i:4">
+        <div class="swatch-chip" style="background:#665E51"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Pencil</h3>
+          <span class="swatch-hex">#665E51</span>
+          <p class="swatch-use">Marginalia, plate captions, secondary text — the annotator&rsquo;s grey, always AA on vellum.</p>
+        </div>
+      </li>
+      <li class="swatch" data-page style="--i:5">
+        <div class="swatch-chip" style="background:#EDE4D2"></div>
+        <div class="swatch-info">
+          <h3 class="swatch-name">Buckram</h3>
+          <span class="swatch-hex">#EDE4D2</span>
+          <p class="swatch-use">Book-cloth tan for contents bands and asides — separation by surface, not by hairline.</p>
+        </div>
+      </li>
+    </ul>
+    <p class="note">Annotation — The Handbook is hairline-free by rule: panels, indents, and margins do the separating that borders would. The only dotted line in the system is the index leader, which is information, not decoration.</p>
+  </section>
+
+  <!-- 4 · TYPOGRAPHY -->
+  <section class="sec" id="type" aria-labelledby="type-title">
+    <p class="kicker" data-ink><span class="ink">§ 04</span> · Typography</p>
+    <h2 class="sec-title" id="type-title">A book face and a documentation face.</h2>
+    <p class="sec-intro">Direction 04 uses a serif to be a magazine; The Handbook uses one to be a manual — same shelf, different book. Literata was commissioned as a long-form reading face, with a full optical-size axis that stays finely drawn at display and sturdy at footnote. IBM Plex Mono — born in the home of the technical manual — sets every clause number, cross-reference, and status line, so &ldquo;this is a lookup&rdquo; is always visible at a glance.</p>
+
+    <div class="type-cards">
+      <div class="type-card" data-page style="--i:0">
+        <span class="role">Text &amp; display · the clauses</span>
+        <h3>Literata</h3>
+        <p>A contemporary book serif with real credentials — designed for long-form reading, variable optical sizes 7–72, true italics. Weights 400–700; display at 500, never bolder, so authority stays calm.</p>
+        <p class="glyphs" aria-hidden="true">AaBbGgQqRr 0123456789 — <em>huck, layout, pull</em></p>
+      </div>
+      <div class="type-card tc-mono" data-page style="--i:1">
+        <span class="role">Numbers &amp; apparatus · the references</span>
+        <h3>IBM Plex Mono</h3>
+        <p>The typeface of technical documentation. Clause numbers, cross-refs, captions, deadlines, field-status lines — anything you look up rather than read. Weights 400–600.</p>
+        <p class="glyphs" aria-hidden="true">§ 2.3 · §&nbsp;3.1 · (206) 781-5840 · 0123456789</p>
+      </div>
+    </div>
+
+    <p class="specimen">Fees start at $33. The season is the same at every tier.</p>
+    <p class="specimen-sub">§ 3.1 — the sliding scale · pick the tier that fits your household, no questions asked</p>
+    <p class="specimen-body">Seattle gets roughly 37 inches of rain a year — less than New York — but spreads it across about 150 days. The handbook&rsquo;s weather clause is therefore short: drizzle rarely cancels ultimate, wind changes games more than rain ever does, and when in doubt the rainout hotline will tell you the rest <a class="xref" href="#parts">(206)&nbsp;781-5840 → § 2.8</a>.</p>
+
+    <div class="scale" data-page>
+      <div class="scale-row">
+        <p class="scale-sample s-display">Chapter 2 — How seasons work</p>
+        <span class="scale-spec">Display · Literata 500, opsz 72 · 56–96px</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-h2">The year at a glance</p>
+        <span class="scale-spec">H2 · Literata 600 · 34/40</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-h3">Fall middle school &amp; high school leagues</p>
+        <span class="scale-spec">H3 · Literata 600 · 22/29</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-body">Registration opens about two months before first pull; schedules post here first.</p>
+        <span class="scale-spec">Body · Literata 400 · 18/30</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-clause">§ 2.3 · cross-ref → § 3.1</p>
+        <span class="scale-spec">Clause apparatus · Plex Mono 500 · 15/22</span>
+      </div>
+      <div class="scale-row">
+        <p class="scale-sample s-caption">Plate 1 · Spring Reign, Burlington</p>
+        <span class="scale-spec">Caption · Plex Mono 600 caps · 12/18</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · SIGNATURE ELEMENT: THE CLAUSE -->
+  <section class="sec" id="clause" aria-labelledby="clause-title">
+    <p class="kicker" data-ink><span class="ink">§ 05</span> · Signature element</p>
+    <h2 class="sec-title" id="clause-title">The clause</h2>
+    <p class="sec-intro">One device carries the whole direction: a number in Plex Mono, a statement in Literata, a cross-reference wearing its highlighter. The numbers aren&rsquo;t styling — they are the site map, stable enough to put in an email, short enough to say across a field.</p>
+
+    <div class="clause-spec">
+      <div class="cs-main">
+        <p class="cs-num" data-ink><span class="ink">§ 1.1</span></p>
+        <p class="cs-text">Ultimate is self-officiated. Players make every call. <em>Respect is the rulebook.</em></p>
+      </div>
+      <aside class="cs-margin" aria-label="Margin notes">
+        <p class="cs-note"><b>Margin note.</b> There are no referees anywhere in this handbook — at any age, at any level. <a class="xref" href="#record">Why that works → § 4.1</a></p>
+        <p class="cs-note">Set as spirit-of-the-game language in the community&rsquo;s own words; the handbook paraphrases, and never reprints rulebook text at length.</p>
+      </aside>
+    </div>
+
+    <div class="anatomy">
+      <div class="ana-cell" data-page style="--i:0">
+        <h3>The number</h3>
+        <p class="ana-demo"><span class="d-num">§ 2.3</span></p>
+        <p>Plex Mono, oxblood, inked in left to right. Chapter, then clause — real architecture, not ornament.</p>
+      </div>
+      <div class="ana-cell" data-page style="--i:1">
+        <h3>The clause</h3>
+        <p class="ana-demo"><span class="d-clause">Fall school leagues begin the week after Labor Day.</span></p>
+        <p>Literata, one answer per clause. If it takes three paragraphs, it&rsquo;s three clauses.</p>
+      </div>
+      <div class="ana-cell" data-page style="--i:2">
+        <h3>The cross-reference</h3>
+        <p class="ana-demo"><a class="xref" href="#parts" style="font-size:15px">fees &amp; aid → § 3.1</a></p>
+        <p>Mono, underlined, and the highlighter draws beneath it on hover — the page&rsquo;s only flourish.</p>
+      </div>
+      <div class="ana-cell" data-page style="--i:3">
+        <h3>The margin note</h3>
+        <p class="ana-demo"><span class="d-margin">Bring layers. This is Seattle: ~150 days of drizzle, almost none of them cancellations.</span></p>
+        <p>Pencil-grey asides where a kind editor would put them — context without clutter.</p>
+      </div>
+    </div>
+
+    <ol class="chap-map" aria-label="The four chapters">
+      <li data-page style="--i:0"><span class="cm-num">1.x</span> <b>What ultimate is</b> <span>the game, the field, the parents&rsquo; pages</span></li>
+      <li data-page style="--i:1"><span class="cm-num">2.x</span> <b>How seasons work</b> <span>leagues, camps, tournaments, weather</span></li>
+      <li data-page style="--i:2"><span class="cm-num">3.x</span> <b>What it costs</b> <span>the sliding scale from $33 · § 3.4, nobody turned away</span></li>
+      <li data-page style="--i:3"><span class="cm-num">4.x</span> <b>Spirit &amp; self-officiating</b> <span>making a call, resolving one, the spirit circle</span></li>
+    </ol>
+
+    <p class="sig-uses">Hero answers<span>·</span>Page headers<span>·</span>Event cards<span>·</span>Confirmation emails<span>·</span>Said out loud on sidelines</p>
+    <p class="note">Motion rule — &ldquo;the page turns&rdquo;: clause numbers ink in left to right, sections settle like laid pages on one lux curve, and cross-references draw their highlighter on hover. Nothing else moves. This is the stillest direction in the kit; precision is the flourish.</p>
+  </section>
+
+  <!-- 6 · HOMEPAGE MOCKUP: THE REFERENCE DESK -->
+  <section class="sec" id="homepage" aria-labelledby="mock-title">
+    <p class="kicker" data-ink><span class="ink">§ 06</span> · Homepage</p>
+    <h2 class="sec-title" id="mock-title">discnw.org as a reference desk.</h2>
+    <p class="sec-intro">Not a poster, not a feed — a desk with a librarian behind it. One question box, three quick answers, the four chapters, and the current index. A parent can land, type &ldquo;cost,&rdquo; and be reading § 3.1 before the kettle boils.</p>
+
+    <div class="browser">
+      <div class="browser-bar" aria-hidden="true">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">discnw.org</div>
+      </div>
+
+      <div role="group" aria-label="Mockup of the redesigned DiscNW homepage: an ink-dark field-status strip, a paper-white navigation with the DiscNW lockup, a reference-desk hero with a large handbook search box and three quick-answer clauses, a four-chapter contents band, a captioned photograph plate, a registering-now index with dot leaders, and an ink footer with the community vision.">
+
+        <p class="m-util" data-page style="--i:0"><span class="lbl">Field status · Thu Jul 2</span><span><b>Magnuson</b> — games on</span><span><b>Marymoor</b> — games on</span><span>Sunset 9:07 pm</span><a href="tel:+12067815840">Rainout hotline (206)&nbsp;781-5840</a></p>
+
+        <nav class="m-nav" data-page style="--i:1" aria-label="Mock site navigation">
+          <span class="m-logo">
+            <img src="assets/brand/logo-full.png" alt="DiscNW — Disc Northwest" width="1446" height="616">
+          </span>
+          <ul class="m-links">
+            <li><a href="#mock-title">Leagues&nbsp;§2</a></li>
+            <li><a href="#mock-title">Youth</a></li>
+            <li><a href="#mock-title">Coaching</a></li>
+            <li><a href="#mock-title">Spirit&nbsp;§4</a></li>
+            <li><a href="#mock-title">About</a></li>
+          </ul>
+          <a class="btn btn-primary m-register" href="#mock-title"><span class="roll"><span class="roll-a">Register</span><span class="roll-b" aria-hidden="true">Register</span></span></a>
+          <div class="m-burger" aria-hidden="true"><span></span><span></span><span></span></div>
+        </nav>
+
+        <div class="m-hero">
+          <p class="m-eyebrow" data-page style="--i:2">The handbook of ultimate in the Puget Sound region</p>
+          <h3 class="m-h" data-page style="--i:3">What do you need to know?</h3>
+
+          <form class="desk-search" data-page style="--i:4" action="#" onsubmit="return false">
+            <label class="vh" for="desk-q">Search the handbook</label>
+            <input id="desk-q" type="search" name="q" placeholder="Search the handbook — try &ldquo;fall league&rdquo; or &ldquo;cost&rdquo;">
+            <button class="btn btn-primary" type="submit">Look it up</button>
+          </form>
+          <p class="desk-hint" data-page style="--i:5">Or start from a question —</p>
+
+          <ul class="desk-answers">
+            <li class="qa" data-page style="--i:0">
+              <p class="qa-q">&ldquo;When does fall league start?&rdquo;</p>
+              <p class="qa-a"><span class="qn">§ 2.3</span>School-year leagues begin the week after Labor Day; registration opens in early August.</p>
+              <a class="xref" href="#mock-title">Fall leagues → § 2.3</a>
+            </li>
+            <li class="qa" data-page style="--i:1">
+              <p class="qa-q">&ldquo;What does it cost?&rdquo;</p>
+              <p class="qa-a"><span class="qn">§ 3.1</span>Fees start at $33 on a sliding scale — pick the tier that fits your household, no questions asked.</p>
+              <a class="xref" href="#mock-title">Fees &amp; aid → § 3</a>
+            </li>
+            <li class="qa" data-page style="--i:2">
+              <p class="qa-q">&ldquo;My kid has never played.&rdquo;</p>
+              <p class="qa-a"><span class="qn">§ 1.4</span>Neither had most of ours. Ultimate is non-contact, self-officiated, and taught from zero at every level.</p>
+              <a class="xref" href="#mock-title">The parents&rsquo; pages → § 1.4</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="m-chapters">
+          <p class="m-band-label" data-page>Contents — the four chapters</p>
+          <div class="chap-grid">
+            <a class="chap" href="#mock-title" data-page data-ink style="--i:0">
+              <span class="chap-num"><span class="ink">1</span></span>
+              <span class="chap-title">What ultimate is</span>
+              <span class="chap-sub">The game in five minutes, the field, the disc, the parents&rsquo; pages.</span>
+              <span class="chap-refs">§ 1.1 – 1.6</span>
+            </a>
+            <a class="chap" href="#mock-title" data-page data-ink style="--i:1">
+              <span class="chap-num"><span class="ink">2</span></span>
+              <span class="chap-title">How seasons work</span>
+              <span class="chap-sub">Hat leagues to Potlatch, camps to Spring Reign, and the weather clause.</span>
+              <span class="chap-refs">§ 2.1 – 2.9</span>
+            </a>
+            <a class="chap" href="#mock-title" data-page data-ink style="--i:2">
+              <span class="chap-num"><span class="ink">3</span></span>
+              <span class="chap-title">What it costs</span>
+              <span class="chap-sub">The sliding scale from $33, what your fee covers, nobody turned away.</span>
+              <span class="chap-refs">§ 3.1 – 3.5</span>
+            </a>
+            <a class="chap" href="#mock-title" data-page data-ink style="--i:3">
+              <span class="chap-num"><span class="ink">4</span></span>
+              <span class="chap-title">Spirit &amp; self-officiating</span>
+              <span class="chap-sub">Making a call, resolving one, and the circle that ends every game.</span>
+              <span class="chap-refs">§ 4.1 – 4.5</span>
+            </a>
+          </div>
+        </div>
+
+        <figure class="m-plate plate-strip" data-plate>
+          <div class="plate-clip">
+            <img class="ph" src="assets/sr26-sideline-friends.jpg" width="1920" height="1080" alt="Two young players shoulder to shoulder on the Spring Reign sideline, one holding a white disc, the tournament field soft-focus behind them.">
+          </div>
+          <figcaption class="plate-cap"><b>Plate 2 — Spring Reign, Burlington.</b> Photography is sparing in this direction: one strong plate per chapter opening, full color, captioned here and never typed over.</figcaption>
+        </figure>
+
+        <div class="m-index">
+          <p class="m-band-label" data-page>Registering now — from the index</p>
+          <ul class="idx">
+            <li data-page style="--i:0"><a href="#mock-title"><span class="idx-name">Summer Mixed Hat League</span><span class="leader" aria-hidden="true"></span><span class="idx-ref"><b>§ 2.2</b> · closes Jul 10</span></a></li>
+            <li data-page style="--i:1"><a href="#mock-title"><span class="idx-name">Summer Youth Ultimate Camps · ages 7–18</span><span class="leader" aria-hidden="true"></span><span class="idx-ref"><b>§ 2.5</b> · rolling</span></a></li>
+            <li data-page style="--i:2"><a href="#mock-title"><span class="idx-name">Sea Plastic — beach tournament, Ocean Shores</span><span class="leader" aria-hidden="true"></span><span class="idx-ref"><b>§ 2.7</b> · Jul 18–19</span></a></li>
+            <li data-page style="--i:3"><a href="#mock-title"><span class="idx-name">Fall middle school &amp; high school leagues</span><span class="leader" aria-hidden="true"></span><span class="idx-ref"><b>§ 2.3</b> · opens early Aug</span></a></li>
+          </ul>
+        </div>
+
+        <footer class="m-foot" aria-label="Mock site footer">
+          <p class="m-foot-vision" data-page style="--i:0">An Ultimate community without barriers.</p>
+          <p class="m-foot-meta" data-page style="--i:1">Disc Northwest · Seattle-based 501(c)(3) · founded 1995 at Potlatch · 10,000+ players a year</p>
+          <p class="m-foot-meta" data-page style="--i:2"><a href="tel:+12067815840">Rainout hotline (206)&nbsp;781-5840</a></p>
+        </footer>
+      </div>
+    </div>
+    <p class="note">Component note — the question box is the hero because it&rsquo;s what visitors actually came to do; the three quick answers are staff-editable and rotate with the season. The chapters row is the numbering doing navigation work, and the index list gives &ldquo;registering now&rdquo; the dignity of a back-of-book index: name, leader, clause, deadline.</p>
+  </section>
+
+  <!-- 7 · THREE FRONT DOORS -->
+  <section class="sec" id="doors" aria-labelledby="doors-title">
+    <p class="kicker" data-ink><span class="ink">§ 07</span> · Audience pathways</p>
+    <h2 class="sec-title" id="doors-title">Three front doors, each opening to a chapter.</h2>
+    <p class="sec-intro">Players, coaches, parents — every door is an instruction, not a mood: where to start, what to read, what to do next. Typographic by design; the plates stay reserved for chapter openings.</p>
+
+    <div class="paths">
+      <article class="path-card" data-page data-ink style="--i:0">
+        <p class="path-num"><span class="ink">§ 2</span></p>
+        <p class="path-tag">Players</p>
+        <h3>Pick a season. We&rsquo;ll handle the roster.</h3>
+        <p>Hat leagues, team leagues, a beach weekend at Sea Plastic, your twentieth Potlatch — chapter 2 lists every season in order, each clause ending in a register link. Individual signup means you never need to bring a team.</p>
+        <button type="button" class="btn btn-primary">Open chapter 2 — seasons</button>
+      </article>
+
+      <article class="path-card" data-page data-ink style="--i:1">
+        <p class="path-num"><span class="ink">§ 4</span></p>
+        <p class="path-tag">Coaches &amp; volunteers</p>
+        <h3>Read § 4 first. The Collective handles the rest.</h3>
+        <p>Spirit and self-officiating are the curriculum — everything else is logistics the DiscNW Coaching Collective has already written down: practice plans, season checklists, and a bench of coaches to lean on.</p>
+        <button type="button" class="btn btn-secondary">Start the coaching checklist</button>
+      </article>
+
+      <article class="path-card" data-page data-ink style="--i:2">
+        <p class="path-num"><span class="ink">§ 1.4</span></p>
+        <p class="path-tag">Parents &amp; families</p>
+        <h3>The 9 p.m. answers, four clauses long.</h3>
+        <p>What practice looks like, what to pack, what a game feels like from a camp chair, and why there are no referees. Written for the night before the first practice, findable in one search.</p>
+        <button type="button" class="btn btn-secondary">Read the parents&rsquo; pages</button>
+      </article>
+    </div>
+  </section>
+
+  <!-- 8 · STORYTELLING: APPENDIX A (ink) -->
+  <section class="sec-ink" id="record" aria-labelledby="record-title">
+    <div class="sec">
+      <p class="kicker" data-ink><span class="ink">§ 08</span> · Storytelling</p>
+      <h2 class="sec-title" id="record-title">Appendix A — the community record</h2>
+      <p class="sec-intro">Every direction needs a story engine. The Handbook&rsquo;s is the record: short community testimonies filed like clauses — a number, a place, a season — so the archive grows into evidence that the system in chapters 1–4 actually works.</p>
+
+      <div class="record-grid">
+        <article class="record" data-page style="--i:0">
+          <p class="record-meta">Record 4.1-a · filed October · fall middle school leagues</p>
+          <blockquote>
+            <p style="margin:0">&ldquo;I showed up ready to argue with a referee. There isn&rsquo;t one. My daughter fouled a girl, called it on herself, and the two of them sorted it out in ten seconds while I sat back down in my camp chair. Six years of youth soccer sidelines and I&rsquo;d never seen anything like it.&rdquo;</p>
+          </blockquote>
+          <p class="byline">— Priya N., first-year ultimate parent · files under § 4.1, self-officiating</p>
+        </article>
+
+        <figure class="record-photo" data-plate>
+          <div class="plate-clip">
+            <img class="ph" src="assets/sr26-spirit-tunnel.jpg" width="1920" height="1080" alt="A post-game spirit tunnel at Spring Reign: two lines of players arch their arms overhead as the other team runs through.">
+          </div>
+          <figcaption><b>Plate 3 — Spring Reign, Burlington.</b> The spirit tunnel after the middle school final: § 4.5, the clause every game ends on.</figcaption>
+        </figure>
+      </div>
+
+      <ul class="footnotes">
+        <li class="footnote" data-page style="--i:0">
+          <span class="fn-mark" aria-hidden="true">¹</span>
+          <span class="fn-num">10,000+</span>
+          <p>players a year make their own calls on DiscNW fields — no referees at any level. <span class="fx">§ 4.1</span></p>
+        </li>
+        <li class="footnote" data-page style="--i:1">
+          <span class="fn-mark" aria-hidden="true">²</span>
+          <span class="fn-num">1995</span>
+          <p>founded at Potlatch — this handbook has been community-written for three decades. <span class="fx">§ 1.2</span></p>
+        </li>
+        <li class="footnote" data-page style="--i:2">
+          <span class="fn-mark" aria-hidden="true">³</span>
+          <span class="fn-num">$33</span>
+          <p>where the sliding scale starts, no questions asked — and nobody is turned away. <span class="fx">§ 3.4</span></p>
+        </li>
+      </ul>
+      <p class="note">Component note — records are 100–200 words, community-submitted through a story form and filed under the clause they prove. Staff-light by design: the numbering does the curating.</p>
+    </div>
+  </section>
+
+  <!-- 9 · WORKING PARTS -->
+  <section class="sec" id="parts" aria-labelledby="parts-title">
+    <p class="kicker" data-ink><span class="ink">§ 09</span> · Working parts</p>
+    <h2 class="sec-title" id="parts-title">The parts that answer and register.</h2>
+    <p class="sec-intro">Registration is the site&rsquo;s day job. Oxblood means &ldquo;this does something&rdquo;; mono means &ldquo;this is a fact you can act on.&rdquo; Everything else keeps to the page.</p>
+
+    <div class="ui-grid">
+      <div class="ui-block" data-page style="--i:0">
+        <h3>Buttons</h3>
+        <span class="btn-label">Primary — rest / hover · label rolls on pointer hover</span>
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary"><span class="roll"><span class="roll-a">Register for fall league</span><span class="roll-b" aria-hidden="true">Register for fall league</span></span></button>
+          <button type="button" class="btn btn-primary demo-hover">Register for fall league</button>
+        </div>
+        <span class="btn-label">Secondary — rest / hover</span>
+        <div class="btn-row">
+          <button type="button" class="btn btn-secondary">See the schedule</button>
+          <button type="button" class="btn btn-secondary demo-hover">See the schedule</button>
+        </div>
+        <span class="btn-label">Quiet — rest / hover</span>
+        <div class="btn-row">
+          <button type="button" class="btn btn-quiet">Read § 4 in full</button>
+          <button type="button" class="btn btn-quiet demo-hover">Read § 4 in full</button>
+        </div>
+        <span class="btn-label">Cross-reference — hover to draw the highlighter</span>
+        <div class="btn-row">
+          <a class="xref" href="#clause" style="font-size:15px">what it costs → § 3.1</a>
+        </div>
+        <p class="note">Keyboard focus draws a 3px oxblood ring (highlighter on ink grounds). The label roll and the highlighter draw are pointer refinements; touch and reduced motion get the plain, complete control.</p>
+      </div>
+
+      <div>
+        <div class="ui-block" data-page style="--i:1; margin-bottom:24px">
+          <h3>Event card — an entry, not an ad</h3>
+          <article class="event-card">
+            <p class="event-clause">§ 2.3</p>
+            <div class="chip-row">
+              <span class="chip">Youth</span>
+              <span class="chip">School-year league</span>
+              <span class="chip chip-live">Opens early Aug</span>
+            </div>
+            <h4>Fall Middle School Leagues</h4>
+            <p class="event-meta">Sep – Nov · weekday afternoons · fields across Seattle &amp; the Eastside</p>
+            <p class="event-desc">Team and school-based play for grades 6–8, every game self-officiated and every season ending in a spirit circle. New players welcome — most of the league was new once.</p>
+            <p class="event-fee">Fees on the sliding scale from $33 <a class="xref" href="#clause">→ § 3.1</a> · nobody turned away <a class="xref" href="#clause">→ § 3.4</a></p>
+            <div class="event-foot">
+              <span class="event-deadline">Rosters lock Sep 18</span>
+              <button type="button" class="btn btn-primary">Register</button>
+              <button type="button" class="btn btn-quiet">League details</button>
+            </div>
+          </article>
+        </div>
+
+        <div class="ui-block" data-page style="--i:2">
+          <h3>Look something up</h3>
+          <form class="lookup" action="#" onsubmit="return false">
+            <label>Search the handbook
+              <input type="search" name="q" placeholder="Try &ldquo;rainout&rdquo;, &ldquo;spirit&rdquo;, or &ldquo;camps&rdquo;">
+            </label>
+            <div class="row">
+              <label>Chapter
+                <select>
+                  <option>All chapters</option>
+                  <option>1 — What ultimate is</option>
+                  <option>2 — How seasons work</option>
+                  <option>3 — What it costs</option>
+                  <option>4 — Spirit &amp; self-officiating</option>
+                </select>
+              </label>
+              <label>Season
+                <select>
+                  <option>Summer — registering now</option>
+                  <option>Fall</option>
+                  <option>Winter</option>
+                  <option>Spring</option>
+                </select>
+              </label>
+            </div>
+            <label class="check">
+              <input type="checkbox" checked>
+              Only show clauses with a register link
+            </label>
+            <div class="btn-row" style="margin-bottom:0">
+              <button type="button" class="btn btn-secondary">Find the clause</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · VOICE & TONE -->
+  <section class="sec" id="voice" aria-labelledby="voice-title">
+    <p class="kicker" data-ink><span class="ink">§ 10</span> · Voice &amp; tone</p>
+    <h2 class="sec-title" id="voice-title">How The Handbook sounds.</h2>
+    <p class="sec-intro">A good reference librarian: precise, unhurried, quietly warm. It gives the number first and the reassurance in the same breath — and it never makes you feel late for asking.</p>
+
+    <div class="voice-grid">
+      <div class="voice-card" data-page style="--i:0">
+        <span class="vlabel">Hero headline</span>
+        <p class="vhero">Every answer has a number.</p>
+      </div>
+      <div class="voice-card" data-page style="--i:1">
+        <span class="vlabel">Registration confirmation</span>
+        <p>You&rsquo;re registered — <span class="fx">§ 2.3</span>, Fall Middle School Leagues. First games the week after Labor Day; schedules post in late August. Packing list at <span class="fx">§ 1.6</span>: cleats, layers, water. Drizzle doesn&rsquo;t cancel practice — that&rsquo;s <span class="fx">§ 2.8</span>.</p>
+      </div>
+      <div class="voice-card" data-page style="--i:2">
+        <span class="vlabel">To a nervous first-time parent</span>
+        <p>Start at <span class="fx">§ 1.4</span> — four short clauses written for you: what practice looks like, what to pack, what a game feels like from a camp chair, and why there are no referees. That last one is <span class="fx">§ 4.1</span>, and it&rsquo;s the best thing about this sport.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- 11 · VERDICT + FOOTER -->
+<footer class="site-foot" id="verdict">
+  <div class="foot-in">
+    <div class="verdicts">
+      <div class="verdict" data-page style="--i:0">
+        <h2>Choose this direction if…</h2>
+        <p>Your visitors arrive with a question and a deadline — the parent at 9 p.m., the new coach mid-practice — and you want calm, numbered authority that makes every answer feel one lookup away, in the one sport that literally runs on a shared handbook.</p>
+      </div>
+      <div class="verdict" data-page style="--i:1">
+        <h2>Think twice if…</h2>
+        <p>You need the homepage to sell adrenaline — The Handbook is deliberately quiet, and its reference-desk welcome can read like a syllabus next to a poster to the highlight-reel teenager, or to a sponsor who wants spectacle above the fold.</p>
+      </div>
+    </div>
+    <nav class="foot-nav" aria-label="Direction navigation">
+      <a class="roll" href="index.html"><span class="roll-a">← All directions</span><span class="roll-b" aria-hidden="true">← All directions</span></a>
+      <span class="foot-meta">Direction 12 of 13 · The Handbook · prepared for DiscNW</span>
+      <a class="roll" href="13-last-light.html"><span class="roll-a">Next direction →</span><span class="roll-b" aria-hidden="true">Next direction →</span></a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+/* "The page turns" — progressive enhancement only.
+   Base styles are the settled page: no JS, print, screenshots, and reduced
+   motion all get the complete layout with zero motion. html.anim arms the
+   hidden states only once observers are live; each target fires once, then
+   is unobserved; an unconditional sweep settles anything on screen by 2.4s. */
+(function(){
+  'use strict';
+  var reduce = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : null;
+  if (!window.matchMedia || reduce.matches) return;
+
+  var root = document.documentElement;
+  if (!('IntersectionObserver' in window)) return;
+
+  try{
+    var targets = [].slice.call(document.querySelectorAll('[data-page], [data-plate], [data-ink]'));
+    var io = new IntersectionObserver(function(entries){
+      for (var i = 0; i < entries.length; i++){
+        if (entries[i].isIntersecting){
+          entries[i].target.classList.add('in');
+          io.unobserve(entries[i].target);
+        }
+      }
+    }, { threshold:.12, rootMargin:'0px 0px -6% 0px' });
+    for (var t = 0; t < targets.length; t++) io.observe(targets[t]);
+    root.classList.add('anim');
+
+    /* unconditional settle sweep: by 2.4s, everything at or above the fold is
+       stamped settled — screenshots and print never catch a half-rendered page.
+       Content genuinely below the viewport keeps its (single) reveal for later. */
+    setTimeout(function(){
+      root.classList.add('settled');
+      var vh = window.innerHeight || 768;
+      for (var s = 0; s < targets.length; s++){
+        if (!targets[s].classList.contains('in') &&
+            targets[s].getBoundingClientRect().top < vh){
+          targets[s].classList.add('in');
+          io.unobserve(targets[s]);
+        }
+      }
+    }, 2400);
+  }catch(err){
+    root.classList.remove('anim'); /* any failure: the page stays fully settled */
+  }
+})();
+</script>
+
+</body>
+</html>
