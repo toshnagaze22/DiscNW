@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>19 · Bracket — DiscNW design directions</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<meta name="description" content="Experimental direction 19 for the DiscNW redesign: the site is bracket season. An illustrative tournament bracket that draws itself as you scroll — matchups, seeds, upsets, and a road to the final crowned by the world's largest mixed youth tournament.">
+<meta name="theme-color" content="#0A0D16">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DIRECTION 19 — BRACKET
+   The site is bracket season. Spring Reign is the world's largest
+   mixed youth tournament, so the whole DiscNW season is seeded like
+   a March-Madness tree that inks itself as you scroll to the final.
+   Base styles ARE the settled page: with no JS the bracket is fully
+   drawn, numbers show their totals, the countdown shows the date.
+   ============================================================ */
+:root{
+  --court:#0A0D16;      /* deep tournament ground */
+  --court-2:#0C1120;    /* raised ground */
+  --panel:#141A2B;      /* matchup card mat */
+  --panel-2:#1B2338;    /* raised / hover */
+  --line:rgba(244,245,250,.12);
+  --line-2:rgba(244,245,250,.22);
+  --chalk:#F4F5FA;      /* white text */
+  --steel:#9198AC;      /* muted label (AA 6.7:1 on court) */
+  --steel-2:#C3C8D6;    /* brighter meta */
+  --gold:#FFC53D;       /* championship accent */
+  --gold-2:#FFDA7A;     /* bright gold */
+  --gold-deep:#C8961F;  /* gold edge/shadow */
+  --live:#FF4646;       /* broadcast LIVE red */
+  --nav-h:68px;
+  --pad:clamp(18px,5vw,72px);
+  --disp:"Anton",Impact,"Arial Narrow Bold",sans-serif;
+  --body:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Spline Sans Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  /* house easing — two working curves, a hero curve, and a hype overshoot */
+  --ease-snap:cubic-bezier(.4,0,.1,1);      /* micro: hovers, chips, ticks   */
+  --ease-lux:cubic-bezier(.16,1,.3,1);      /* macro: reveals, wire draws     */
+  --ease-hero:cubic-bezier(.65,.05,0,1);    /* the flood                      */
+  --ease-pop:cubic-bezier(.22,1.42,.4,1);   /* card / champion landing pop    */
+}
+*,*::before,*::after{box-sizing:border-box}
+html{overflow-x:clip;scroll-padding-top:calc(var(--nav-h) + 12px)}
+body{
+  margin:0;background:var(--court);color:var(--chalk);
+  font-family:var(--body);font-size:16.5px;line-height:1.62;
+  overflow-x:clip;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+::selection{background:var(--gold);color:#0A0D16}
+img,video{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:3px}
+.visually-hidden{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{
+  position:absolute;left:14px;top:-70px;z-index:120;background:var(--gold);color:#0A0D16;
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  text-decoration:none;padding:11px 16px;border-radius:6px;
+}
+.skip:focus-visible{top:10px}
+
+/* ---------------- kit chrome: fixed top deck ---------------- */
+.deck{
+  position:fixed;inset:0 0 auto 0;z-index:100;height:var(--nav-h);
+  display:flex;align-items:center;gap:16px;
+  padding:0 clamp(14px,4vw,40px);
+  background:rgba(10,13,22,.82);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.deck-brand{display:flex;align-items:center;line-height:0;text-decoration:none;flex:none}
+.deck-brand img{width:clamp(112px,11vw,132px);height:auto}
+.deck-live{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--chalk);
+}
+.dot-live{width:8px;height:8px;border-radius:50%;background:var(--live);flex:none;position:relative}
+.dot-live::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 0 rgba(255,70,70,.7)}
+.deck-mid{
+  margin:0 auto;font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--steel);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.deck-mid b{color:var(--gold);font-weight:600}
+.deck-link{
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--chalk);text-decoration:none;border:1px solid var(--line-2);border-radius:20px;padding:8px 14px;white-space:nowrap;
+  transition:color .3s var(--ease-snap),border-color .3s var(--ease-snap),background-color .3s var(--ease-snap);
+}
+.deck-link:hover{color:#0A0D16;background:var(--gold);border-color:var(--gold)}
+@media (max-width:760px){.deck-mid{display:none}}
+@media (max-width:420px){.deck-live span{display:none}}
+
+main{display:block}
+.wrap{max-width:1240px;margin-inline:auto;padding-inline:var(--pad)}
+
+/* shared kickers / titles */
+.kicker{
+  display:inline-flex;align-items:center;gap:11px;margin:0;
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);
+}
+.kicker::before{content:"";width:26px;height:2px;background:var(--gold);flex:none}
+.sec-title{
+  font-family:var(--disp);font-weight:400;text-transform:uppercase;
+  font-size:clamp(2.5rem,7vw,5.4rem);line-height:.92;letter-spacing:.005em;margin:16px 0 0;
+}
+.sec-title .g{color:var(--gold)}
+.lede{max-width:60ch;color:var(--steel-2);font-size:clamp(1rem,1.35vw,1.16rem);margin:22px 0 0}
+.lede strong{color:var(--chalk);font-weight:600}
+
+/* split-line masks for headline rise */
+.hl{display:block;overflow:hidden;padding-bottom:.02em}
+.hl-in{display:block}
+
+/* ============================================================
+   HERO — the pull. Full-bleed still (1920 native, capped 2208),
+   giant type, a live bug and a countdown to Spring Reign.
+   ============================================================ */
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;isolation:isolate;overflow:clip}
+.hero-media{position:absolute;inset:0;z-index:-2;overflow:hidden;background:#05070E}
+.hero-media img{
+  width:100%;height:100%;object-fit:cover;object-position:50% 32%;
+  max-width:2208px;margin-inline:auto;filter:contrast(1.03) saturate(1.04);
+}
+.hero-scrim{
+  position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(10,13,22,.55) 0%,rgba(10,13,22,.12) 22%,rgba(10,13,22,.28) 54%,rgba(10,13,22,.6) 100%),
+    linear-gradient(90deg,rgba(10,13,22,.5) 0%,rgba(10,13,22,0) 46%);
+}
+.hero-in{
+  flex:1;display:flex;flex-direction:column;justify-content:flex-end;
+  padding-top:calc(var(--nav-h) + clamp(28px,7vh,72px));
+  padding-bottom:clamp(30px,6vh,64px);
+}
+.hero .kicker{color:var(--gold-2)}
+.hero .kicker::before{background:var(--gold-2)}
+h1{
+  font-family:var(--disp);font-weight:400;text-transform:uppercase;
+  font-size:clamp(3.6rem,15vw,12.5rem);line-height:.86;letter-spacing:.004em;margin:14px 0 0;
+  text-shadow:0 4px 40px rgba(5,7,14,.5);
+}
+h1 .g{color:var(--gold)}
+.hero-sub{max-width:52ch;color:var(--chalk);font-size:clamp(1.02rem,1.5vw,1.24rem);margin:24px 0 0;text-shadow:0 2px 18px rgba(5,7,14,.7)}
+.hero-sub strong{color:var(--gold-2);font-weight:600}
+.hero-strip{display:flex;flex-wrap:wrap;align-items:center;gap:16px 30px;margin-top:clamp(26px,4vh,40px)}
+
+/* live bug */
+.bug{
+  display:inline-flex;align-items:center;gap:9px;
+  background:rgba(10,13,22,.72);border:1px solid var(--line-2);border-radius:6px;padding:8px 13px;
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--chalk);
+}
+.bug .dot-live{width:9px;height:9px}
+
+/* countdown */
+.countdown{display:flex;flex-direction:column;gap:10px}
+.cd-live{display:none;align-items:flex-end;gap:8px}
+html.play .cd-live{display:flex}
+.cd-cell{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:56px;
+  background:rgba(10,13,22,.66);border:1px solid var(--line-2);border-radius:8px;padding:8px 8px 6px}
+.cd-n{
+  font-family:var(--disp);font-weight:400;font-size:clamp(1.7rem,3.4vw,2.5rem);line-height:1;color:var(--gold);
+  font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+}
+.cd-l{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--steel)}
+.cd-colon{font-family:var(--disp);font-size:clamp(1.4rem,2.6vw,2rem);color:var(--steel);align-self:center;margin-bottom:14px}
+.cd-date{margin:0;font-family:var(--mono);font-size:12px;letter-spacing:.05em;color:var(--steel-2)}
+.cd-date time{color:var(--chalk);font-weight:500}
+.countdown.cd-critical .cd-n{color:var(--live)}
+.hero-cue{margin:clamp(24px,4vh,38px) 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--steel-2)}
+
+/* ============================================================
+   MARQUEE bands — bracket mania
+   ============================================================ */
+.marquee{overflow:hidden;border-block:1px solid var(--line);background:var(--court-2);padding:14px 0}
+.marquee.gold{background:var(--gold);border-color:var(--gold)}
+.mq-track{display:inline-flex;align-items:center;white-space:nowrap;will-change:transform}
+.mq-track span{
+  font-family:var(--disp);font-weight:400;text-transform:uppercase;
+  font-size:clamp(1.6rem,4.2vw,3.1rem);line-height:1;letter-spacing:.01em;color:var(--chalk);padding:0 .3em;
+}
+.mq-track .sep{color:var(--gold);font-size:.7em;padding:0 .05em}
+.marquee.gold .mq-track span{color:#0A0D16}
+.marquee.gold .mq-track .sep{color:#0A0D16;opacity:.5}
+@media (prefers-reduced-motion:no-preference){
+  .mq-track{animation:marq 30s linear infinite}
+  .marquee.rev .mq-track{animation-direction:reverse}
+  .marquee:hover .mq-track{animation-play-state:paused}
+}
+@keyframes marq{to{transform:translateX(-50%)}}
+
+/* ============================================================
+   SEEDING intro
+   ============================================================ */
+.seeding{padding:clamp(64px,10vh,120px) 0 clamp(30px,5vh,56px)}
+.note{
+  margin:26px 0 0;max-width:64ch;border-left:2px solid var(--gold);padding:2px 0 2px 18px;
+  color:var(--steel-2);font-size:15.5px;
+}
+.note b{color:var(--gold);font-weight:600}
+.regions{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+.region-chip{
+  display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line-2);border-radius:12px;
+  padding:14px 20px;min-width:230px;
+}
+.region-chip .rc-seed{
+  font-family:var(--disp);font-size:2.1rem;line-height:.8;color:var(--gold);flex:none;
+}
+.region-chip .rc-name{font-family:var(--body);font-weight:800;letter-spacing:.02em;text-transform:uppercase;font-size:15px}
+.region-chip .rc-sub{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--steel);text-transform:none;margin-top:3px}
+
+/* ============================================================
+   THE BRACKET (signature)
+   ============================================================ */
+.bracket{padding:0 0 clamp(56px,9vh,110px)}
+/* road-to-the-final progress rail (sticky under the deck) */
+.road{
+  position:sticky;top:var(--nav-h);z-index:40;background:rgba(10,13,22,.92);backdrop-filter:blur(8px);
+  border-block:1px solid var(--line);padding:12px var(--pad);
+}
+.road-in{max-width:1240px;margin-inline:auto}
+.road-track{position:relative;height:3px;border-radius:2px;background:var(--line-2)}
+.road-fill{position:absolute;inset:0 auto 0 0;width:calc(var(--road,0) * 100%);background:linear-gradient(90deg,var(--gold-deep),var(--gold));border-radius:2px}
+@media (prefers-reduced-motion:no-preference){.road-fill{transition:width .2s linear}}
+.road-stops{display:flex;justify-content:space-between;list-style:none;margin:9px 0 0;padding:0}
+.road-stops li{
+  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);
+  transition:color .3s var(--ease-snap);
+}
+.road-stops li[data-on]{color:var(--gold)}
+.road-stops li:first-child{text-align:left}
+.road-stops li:last-child{text-align:right;color:var(--gold-2)}
+
+.bracket-head{padding:clamp(40px,7vh,80px) 0 clamp(30px,5vh,52px)}
+
+/* the stage: fixed 1280x600 aspect coordinate space; cards positioned by
+   viewBox units so SVG wires and HTML cards align at every width */
+.stage-scroll{padding-inline:var(--pad)}
+.stage{
+  position:relative;width:min(1180px,100%);margin:0 auto;aspect-ratio:1280/600;container-type:inline-size;
+}
+.wires{position:absolute;inset:0;width:100%;height:100%;z-index:1;overflow:visible}
+.wire{
+  fill:none;stroke:var(--steel);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:1;stroke-dashoffset:0;vector-effect:non-scaling-stroke;opacity:.85;
+}
+.wire.gold{stroke:var(--gold);stroke-width:3.4;opacity:1}
+
+.matchup{
+  position:absolute;left:calc(var(--x) / 1280 * 100%);top:calc(var(--y) / 600 * 100%);
+  width:calc(var(--w,204) / 1280 * 100%);transform:translate(-50%,-50%);z-index:2;
+  background:var(--panel);border:1px solid var(--line-2);border-radius:11px;padding:7px 8px 8px;
+  box-shadow:0 12px 30px rgba(3,5,10,.45);
+}
+@media (prefers-reduced-motion:no-preference){
+  .matchup{transition:transform .35s var(--ease-snap),box-shadow .35s var(--ease-snap),border-color .35s var(--ease-snap)}
+}
+.matchup:hover,.matchup:focus-within{border-color:var(--gold);box-shadow:0 16px 40px rgba(3,5,10,.6),0 0 0 1px var(--gold);z-index:6}
+.matchup:hover{transform:translate(-50%,-50%) scale(1.035)}
+.mu-round{
+  display:flex;align-items:center;gap:8px;margin:0 0 6px;white-space:nowrap;
+  font-family:var(--mono);font-size:clamp(7.5px,.66cqw,9.5px);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--steel);
+}
+.team{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:9px;padding:5px 4px;border-radius:6px}
+.team + .team{margin-top:2px}
+.seed{
+  font-family:var(--mono);font-size:clamp(9px,.82cqw,11px);font-weight:600;color:var(--steel-2);
+  width:1.7em;height:1.7em;display:grid;place-items:center;border:1px solid var(--line-2);border-radius:5px;flex:none;
+}
+.tname{font-family:var(--body);font-weight:700;letter-spacing:-.01em;font-size:clamp(10.5px,1.16cqw,14.5px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.score{position:relative;font-family:var(--disp);font-size:clamp(15px,1.7cqw,22px);line-height:1;color:var(--steel);font-variant-numeric:tabular-nums;flex:none}
+.team.win{background:rgba(255,197,61,.09)}
+.team.win .tname{color:var(--gold)}
+.team.win .score{color:var(--gold)}
+.team.win .seed{border-color:var(--gold);color:var(--gold)}
+.team.win .score::after{content:"▸";position:absolute;left:calc(100% + 3px);top:50%;transform:translateY(-50%);color:var(--gold);font-size:.62em;line-height:0}
+.mu-note{
+  max-height:0;opacity:0;overflow:hidden;margin:0;
+  font-family:var(--body);font-size:clamp(10px,.98cqw,12.5px);line-height:1.4;color:var(--steel-2);
+  transition:max-height .4s var(--ease-lux),opacity .3s var(--ease-lux),margin .4s var(--ease-lux);
+}
+.matchup:hover .mu-note,.matchup:focus-within .mu-note,.matchup:focus .mu-note{max-height:6em;opacity:1;margin-top:7px}
+@media (hover:none){.mu-note{max-height:6em;opacity:.9;margin-top:7px}}
+
+/* UPSET ALERT */
+.upset-chip{
+  margin-left:auto;display:inline-flex;align-items:center;gap:6px;
+  background:var(--gold);color:#0A0D16;border-radius:20px;padding:3px 9px;
+  font-family:var(--body);font-weight:800;font-size:clamp(8px,.74cqw,10px);letter-spacing:.08em;text-transform:uppercase;
+}
+.upset-chip .ud{width:6px;height:6px;border-radius:50%;background:var(--live);flex:none}
+.matchup.upset{border-color:rgba(255,197,61,.5)}
+.matchup.upset::after{content:"";position:absolute;inset:-3px;border:2px solid var(--gold);border-radius:14px;opacity:0;pointer-events:none}
+
+/* champion crest node — the deep brand moment (clearspace on solid) */
+.matchup.champ{
+  background:var(--court-2);border:2px solid var(--gold);
+  box-shadow:0 0 0 1px rgba(255,197,61,.25),0 18px 48px rgba(3,5,10,.7),0 0 60px rgba(255,197,61,.14);
+  padding:12px 14px 14px;text-align:center;
+}
+.matchup.champ:hover{transform:translate(-50%,-50%) scale(1.04)}
+.champ-mark{width:clamp(38px,4.6cqw,62px);height:auto;margin:2px auto 6px}
+.champ-label{
+  margin:0;font-family:var(--mono);font-size:clamp(9px,.86cqw,11px);font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);
+}
+.champ-name{
+  margin:3px 0 0;font-family:var(--disp);font-weight:400;text-transform:uppercase;
+  font-size:clamp(15px,2.1cqw,28px);line-height:.94;letter-spacing:.01em;color:var(--chalk);
+}
+.champ-crown{margin:4px 0 0;font-family:var(--mono);font-size:clamp(8px,.72cqw,10px);letter-spacing:.1em;color:var(--steel)}
+
+/* stacked bracket on narrow screens (no-JS friendly, wires hidden) */
+@media (max-width:760px){
+  .stage{aspect-ratio:auto;container-type:normal;display:flex;flex-direction:column;gap:12px;width:100%}
+  .wires{display:none}
+  .matchup{position:static;transform:none!important;left:auto;top:auto;width:100%;box-shadow:0 8px 22px rgba(3,5,10,.4)}
+  .matchup:hover{transform:none!important}
+  .matchup.champ:hover{transform:none!important}
+  .mu-round{font-size:10px}
+  .seed{font-size:11px}.tname{font-size:15px}.score{font-size:20px}.mu-note{font-size:12.5px}
+  .upset-chip{font-size:10px}.champ-mark{width:56px}.champ-label{font-size:11px}.champ-name{font-size:26px}
+  .champ-crown{font-size:10px}
+  .matchup.champ{order:2}
+}
+.bracket-legend{
+  display:flex;flex-wrap:wrap;gap:10px 26px;margin:clamp(30px,5vh,54px) 0 0;
+  font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--steel);
+}
+.bracket-legend b{color:var(--gold);font-weight:600}
+.bracket-legend span{display:inline-flex;align-items:center;gap:8px}
+
+/* ============================================================
+   NUMBERS — count-up odometers
+   ============================================================ */
+.numbers{padding:clamp(56px,9vh,110px) 0;background:var(--court-2);border-block:1px solid var(--line)}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(24px,4vw,60px);margin-top:clamp(36px,6vh,66px)}
+@media (max-width:840px){.stat-grid{grid-template-columns:repeat(2,1fr);gap:34px}}
+@media (max-width:420px){.stat-grid{grid-template-columns:1fr}}
+.stat{border-top:2px solid var(--gold);padding-top:16px}
+.stat-n{
+  display:block;font-family:var(--disp);font-weight:400;
+  font-size:clamp(3rem,7vw,5.6rem);line-height:.88;letter-spacing:.005em;color:var(--chalk);
+  font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+}
+.stat-n .u{color:var(--gold)}
+.stat-l{margin:12px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--steel-2);max-width:24ch}
+
+/* ============================================================
+   GAME FILM — highlight wall (2 bounded video loops) + facts
+   ============================================================ */
+.film{padding:clamp(56px,9vh,110px) 0}
+.filmgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:clamp(34px,5vh,56px)}
+@media (max-width:820px){.filmgrid{grid-template-columns:1fr}}
+.film-card{margin:0;border:1px solid var(--line-2);border-radius:14px;overflow:hidden;background:var(--panel)}
+.film-frame{position:relative;background:#05070E;aspect-ratio:16/9}
+.film-frame video{width:100%;height:100%;object-fit:cover}
+.film-toggle{
+  position:absolute;left:12px;top:12px;z-index:2;display:none;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:8px;background:rgba(5,7,14,.86);border:1px solid var(--line-2);
+  color:var(--chalk);cursor:pointer;padding:0;
+  transition:color .3s var(--ease-snap),border-color .3s var(--ease-snap);
+}
+html.js .film-toggle{display:inline-flex}
+.film-toggle:hover{color:var(--gold);border-color:var(--gold)}
+.film-toggle svg{display:block;width:15px;height:15px}
+.film-toggle .i-pause{display:none}
+.film-card.playing .i-pause{display:block}
+.film-card.playing .i-play{display:none}
+.film-tag{
+  position:absolute;left:12px;bottom:12px;z-index:2;
+  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--chalk);
+  background:rgba(5,7,14,.82);border-radius:5px;padding:5px 9px;
+}
+.film-card figcaption{padding:16px 20px 18px;border-top:1px solid var(--line);font-size:14.5px;color:var(--steel-2)}
+.film-card figcaption b{display:block;font-family:var(--body);font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:var(--chalk);font-size:15px;margin-bottom:5px}
+.facts{
+  display:flex;flex-wrap:wrap;gap:14px 40px;margin:clamp(34px,5vh,54px) 0 0;
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;color:var(--steel);
+}
+.facts span b{color:var(--chalk);font-weight:600}
+.facts .g{color:var(--gold)}
+
+/* clean still divider */
+.still{margin:clamp(20px,4vh,44px) auto 0;max-width:2208px;padding-inline:var(--pad)}
+.still-frame{border-radius:16px;overflow:hidden;border:1px solid var(--line-2)}
+.still img{width:100%;height:min(64vh,720px);object-fit:cover;object-position:50% 34%;filter:contrast(1.03) saturate(1.04)}
+.still figcaption{
+  margin:13px 2px 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);
+  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+}
+
+/* ============================================================
+   UNIVERSE POINT — champion payoff + registration
+   ============================================================ */
+.universe{position:relative;padding:clamp(72px,12vh,150px) 0 clamp(60px,10vh,120px);overflow:clip;background:var(--court)}
+.universe::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 55% at 50% 42%,rgba(255,197,61,.16),rgba(255,197,61,0) 66%);
+}
+.universe .wrap{position:relative;z-index:1;text-align:center}
+.up-eyebrow{justify-content:center}
+.up-title{
+  font-family:var(--disp);font-weight:400;text-transform:uppercase;
+  font-size:clamp(3rem,11vw,9rem);line-height:.85;letter-spacing:.004em;margin:16px auto 0;
+}
+.up-title .g{color:var(--gold)}
+.up-sub{max-width:46ch;margin:26px auto 0;color:var(--chalk);font-size:clamp(1.05rem,1.6vw,1.3rem)}
+.up-sub strong{color:var(--gold-2);font-weight:600}
+.cta-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:clamp(30px,5vh,46px)}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--body);font-weight:800;letter-spacing:.03em;text-transform:uppercase;font-size:15px;
+  padding:16px 26px;border-radius:8px;text-decoration:none;border:2px solid var(--gold);background:var(--gold);color:#0A0D16;
+  transition:background-color .3s var(--ease-snap),border-color .3s var(--ease-snap),color .3s var(--ease-snap),transform .3s var(--ease-pop);
+}
+.btn:hover{background:var(--gold-2);border-color:var(--gold-2);transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:var(--chalk);border-color:var(--line-2)}
+.btn.ghost:hover{color:var(--gold);border-color:var(--gold);background:transparent}
+.up-fine{margin:26px auto 0;max-width:52ch;font-family:var(--mono);font-size:12.5px;letter-spacing:.05em;color:var(--steel-2)}
+.up-fine b{color:var(--gold);font-weight:600}
+.up-info{
+  display:flex;flex-wrap:wrap;gap:12px 34px;justify-content:center;margin:30px 0 0;
+  font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--steel);
+}
+.up-info a{color:var(--chalk);text-decoration:none;border-bottom:1px solid var(--line-2)}
+.up-info a:hover{color:var(--gold);border-color:var(--gold)}
+
+/* ============================================================
+   ABOUT this direction
+   ============================================================ */
+.about{border-top:1px solid var(--line);background:var(--court-2);padding:clamp(52px,8vh,92px) 0}
+.about-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px 40px;flex-wrap:wrap}
+.about h2{font-family:var(--disp);font-weight:400;text-transform:uppercase;font-size:clamp(2rem,4vw,3rem);letter-spacing:.01em;margin:10px 0 0}
+.about-lockup{width:min(190px,44vw);height:auto;flex:none}
+.thesis{max-width:74ch;color:var(--steel-2);margin:18px 0 0;font-size:16px}
+.spec{display:grid;grid-template-columns:1.2fr 1fr;gap:32px 54px;margin-top:40px}
+@media (max-width:860px){.spec{grid-template-columns:1fr}}
+.spec h3{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:0 0 14px}
+.spec p{margin:0 0 14px;font-size:14.5px;color:var(--steel-2)}
+.spec p strong{color:var(--chalk);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:10px 20px}
+.chip{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--steel-2)}
+.chip .sw{width:26px;height:26px;border-radius:6px;border:1px solid var(--line-2);flex:none}
+.chip b{color:var(--chalk);font-weight:500}
+.choose{display:grid;grid-template-columns:1fr 1fr;gap:30px 54px;margin-top:12px}
+@media (max-width:860px){.choose{grid-template-columns:1fr}}
+
+/* footer */
+.pagefoot{border-top:1px solid var(--line);background:var(--court)}
+.pagefoot .wrap{
+  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-block:26px;
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+}
+.pagefoot a{color:var(--chalk);text-decoration:none;border-bottom:1px solid var(--line-2);padding-bottom:2px}
+.pagefoot a:hover{color:var(--gold);border-color:var(--gold)}
+.pagefoot .mid{color:var(--steel)}
+
+/* ============================================================
+   MOTION CHOREOGRAPHY — doubly gated behind html.play (JS only)
+   AND prefers-reduced-motion:no-preference. Base styles above are
+   the settled, complete page with no JS.
+   ============================================================ */
+@media (prefers-reduced-motion:no-preference){
+  /* pulsing LIVE ring */
+  .dot-live::after{animation:pulsering 1.6s var(--ease-snap) infinite}
+  @keyframes pulsering{0%{box-shadow:0 0 0 0 rgba(255,70,70,.65)}70%,100%{box-shadow:0 0 0 11px rgba(255,70,70,0)}}
+
+  /* hero rise */
+  html.play .hero .hl-in{transform:translateY(114%);transition:transform .85s var(--ease-lux)}
+  html.play .hero.in .hl-in{transform:none}
+  html.play .hero .rise{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease-lux),transform .6s var(--ease-lux);transition-delay:calc(var(--i,0)*90ms)}
+  html.play .hero.in .rise{opacity:1;transform:none}
+
+  /* generic section reveal */
+  html.play .reveal .rise{opacity:0;transform:translateY(22px);transition:opacity .6s var(--ease-lux),transform .6s var(--ease-lux);transition-delay:calc(var(--i,0)*70ms)}
+  html.play .reveal.in .rise{opacity:1;transform:none}
+  html.play .reveal .hl-in{transform:translateY(114%);transition:transform .8s var(--ease-lux)}
+  html.play .reveal.in .hl-in{transform:none}
+
+  /* bracket wires ink round by round */
+  html.play .wire{stroke-dashoffset:1}
+  html.play .stage.in .wire{stroke-dashoffset:0;transition:stroke-dashoffset .6s var(--ease-lux);transition-delay:calc(var(--r,0)*.34s + .1s)}
+
+  /* matchup cards slide in */
+  html.play .matchup{opacity:0;transform:translate(-50%,-50%) translateY(20px) scale(.97)}
+  html.play .stage.in .matchup{opacity:1;transform:translate(-50%,-50%);transition:opacity .5s var(--ease-lux),transform .55s var(--ease-pop);transition-delay:calc(var(--d,0)*.11s + .2s)}
+  html.play .stage.in .matchup.champ{transition-delay:calc(var(--d,0)*.11s + .34s)}
+  /* upset cards: opacity reveal, shake + shockwave own the transform */
+  html.play .stage.in .matchup.upset{transform:translate(-50%,-50%);animation:shake .5s var(--ease-snap) calc(var(--d,0)*.11s + .55s) both}
+  html.play .stage.in .matchup.upset::after{animation:shock .75s var(--ease-snap) calc(var(--d,0)*.11s + .55s) forwards}
+  @keyframes shake{10%,90%{transform:translate(-50%,-50%) translateX(-2px)}30%,70%{transform:translate(-50%,-50%) translateX(3px)}50%{transform:translate(-50%,-50%) translateX(-3px)}}
+  @keyframes shock{from{transform:scale(1);opacity:.95}to{transform:scale(1.85);opacity:0}}
+
+  .btn,.deck-link{will-change:transform}
+}
+
+/* reduced motion: strip every non-essential animation to settled state */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+@media print{
+  .deck,.road,.film-toggle,.hero-cue{display:none!important}
+  body{background:#fff;color:#000}
+  .wire{stroke-dashoffset:0!important}
+  .matchup{opacity:1!important;transform:none!important;position:static!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ================= KIT CHROME ================= -->
+<header class="deck">
+  <a class="deck-brand" href="index.html" aria-label="DiscNW — all directions"><img src="assets/brand/logo-full-white.png" alt="DiscNW" width="1446" height="616"></a>
+  <span class="deck-live" aria-hidden="true"><span class="dot-live"></span><span>Bracket · Live</span></span>
+  <p class="deck-mid">DiscNW · Design direction 19 · <b>Bracket</b> · Experimental</p>
+  <a class="deck-link" href="index.html">All directions</a>
+</header>
+
+<main id="main">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero reveal" aria-labelledby="hero-h">
+    <div class="hero-media">
+      <img src="assets/sr26-sprint-race.jpg" width="1920" height="1080" alt="Two youth players sprint stride for stride down the field chasing a long throw at Spring Reign 2026, tournament tents blurred behind them." decoding="async" fetchpriority="high">
+    </div>
+    <div class="hero-scrim" aria-hidden="true"></div>
+    <div class="hero-in wrap">
+      <p class="kicker rise" style="--i:0"><span class="dot-live" aria-hidden="true"></span>Illustrative bracket · Spring Reign season</p>
+      <h1 id="hero-h">
+        <span class="hl"><span class="hl-in">Road to</span></span>
+        <span class="hl"><span class="hl-in">the <span class="g">final</span></span></span>
+      </h1>
+      <p class="hero-sub rise" style="--i:1">Spring Reign is the <strong>world's largest mixed youth ultimate tournament.</strong> So we seeded the whole DiscNW season like a bracket — eight programs, two regions, one champion. Scroll to fill it out.</p>
+      <div class="hero-strip">
+        <span class="bug rise" style="--i:2"><span class="dot-live" aria-hidden="true"></span>Bracket Live</span>
+        <div class="countdown rise" style="--i:3" data-deadline="2027-04-24T09:00:00-07:00">
+          <div class="cd-live" aria-hidden="true">
+            <div class="cd-cell"><span class="cd-n" data-u="d">248</span><span class="cd-l">Days</span></div>
+            <span class="cd-colon">:</span>
+            <div class="cd-cell"><span class="cd-n" data-u="h">00</span><span class="cd-l">Hrs</span></div>
+            <span class="cd-colon">:</span>
+            <div class="cd-cell"><span class="cd-n" data-u="m">00</span><span class="cd-l">Min</span></div>
+            <span class="cd-colon">:</span>
+            <div class="cd-cell"><span class="cd-n" data-u="s">00</span><span class="cd-l">Sec</span></div>
+          </div>
+          <p class="cd-date">First pull — <time datetime="2027-04-24">Spring Reign 2027 · late April · Burlington, WA</time></p>
+        </div>
+      </div>
+      <p class="hero-cue rise" style="--i:4" aria-hidden="true">↓ Fill out the bracket</p>
+    </div>
+  </section>
+
+  <!-- ================= MARQUEE A ================= -->
+  <div class="marquee" aria-hidden="true">
+    <div class="mq-track">
+      <span>Bracket Season</span><span class="sep">▲</span><span>World's Largest</span><span class="sep">▲</span><span>Spirit of the Game</span><span class="sep">▲</span><span>Upset Alert</span><span class="sep">▲</span><span>Road to the Final</span><span class="sep">▲</span>
+      <span>Bracket Season</span><span class="sep">▲</span><span>World's Largest</span><span class="sep">▲</span><span>Spirit of the Game</span><span class="sep">▲</span><span>Upset Alert</span><span class="sep">▲</span><span>Road to the Final</span><span class="sep">▲</span>
+    </div>
+  </div>
+
+  <!-- ================= SEEDING INTRO ================= -->
+  <section class="seeding reveal" aria-labelledby="seed-h">
+    <div class="wrap">
+      <p class="kicker rise" style="--i:0">The seeding</p>
+      <h2 class="sec-title rise" id="seed-h" style="--i:1">Eight programs.<br>One <span class="g">champion.</span></h2>
+      <p class="note rise" style="--i:2"><b>An illustrative bracket.</b> These are DiscNW's real programs and events, seeded for fun — not real tournament results. The only real result is that every one of them is open to you, all year, with fees on a sliding scale from $33.</p>
+      <div class="regions">
+        <div class="region-chip rise" style="--i:3">
+          <span class="rc-seed">Y</span>
+          <span><span class="rc-name">Youth Region</span><span class="rc-sub">Spring Reign · Camps · HS &amp; MS Leagues</span></span>
+        </div>
+        <div class="region-chip rise" style="--i:4">
+          <span class="rc-seed">O</span>
+          <span><span class="rc-name">Open Region</span><span class="rc-sub">Potlatch · Sea Plastic · Hat &amp; Wonder Leagues</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= THE BRACKET (signature) ================= -->
+  <section class="bracket" aria-labelledby="bracket-h">
+    <div class="road" aria-hidden="true">
+      <div class="road-in">
+        <div class="road-track"><div class="road-fill"></div></div>
+        <ol class="road-stops">
+          <li data-stop="0">Semifinals</li>
+          <li data-stop="1">Regional Finals</li>
+          <li data-stop="2">The Final</li>
+          <li data-stop="3">Champion</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="bracket-head wrap reveal">
+      <p class="kicker rise" style="--i:0">The live bracket</p>
+      <h2 class="sec-title rise" id="bracket-h" style="--i:1">The road to <span class="g">the final</span></h2>
+      <p class="lede rise" style="--i:2">The wires ink themselves round by round as you scroll. Hover any matchup for the scouting report — and watch for the <strong>upset alerts</strong> that bust the bracket wide open.</p>
+    </div>
+
+    <div class="stage-scroll">
+      <div class="stage reveal" role="img" aria-label="Illustrative single-elimination bracket. Youth Region: Spring Reign (1) beats Summer Youth Camps (4); Fall Middle School League (3) upsets Fall High School League (2); Spring Reign beats Fall Middle School League to take the region. Open Region: Potlatch (1) beats Sea Plastic (4); Summer Wonder League (3) upsets Summer Mixed Hat League (2); Potlatch beats Summer Wonder League to take the region. Final: Spring Reign 15, Potlatch 14. Champion: Spring Reign.">
+        <!-- connector wires: viewBox 0 0 1280 600, pathLength 1 so each draws with a single dash -->
+        <svg class="wires" viewBox="0 0 1280 600" preserveAspectRatio="none" focusable="false" aria-hidden="true">
+          <path class="wire" style="--r:0" pathLength="1" d="M204 120 H238 Q248 120 248 130 V290 Q248 300 258 300 H294"/>
+          <path class="wire" style="--r:0" pathLength="1" d="M204 480 H238 Q248 480 248 470 V310 Q248 300 258 300 H294"/>
+          <path class="wire" style="--r:0" pathLength="1" d="M1076 120 H1042 Q1032 120 1032 130 V290 Q1032 300 1022 300 H986"/>
+          <path class="wire" style="--r:0" pathLength="1" d="M1076 480 H1042 Q1032 480 1032 470 V310 Q1032 300 1022 300 H986"/>
+          <path class="wire" style="--r:1" pathLength="1" d="M476 300 H548"/>
+          <path class="wire" style="--r:1" pathLength="1" d="M804 300 H732"/>
+          <path class="wire gold" style="--r:2" pathLength="1" d="M640 258 V150"/>
+        </svg>
+
+        <!-- CHAMPION crest node (deep brand moment) -->
+        <div class="matchup champ" style="--x:640;--y:82;--w:300;--d:3" tabindex="0" aria-label="Champion of the illustrative bracket: Spring Reign, the world's largest mixed youth ultimate tournament.">
+          <img class="champ-mark" src="assets/brand/logo-mark-white.png" alt="DiscNW formline mark" width="590" height="616">
+          <p class="champ-label">Champion</p>
+          <p class="champ-name">Spring Reign</p>
+          <p class="champ-crown">World's largest mixed youth tournament</p>
+        </div>
+
+        <!-- YOUTH REGION -->
+        <div class="matchup" style="--x:112;--y:120;--d:0" tabindex="0" aria-label="Youth Semifinal. 1 seed Spring Reign 15 defeats 4 seed Summer Youth Camps 11. Spring Reign advances. The world's largest mixed youth tournament, the overall number one seed.">
+          <p class="mu-round">Youth · Semi</p>
+          <div class="team win"><span class="seed">1</span><span class="tname">Spring Reign</span><span class="score">15</span></div>
+          <div class="team"><span class="seed">4</span><span class="tname">Youth Camps</span><span class="score">11</span></div>
+          <p class="mu-note" aria-hidden="true">Summer Youth Ultimate Camps, ages 7–18 — where a lot of first forehands happen. The 1 seed just has another gear.</p>
+        </div>
+
+        <div class="matchup upset" style="--x:112;--y:480;--d:0" tabindex="0" aria-label="Youth Semifinal, upset alert. 3 seed Fall Middle School League 15 upsets 2 seed Fall High School League 13. Fall Middle School League advances.">
+          <p class="mu-round">Youth · Semi <span class="upset-chip"><span class="ud" aria-hidden="true"></span>Upset</span></p>
+          <div class="team win"><span class="seed">3</span><span class="tname">MS League</span><span class="score">15</span></div>
+          <div class="team"><span class="seed">2</span><span class="tname">HS League</span><span class="score">13</span></div>
+          <p class="mu-note" aria-hidden="true">Bracket buster. Middle schoolers headline Spring Reign every year — so of course the 3 seed sends the upperclassmen home.</p>
+        </div>
+
+        <div class="matchup" style="--x:384;--y:300;--d:1" tabindex="0" aria-label="Youth Regional Final. 1 seed Spring Reign 15 defeats 3 seed Fall Middle School League 12. Spring Reign wins the Youth Region.">
+          <p class="mu-round">Youth · Regional Final</p>
+          <div class="team win"><span class="seed">1</span><span class="tname">Spring Reign</span><span class="score">15</span></div>
+          <div class="team"><span class="seed">3</span><span class="tname">MS League</span><span class="score">12</span></div>
+          <p class="mu-note" aria-hidden="true">The Cinderella run ends against the flagship — but the middle-school program leaves the tournament with the whole gym on its feet.</p>
+        </div>
+
+        <!-- OPEN REGION -->
+        <div class="matchup" style="--x:1168;--y:120;--d:0" tabindex="0" aria-label="Open Semifinal. 1 seed Potlatch 15 defeats 4 seed Sea Plastic 10. Potlatch advances. The founding tournament, running since 1995.">
+          <p class="mu-round">Open · Semi</p>
+          <div class="team win"><span class="seed">1</span><span class="tname">Potlatch</span><span class="score">15</span></div>
+          <div class="team"><span class="seed">4</span><span class="tname">Sea Plastic</span><span class="score">10</span></div>
+          <p class="mu-note" aria-hidden="true">Sea Plastic brings beach chaos to the sand at Puget Sound, but the tournament that founded DiscNW in 1995 has seen it all.</p>
+        </div>
+
+        <div class="matchup upset" style="--x:1168;--y:480;--d:0" tabindex="0" aria-label="Open Semifinal, upset alert. 3 seed Summer Wonder League 15 upsets 2 seed Summer Mixed Hat League 14. Summer Wonder League advances.">
+          <p class="mu-round">Open · Semi <span class="upset-chip"><span class="ud" aria-hidden="true"></span>Upset</span></p>
+          <div class="team win"><span class="seed">3</span><span class="tname">Wonder League</span><span class="score">15</span></div>
+          <div class="team"><span class="seed">2</span><span class="tname">Hat League</span><span class="score">14</span></div>
+          <p class="mu-note" aria-hidden="true">Double game point. The mellow, show-up-after-work summer league steals it on universe point over the higher seed.</p>
+        </div>
+
+        <div class="matchup" style="--x:896;--y:300;--d:1" tabindex="0" aria-label="Open Regional Final. 1 seed Potlatch 15 defeats 3 seed Summer Wonder League 12. Potlatch wins the Open Region.">
+          <p class="mu-round">Open · Regional Final</p>
+          <div class="team win"><span class="seed">1</span><span class="tname">Potlatch</span><span class="score">15</span></div>
+          <div class="team"><span class="seed">3</span><span class="tname">Wonder League</span><span class="score">12</span></div>
+          <p class="mu-note" aria-hidden="true">The origin story rolls on. Thirty-one summers later, Potlatch is still the party the whole region circles on the calendar.</p>
+        </div>
+
+        <!-- THE FINAL -->
+        <div class="matchup" style="--x:640;--y:300;--w:210;--d:2" tabindex="0" aria-label="The Final. 1 seed Spring Reign 15 defeats 1 seed Potlatch 14 on universe point. Spring Reign is the champion.">
+          <p class="mu-round">The Final · Universe Point</p>
+          <div class="team win"><span class="seed">1</span><span class="tname">Spring Reign</span><span class="score">15</span></div>
+          <div class="team"><span class="seed">1</span><span class="tname">Potlatch</span><span class="score">14</span></div>
+          <p class="mu-note" aria-hidden="true">Flagship vs. founder, decided on the game-winning point — the way every great DiscNW game should end.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="bracket-legend reveal">
+        <span class="rise" style="--i:0"><b>▸</b> advances</span>
+        <span class="rise" style="--i:1"><b>Upset</b> lower seed wins</span>
+        <span class="rise" style="--i:2">Seeds are illustrative · every program is open to all</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= NUMBERS ================= -->
+  <section class="numbers reveal" aria-labelledby="num-h">
+    <div class="wrap">
+      <p class="kicker rise" style="--i:0">The numbers don't lie</p>
+      <h2 class="sec-title rise" id="num-h" style="--i:1">A tournament <span class="g">this big</span></h2>
+      <div class="stat-grid">
+        <div class="stat rise" style="--i:2">
+          <span class="stat-n"><span class="count" data-to="10000">10,000</span><span class="u">+</span></span>
+          <p class="stat-l">Players across DiscNW every year</p>
+        </div>
+        <div class="stat rise" style="--i:3">
+          <span class="stat-n">1995</span>
+          <p class="stat-l">Founded out of the Potlatch tournament</p>
+        </div>
+        <div class="stat rise" style="--i:4">
+          <span class="stat-n"><span class="count" data-to="31">31</span></span>
+          <p class="stat-l">Seasons of Northwest ultimate and counting</p>
+        </div>
+        <div class="stat rise" style="--i:5">
+          <span class="stat-n"><span class="u">$</span><span class="count" data-to="33">33</span></span>
+          <p class="stat-l">League fees start here — sliding scale, no questions</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= GAME FILM ================= -->
+  <section class="film reveal" aria-labelledby="film-h">
+    <div class="wrap">
+      <p class="kicker rise" style="--i:0">Game film</p>
+      <h2 class="sec-title rise" id="film-h" style="--i:1">Highlights from <span class="g">the bracket</span></h2>
+      <p class="lede rise" style="--i:2">No referees, no whistles — players make every call themselves. This is Spirit of the Game at the tournament that crowns the champion.</p>
+      <div class="filmgrid">
+        <figure class="film-card rise" style="--i:3">
+          <div class="film-frame">
+            <video muted loop playsinline preload="metadata" poster="assets/video/poster--vM_JH6IbDo.jpg" aria-label="Muted loop: both teams form a post-game spirit tunnel of high fives at Spring Reign 2026 middle school finals.">
+              <source src="assets/video/loop-ms-spirit-tunnel.mp4" type="video/mp4">
+            </video>
+            <button class="film-toggle" type="button" aria-label="Play film loop">
+              <svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>
+              <svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+            </button>
+            <span class="film-tag" aria-hidden="true">Spirit Tunnel · SR26</span>          </div>
+          <figcaption><b>Zero referees</b>Every team lines up to slap hands after the final horn. The calls, the disputes, the sportsmanship — all self-officiated, and it has held for three decades.</figcaption>
+        </figure>
+        <figure class="film-card rise" style="--i:4">
+          <div class="film-frame">
+            <video muted loop playsinline preload="metadata" poster="assets/video/poster-zLzKRCbhIAg.jpg" aria-label="Muted loop: a player sprints deep, skies two defenders for the catch, and disappears into the celebration at Spring Reign 2026 high school finals.">
+              <source src="assets/video/loop-hs-catch.mp4" type="video/mp4">
+            </video>
+            <button class="film-toggle" type="button" aria-label="Play film loop">
+              <svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>
+              <svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+            </button>
+            <span class="film-tag" aria-hidden="true">The Sky · SR26</span>          </div>
+          <figcaption><b>The sky, the layout, the huck</b>A full-extension catch over two defenders — the kind of highlight that decides a championship point and sends the sideline sprinting onto the field.</figcaption>
+        </figure>
+      </div>
+      <p class="facts rise" style="--i:5">
+        <span class="g">Spirit of the Game</span>
+        <span>Ages <b>7–18</b> · Summer Youth Camps</span>
+        <span>Rainout hotline · <b>(206) 781-5840</b></span>
+        <span>Coaching Collective · <b>trains every sideline</b></span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= CLEAN STILL DIVIDER ================= -->
+  <figure class="still reveal">
+    <div class="still-frame rise" style="--i:0">
+      <img src="assets/sr26-catch-celebration.jpg" width="1920" height="1080" alt="A young player holds the disc overhead mid-celebration as teammates rush toward her across a green tournament field at Spring Reign 2026." decoding="async">
+    </div>
+    <figcaption class="rise" style="--i:1"><span>Spring Reign 2026 · Burlington, WA</span><span>The catch, the pile, the champion</span></figcaption>
+  </figure>
+
+  <!-- ================= UNIVERSE POINT ================= -->
+  <section class="universe reveal" aria-labelledby="up-h">
+    <div class="wrap">
+      <p class="kicker up-eyebrow rise" style="--i:0">Universe point</p>
+      <h2 class="up-title rise" id="up-h" style="--i:1">The only bracket<br>with <span class="g">your name</span> in it</h2>
+      <p class="up-sub rise" style="--i:2">Every champion on this page is real, and every one of them is open to you — <strong>age 7 or 47, first throw or ten-thousandth.</strong> The only way to win the bracket is to get in it.</p>
+      <div class="cta-row rise" style="--i:3">
+        <a class="btn" href="https://www.discnw.org/adult-ultimate">Register — adult leagues</a>
+        <a class="btn" href="https://www.discnw.org/youth-ultimate">Sign a kid up for camp</a>
+        <a class="btn ghost" href="https://www.discnw.org/events">See every open registration</a>
+      </div>
+      <p class="up-fine rise" style="--i:4">Sliding scale from <b>$33</b> — no questions, so cost never keeps anyone off the field. That part is not illustrative.</p>
+      <p class="up-info rise" style="--i:5">
+        <span>Home base · <a href="https://www.discnw.org">discnw.org</a></span>
+        <span>Rainout hotline · <a href="tel:+12067815840">(206) 781-5840</a></span>
+        <span>Est. 1995 · Seattle</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT THIS DIRECTION ================= -->
+  <section class="about" aria-labelledby="about-h">
+    <div class="wrap">
+      <div class="about-head">
+        <div>
+          <p class="kicker">About this direction</p>
+          <h2 id="about-h">19 — Bracket</h2>
+        </div>
+        <img class="about-lockup" src="assets/brand/logo-full-white.png" alt="DiscNW — formline disc mark and wordmark" width="1446" height="616">
+      </div>
+      <p class="thesis">The site becomes bracket season. Because Spring Reign is the world's largest mixed youth ultimate tournament, the whole DiscNW season is seeded like a March-Madness tree that inks its own connector wires round by round as you scroll — matchup cards sliding in, illustrative UPSET ALERTs detonating with a shockwave, a sticky road-to-the-final rail filling, count-up odometers tallying the real numbers, a live countdown to the next first pull, and the formline mark revealed as the champion crest at the top of the tree. With no JavaScript the bracket renders fully drawn and every number and date is already correct; reduced motion keeps it all, calmly, with nothing ticking or shaking.</p>
+      <div class="spec">
+        <div>
+          <h3>Signature — the live bracket</h3>
+          <p>A two-region, single-elimination tournament tree drawn as functional diagram graphics: SVG connector wires normalized to <strong>pathLength 1</strong> so each inks with a single dash offset, cascading from the semifinals toward the final. Seeded matchup cards carry DiscNW's real programs, reveal a scouting report on hover or focus, and two lower seeds bust the bracket with an UPSET ALERT — screen-shake plus an expanding gold shockwave. The road-to-the-final rail tracks your progress; the champion node crowns Spring Reign under the white formline crest.</p>
+          <h3>Motion — bracket mania</h3>
+          <p>One easing language: a <strong>snap</strong> for micro moves, a <strong>lux</strong> curve for wire draws and reveals, and a <strong>pop</strong> overshoot for cards and the champion landing. Kinetic marquees run opposite directions, a broadcast LIVE bug pulses, and the countdown ticks in tabular numerals. Everything is transform/opacity/filter and rAF-throttled; the base state is the finished bracket.</p>
+        </div>
+        <div>
+          <h3>Palette — tournament</h3>
+          <div class="chips">
+            <span class="chip"><span class="sw" style="background:#0A0D16"></span><b>Court Black</b> #0A0D16</span>
+            <span class="chip"><span class="sw" style="background:#141A2B"></span><b>Card Slate</b> #141A2B</span>
+            <span class="chip"><span class="sw" style="background:#FFC53D"></span><b>Championship Gold</b> #FFC53D</span>
+            <span class="chip"><span class="sw" style="background:#F4F5FA"></span><b>Chalk</b> #F4F5FA</span>
+            <span class="chip"><span class="sw" style="background:#FF4646"></span><b>Live Red</b> #FF4646</span>
+            <span class="chip"><span class="sw" style="background:#9198AC"></span><b>Steel</b> #9198AC</span>
+          </div>
+          <h3 style="margin-top:26px">Type</h3>
+          <p><strong>Anton</strong> — the blocky poster display for the mega-type, round labels, scores and champion. <strong>Archivo</strong> (700–900) for the matchup cards and body. <strong>Spline Sans Mono</strong> for seeds, timecodes, kickers and the countdown.</p>
+        </div>
+      </div>
+      <div class="choose">
+        <div>
+          <h3>Choose this if</h3>
+          <p>You want the loudest, most event-driven front door in the kit — one that turns the DiscNW season into a bracket the whole city fills out, and makes registering feel like claiming a spot in the tournament. It is unmistakably its own, and no generic rec league could wear it, because DiscNW actually runs the world's largest one.</p>
+        </div>
+        <div>
+          <h3>Think twice if</h3>
+          <p>You need a calm, dense utility homepage first. Bracket mania is a seasonal campaign skin, loud by design; its energy can overwhelm the standings, schedules and rainout tools that the grounded directions handle better underneath this voice.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pagefoot">
+  <nav class="wrap" aria-label="Direction navigation">
+    <a href="index.html">← All directions</a>
+    <span class="mid" aria-hidden="true">Direction 19 of 19 · Bracket</span>
+    <a href="index.html">Next direction →</a>
+  </nav>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var doc=document, win=window, root=doc.documentElement;
+  var mqReduce=win.matchMedia('(prefers-reduced-motion: reduce)');
+  var motion=!mqReduce.matches;
+  root.classList.add('js');
+
+  /* ---------- video tiles: play/pause + in-view autoplay (motion) ---------- */
+  (function(){
+    var cards=[].slice.call(doc.querySelectorAll('.film-card'));
+    cards.forEach(function(card){
+      var video=card.querySelector('video'), btn=card.querySelector('.film-toggle');
+      if(!video) return;
+      var userPaused=!motion; /* under reduced motion, don't autoplay; wait for opt-in */
+      function ui(p){ card.classList.toggle('playing',p); if(btn) btn.setAttribute('aria-label', p?'Pause film loop':'Play film loop'); }
+      function tryPlay(){ var pr=video.play(); if(pr&&pr.catch) pr.catch(function(){}); }
+      video.addEventListener('play',function(){ui(true);});
+      video.addEventListener('pause',function(){ui(false);});
+      if(btn) btn.addEventListener('click',function(){
+        if(video.paused){ userPaused=false; tryPlay(); } else { userPaused=true; video.pause(); }
+      });
+      if('IntersectionObserver' in win){
+        var io=new IntersectionObserver(function(es){
+          es.forEach(function(e){
+            if(e.isIntersecting){ if(!userPaused && video.paused) tryPlay(); }
+            else if(!video.paused){ video.pause(); }
+          });
+        },{threshold:.35});
+        io.observe(card);
+      } else if(motion){ tryPlay(); }
+    });
+  })();
+
+  if(!motion) return; /* reduced motion: base page is the settled state; nothing else runs */
+  root.classList.add('play');
+
+  /* ---------- reveals ---------- */
+  var reveals=[].slice.call(doc.querySelectorAll('.reveal'));
+  function reveal(el){ if(el && !el.classList.contains('in')) el.classList.add('in'); }
+  var hero=doc.querySelector('.hero');
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ reveal(hero); }); });
+
+  var io=null;
+  if('IntersectionObserver' in win){
+    io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ reveal(e.target); startExtras(e.target); io.unobserve(e.target); }
+      });
+    },{threshold:.16, rootMargin:'0px 0px -8% 0px'});
+    reveals.forEach(function(el){ if(el!==hero) io.observe(el); });
+  } else {
+    reveals.forEach(reveal); reveals.forEach(startExtras);
+  }
+
+  /* unconditional settle (<=2.5s): force anything on screen into its finished
+     state even if the observer never fires. Worst case 1.0s + .55s stagger
+     + .6s draw = 2.15s. Below-fold keeps its scroll reveal. */
+  setTimeout(function(){
+    reveals.forEach(function(el){
+      var r=el.getBoundingClientRect();
+      if(r.top<win.innerHeight && r.bottom>0){ reveal(el); startExtras(el); if(io) io.unobserve(el); }
+    });
+  },1000);
+
+  /* ---------- per-section enhancements ---------- */
+  function startExtras(el){
+    if(el.querySelector) {
+      var counts=el.querySelectorAll('.count');
+      for(var i=0;i<counts.length;i++) countUp(counts[i]);
+    }
+  }
+
+  /* count-up odometer — real value already in DOM; animate 0 -> value */
+  function countUp(node){
+    if(node.dataset.done) return; node.dataset.done='1';
+    var to=parseInt(node.getAttribute('data-to'),10); if(isNaN(to)) return;
+    var dur=1100, t0=performance.now();
+    function fmt(n){ return n.toLocaleString('en-US'); }
+    function tick(t){
+      var p=Math.min((t-t0)/dur,1), e=1-Math.pow(1-p,3);
+      node.textContent=fmt(Math.round(e*to));
+      if(p<1) requestAnimationFrame(tick);
+    }
+    node.textContent=fmt(0);
+    requestAnimationFrame(tick);
+  }
+
+  /* ---------- countdown clock ---------- */
+  (function(){
+    var cd=doc.querySelector('.countdown'); if(!cd) return;
+    var target=Date.parse(cd.getAttribute('data-deadline')); if(isNaN(target)) return;
+    var live=cd.querySelector('.cd-live');
+    var uD=cd.querySelector('[data-u=d]'),uH=cd.querySelector('[data-u=h]'),uM=cd.querySelector('[data-u=m]'),uS=cd.querySelector('[data-u=s]');
+    function pad(n){ return (n<10?'0':'')+n; }
+    var iv=null;
+    function tick(){
+      var diff=target-Date.now();
+      if(diff<=0){ if(iv) clearInterval(iv); cd.setAttribute('data-state','live'); if(live) live.style.display='none'; return; }
+      var s=Math.floor(diff/1000);
+      if(uD) uD.textContent=Math.floor(s/86400);
+      if(uH) uH.textContent=pad(Math.floor(s%86400/3600));
+      if(uM) uM.textContent=pad(Math.floor(s%3600/60));
+      if(uS) uS.textContent=pad(s%60);
+      if(diff<=60000) cd.classList.add('cd-critical');
+    }
+    tick(); iv=setInterval(tick,1000);
+  })();
+
+  /* ---------- road-to-the-final progress rail ---------- */
+  (function(){
+    var section=doc.querySelector('.bracket'), road=doc.querySelector('.road');
+    if(!section||!road) return;
+    var fill=road.querySelector('.road-fill'), stops=[].slice.call(road.querySelectorAll('[data-stop]'));
+    var raf=0;
+    function update(){
+      raf=0;
+      var r=section.getBoundingClientRect(), vh=win.innerHeight;
+      /* progress from when the section top passes mid-viewport to when its bottom does */
+      var total=r.height + vh*0.4;
+      var p=(vh*0.7 - r.top)/total;
+      p=Math.max(0,Math.min(1,p));
+      road.style.setProperty('--road',p.toFixed(4));
+      var lit=Math.round(p*(stops.length-1));
+      for(var i=0;i<stops.length;i++){ if(i<=lit && p>0.02) stops[i].setAttribute('data-on',''); else stops[i].removeAttribute('data-on'); }
+    }
+    function schedule(){ if(!raf) raf=requestAnimationFrame(update); }
+    win.addEventListener('scroll',schedule,{passive:true});
+    win.addEventListener('resize',schedule,{passive:true});
+    update();
+  })();
+
+  /* keep hero reveal robust across late font load */
+  if(doc.fonts && doc.fonts.ready){ doc.fonts.ready.then(function(){ reveal(hero); }); }
+})();
+</script>
+</body>
+</html>

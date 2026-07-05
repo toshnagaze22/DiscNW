@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>08 · Game to 15 — DiscNW design directions</title>
 <link rel="icon" type="image/png" href="assets/brand/favicon.png">
-<meta name="description" content="Experimental direction 08 for the DiscNW redesign: the site is a game of Ultimate played to 15. Fifteen numbered truths, one scoreboard, one orange flood.">
+<meta name="description" content="Experimental direction 08 for the DiscNW redesign: the site is a game of Ultimate played to 15 — a live scoreboard, fifteen numbered truths that each land with a burst, momentum building to a full-screen orange flood.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
@@ -13,7 +13,12 @@
   :root{
     --paper:#FAFAF7;
     --ink:#101010;
-    --accent:#FF4A00;
+    --accent:#FF4A00;                         /* Universe Orange — the hero + the flood */
+    --indigo:#3E59C4;                         /* kit energy accent — cool (AA even at small size) */
+    --tidal:#1699AC;                          /* kit energy accent — cool (graphic / large only) */
+    --marigold:#FFB61E;                       /* spark-only accent — decorative bursts, never text */
+    --pt:var(--accent);                       /* per-point accent — set inline on each .pt; drives its
+                                                 tickmark, rule, numeral echo and celebration burst */
     --muted:#45433F;
     --hair:rgba(16,16,16,.16);
     --hair-strong:rgba(16,16,16,.32);
@@ -26,6 +31,7 @@
     --ease-lux:cubic-bezier(.16,1,.3,1);      /* macro: masks, rises, line draws */
     --ease-hero:cubic-bezier(.65,.05,0,1);    /* the flood: fast attack, long settle */
     --ease-over:cubic-bezier(.32,1.36,.42,1); /* numeral landing: slight overshoot */
+    --ease-pop:cubic-bezier(.2,1.5,.34,1);    /* the score: punchy overshoot for landings + bursts */
   }
   *,*::before,*::after{box-sizing:border-box}
   html{overflow-x:clip;scroll-padding-top:calc(var(--strip-h) + 8px)}
@@ -89,6 +95,25 @@
   .s-meta{color:var(--muted);font-weight:500}
   .s-final{font-weight:700;letter-spacing:.14em;font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
 
+  /* live crowd-energy cluster + momentum meter — all decorative (the strip is
+     aria-hidden). Shown only when the live scoreboard is on (html.play); the
+     base / no-JS / reduced-motion strip stays the calm static "Game to 15". */
+  .s-bug{display:inline-flex;align-items:center;gap:6px;font-weight:600;letter-spacing:.16em;color:var(--ink)}
+  .eq{display:inline-flex;align-items:flex-end;gap:2px;width:19px;height:13px}
+  .eq i{flex:1;height:100%;background:var(--accent);transform-origin:50% 100%;transform:scaleY(.32);border-radius:1px}
+  .s-plus{
+    position:absolute;left:50%;top:-4px;transform:translate(-50%,0);
+    font-size:19px;font-weight:700;line-height:1;color:var(--accent);opacity:0;pointer-events:none;
+    font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+  }
+  .s-momentum{
+    position:absolute;left:0;bottom:0;height:3px;width:100%;display:none;
+    transform:scaleX(var(--mo,0));transform-origin:0 50%;
+    background:linear-gradient(90deg,var(--tidal),var(--accent));
+  }
+  html.play .s-momentum{display:block}
+  html.play .strip.final .s-momentum{opacity:0}
+
   html.play .s-static{display:none}
   html.play .s-live{display:inline-flex;align-items:baseline;gap:.85em}
   @media (prefers-reduced-motion: no-preference){
@@ -97,6 +122,21 @@
     html.play .s-box.tick::after{opacity:1;transition:none}
     html.play .s-box.tick .s-you{animation:tickpulse .34s var(--ease-snap)}
     @keyframes tickpulse{0%{transform:scale(1)}45%{transform:scale(1.12)}100%{transform:scale(1)}}
+    /* equalizer bars breathe like crowd noise; the +1 pops on each point scored;
+       the meter eases as it fills; the hot stretch (final points) surges louder */
+    .eq i{animation:eq 1s var(--ease-snap) infinite alternate}
+    .eq i:nth-child(1){animation-duration:.86s}
+    .eq i:nth-child(2){animation-duration:1.18s;animation-delay:.12s}
+    .eq i:nth-child(3){animation-duration:.7s;animation-delay:.05s}
+    .eq i:nth-child(4){animation-duration:1.03s;animation-delay:.2s}
+    @keyframes eq{0%{transform:scaleY(.26)}100%{transform:scaleY(1)}}
+    html.play .s-momentum{transition:transform .55s var(--ease-lux)}
+    html.play .s-plus.pop{animation:plus .72s var(--ease-pop)}
+    @keyframes plus{0%{opacity:0;transform:translate(-50%,7px) scale(.7)}28%{opacity:1}100%{opacity:0;transform:translate(-50%,-16px) scale(1.12)}}
+    html.play .strip.hot .eq i{animation-duration:.5s}
+    html.play .strip.hot .s-momentum{box-shadow:0 0 15px var(--accent)}
+    html.play .strip.hot .s-box .s-you{animation:hotpulse .72s var(--ease-snap) infinite}
+    @keyframes hotpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
   }
   html.play .strip.final{background:var(--accent);border-color:transparent}
   html.play .strip.final .s-live{display:none}
@@ -137,15 +177,16 @@
     html.play .pt .tagrow{position:relative;border-top-color:transparent}
     html.play .pt .tagrow::before{
       content:"";position:absolute;left:0;right:0;top:-1px;height:1px;
-      background:var(--ink);transform:scaleX(0);transform-origin:0 50%;
+      background:var(--pt);transform:scaleX(0);transform-origin:0 50%;
       transition:transform .7s var(--ease-lux);
     }
+    html.play .pt-15 .tagrow::before{background:var(--ink)}
     html.play .pt.in .tagrow::before{transform:scaleX(1)}
     html.play .pt .tagrow > span{opacity:0;transform:translateY(10px);transition:opacity .5s var(--ease-lux) .08s,transform .5s var(--ease-lux) .08s}
     html.play .pt.in .tagrow > span{opacity:1;transform:none}
     html.play .pt .num{
       clip-path:inset(100% -.12em -.12em -.12em);transform:translateY(.14em);
-      transition:clip-path .9s var(--ease-lux) .06s,transform .9s var(--ease-over) .06s;
+      transition:clip-path .8s var(--ease-lux) .06s,transform .8s var(--ease-pop) .06s;
     }
     html.play .pt.in .num{clip-path:inset(-.12em);transform:none}
     html.play .pt:not(.pt-15) .col > *,
@@ -202,7 +243,7 @@
     letter-spacing:.18em;text-transform:uppercase;color:var(--ink);
     margin:0 0 clamp(28px,6vh,72px);
   }
-  .tickmark{display:inline-block;width:8px;height:8px;background:var(--accent);margin-right:10px;vertical-align:1px}
+  .tickmark{display:inline-block;width:8px;height:8px;background:var(--pt);margin-right:10px;vertical-align:1px}
   h1{
     font-family:var(--grot);font-weight:700;text-transform:uppercase;
     font-size:clamp(72px,15.5vw,224px);line-height:.9;letter-spacing:-.03em;
@@ -226,7 +267,7 @@
   .pt .ptgrid{flex:1;align-content:center}
   .tagrow{
     display:flex;justify-content:space-between;align-items:baseline;gap:16px;
-    border-top:1px solid var(--ink);
+    border-top:1px solid var(--pt);
     padding-top:12px;margin-bottom:clamp(36px,7vh,88px);
     font-family:var(--grot);font-size:11px;font-weight:600;
     letter-spacing:.18em;text-transform:uppercase;
@@ -238,6 +279,7 @@
     column-gap:clamp(48px,7vw,128px);
     align-items:start;justify-content:start;
   }
+  .numcell{position:relative}
   .num{
     font-family:var(--grot);font-weight:700;
     font-size:clamp(200px,21vw + 120px,320px);
@@ -245,6 +287,40 @@
     font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
     margin-top:-.015em;
     user-select:none;
+    position:relative;z-index:0;
+  }
+  /* colored numeral echo — a static offset in the point's accent behind the ink
+     numeral. Present even with no JS / reduced motion, so every point carries a
+     little color life in the calm settled state too. */
+  .num::before{
+    content:attr(data-n);position:absolute;left:0;top:0;z-index:-1;
+    color:var(--pt);transform:translate(.05em,.055em);
+  }
+  /* per-point celebration burst — abstract ring-pop + multi-color spark ring,
+     fired the frame the numeral lands. Decorative + aria-hidden; hidden with no
+     JS, frozen calm under reduced motion, suppressed on point 01 (crest dignity). */
+  .burst{position:absolute;left:50%;top:46%;width:0;height:0;z-index:2;color:var(--pt);pointer-events:none;display:none}
+  @media (prefers-reduced-motion: no-preference){
+    html.play .numcell .burst{display:block}
+    html.play .burst::before,
+    html.play .burst::after{content:"";position:absolute;left:0;top:0;border-radius:50%}
+    html.play .burst::before{
+      --bd:clamp(190px,32vw,280px);
+      width:var(--bd);height:var(--bd);margin:calc(var(--bd) / -2) 0 0 calc(var(--bd) / -2);
+      border:3px solid currentColor;opacity:0;transform:scale(.25);
+    }
+    html.play .burst::after{
+      width:9px;height:9px;margin:-4.5px 0 0 -4.5px;background:transparent;opacity:0;
+      box-shadow:
+        0 -64px 0 currentColor, 45px -45px 0 var(--marigold), 64px 0 0 var(--tidal),
+        45px 45px 0 var(--indigo), 0 64px 0 currentColor, -45px 45px 0 var(--marigold),
+        -64px 0 0 var(--tidal), -45px -45px 0 var(--indigo);
+    }
+    html.play .pt.in .burst::before{animation:ringpop .72s var(--ease-snap) .08s both}
+    html.play .pt.in .burst::after{animation:sparks .66s var(--ease-pop) .06s both}
+    @keyframes ringpop{0%{opacity:0;transform:scale(.25)}22%{opacity:.6}100%{opacity:0;transform:scale(1.06)}}
+    @keyframes sparks{0%{opacity:0;transform:scale(.2)}18%{opacity:1}100%{opacity:0;transform:scale(1.25)}}
+    html.play #pt-01 .burst{display:none}
   }
   .col{padding-top:.2em;max-width:38ch}
   .col h2{
@@ -300,10 +376,50 @@
     letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
   }
 
+  /* halftime highlight — the one live moment: the spirit-tunnel loop framed as a
+     broadcast highlight with a LIVE bug + a wiping lower-third. Video is muted /
+     autoplay / loop / playsinline; its poster is the no-JS + reduced-motion still
+     (JS pauses it under reduced motion). No tint or filter on the footage — only a
+     bottom scrim (<= .6) so the lower-third stays legible. */
+  .highlight .hl-frame{position:relative;max-width:min(1180px,100%);margin-inline:auto;overflow:hidden;background:var(--ink)}
+  .hl-vid{display:block;width:100%;height:auto;aspect-ratio:16 / 9;object-fit:cover}
+  .hl-scrim{position:absolute;inset:auto 0 0 0;height:44%;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.6));pointer-events:none}
+  .hl-bug{
+    position:absolute;left:16px;top:14px;display:inline-flex;align-items:center;gap:7px;
+    background:rgba(16,16,16,.62);color:#fff;padding:7px 11px;
+    font-family:var(--grot);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  }
+  .hl-bug .eq{height:12px}
+  .hl-bug .eq i{background:var(--accent)}
+  .hl-third{
+    position:absolute;left:16px;right:16px;bottom:14px;color:#fff;
+    font-family:var(--grot);font-size:clamp(12px,1.6vw,15px);font-weight:600;
+    letter-spacing:.1em;text-transform:uppercase;
+  }
+  .hl-third b{color:var(--accent);font-weight:700}
+  @media (prefers-reduced-motion: no-preference){
+    html.play .highlight .hl-bug,
+    html.play .highlight .hl-third{transform:translateX(-118%);transition:transform .6s var(--ease-snap)}
+    html.play .highlight .hl-bug{transition-delay:.04s}
+    html.play .highlight.in .hl-bug,
+    html.play .highlight.in .hl-third{transform:none}
+  }
+
   /* point 15 — the flood */
   .pt-15{background:var(--accent);color:var(--ink);min-height:100svh}
   .pt-15 .tagrow{border-top-color:var(--ink)}
   .pt-15 .run{color:var(--ink)}
+  /* the climax numeral echoes white, and its burst recolors to pop on the flood */
+  .pt-15 .num::before{color:#fff;opacity:.5}
+  @media (prefers-reduced-motion: no-preference){
+    html.play .pt-15 .burst{color:#fff}
+    html.play .pt-15 .burst::after{
+      box-shadow:
+        0 -64px 0 #fff, 45px -45px 0 var(--marigold), 64px 0 0 #fff,
+        45px 45px 0 var(--ink), 0 64px 0 #fff, -45px 45px 0 var(--marigold),
+        -64px 0 0 #fff, -45px -45px 0 var(--ink);
+    }
+  }
   .pt-15 .ptgrid{grid-template-columns:minmax(280px,430px) minmax(300px,1fr)}
   .pt-15 .col{max-width:none}
   h2.game-word{
@@ -370,6 +486,7 @@
     .strip-in{font-size:10.5px;letter-spacing:.1em;gap:.6em}
     .s-meta{display:none}
     .s-sep{display:none}
+    .s-bug{display:none}
     html.play .strip.final .s-meta{display:none}
   }
 
@@ -390,6 +507,8 @@
     html.play .pt .tagrow > span,html.play .pt .col > *,html.play .crest-open{opacity:1!important;transform:none!important}
     html.play .pt .tagrow{border-top-color:var(--ink)!important}
     html.play .pt .tagrow::before{display:none!important}
+    .s-momentum,.burst,.s-bug,.s-plus{display:none!important}
+    html.play .highlight .hl-bug,html.play .highlight .hl-third{transform:none!important}
   }
 </style>
 </head>
@@ -405,13 +524,15 @@
     <span class="s-static">Game to 15</span>
     <span class="s-live">
       <span class="s-team">DiscNW</span>
-      <span class="s-box" id="scorebox"><span>0</span><span class="s-dash">—</span><span class="s-you" id="score-you">0</span></span>
+      <span class="s-box" id="scorebox"><span>0</span><span class="s-dash">—</span><span class="s-you" id="score-you">0</span><span class="s-plus" id="s-plus">+1</span></span>
       <span class="s-team">You</span>
+      <span class="s-bug"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Live</span>
       <span class="s-sep">·</span>
       <span class="s-meta">Game to 15</span>
     </span>
     <span class="s-final">15 — Game.</span>
   </div>
+  <span class="s-momentum" aria-hidden="true"></span>
 </header>
 
 <main id="main">
@@ -431,7 +552,7 @@
     <div class="wrap">
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 01 · The vision</span><span class="run" aria-hidden="true">0 — 1</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">01</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="01">01</div><span class="burst"></span></div>
         <img class="crest-open" src="assets/brand/logo-mark.png" alt="DiscNW — Coast Salish-style formline disc mark" width="590" height="616">
         <div class="col">
           <h2 id="h01">An Ultimate community without barriers.</h2>
@@ -442,11 +563,11 @@
   </section>
 
   <!-- 02 -->
-  <section class="pt" id="pt-02" data-pt="2" aria-labelledby="h02">
+  <section class="pt" id="pt-02" data-pt="2" aria-labelledby="h02" style="--pt:var(--indigo)">
     <div class="wrap">
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 02 · The scale</span><span class="run" aria-hidden="true">0 — 2</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">02</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="02">02</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h02">Ten thousand players. And counting.</h2>
           <p>More than 10,000 people play with DiscNW every year, from Magnuson Park to grass fields all around Puget Sound. Less a league, more a small city that sprints.</p>
@@ -456,11 +577,11 @@
   </section>
 
   <!-- 03 -->
-  <section class="pt" id="pt-03" data-pt="3" aria-labelledby="h03">
+  <section class="pt" id="pt-03" data-pt="3" aria-labelledby="h03" style="--pt:var(--tidal)">
     <div class="wrap">
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 03 · The rules</span><span class="run" aria-hidden="true">0 — 3</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">03</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="03">03</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h03">Zero referees. Since the first pull.</h2>
           <p>Every DiscNW game is self-officiated: players make the calls, players resolve the disputes. Spirit of the Game is not a banner slogan — it is the entire officiating system, and it has held for three decades.</p>
@@ -474,7 +595,7 @@
     <div class="wrap">
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 04 · The origin</span><span class="run" aria-hidden="true">0 — 4</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">04</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="04">04</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h04">Born at Potlatch, 1995.</h2>
           <p>A tournament needed an organization, so the players built one. DiscNW grew out of the Potlatch tournament in 1995 and has been organizing the region’s Ultimate ever since.</p>
@@ -484,11 +605,11 @@
   </section>
 
   <!-- 05 -->
-  <section class="pt" id="pt-05" data-pt="5" aria-labelledby="h05">
+  <section class="pt" id="pt-05" data-pt="5" aria-labelledby="h05" style="--pt:var(--indigo)">
     <div class="wrap">
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 05 · The span</span><span class="run" aria-hidden="true">0 — 5</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">05</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="05">05</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h05">Ages 7 to 70-plus.</h2>
           <p>Summer Youth Ultimate Camps start at seven. Masters hat leagues never really stop. Same disc, same field lines — one game, played for a whole lifetime.</p>
@@ -497,20 +618,25 @@
     </div>
   </section>
 
-  <!-- photo break A -->
-  <figure class="break">
-    <div class="break-frame">
-      <img src="assets/sr26-spirit-tunnel.jpg" width="1920" height="1080" alt="Players and coaches raise their arms to form a post-game spirit tunnel on a sunny field at Spring Reign 2026." decoding="async">
+  <!-- halftime highlight — the one live moment -->
+  <figure class="break highlight" data-hl aria-label="Halftime highlight — the Spring Reign spirit tunnel, running live">
+    <div class="break-frame hl-frame">
+      <video class="hl-vid" autoplay muted loop playsinline poster="assets/video/poster--vM_JH6IbDo.jpg" width="1280" height="720" aria-label="Looping highlight: middle schoolers form a spirit tunnel and high-five their opponents down the line at a DiscNW game.">
+        <source src="assets/video/loop-ms-spirit-tunnel.mp4" type="video/mp4">
+      </video>
+      <span class="hl-scrim" aria-hidden="true"></span>
+      <span class="hl-bug" aria-hidden="true"><span class="eq"><i></i><i></i><i></i><i></i></span>Live</span>
+      <span class="hl-third" aria-hidden="true"><b>Halftime</b> · Spring Reign · The spirit tunnel</span>
     </div>
-    <figcaption>Halftime — Spring Reign 2026 · The post-game spirit tunnel</figcaption>
+    <figcaption>Halftime — Spring Reign · The post-game spirit tunnel, running live</figcaption>
   </figure>
 
   <!-- 06 -->
-  <section class="pt" id="pt-06" data-pt="6" aria-labelledby="h06">
+  <section class="pt" id="pt-06" data-pt="6" aria-labelledby="h06" style="--pt:var(--tidal)">
     <div class="wrap">
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 06 · The flagship</span><span class="run" aria-hidden="true">0 — 6</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">06</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="06">06</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h06">The largest mixed youth tournament in the world.</h2>
           <p>It is called Spring Reign, and it happens here every spring. Not the region’s biggest, not the country’s — the world’s. Middle schoolers headline it.</p>
@@ -524,7 +650,7 @@
     <div class="wrap">
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 07 · The fee</span><span class="run" aria-hidden="true">0 — 7</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">07</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="07">07</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h07">From $33. Sliding scale. No questions.</h2>
           <p>Registration slides down to $33 so that money never keeps anyone off the field. You pay what works; nobody checks. Here, barrier-free is a budget line, not a value statement.</p>
@@ -534,11 +660,11 @@
   </section>
 
   <!-- 08 — the quote -->
-  <section class="pt pt-quote" id="pt-08" data-pt="8" aria-label="Point 8 — a parent's point">
+  <section class="pt pt-quote" id="pt-08" data-pt="8" aria-label="Point 8 — a parent's point" style="--pt:var(--indigo)">
     <div class="wrap">
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 08 · The sideline</span><span class="run" aria-hidden="true">0 — 8</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">08</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="08">08</div><span class="burst"></span></div>
         <div class="col">
           <figure style="margin:0">
             <blockquote>
@@ -552,11 +678,11 @@
   </section>
 
   <!-- 09 -->
-  <section class="pt" id="pt-09" data-pt="9" aria-labelledby="h09">
+  <section class="pt" id="pt-09" data-pt="9" aria-labelledby="h09" style="--pt:var(--tidal)">
     <div class="wrap">
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 09 · The season</span><span class="run" aria-hidden="true">0 — 9</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">09</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="09">09</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h09">Fall belongs to the schools.</h2>
           <p>Every autumn, the Middle School and High School leagues turn hallways into rosters across the region. For a lot of kids, sixth grade is where the first pull happens.</p>
@@ -570,7 +696,7 @@
     <div class="wrap">
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 10 · The hotline</span><span class="run" aria-hidden="true">0 — 10</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">10</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="10">10</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h10" class="hotline"><a href="tel:+12067815840" aria-label="Call the DiscNW rainout hotline at (206) 781-5840">(206)<br>781‑5840</a></h2>
           <p>The rainout hotline. Before apps, before push alerts, Seattle Ultimate checked the fields by phone — and this number still answers. Some institutions are ten digits long.</p>
@@ -588,11 +714,11 @@
   </figure>
 
   <!-- 11 -->
-  <section class="pt" id="pt-11" data-pt="11" aria-labelledby="h11">
+  <section class="pt" id="pt-11" data-pt="11" aria-labelledby="h11" style="--pt:var(--indigo)">
     <div class="wrap">
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 11 · The beach</span><span class="run" aria-hidden="true">0 — 11</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">11</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="11">11</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h11">Washington’s only beach tournament.</h2>
           <p>Sea Plastic: sand instead of grass, salt air instead of drizzle, and the one weekend a year the state’s Ultimate takes its cleats off.</p>
@@ -602,11 +728,11 @@
   </section>
 
   <!-- 12 -->
-  <section class="pt" id="pt-12" data-pt="12" aria-labelledby="h12">
+  <section class="pt" id="pt-12" data-pt="12" aria-labelledby="h12" style="--pt:var(--tidal)">
     <div class="wrap">
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 12 · The coaches</span><span class="run" aria-hidden="true">0 — 12</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">12</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="12">12</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h12">Coaches, coached.</h2>
           <p>The DiscNW Coaching Collective trains the people who teach the game, school team and club alike — so a kid’s first coach is a coached coach.</p>
@@ -620,7 +746,7 @@
     <div class="wrap">
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 13 · The engine</span><span class="run" aria-hidden="true">0 — 13</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">13</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="13">13</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h13">Run on volunteers.</h2>
           <p>Field-liners, score reporters, tournament directors, board members. The organization runs on people who show up early, stay late, and take a shift because somebody once took one for them.</p>
@@ -634,7 +760,7 @@
     <div class="wrap">
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 14 · The roster spot</span><span class="run" aria-hidden="true">0 — 14</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">14</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="14">14</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h14">You.</h2>
           <p>Fourteen points in, one thing missing. Look at the scoreboard — notice who has scored every point on this page. That is the whole model: <em>DiscNW pulls. You score.</em></p>
@@ -649,7 +775,7 @@
     <div class="wrap">
       <div class="tagrow"><span>Point 15 · Game point</span><span class="run" aria-hidden="true">0 — 15 · Game</span></div>
       <div class="ptgrid">
-        <div class="num" aria-hidden="true">15</div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="15">15</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h15" class="game-word">Game.</h2>
           <p class="lead">You read to 15. Now play to 15.</p>
@@ -666,7 +792,7 @@
       <img class="about-lockup" src="assets/brand/logo-full.png" alt="DiscNW — Disc Northwest" width="1446" height="616">
       <p class="kicker" style="margin-bottom:0"><span class="tickmark" aria-hidden="true"></span>About this direction</p>
       <h2 id="about-h">08 — Game to 15</h2>
-      <p class="thesis">The site is a game of Ultimate played to 15: a fixed scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point — the whole personality lives in the typesetting.</p>
+      <p class="thesis">The site is a game of Ultimate played to 15: a live scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point. Every numeral lands with a punch and an abstract spark burst, a momentum meter fills as you climb, and a halftime highlight loop breaks in — the whole personality lives in the typesetting, now with the noise of a game.</p>
       <dl class="spec">
         <div>
           <dt>Palette</dt>
@@ -674,6 +800,8 @@
             <span class="chip"><span class="swatch" style="background:#FAFAF7"></span>Line Chalk <code>#FAFAF7</code></span>
             <span class="chip"><span class="swatch" style="background:#101010"></span>Stat Ink <code>#101010</code></span>
             <span class="chip"><span class="swatch" style="background:#FF4A00"></span>Universe Orange <code>#FF4A00</code></span>
+            <span class="chip"><span class="swatch" style="background:#3E59C4"></span>Indigo <code>#3E59C4</code></span>
+            <span class="chip"><span class="swatch" style="background:#1699AC"></span>Tidal <code>#1699AC</code></span>
           </dd>
         </div>
         <div>
@@ -682,7 +810,7 @@
         </div>
         <div>
           <dt>Signature</dt>
-          <dd>The crested score strip: “DISCNW 0 — 0 YOU” ticking up as you read, each colossal numeral landing under a rising mask — and at point 15 the orange floods down out of the scoreboard itself.</dd>
+          <dd>The crested score strip — “DISCNW 0 — 0 YOU” with an equalizer, a LIVE bug and a momentum meter — ticking up as you read, each colossal numeral landing with a pop and an abstract spark burst in its own accent, until the hot final stretch crescendos and the orange floods down out of the scoreboard itself.</dd>
         </div>
         <div>
           <dt>Choose this if</dt>
@@ -701,15 +829,21 @@
 <footer class="pagefoot">
   <nav class="wrap" aria-label="Direction navigation">
     <a href="index.html">← All directions</a>
-    <span class="mid" aria-hidden="true">08 · Game to 15</span>
+    <span class="mid" aria-hidden="true">Direction 08 of 19 · Game to 15</span>
     <a href="09-rain-or-shine.html">Next direction →</a>
   </nav>
 </footer>
 
 <script>
 (function(){
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return; /* static strip per spec */
   var root=document.documentElement;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    /* honor reduced motion: pause the highlight loop so only its poster shows,
+       and leave the calm static strip + fully settled base page per spec */
+    var rv=document.querySelectorAll('video'),q;
+    for(q=0;q<rv.length;q++){try{rv[q].removeAttribute('autoplay');rv[q].pause();rv[q].currentTime=0;}catch(e){}}
+    return;
+  }
   root.classList.add('play');
   /* unconditional settle — registered before any other wiring so it holds even
      if everything below fails: by 1.2s the hero is told to land and anything on
@@ -718,11 +852,13 @@
      scroll reveal; without .play the base styles are already the settled page. */
   setTimeout(function(){
     root.classList.add('go');
-    var els=document.querySelectorAll('[data-pt]'),vh=window.innerHeight,i,r;
+    var els=document.querySelectorAll('[data-pt]'),vh=window.innerHeight,i,r,h;
     for(i=0;i<els.length;i++){
       r=els[i].getBoundingClientRect();
       if(r.top<vh&&r.bottom>0&&!els[i].classList.contains('in'))els[i].classList.add('in');
     }
+    h=document.querySelector('[data-hl]');
+    if(h){r=h.getBoundingClientRect();if(r.top<vh&&r.bottom>0)h.classList.add('in');}
   },1200);
   try{
     var pts=[].slice.call(document.querySelectorAll('[data-pt]'));
@@ -730,7 +866,9 @@
     var box=document.getElementById('scorebox');
     var strip=document.getElementById('strip');
     var pt15=document.getElementById('pt-15');
-    var current=0,t,raf=0,revealed=0;
+    var plus=document.getElementById('s-plus');
+    var hl=document.querySelector('[data-hl]');
+    var current=0,t,raf=0,revealed=0,hlIn=0;
     /* hero entrance — two frames in so the pre-state paints first */
     requestAnimationFrame(function(){requestAnimationFrame(function(){root.classList.add('go');});});
     /* a point is scored once its section reaches the middle of the viewport,
@@ -751,10 +889,17 @@
       var flood=(r15&&r15.top<=strip.offsetHeight+24)||(window.scrollY+vh>=root.scrollHeight-2);
       strip.classList.toggle('final',flood);
       pt15.classList.toggle('flooded',flood);
+      /* momentum meter fills 0 → 1 with the score; the hot stretch lights the
+         final points; the halftime highlight wipes its bug + lower-third in */
+      strip.style.setProperty('--mo',(n/15).toFixed(3));
+      strip.classList.toggle('hot',n>=11&&!flood);
+      if(hl&&!hlIn&&hl.getBoundingClientRect().top<=gate){hl.classList.add('in');hlIn=1;}
       if(n===current)return;
+      var up=n>current;
       current=n;
       you.textContent=String(n);
       box.classList.remove('tick');void box.offsetWidth;box.classList.add('tick');
+      if(up&&plus){plus.classList.remove('pop');void plus.offsetWidth;plus.classList.add('pop');}
       clearTimeout(t);t=setTimeout(function(){box.classList.remove('tick');},700);
     }
     function schedule(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;recompute();});}

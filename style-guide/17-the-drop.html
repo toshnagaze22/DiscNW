@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction 17 — The Drop · DiscNW redesign</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<meta name="description" content="The Drop: registration as a hype drop. A live countdown, a scarcity burn-down, and cop-your-spot energy turn DiscNW sign-ups into an event you don't want to miss.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THE DROP — registration as a hype drop.
+   Sneaker/streetwear DROP energy (Nike SNKRS, Supreme, concert on-sales)
+   applied to DiscNW sign-ups. Signature: a giant LIVE COUNTDOWN that ticks
+   to the next real DiscNW moment, a SPOTS-LEFT burn-down, and a DROP reveal.
+   Motion lane: drop-day urgency. Blackout ground, one volt signal, one hot flare.
+   ------------------------------------------------------------
+   LAWS ON THIS PAGE:
+   - Base styles ARE the settled page. With NO JS the countdown shows the real
+     drop DATE (a <time> fallback), every counter shows its final total, and
+     every drop-state renders correct. html.anim gates all entrance/hype motion.
+   - prefers-reduced-motion → the calm settled state: no ticking clock (the date
+     stands in), no marquee scroll, no burst, no counting. Final values only.
+   - Photos render clean: contrast(1.03) saturate(1.04) max, one edge scrim
+     (<=rgba(0,0,0,.6)) on the hero video only. No tints on real photos, ever.
+   ============================================================ */
+:root{
+  --ink:#0B0B0F;        /* Blackout — the ground */
+  --asphalt:#16161C;    /* raised surfaces, drop cards, clock housing */
+  --asphalt-2:#1E1F26;  /* second surface / inputs */
+  --volt:#CCFF00;       /* THE signal — CTAs, live, countdown accents */
+  --volt-deep:#B4E600;  /* volt pressed/hover */
+  --flare:#FF2D55;      /* heat — critical, LIVE bug, sold out */
+  --white:#FFFFFF;
+  --paper:#EDEEF1;      /* comfortable body text */
+  --ash:#9CA3AE;        /* metadata, labels, quiet UI */
+  --ash-dim:#848B96;    /* faintest captions — AA (>=4.5:1) on ink & asphalt */
+  --line:rgba(255,255,255,.12);
+  --line-soft:rgba(255,255,255,.07);
+  --disp:"Anton","Arial Narrow",sans-serif;
+  --body:"Archivo",system-ui,-apple-system,"Helvetica Neue",sans-serif;
+  /* house easing — two curves plus one overshoot for the drop pop. 'ease' is banned. */
+  --ease-snap:cubic-bezier(.4,0,.1,1);
+  --ease-lux:cubic-bezier(.16,1,.3,1);
+  --ease-pop:cubic-bezier(.34,1.56,.64,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;color-scheme:dark}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+[id]{scroll-margin-top:24px}
+body{
+  margin:0;background:var(--ink);color:var(--paper);
+  font-family:var(--body);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:clip;
+}
+img,svg,video{display:block;max-width:100%}
+a{color:var(--white)}
+:focus-visible{outline:3px solid var(--volt);outline-offset:3px;border-radius:3px}
+.tnum{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,44px)}
+
+/* ---------- section chrome ---------- */
+.sec{padding-top:clamp(72px,10vw,128px)}
+.eyebrow{
+  font-family:var(--body);font-weight:800;font-size:12px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--volt);margin:0 0 16px;display:flex;gap:12px;align-items:baseline;
+}
+.eyebrow .idx{color:var(--ash);font-variant-numeric:tabular-nums}
+.sec-title{
+  font-family:var(--disp);font-weight:400;text-transform:uppercase;
+  font-size:clamp(38px,6vw,74px);line-height:.94;letter-spacing:.005em;margin:0 0 18px;color:var(--white);
+}
+.sec-note{color:var(--ash);max-width:64ch;margin:0 0 48px;font-size:clamp(16px,1.5vw,18px)}
+.sec-note b{color:var(--paper);font-weight:600}
+
+/* ---------- motion system: base = settled; html.anim arms everything ---------- */
+@media (prefers-reduced-motion:no-preference){
+  html.anim .rv{opacity:0;transform:translateY(22px);
+    transition:opacity .7s var(--ease-lux),transform .7s var(--ease-lux);
+    transition-delay:calc(var(--i,0)*70ms);}
+  html.anim .rv.in{opacity:1;transform:none}
+  /* masked headline: clip window padded to protect Anton descenders/overshoot */
+  html.anim .tl{overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em}
+  html.anim .tl .tli{display:block;transform:translateY(112%);
+    transition:transform .95s var(--ease-lux);transition-delay:calc(var(--i,0)*70ms);}
+  html.anim .tl.in .tli{transform:none}
+}
+/* unconditional settle failsafe (<=2s) + print: always the finished page */
+html.settled .rv{opacity:1!important;transform:none!important}
+html.settled .tl .tli{transform:none!important}
+@media print{
+  .rv{opacity:1!important;transform:none!important}
+  .tl .tli{transform:none!important}
+  .mq-row{animation:none!important}
+}
+
+/* ============ buttons — big magnetic pills, a real press ============ */
+.btn{
+  display:inline-flex;align-items:center;gap:9px;font-family:var(--body);font-weight:800;
+  font-size:16px;letter-spacing:.02em;line-height:1;text-decoration:none;cursor:pointer;
+  border:2px solid transparent;border-radius:999px;padding:15px 28px;white-space:nowrap;
+  transition:background .25s var(--ease-snap),color .25s var(--ease-snap),
+    border-color .25s var(--ease-snap),transform .3s var(--ease-pop),box-shadow .3s var(--ease-snap);
+}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}}
+.btn:active{transform:scale(.96)}
+.btn-lg{font-size:clamp(16px,1.6vw,19px);padding:18px 34px}
+.btn-sm{font-size:14px;padding:11px 20px}
+.btn-drop{background:var(--volt);color:var(--ink);box-shadow:0 14px 34px -16px rgba(204,255,0,.7)}
+.btn-drop:hover,.btn-drop.is-hover{background:var(--volt-deep);box-shadow:0 18px 40px -14px rgba(204,255,0,.8)}
+.btn-drop:focus-visible{outline-color:var(--white)}
+.btn-flare{background:var(--flare);color:var(--ink);box-shadow:0 14px 34px -16px rgba(255,45,85,.7)}
+.btn-flare:hover,.btn-flare.is-hover{background:#ff5573}
+.btn-flare:focus-visible{outline-color:var(--white)}
+.btn-line{background:transparent;color:var(--white);border-color:rgba(255,255,255,.45)}
+.btn-line:hover,.btn-line.is-hover{background:var(--white);color:var(--ink);border-color:var(--white)}
+.btn-ghost{
+  background:none;border:0;border-radius:3px;padding:14px 4px;color:var(--white);
+  font-weight:700;letter-spacing:.02em;text-transform:none;
+  background-image:linear-gradient(var(--volt),var(--volt));background-repeat:no-repeat;
+  background-position:left calc(100% - 6px);background-size:0 3px;
+  transition:background-size .3s var(--ease-snap),color .25s var(--ease-snap);
+}
+.btn-ghost:hover,.btn-ghost.is-hover,.btn-ghost:focus-visible{background-size:100% 3px;color:var(--white)}
+.btn-ghost.is-static{background-size:100% 3px}
+
+/* ============ pulsing LIVE bug (pure CSS; frozen under reduced motion) ============ */
+.bug{
+  display:inline-flex;align-items:center;gap:8px;font-family:var(--body);font-weight:800;
+  font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--white);
+  background:rgba(255,45,85,.14);border:1px solid rgba(255,45,85,.5);border-radius:999px;
+  padding:6px 13px 5px;line-height:1;
+}
+.bug::before{
+  content:"";width:9px;height:9px;border-radius:50%;background:var(--flare);flex:none;
+  box-shadow:0 0 0 0 rgba(255,45,85,.6);
+}
+@media (prefers-reduced-motion:no-preference){
+  .bug::before{animation:bugpulse 1.6s var(--ease-snap) infinite}
+}
+@keyframes bugpulse{
+  0%{box-shadow:0 0 0 0 rgba(255,45,85,.55)}
+  70%{box-shadow:0 0 0 11px rgba(255,45,85,0)}
+  100%{box-shadow:0 0 0 0 rgba(255,45,85,0)}
+}
+.bug.volt{color:var(--ink);background:var(--volt);border-color:var(--volt)}
+.bug.volt::before{background:var(--ink);box-shadow:0 0 0 0 rgba(11,11,15,.4)}
+@media (prefers-reduced-motion:no-preference){.bug.volt::before{animation:bugpulse-dk 1.6s var(--ease-snap) infinite}}
+@keyframes bugpulse-dk{0%{box-shadow:0 0 0 0 rgba(11,11,15,.45)}70%{box-shadow:0 0 0 10px rgba(11,11,15,0)}100%{box-shadow:0 0 0 0 rgba(11,11,15,0)}}
+
+/* ============ kinetic marquee band (pure CSS; static under reduced motion) ============ */
+.mq{overflow:hidden;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);background:var(--ink)}
+.mq.volt{background:var(--volt);border-color:transparent}
+.mq-row{display:flex;width:max-content;will-change:transform;animation:mq 30s linear infinite}
+.mq-row.rev{animation-direction:reverse}
+.mq.fast .mq-row{animation-duration:22s}
+.mq:hover .mq-row{animation-play-state:paused}
+.mq-group{display:flex;flex:none;align-items:center;padding:14px 0}
+.mq-group span{
+  font-family:var(--disp);font-weight:400;text-transform:uppercase;letter-spacing:.01em;
+  font-size:clamp(20px,3.2vw,34px);color:var(--white);padding:0 24px;display:inline-flex;align-items:center;gap:24px;
+}
+.mq.volt .mq-group span{color:var(--ink)}
+.mq-group span::after{content:"";width:11px;height:11px;border-radius:2px;background:var(--volt);transform:rotate(45deg);flex:none}
+.mq.volt .mq-group span::after{background:var(--ink)}
+@keyframes mq{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.mq-row{animation:none;transform:none}}
+
+/* ============ THE DROP CLOCK — the signature ============ */
+.drop-stage{position:relative}
+/* the honest fallback: always present, always correct, the source of truth for "when" */
+.clock-date{
+  margin:0;font-size:15px;color:var(--ash);display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;
+}
+.clock-date .lead{font-family:var(--body);font-weight:800;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--volt)}
+.clock-date time{color:var(--white);font-weight:700;font-variant-numeric:tabular-nums}
+/* the live reel clock: built + shown by JS only when motion is welcome */
+.clock-live{display:none;grid-template-columns:repeat(4,1fr);gap:clamp(8px,1.4vw,16px);margin:0 0 18px}
+html.anim .drop-stage.is-ready .clock-live{display:grid}
+html.anim .drop-stage.is-ready .clock-date{margin-top:2px}
+.unit{
+  position:relative;background:var(--asphalt);border:1px solid var(--line);border-radius:14px;
+  padding:clamp(12px,1.6vw,20px) 8px clamp(9px,1.2vw,13px);text-align:center;overflow:hidden;
+  transition:border-color .3s var(--ease-snap),background .3s var(--ease-snap);
+}
+.unit::before{content:"";position:absolute;left:14px;right:14px;top:0;height:3px;background:var(--volt);border-radius:0 0 3px 3px;transition:background .3s var(--ease-snap)}
+.reels{display:flex;justify-content:center;color:var(--white);
+  font-family:var(--disp);font-weight:400;line-height:1;
+  font-size:clamp(38px,7vw,84px);font-variant-numeric:tabular-nums;}
+.reel{display:inline-block;height:1em;width:.66em;overflow:hidden}
+.strip{display:flex;flex-direction:column;transition:transform .5s var(--ease-lux)}
+.strip>span{height:1em;display:grid;place-items:center}
+@media (prefers-reduced-motion:reduce){.strip{transition:none}}
+.unit-label{
+  margin-top:8px;font-family:var(--body);font-weight:800;font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ash);
+}
+/* critical: inside the last minute the whole clock turns flare and breathes */
+.drop-stage.critical .unit{border-color:rgba(255,45,85,.6);background:#20141a}
+.drop-stage.critical .unit::before{background:var(--flare)}
+.drop-stage.critical .reels{color:#ffdbe3}
+.drop-stage.critical .unit-label{color:var(--flare)}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .drop-stage.critical .clock-live{animation:critpulse 1s var(--ease-snap) infinite}
+}
+@keyframes critpulse{0%,100%{opacity:1}50%{opacity:.72}}
+/* the DROP reveal — swaps the clock for cop-your-spot at 0:00 */
+.drop-live{display:none;flex-direction:column;gap:14px}
+.drop-stage.dropped .clock-live{display:none}
+.drop-stage.dropped .clock-date{display:none}
+.drop-stage.dropped .drop-live{display:flex}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .drop-stage.dropped .drop-live{animation:pop .5s var(--ease-pop) both}
+}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
+.drop-live-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.drop-live-head strong{font-family:var(--disp);font-weight:400;text-transform:uppercase;
+  font-size:clamp(30px,5vw,52px);line-height:.95;color:var(--volt);letter-spacing:.01em}
+/* abstract confetti burst (sanctioned FX) — only fires with motion */
+.burst{position:absolute;left:50%;top:34%;width:0;height:0;pointer-events:none;z-index:2}
+.burst i{position:absolute;left:0;top:0;width:9px;height:9px;border-radius:2px;background:var(--volt);opacity:0}
+.burst i:nth-child(3n){background:var(--flare)}
+.burst i:nth-child(3n+1){background:var(--white)}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .drop-stage.dropped .burst i{animation:burst .8s var(--ease-snap) forwards}
+}
+@keyframes burst{
+  0%{opacity:1;transform:translate(0,0) scale(.4) rotate(0)}
+  100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(1) rotate(var(--r))}
+}
+
+/* ============ 1. DIRECTION HEADER ============ */
+.dir-head{border-bottom:1px solid var(--line);padding:clamp(52px,7vw,86px) 0 clamp(30px,4vw,44px)}
+.dir-head .crumb{display:flex;flex-wrap:wrap;gap:8px 18px;font-family:var(--body);font-weight:700;
+  font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash);margin:0 0 22px}
+.dir-head .crumb .live{color:var(--volt)}
+.dir-head h1{
+  font-family:var(--disp);font-weight:400;text-transform:uppercase;color:var(--white);
+  font-size:clamp(64px,15vw,168px);line-height:.86;letter-spacing:.01em;margin:0 0 18px;
+}
+.dir-head h1 .amp{color:var(--volt)}
+.dir-head .thesis{font-size:clamp(17px,1.8vw,20px);max-width:66ch;color:var(--paper);margin:0 0 22px}
+.dir-head .thesis b{color:var(--white);font-weight:700}
+.dir-head .tags{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0 0 30px;padding:0}
+.dir-head .tags li{font-family:var(--body);font-weight:700;font-size:12px;letter-spacing:.08em;
+  color:var(--paper);border:1px solid var(--line);border-radius:999px;padding:6px 14px}
+.sec-nav{display:flex;flex-wrap:wrap;gap:6px 8px;margin:0;padding:0;list-style:none}
+.sec-nav a{
+  font-family:var(--body);font-weight:700;font-size:12.5px;letter-spacing:.04em;color:var(--ash);
+  text-decoration:none;padding:6px 12px;border:1px solid var(--line-soft);border-radius:999px;
+  transition:color .25s var(--ease-snap),border-color .25s var(--ease-snap),background .25s var(--ease-snap);
+}
+.sec-nav a:hover,.sec-nav a:focus-visible{color:var(--ink);background:var(--volt);border-color:var(--volt)}
+
+/* ============ 2. THE IDEA ============ */
+.idea-copy{font-size:clamp(21px,2.5vw,30px);line-height:1.4;max-width:24ch;margin:0;color:var(--white);
+  font-family:var(--body);font-weight:700;letter-spacing:-.01em}
+.idea-lede{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(28px,5vw,72px);align-items:start}
+.idea-body p{max-width:56ch;color:var(--paper);margin:0 0 16px}
+.idea-body p b{color:var(--white);font-weight:700}
+.idea-refs{border:1px solid var(--line);border-radius:16px;background:var(--asphalt);padding:26px 28px}
+.idea-refs h3{font-family:var(--body);font-weight:800;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--volt);margin:0 0 16px}
+.idea-refs ul{list-style:none;margin:0;padding:0}
+.idea-refs li{padding:13px 0;border-top:1px solid var(--line-soft);font-size:15px;color:var(--paper)}
+.idea-refs li:first-child{border-top:0}
+.idea-refs li b{color:var(--white);font-weight:700;display:block;font-family:var(--body)}
+.idea-refs li span{color:var(--ash);font-size:13.5px}
+
+/* ============ 3. PALETTE ============ */
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.swatch{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--asphalt)}
+.swatch .chip{height:118px;display:flex;align-items:flex-end;padding:12px}
+.swatch .chip .on{font-family:var(--body);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  border-radius:999px;padding:4px 10px}
+.swatch .meta{padding:16px 18px 18px}
+.swatch .meta strong{display:block;font-family:var(--disp);font-weight:400;font-size:22px;letter-spacing:.02em;text-transform:uppercase;color:var(--white)}
+.swatch .meta code{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:12.5px;color:var(--ash);letter-spacing:.04em}
+.swatch .meta span{display:block;font-size:13.5px;color:var(--ash);margin-top:8px;line-height:1.5}
+
+/* ============ 4. TYPOGRAPHY ============ */
+.type-panel{border:1px solid var(--line);border-radius:18px;background:var(--asphalt);padding:clamp(28px,4vw,48px)}
+.type-heads{display:grid;grid-template-columns:1fr 1fr;gap:24px;border-bottom:1px solid var(--line-soft);padding-bottom:26px;margin-bottom:30px}
+.type-heads .fn{font-family:var(--disp);font-weight:400;font-size:30px;color:var(--white);text-transform:uppercase;letter-spacing:.02em}
+.type-heads .fn.arch{font-family:var(--body);font-weight:900;text-transform:none;letter-spacing:-.01em}
+.type-heads p{font-size:13.5px;color:var(--ash);margin:6px 0 0}
+.type-display{font-family:var(--disp);font-weight:400;text-transform:uppercase;color:var(--white);
+  font-size:clamp(56px,11vw,132px);line-height:.9;letter-spacing:.01em;margin:0}
+.type-display .volt{color:var(--volt)}
+.type-sub{font-family:var(--body);font-weight:900;font-size:clamp(18px,2vw,24px);color:var(--ash);margin:12px 0 0;text-transform:uppercase;letter-spacing:.01em}
+.type-body-sample{max-width:60ch;color:var(--paper);margin:30px 0 0;font-size:17px}
+.type-divider{border:0;border-top:1px solid var(--line-soft);margin:34px 0}
+.type-scale{width:100%;border-collapse:collapse}
+.type-scale th{text-align:left;font-family:var(--body);font-weight:800;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ash);padding:0 16px 12px 0;border-bottom:1px solid var(--line-soft)}
+.type-scale td{padding:16px 16px 16px 0;border-bottom:1px solid var(--line-soft);vertical-align:baseline}
+.type-scale td.spec{color:var(--ash);font-size:13px;white-space:nowrap}
+.ts-d{font-family:var(--disp);font-weight:400;font-size:46px;text-transform:uppercase;line-height:1;color:var(--white)}
+.ts-h1{font-family:var(--disp);font-weight:400;font-size:34px;text-transform:uppercase;line-height:1;color:var(--white)}
+.ts-h2{font-family:var(--body);font-weight:900;font-size:24px;line-height:1.1;color:var(--white)}
+.ts-body{font-size:17px;color:var(--paper)}
+.ts-cap{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash);font-weight:700}
+.type-tnum{margin:30px 0 0;display:flex;flex-wrap:wrap;gap:10px 40px}
+.type-tnum div{display:flex;flex-direction:column;gap:2px}
+.type-tnum dt{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash);font-weight:800}
+.type-tnum dd{margin:0;font-family:var(--disp);font-weight:400;font-size:32px;color:var(--white);letter-spacing:.02em}
+
+/* ============ 5. SIGNATURE ============ */
+.sig-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:start}
+.sig-main{border:1px solid var(--line);border-radius:20px;background:var(--asphalt);padding:clamp(24px,3.4vw,40px);position:relative;overflow:hidden}
+.sig-kicker{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 8px}
+.sig-kicker .lab{font-family:var(--body);font-weight:800;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--volt)}
+.sig-target{font-family:var(--disp);font-weight:400;text-transform:uppercase;color:var(--white);
+  font-size:clamp(26px,3.6vw,42px);line-height:.96;letter-spacing:.01em;margin:0 0 22px}
+.sig-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:20px}
+.sig-controls .hint{font-size:13px;color:var(--ash)}
+.js-only{display:none}
+html.anim .js-only:not([hidden]){display:inline-flex}
+/* side rail: the drop seal (deep brand moment) + how it degrades */
+.sig-side{display:flex;flex-direction:column;gap:22px}
+.sig-note{border:1px solid var(--line);border-radius:18px;background:var(--asphalt);padding:26px 28px}
+.sig-note h3{font-family:var(--body);font-weight:800;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--volt);margin:0 0 14px}
+.sig-note p{margin:0 0 12px;font-size:14.5px;color:var(--paper);line-height:1.55}
+.sig-note p:last-child{margin-bottom:0}
+.sig-note b{color:var(--white);font-weight:700}
+/* DROP SEAL — the formline mark, crest dignity, on a flat controlled ground (never over motion) */
+.seal{border:1px solid var(--line);border-radius:18px;background:var(--ink);
+  padding:34px 28px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.seal-stamp{position:relative;width:186px;height:186px;display:grid;place-items:center;margin-bottom:20px}
+.seal-stamp .ring{position:absolute;inset:0;width:100%;height:100%;color:var(--volt)}
+.seal-stamp .mark{width:82px;height:auto;position:relative;z-index:1}
+.seal h3{font-family:var(--disp);font-weight:400;font-size:26px;text-transform:uppercase;letter-spacing:.02em;color:var(--white);margin:0 0 8px}
+.seal p{margin:0;font-size:13.5px;color:var(--ash);max-width:34ch}
+
+/* ============ 6. HOMEPAGE MOCKUP ============ */
+.mock{border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.55)}
+.browser{display:flex;align-items:center;gap:14px;background:#050508;padding:11px 16px;border-bottom:1px solid var(--line-soft)}
+.browser .dots{display:flex;gap:6px}
+.browser .dots i{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.16)}
+.browser .url{flex:1;max-width:300px;margin:0 auto;text-align:center;font-size:12.5px;color:var(--ash);
+  background:rgba(255,255,255,.05);border-radius:7px;padding:5px 14px;letter-spacing:.04em}
+.site{background:var(--ink)}
+/* mock nav — real white lockup, volt register pill */
+.m-nav{display:flex;align-items:center;gap:32px;padding:16px clamp(18px,3vw,40px);border-bottom:1px solid var(--line-soft)}
+.m-logo{display:inline-flex;align-items:center}
+.m-logo img{width:132px;height:auto}
+.m-links{display:flex;gap:26px;margin-left:auto;list-style:none;margin-block:0;padding:0}
+.m-links a{font-family:var(--body);font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--paper);text-decoration:none;padding:6px 0 5px;border-bottom:2px solid transparent;
+  transition:color .25s var(--ease-snap),border-color .25s var(--ease-snap)}
+.m-links a:hover,.m-links a:focus-visible{color:var(--volt);border-bottom-color:var(--volt)}
+@media (max-width:900px){.m-links{display:none}}
+.m-nav .btn{margin-left:8px}
+@media (max-width:900px){.m-nav .btn{margin-left:auto}}
+/* hero — full-bleed video, edge scrim <=.6, drop bar below */
+.m-hero{position:relative}
+.m-hero-media{position:relative;height:clamp(420px,60vh,620px);background:var(--asphalt)}
+.m-hero-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:contrast(1.03) saturate(1.04)}
+.m-hero-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.6));pointer-events:none}
+.m-hero-inner{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
+  gap:16px;padding:clamp(22px,4vw,52px)}
+.m-hero-chips{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.m-hero h2{font-family:var(--disp);font-weight:400;text-transform:uppercase;color:var(--white);
+  font-size:clamp(48px,10vw,124px);line-height:.86;letter-spacing:.01em;margin:0;max-width:14ch;
+  text-shadow:0 3px 30px rgba(0,0,0,.55);text-wrap:balance}
+.m-hero h2 .volt{color:var(--volt)}
+.m-hero-tag{font-size:clamp(14px,1.6vw,17px);color:#f2f3f5;max-width:44ch;margin:0;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+.m-vidbtn{position:absolute;top:16px;right:16px;z-index:3;width:42px;height:42px;border-radius:50%;
+  display:none;align-items:center;justify-content:center;padding:0;cursor:pointer;
+  background:rgba(5,5,8,.72);border:1px solid rgba(255,255,255,.4);color:var(--white)}
+html.js .m-vidbtn{display:inline-flex}
+.m-vidbtn:hover{background:rgba(5,5,8,.92);border-color:var(--white)}
+.m-vidbtn .i-play{display:none}
+.m-vidbtn.paused .i-play{display:block}
+.m-vidbtn.paused .i-pause{display:none}
+/* the drop bar — solid asphalt ticket bar; ALL text here is AA on a solid ground */
+.m-dropbar{background:var(--asphalt);border-top:1px solid var(--line);padding:clamp(22px,3.4vw,36px) clamp(18px,3vw,44px)}
+.m-dropbar-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.m-dropbar-head .lab{font-family:var(--body);font-weight:800;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--volt)}
+.m-dropbar-head .sub{font-size:13.5px;color:var(--ash);margin-left:auto}
+.m-dropbar-foot{display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center;margin-top:20px;
+  border-top:1px solid var(--line-soft);padding-top:20px}
+@media (max-width:640px){.m-dropbar-foot{grid-template-columns:1fr}}
+/* scarcity burn-down */
+.spots{display:flex;flex-direction:column;gap:9px;max-width:420px}
+.spots-row{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
+.spots-row b{font-family:var(--disp);font-weight:400;font-size:clamp(24px,3vw,34px);color:var(--white);letter-spacing:.02em}
+.spots-row b .burn{color:var(--flare)}
+.spots-row span{font-size:12.5px;color:var(--ash);letter-spacing:.04em;text-transform:uppercase;font-weight:700}
+.bar{height:8px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:999px;background:var(--volt);transform-origin:left;transform:scaleX(var(--f,.5))}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .bar i{transform:scaleX(0)}
+  html.anim .in .bar i{transform:scaleX(var(--f,.5));transition:transform 1.2s var(--ease-lux)}
+}
+.m-dropbar-cta{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+@media (max-width:640px){.m-dropbar-cta{align-items:stretch}.m-dropbar-cta .btn{justify-content:center}}
+.m-dropbar-cta small{font-size:12px;color:var(--ash-dim)}
+/* the drop calendar — sneaker-launch list with live/upcoming/sold-out states */
+.m-cal{padding:clamp(28px,4vw,52px) clamp(18px,3vw,44px);border-top:1px solid var(--line-soft)}
+.m-cal-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.m-cal-head h3{font-family:var(--disp);font-weight:400;font-size:clamp(24px,3.4vw,38px);text-transform:uppercase;letter-spacing:.01em;color:var(--white);margin:0}
+.m-cal-head a{margin-left:auto}
+.drop-row{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;
+  padding:18px 20px;border:1px solid var(--line);border-radius:14px;background:var(--ink);margin-bottom:12px}
+@media (max-width:680px){.drop-row{grid-template-columns:auto 1fr;gap:12px 16px}.drop-row .drop-act{grid-column:1/-1}}
+.drop-tile{position:relative;width:64px;height:64px;border-radius:12px;flex:none;display:grid;place-items:center;
+  font-family:var(--disp);font-weight:400;font-size:26px;text-transform:uppercase;letter-spacing:.02em;overflow:hidden}
+.drop-tile.up{background:var(--asphalt-2);color:var(--volt);border:1px solid var(--line)}
+.drop-tile.live{background:var(--volt);color:var(--ink)}
+.drop-tile.sold{background:var(--asphalt-2);color:var(--ash-dim);border:1px solid var(--line)}
+.drop-info{min-width:0}
+.drop-state{display:inline-flex;align-items:center;gap:7px;font-family:var(--body);font-weight:800;font-size:11px;
+  letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px}
+.drop-state.up{color:var(--ash)}
+.drop-state.live{color:var(--flare)}
+.drop-state.live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--flare)}
+@media (prefers-reduced-motion:no-preference){.drop-state.live::before{animation:bugpulse 1.6s var(--ease-snap) infinite}}
+.drop-state.sold{color:var(--ash-dim)}
+.drop-info h4{font-family:var(--body);font-weight:800;font-size:clamp(16px,2vw,20px);color:var(--white);margin:0;letter-spacing:-.01em}
+.drop-info p{margin:3px 0 0;font-size:13px;color:var(--ash)}
+.drop-act{display:flex;align-items:center;gap:14px;justify-self:end}
+.drop-row .sold-stamp{display:none}
+.drop-row.is-sold{opacity:.72}
+.drop-row.is-sold .sold-stamp{display:inline-flex;align-items:center;font-family:var(--disp);font-weight:400;
+  font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--flare);border:2px solid var(--flare);
+  border-radius:6px;padding:5px 10px 3px;transform:rotate(-5deg)}
+/* stat strip */
+.m-stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line-soft)}
+@media (max-width:760px){.m-stats{grid-template-columns:1fr 1fr}}
+.m-stats div{padding:24px clamp(16px,2.4vw,30px);border-left:1px solid var(--line-soft)}
+.m-stats div:first-child{border-left:0}
+@media (max-width:760px){.m-stats div:nth-child(3){border-left:0}.m-stats div:nth-child(n+3){border-top:1px solid var(--line-soft)}}
+.m-stats b{display:block;font-family:var(--disp);font-weight:400;font-size:clamp(30px,4vw,44px);color:var(--white);letter-spacing:.02em;line-height:1}
+.m-stats b .volt{color:var(--volt)}
+.m-stats span{display:block;font-size:12.5px;color:var(--ash);letter-spacing:.03em;margin-top:8px;line-height:1.4}
+/* mock footer — repeat the lockup (not the mark) to keep one deep mark moment */
+.m-foot{background:#050508;padding:clamp(40px,5vw,64px) clamp(18px,3vw,44px);text-align:center;border-top:1px solid var(--line-soft)}
+.m-foot img{width:150px;height:auto;margin:0 auto 22px}
+.m-foot p{margin:0 auto;max-width:52ch;font-size:14px;color:var(--ash)}
+.m-foot .vision{font-family:var(--disp);font-weight:400;font-size:clamp(20px,3vw,30px);text-transform:uppercase;color:var(--white);letter-spacing:.01em;margin-bottom:12px}
+
+/* ============ 7. FRONT DOORS ============ */
+.doors{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.door{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--asphalt)}
+.door-media{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--ink)}
+.door-media img{width:100%;height:100%;object-fit:cover;filter:contrast(1.03) saturate(1.04)}
+.door-media .pass{position:absolute;left:12px;top:12px;font-family:var(--body);font-weight:800;font-size:11px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink);background:var(--volt);border-radius:999px;padding:5px 11px}
+.door-body{padding:24px 26px 26px;display:flex;flex-direction:column;flex:1}
+.door-body h3{font-family:var(--disp);font-weight:400;font-size:clamp(26px,3vw,34px);text-transform:uppercase;letter-spacing:.01em;color:var(--white);margin:0 0 12px;line-height:.98}
+.door-body p{margin:0 0 22px;font-size:15px;color:var(--ash);line-height:1.6;flex:1}
+.door-body p b{color:var(--paper);font-weight:700}
+.door-body .btn{align-self:flex-start}
+
+/* ============ 8. STORYTELLING ============ */
+.story-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--asphalt)}
+.story-photo{position:relative;min-height:440px}
+.story-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;filter:contrast(1.03) saturate(1.04)}
+.story-body{padding:clamp(28px,3.6vw,52px);display:flex;flex-direction:column}
+.story-body .kicker{font-family:var(--body);font-weight:800;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--volt);margin:0 0 22px}
+.story-body blockquote{margin:0;font-family:var(--disp);font-weight:400;text-transform:uppercase;color:var(--white);
+  font-size:clamp(24px,3.2vw,40px);line-height:1.02;letter-spacing:.01em}
+.story-body .by{margin:24px 0 0;font-size:14.5px;color:var(--ash)}
+.story-body .by b{color:var(--white);font-weight:700}
+.story-body .foot{margin-top:auto;padding-top:24px;font-size:13px;color:var(--ash-dim)}
+.impact{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px}
+.impact div{border:1px solid var(--line);border-radius:14px;padding:26px 26px 22px;background:var(--asphalt)}
+.impact b{display:block;font-family:var(--disp);font-weight:400;font-size:clamp(40px,5vw,58px);color:var(--white);line-height:1;letter-spacing:.02em}
+.impact b .volt{color:var(--volt)}
+.impact p{margin:12px 0 0;font-size:14px;color:var(--ash);line-height:1.5}
+
+/* ============ 9. WORKING PARTS ============ */
+.parts-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.part{border:1px solid var(--line);border-radius:16px;background:var(--asphalt);padding:30px 32px;min-width:0}
+.part h3{font-family:var(--body);font-weight:800;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--volt);margin:0 0 22px}
+.btn-rows{display:flex;flex-direction:column;gap:16px}
+.btn-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.btn-row .lab{flex:0 0 70px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash);font-weight:800}
+.field-form{display:flex;flex-direction:column;gap:18px;margin-top:26px;border-top:1px solid var(--line-soft);padding-top:26px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font-family:var(--body);font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash)}
+.field input,.field select{font-family:var(--body);font-size:15px;color:var(--white);background:var(--asphalt-2);
+  border:1px solid var(--line);border-radius:10px;padding:12px 14px;appearance:none}
+.field input::placeholder{color:var(--ash-dim)}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.5 L6 6.5 L11 1.5' fill='none' stroke='%23CCFF00' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.field input:focus-visible,.field select:focus-visible{outline:3px solid var(--volt);outline-offset:2px;border-color:var(--volt)}
+.field-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.field-row .field{flex:1;min-width:150px}
+/* event card with real program data */
+.ev-card{border:1px solid var(--line);border-radius:16px;background:var(--ink);overflow:hidden}
+.ev-top{display:flex;align-items:center;gap:10px;padding:20px 22px 0;flex-wrap:wrap}
+.ev-tag{font-family:var(--body);font-weight:700;font-size:12px;color:var(--ash);border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+.ev-card h4{font-family:var(--disp);font-weight:400;font-size:clamp(26px,3vw,34px);text-transform:uppercase;letter-spacing:.01em;color:var(--white);margin:16px 22px 6px;line-height:1}
+.ev-meta{list-style:none;margin:12px 22px 0;padding:0}
+.ev-meta li{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-top:1px solid var(--line-soft);font-size:14px;color:var(--ash)}
+.ev-meta li b{color:var(--white);font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.ev-cap{padding:18px 22px 0}
+.ev-cap .spots-row b{font-size:22px}
+.ev-actions{display:flex;align-items:center;flex-wrap:wrap;gap:14px 16px;padding:20px 22px 22px}
+
+/* ============ 10. VOICE ============ */
+.voice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.voice{border:1px solid var(--line);border-radius:16px;background:var(--asphalt);padding:26px 28px;display:flex;flex-direction:column}
+.voice h3{font-family:var(--body);font-weight:800;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--volt);margin:0 0 16px}
+.voice .big{font-family:var(--disp);font-weight:400;font-size:clamp(26px,2.6vw,34px);text-transform:uppercase;letter-spacing:.01em;color:var(--white);margin:0;line-height:.98}
+.voice p{margin:0;font-size:15.5px;color:var(--paper);line-height:1.55}
+.voice .note{margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--ash)}
+
+/* ============ 11. VERDICT + FOOTER ============ */
+.verdict{padding-top:clamp(72px,10vw,128px)}
+.verdict-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.verdict-card{border:1px solid var(--line);border-radius:16px;padding:28px 30px;background:var(--asphalt)}
+.verdict-card h3{font-family:var(--disp);font-weight:400;font-size:24px;letter-spacing:.02em;text-transform:uppercase;margin:0 0 10px}
+.verdict-card.go h3{color:var(--volt)}
+.verdict-card.warn h3{color:var(--flare)}
+.verdict-card p{margin:0;color:var(--ash);font-size:15.5px;line-height:1.6}
+.foot-nav{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;
+  margin-top:56px;padding:28px 0 64px;border-top:1px solid var(--line)}
+.foot-nav a{font-family:var(--body);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--white);text-decoration:none;padding-bottom:3px;border-bottom:2px solid transparent;
+  transition:color .25s var(--ease-snap),border-color .25s var(--ease-snap)}
+.foot-nav a:hover,.foot-nav a:focus-visible{color:var(--volt);border-bottom-color:var(--volt)}
+.foot-nav small{font-size:12.5px;color:var(--ash);letter-spacing:.06em}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:960px){
+  .idea-lede{grid-template-columns:1fr}
+  .sig-grid{grid-template-columns:1fr}
+  .doors{grid-template-columns:1fr}
+  .story-grid{grid-template-columns:1fr}
+  .story-photo{min-height:0;aspect-ratio:16/10}
+  .parts-grid{grid-template-columns:minmax(0,1fr)}
+  .voice-grid{grid-template-columns:1fr}
+}
+@media (max-width:820px){
+  .swatches{grid-template-columns:1fr 1fr}
+  .impact{grid-template-columns:1fr}
+  .verdict-grid{grid-template-columns:1fr}
+  .type-heads{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .clock-live{grid-template-columns:repeat(2,1fr)}
+  .swatches{grid-template-columns:1fr}
+  .type-scale th:nth-child(3),.type-scale td:nth-child(3){display:none}
+  .ts-d{font-size:34px}.ts-h1{font-size:27px}
+}
+</style>
+<script>
+/* Arm motion before first paint — only with JS + IntersectionObserver + motion allowed.
+   Base (no html.anim) is the finished, settled page: no-JS and reduced-motion both land there. */
+(function(){try{
+  var d=document.documentElement;
+  d.classList.add('js');
+  if('IntersectionObserver' in window && window.matchMedia &&
+     window.matchMedia('(prefers-reduced-motion: no-preference)').matches){
+    d.classList.add('anim');
+  }
+}catch(e){}})();
+</script>
+</head>
+<body>
+
+<!-- ============ 1. DIRECTION HEADER ============ -->
+<header class="dir-head">
+  <div class="wrap">
+    <p class="crumb rv" style="--i:0"><span>DiscNW website redesign</span><span>Direction 17 of 19</span><span class="live">Hype tier</span></p>
+    <h1 class="rv" style="--i:1">The Drop</h1>
+    <p class="thesis rv" style="--i:2">Signing up should feel like a <b>hype drop you don't want to miss</b>. A live countdown, a spots-left burn-down, and cop-your-spot energy turn DiscNW's real registration into an event — the way Nike SNKRS, Supreme, and concert on-sales make you set an alarm.</p>
+    <ul class="tags rv" style="--i:3">
+      <li>Urgent</li><li>Kinetic</li><li>Streetwear-loud</li><li>Scarcity-driven</li><li>Cop-your-spot</li><li>Drop-day</li>
+    </ul>
+    <nav class="rv" style="--i:4" aria-label="Jump to section">
+      <ul class="sec-nav">
+        <li><a href="#idea">The idea</a></li>
+        <li><a href="#palette">Palette</a></li>
+        <li><a href="#type">Type</a></li>
+        <li><a href="#signature">Signature</a></li>
+        <li><a href="#homepage">Homepage</a></li>
+        <li><a href="#doors">Front doors</a></li>
+        <li><a href="#stories">Stories</a></li>
+        <li><a href="#parts">Parts</a></li>
+        <li><a href="#voice">Voice</a></li>
+        <li><a href="#verdict">Verdict</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- hero-wide kinetic marquee: the drop chant -->
+<div class="mq volt" aria-hidden="true">
+  <div class="mq-row">
+    <span class="mq-group"><span>Spring Reign 2027</span><span>World's Largest Mixed Youth Tournament</span><span>Cop Your Spot</span><span>The Drop Is Coming</span></span>
+    <span class="mq-group"><span>Spring Reign 2027</span><span>World's Largest Mixed Youth Tournament</span><span>Cop Your Spot</span><span>The Drop Is Coming</span></span>
+  </div>
+</div>
+
+<main>
+  <!-- ============ 2. THE IDEA ============ -->
+  <section class="sec wrap" id="idea" aria-labelledby="idea-t">
+    <p class="eyebrow rv" style="--i:0"><span class="idx">01</span>The idea</p>
+    <h2 class="sec-title rv" style="--i:1" id="idea-t">Make registration the event.</h2>
+    <div class="idea-lede">
+      <div>
+        <p class="idea-copy rv" style="--i:0">Nobody sets an alarm for a rec-league form. They set one for a drop.</p>
+        <div class="idea-body rv" style="--i:1;margin-top:26px">
+          <p>Spring Reign fills. Summer hat leagues fill. Camps fill. That real scarcity is the most exciting thing DiscNW never talks about — so this direction turns the volume all the way up. A registration page becomes a <b>drop page</b>: a countdown ticking to the exact minute sign-ups open, a spots-left number burning down as teams claim them, and one loud button that says <b>cop your spot</b>.</p>
+          <p>It borrows the grammar players already know from sneakers and ticket on-sales — because a fourteen-year-old chasing a Spring Reign roster and an adult refreshing hat-league night speak that language fluently. The countdown is honest: it points at a real future moment and, with no JavaScript at all, simply shows the date.</p>
+        </div>
+      </div>
+      <aside class="idea-refs rv" style="--i:2" aria-label="What this borrows from">
+        <h3>Modeled on</h3>
+        <ul>
+          <li><b>Nike SNKRS &amp; the launch calendar</b><span>A visible timer turns a page into a live appointment.</span></li>
+          <li><b>Supreme weekly drops</b><span>Scarcity + a fixed drop time = a ritual, not a transaction.</span></li>
+          <li><b>Concert on-sales</b><span>"Doors open 10 AM" energy — you show up early or you miss it.</span></li>
+          <li><b>ESPN / SNKRS state chips</b><span>Upcoming, live, sold out — one glance tells you where you stand.</span></li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============ 3. PALETTE ============ -->
+  <section class="sec wrap" id="palette" aria-labelledby="pal-t">
+    <p class="eyebrow rv" style="--i:0"><span class="idx">02</span>Palette</p>
+    <h2 class="sec-title rv" style="--i:1" id="pal-t">Blackout, one volt signal, one flare.</h2>
+    <p class="sec-note rv" style="--i:2">A drop lives on black. Everything is blackout and asphalt until the one thing that matters — the button, the live state, the clock — snaps to <b>volt</b>. Flare is pure heat, saved for the last minute and the sold-out stamp. Loud, disciplined, and every pair verified AA.</p>
+    <div class="swatches">
+      <div class="swatch rv" style="--i:0">
+        <div class="chip" style="background:#0B0B0F"><span class="on" style="background:#fff;color:#0B0B0F">Aa 18:1</span></div>
+        <div class="meta"><strong>Blackout</strong> <code>#0B0B0F</code><span>The ground. Every drop happens on black — page, nav, hero, cards.</span></div>
+      </div>
+      <div class="swatch rv" style="--i:1">
+        <div class="chip" style="background:#16161C"><span class="on" style="background:#fff;color:#16161C">Aa 17:1</span></div>
+        <div class="meta"><strong>Asphalt</strong> <code>#16161C</code><span>Raised surfaces: drop cards, the clock housing, the ticket bar.</span></div>
+      </div>
+      <div class="swatch rv" style="--i:2">
+        <div class="chip" style="background:#CCFF00"><span class="on" style="background:#0B0B0F;color:#CCFF00">Aa 16:1</span></div>
+        <div class="meta"><strong>Volt</strong> <code>#CCFF00</code><span>THE signal. Primary CTA, live states, countdown accents. Black type on top.</span></div>
+      </div>
+      <div class="swatch rv" style="--i:3">
+        <div class="chip" style="background:#FF2D55"><span class="on" style="background:#0B0B0F;color:#FF2D55">Aa 5.1:1</span></div>
+        <div class="meta"><strong>Flare</strong> <code>#FF2D55</code><span>Heat only: the last-minute critical clock, the LIVE bug, the sold-out stamp.</span></div>
+      </div>
+      <div class="swatch rv" style="--i:4">
+        <div class="chip" style="background:#EDEEF1"><span class="on" style="background:#0B0B0F;color:#EDEEF1">Aa 15:1</span></div>
+        <div class="meta"><strong>Paper</strong> <code>#EDEEF1</code><span>Body copy and headlines on the blackout ground — comfortable, not harsh white.</span></div>
+      </div>
+      <div class="swatch rv" style="--i:5">
+        <div class="chip" style="background:#9CA3AE"><span class="on" style="background:#0B0B0F;color:#9CA3AE">Aa 7.4:1</span></div>
+        <div class="meta"><strong>Ash</strong> <code>#9CA3AE</code><span>Metadata, labels, timecodes — the quiet UI that lets volt shout.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. TYPOGRAPHY ============ -->
+  <section class="sec wrap" id="type" aria-labelledby="type-t">
+    <p class="eyebrow rv" style="--i:0"><span class="idx">03</span>Typography</p>
+    <h2 class="sec-title rv" style="--i:1" id="type-t">Anton shouts. Archivo runs the show.</h2>
+    <p class="sec-note rv" style="--i:2">Anton is the drop poster — condensed, heavy, built to fill a viewport and stamp a countdown digit. Archivo does the honest work underneath: schedules, forms, fine print, and every tabular number, with Black weights for sub-headlines when Anton would be too much.</p>
+    <div class="type-panel rv" style="--i:3">
+      <div class="type-heads">
+        <div>
+          <p class="fn">Anton</p>
+          <p>Display, headlines, the clock · single heavy condensed weight · uppercase</p>
+        </div>
+        <div>
+          <p class="fn arch">Archivo</p>
+          <p>Body &amp; UI · weights 400–900 · tabular figures for every stat</p>
+        </div>
+      </div>
+      <p class="type-display">Cop your <span class="volt">spot.</span></p>
+      <p class="type-sub">Registration drops in 190 : 08 : 42 : 15</p>
+      <p class="type-body-sample">Spring Reign is the world's largest mixed youth ultimate tournament, and every spring it sells out. Registration opens on one morning in January — set a reminder, gather your roster, and be ready when the clock hits zero. Sliding-scale fees start at $33, no questions asked, so the price never picks the team.</p>
+
+      <hr class="type-divider">
+
+      <table class="type-scale">
+        <thead><tr><th scope="col">Level</th><th scope="col">Specimen</th><th scope="col">Spec</th></tr></thead>
+        <tbody>
+          <tr><td class="spec">Display</td><td><span class="ts-d">Spring Reign 2027</span></td><td class="spec">Anton · clamp 56–132px</td></tr>
+          <tr><td class="spec">H1</td><td><span class="ts-h1">Summer Mixed Hat League</span></td><td class="spec">Anton · 34–74px</td></tr>
+          <tr><td class="spec">H2</td><td><span class="ts-h2">You don't have to be elite to coach.</span></td><td class="spec">Archivo 900 · 24px</td></tr>
+          <tr><td class="spec">Body</td><td><span class="ts-body">Doors open 10 AM PT. Gather your roster and be ready.</span></td><td class="spec">Archivo 400 · 17px</td></tr>
+          <tr><td class="spec">Label</td><td><span class="ts-cap">Spots left · closes when full</span></td><td class="spec">Archivo 700 · 12px · +16 tracking</td></tr>
+        </tbody>
+      </table>
+
+      <dl class="type-tnum tnum">
+        <div><dt>Countdown</dt><dd>190:08:42:15</dd></div>
+        <div><dt>Spots left</dt><dd>312</dd></div>
+        <div><dt>Since</dt><dd>1995</dd></div>
+        <div><dt>Hotline</dt><dd>(206) 781-5840</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ============ 5. SIGNATURE ELEMENT ============ -->
+  <section class="sec wrap" id="signature" aria-labelledby="sig-t">
+    <p class="eyebrow rv" style="--i:0"><span class="idx">04</span>Signature element</p>
+    <h2 class="sec-title rv" style="--i:1" id="sig-t">The live countdown &amp; the drop.</h2>
+    <p class="sec-note rv" style="--i:2">One giant clock ticks down to the next real DiscNW moment. Digits roll like a stadium tote board; inside the last minute the whole thing turns flare and breathes; at zero it flips to <b>cop your spot</b> and throws confetti. With no JavaScript — or with reduced motion — it degrades to the honest date. Run the preview to watch the whole arc.</p>
+
+    <div class="sig-grid">
+      <div class="sig-main rv" style="--i:0">
+        <div class="sig-kicker"><span class="bug">Drop incoming</span><span class="lab">Spring Reign 2027 · registration</span></div>
+        <p class="sig-target">Registration drops in —</p>
+
+        <!-- the drop stage: live reel clock + honest date fallback + the reveal -->
+        <div class="drop-stage" data-target="2027-01-11T10:00:00-08:00" data-drop-clock>
+          <div class="clock-live" aria-hidden="true"></div>
+          <div class="drop-live" aria-hidden="true">
+            <div class="drop-live-head"><span class="bug volt">Spots are live</span><strong>Cop your spot.</strong></div>
+            <a class="btn btn-drop btn-lg" href="#signature" data-magnet>Register for Spring Reign 2027</a>
+          </div>
+          <p class="clock-date"><span class="lead">Doors open</span> <time datetime="2027-01-11T10:00:00-08:00">Monday, Jan 11, 2027 · 10:00 AM PT</time> — Spring Reign is April 24–25, 2027 in Burlington, WA.</p>
+          <div class="burst" aria-hidden="true">
+            <i style="--tx:-90px;--ty:-70px;--r:200deg"></i><i style="--tx:80px;--ty:-90px;--r:-160deg"></i>
+            <i style="--tx:130px;--ty:-30px;--r:120deg"></i><i style="--tx:-140px;--ty:-20px;--r:-90deg"></i>
+            <i style="--tx:40px;--ty:-130px;--r:260deg"></i><i style="--tx:-50px;--ty:-120px;--r:-220deg"></i>
+            <i style="--tx:160px;--ty:30px;--r:80deg"></i><i style="--tx:-170px;--ty:40px;--r:-70deg"></i>
+            <i style="--tx:10px;--ty:-150px;--r:150deg"></i><i style="--tx:100px;--ty:-110px;--r:-130deg"></i>
+            <i style="--tx:-110px;--ty:-90px;--r:190deg"></i><i style="--tx:60px;--ty:60px;--r:-100deg"></i>
+          </div>
+        </div>
+
+        <div class="sig-controls">
+          <button class="btn btn-flare btn-sm js-only" type="button" data-drop-preview>Run the drop ▶</button>
+          <button class="btn btn-line btn-sm js-only" type="button" data-drop-reset hidden>Reset clock</button>
+          <span class="hint js-only">Fast-forwards a demo countdown to zero so you can see critical + reveal.</span>
+        </div>
+      </div>
+
+      <div class="sig-side">
+        <!-- DEEP BRAND MOMENT: the formline mark as the drop seal, crest dignity, flat ground -->
+        <div class="seal rv" style="--i:1">
+          <div class="seal-stamp">
+            <svg class="ring" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+              <defs><path id="sealcurve" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0" fill="none"/></defs>
+              <circle cx="100" cy="100" r="88" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+              <circle cx="100" cy="100" r="60" fill="none" stroke="currentColor" stroke-width="1" opacity=".3"/>
+              <text font-family="Anton, sans-serif" font-size="15" letter-spacing="4.5" fill="currentColor">
+                <textPath href="#sealcurve" startOffset="0">VERIFIED DROP · DISCNW · EST 1995 · </textPath>
+              </text>
+            </svg>
+            <img class="mark" src="assets/brand/logo-mark-white.png" alt="DiscNW formline disc mark" width="590" height="616">
+          </div>
+          <h3>The DiscNW drop seal</h3>
+          <p>Every drop is the real thing. The formline mark sits on a flat, quiet ground with full clearspace — the crest never rides the motion.</p>
+        </div>
+        <div class="sig-note rv" style="--i:2">
+          <h3>How it degrades</h3>
+          <p><b>No JavaScript:</b> the ticking clock is hidden and the honest date stands in — the exact drop time is always in the DOM as a <code>&lt;time&gt;</code>.</p>
+          <p><b>Reduced motion:</b> no roll, no pulse, no confetti — the calm date, plus the settled "spots are live" state where a real drop has already opened.</p>
+          <p><b>Everywhere:</b> the number never lies. The date is the source of truth; the clock is pure hype on top.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6. HOMEPAGE MOCKUP ============ -->
+  <section class="sec wrap" id="homepage" aria-labelledby="home-t">
+    <p class="eyebrow rv" style="--i:0"><span class="idx">05</span>Homepage</p>
+    <h2 class="sec-title rv" style="--i:1" id="home-t">discnw.org, as a drop hero.</h2>
+    <p class="sec-note rv" style="--i:2">The top of the redesigned homepage is the drop itself: a full-bleed highlight loop, a mega headline, then a solid ticket bar carrying the live countdown, the spots-left burn-down, and one volt button. Below it, a drop calendar reads every DiscNW registration like a launch schedule — live, upcoming, or sold out at a glance.</p>
+
+    <div class="mock rv" style="--i:0" role="group" aria-label="Mockup of the redesigned discnw.org homepage">
+      <div class="browser" aria-hidden="true">
+        <span class="dots"><i></i><i></i><i></i></span>
+        <span class="url">discnw.org</span>
+      </div>
+      <div class="site">
+        <!-- nav -->
+        <nav class="m-nav" aria-label="DiscNW mockup navigation">
+          <a class="m-logo" href="#homepage">
+            <img src="assets/brand/logo-full-white.png" alt="DiscNW home — Coast Salish-style twin-bird formline mark and DiscNW wordmark, white" width="1446" height="616">
+          </a>
+          <ul class="m-links">
+            <li><a href="#homepage">Drops</a></li>
+            <li><a href="#homepage">Youth</a></li>
+            <li><a href="#homepage">Adult Leagues</a></li>
+            <li><a href="#homepage">Coaching</a></li>
+            <li><a href="#homepage">About</a></li>
+          </ul>
+          <a class="btn btn-drop btn-sm" href="#homepage" data-magnet>Register</a>
+        </nav>
+
+        <!-- hero: full-bleed video + edge scrim -->
+        <div class="m-hero">
+          <div class="m-hero-media">
+            <video class="m-hero-video" autoplay muted loop playsinline preload="metadata"
+              disablepictureinpicture disableremoteplayback
+              poster="assets/sr26-catch-celebration.jpg"
+              aria-label="Muted highlight loop from the Spring Reign 2026 high school finals: a sprint downfield, a full-extension catch, and the celebration after.">
+              <source src="assets/video/loop-hs-catch.mp4" type="video/mp4">
+            </video>
+            <div class="m-hero-scrim"></div>
+            <button class="m-vidbtn" type="button" aria-label="Pause the highlight loop">
+              <svg class="i-pause" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 2h2.6v10H3zM8.4 2H11v10H8.4z" fill="currentColor"/></svg>
+              <svg class="i-play" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M4.6 2.1v9.8L12.2 7z" fill="currentColor"/></svg>
+            </button>
+            <div class="m-hero-inner">
+              <div class="m-hero-chips">
+                <span class="bug volt">The drop</span>
+                <span class="bug">Registration incoming</span>
+              </div>
+              <h2>Spring Reign <span class="volt">2027.</span></h2>
+              <p class="m-hero-tag">The world's largest mixed youth ultimate tournament. One morning in January, the roster spots go live — be there.</p>
+            </div>
+          </div>
+
+          <!-- the drop bar: solid ground, live clock, scarcity, CTA -->
+          <div class="m-dropbar">
+            <div class="m-dropbar-head">
+              <span class="lab">Registration drops in</span>
+              <span class="sub">Mon Jan 11, 2027 · 10:00 AM PT</span>
+            </div>
+            <div class="drop-stage" data-target="2027-01-11T10:00:00-08:00" data-drop-clock>
+              <div class="clock-live" aria-hidden="true"></div>
+              <div class="drop-live" aria-hidden="true">
+                <div class="drop-live-head"><span class="bug volt">Spots are live</span><strong>Doors are open.</strong></div>
+              </div>
+              <p class="clock-date"><span class="lead">Doors open</span> <time datetime="2027-01-11T10:00:00-08:00">Monday, January 11, 2027 · 10:00 AM PT</time></p>
+            </div>
+            <div class="m-dropbar-foot">
+              <div class="spots rv" style="--i:0">
+                <div class="spots-row">
+                  <b><span class="burn" data-from="1000" data-to="312">312</span> spots left</b>
+                  <span>688 of 1,000 claimed</span>
+                </div>
+                <div class="bar" role="img" aria-label="688 of 1,000 spots claimed"><i style="--f:.688"></i></div>
+                <p style="margin:2px 0 0;font-size:12px;color:var(--ash-dim)">Preview — Spring Reign fills every year.</p>
+              </div>
+              <div class="m-dropbar-cta">
+                <a class="btn btn-drop btn-lg" href="#homepage" data-magnet>Cop your spot</a>
+                <small>Sliding scale from $33 · no questions asked</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- drop calendar -->
+        <div class="m-cal">
+          <div class="m-cal-head">
+            <h3>The drop calendar</h3>
+            <a class="btn btn-ghost btn-sm is-static" href="#homepage">All registrations</a>
+          </div>
+
+          <div class="drop-row" data-state="live">
+            <div class="drop-tile live">HAT</div>
+            <div class="drop-info">
+              <span class="drop-state live">Registering now</span>
+              <h4>Summer Mixed Hat League</h4>
+              <p>Individual signup · teams drawn from a hat · Mondays at Magnuson</p>
+            </div>
+            <div class="drop-act"><a class="btn btn-drop btn-sm" href="#homepage" data-magnet>Cop your spot</a></div>
+          </div>
+
+          <div class="drop-row" data-state="live">
+            <div class="drop-tile live">WON</div>
+            <div class="drop-info">
+              <span class="drop-state live">Registering now</span>
+              <h4>Summer Wonder League</h4>
+              <p>Youth developmental league · new players welcome</p>
+            </div>
+            <div class="drop-act"><a class="btn btn-drop btn-sm" href="#homepage" data-magnet>Register</a></div>
+          </div>
+
+          <div class="drop-row" data-state="upcoming">
+            <div class="drop-tile up">SR</div>
+            <div class="drop-info">
+              <span class="drop-state up">Drops Jan 11 · 10 AM PT</span>
+              <h4>Spring Reign 2027</h4>
+              <p>World's largest mixed youth tournament · April 24–25 · Burlington, WA</p>
+            </div>
+            <div class="drop-act"><a class="btn btn-line btn-sm" href="#homepage">Set a reminder</a></div>
+          </div>
+
+          <div class="drop-row" data-state="upcoming">
+            <div class="drop-tile up">CMP</div>
+            <div class="drop-info">
+              <span class="drop-state up">Drops soon</span>
+              <h4>Summer Youth Ultimate Camps</h4>
+              <p>Ages 7–18 · week-long sessions across the summer</p>
+            </div>
+            <div class="drop-act"><a class="btn btn-line btn-sm" href="#homepage">Set a reminder</a></div>
+          </div>
+
+          <div class="drop-row is-sold" data-state="sold-out">
+            <div class="drop-tile sold">SEA</div>
+            <div class="drop-info">
+              <span class="drop-state sold">Sold out</span>
+              <h4>Sea Plastic 2026 · beach</h4>
+              <p>Sand ultimate on the coast · a fan favorite that fills fast</p>
+            </div>
+            <div class="drop-act"><span class="sold-stamp">Sold out</span><a class="btn btn-ghost btn-sm is-static" href="#homepage">Join waitlist</a></div>
+          </div>
+        </div>
+
+        <!-- stat strip -->
+        <div class="m-stats tnum" role="list" aria-label="DiscNW by the numbers">
+          <div role="listitem"><b><span class="count" data-to="10000">10,000</span><span class="volt">+</span></b><span>players every year</span></div>
+          <div role="listitem"><b>Est. <span class="volt">1995</span></b><span>founded at Potlatch</span></div>
+          <div role="listitem"><b>World's <span class="volt">1st</span></b><span>largest mixed youth tournament</span></div>
+          <div role="listitem"><b>From <span class="volt">$33</span></b><span>sliding scale · no questions</span></div>
+        </div>
+
+        <!-- mock footer: lockup repeat (keeps one deep mark moment) -->
+        <footer class="m-foot">
+          <img src="assets/brand/logo-full-white.png" alt="DiscNW — Disc Northwest" width="1446" height="616">
+          <p class="vision">An Ultimate community without barriers.</p>
+          <p>Disc Northwest · Seattle-based 501(c)(3) · founded 1995 · 10,000+ players a year · <a href="tel:+12067815840" style="color:#fff;font-weight:700">(206)&nbsp;781-5840</a></p>
+        </footer>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7. FRONT DOORS ============ -->
+  <section class="sec wrap" id="doors" aria-labelledby="doors-t">
+    <p class="eyebrow rv" style="--i:0"><span class="idx">06</span>Three front doors</p>
+    <h2 class="sec-title rv" style="--i:1" id="doors-t">Three passes. One community.</h2>
+    <p class="sec-note rv" style="--i:2">Players, coaches, and parents each get a door in their own language — every one framed as a pass to cop, so the excitement of the drop carries all the way through.</p>
+    <div class="doors">
+      <article class="door rv" style="--i:0">
+        <div class="door-media">
+          <img src="assets/sr26-sprint-race.jpg" width="1920" height="1080" style="object-position:50% 38%" alt="Two players in a flat-out sprint downfield at a tournament, canopy tents and a crowd behind them.">
+          <span class="pass">Player pass</span>
+        </div>
+        <div class="door-body">
+          <h3>Cop your season.</h3>
+          <p>Hat leagues, team leagues, beach tournaments — <b>year-round, rec through competitive</b>. Pick a season and a division; we draw the roster. Your schedule lives one click from your name.</p>
+          <a class="btn btn-drop" href="#doors" data-magnet>Browse the drops</a>
+        </div>
+      </article>
+      <article class="door rv" style="--i:1">
+        <div class="door-media">
+          <img src="assets/sr26-spirit-huddle.jpg" width="1920" height="1080" style="object-position:50% 30%" alt="High school players huddled in a tight line with arms around each other's shoulders at the Spring Reign finals.">
+          <span class="pass">Coach pass</span>
+        </div>
+        <div class="door-body">
+          <h3>You don't have to be elite.</h3>
+          <p>The <b>DiscNW Coaching Collective</b> hands you practice plans, season curriculum, and a bench of coaches trading drills. Certification is a checklist here, not a maze — done before your first practice.</p>
+          <a class="btn btn-line" href="#doors">Start the checklist</a>
+        </div>
+      </article>
+      <article class="door rv" style="--i:2">
+        <div class="door-media">
+          <img src="assets/sr26-sideline-friends.jpg" width="1920" height="1080" style="object-position:50% 42%" alt="Two young players side by side on the sideline, one holding a disc, the field soft-focus behind them.">
+          <span class="pass">Family pass</span>
+        </div>
+        <div class="door-body">
+          <h3>New to ultimate? Most parents are.</h3>
+          <p>Non-contact, self-officiated, coached by <b>background-checked adults</b> — and the price never picks the roster. Learn the sport in five minutes, sign waivers in one sitting, pay what your household can.</p>
+          <a class="btn btn-line" href="#doors">Read the parent guide</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ 8. STORYTELLING ============ -->
+  <section class="sec wrap" id="stories" aria-labelledby="story-t">
+    <p class="eyebrow rv" style="--i:0"><span class="idx">07</span>Storytelling</p>
+    <h2 class="sec-title rv" style="--i:1" id="story-t">Why the drop matters.</h2>
+    <p class="sec-note rv" style="--i:2">The hype only works because the thing behind it is real. One community voice, one honest frame, and the numbers that prove a rec sport can sell out like a concert.</p>
+
+    <article class="story-grid rv" style="--i:0">
+      <div class="story-photo">
+        <img src="assets/sr26-catch-celebration.jpg" width="1920" height="1080" alt="A high school player pulls in a full-extension catch as teammates sprint in to celebrate at the Spring Reign 2026 finals.">
+      </div>
+      <div class="story-body">
+        <p class="kicker">Player story · "My first Spring Reign"</p>
+        <blockquote>"We refreshed the page at 9:59 with the whole team on a group call. When it hit live we screamed. Copping our Spring Reign spot felt like getting concert tickets — except the show was us."</blockquote>
+        <p class="by"><b>Devon, 15</b> · high school mixed · Spring Reign 2026</p>
+        <p class="foot">Community-submitted · 300–500 words + one photo · staff-light</p>
+      </div>
+    </article>
+
+    <div class="impact tnum">
+      <div class="rv" style="--i:0">
+        <b><span class="count" data-to="10000">10,000</span><span class="volt">+</span></b>
+        <p>players take the field with DiscNW every year — and every one makes their own calls. Zero referees, ever.</p>
+      </div>
+      <div class="rv" style="--i:1">
+        <b>Since <span class="volt">1995</span></b>
+        <p>founded at Potlatch and grown into the engine of Puget Sound ultimate — youth to masters.</p>
+      </div>
+      <div class="rv" style="--i:2">
+        <b>World's <span class="volt">largest</span></b>
+        <p>mixed youth ultimate tournament: Spring Reign, every April in Burlington, WA — and it fills every year.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 9. WORKING PARTS ============ -->
+  <section class="sec wrap" id="parts" aria-labelledby="parts-t">
+    <p class="eyebrow rv" style="--i:0"><span class="idx">08</span>Working parts</p>
+    <h2 class="sec-title rv" style="--i:1" id="parts-t">Kit of parts.</h2>
+    <p class="sec-note rv" style="--i:2">Big magnetic pills, honest fields, and a real event card — every control obvious, volt reserved for the one decision on screen. On a fine pointer the primary buttons lean toward your cursor and press when clicked.</p>
+    <div class="parts-grid">
+      <div class="part rv" style="--i:0">
+        <h3>Buttons &amp; a reminder field</h3>
+        <div class="btn-rows">
+          <div class="btn-row"><span class="lab">Drop</span><button class="btn btn-drop" type="button" data-magnet>Cop your spot</button><button class="btn btn-drop is-hover" type="button" aria-label="Cop your spot, hover state">Hover</button></div>
+          <div class="btn-row"><span class="lab">Heat</span><button class="btn btn-flare" type="button">Last chance</button><button class="btn btn-flare is-hover" type="button" aria-label="Last chance, hover state">Hover</button></div>
+          <div class="btn-row"><span class="lab">Line</span><button class="btn btn-line" type="button">Set a reminder</button><button class="btn btn-line is-hover" type="button" aria-label="Set a reminder, hover state">Hover</button></div>
+          <div class="btn-row"><span class="lab">Ghost</span><button class="btn btn-ghost" type="button">View the rules</button><button class="btn btn-ghost is-hover" type="button" aria-label="View the rules, hover state">Hover</button></div>
+        </div>
+        <form class="field-form" action="#" onsubmit="return false" aria-label="Set a drop reminder">
+          <div class="field">
+            <label for="drop-email">Get the drop reminder</label>
+            <input id="drop-email" name="email" type="email" placeholder="you@email.com" autocomplete="email">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="drop-season">Which drop</label>
+              <select id="drop-season" name="drop">
+                <option>Spring Reign 2027</option>
+                <option>Summer Mixed Hat League</option>
+                <option>Summer Youth Camps</option>
+                <option>Fall leagues</option>
+              </select>
+            </div>
+            <button class="btn btn-drop" type="submit">Remind me</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="part rv" style="--i:1">
+        <h3>Event card</h3>
+        <article class="ev-card">
+          <div class="ev-top">
+            <span class="bug">Registering now</span>
+            <span class="ev-tag">Adult · Hat · Mixed</span>
+          </div>
+          <h4>Summer Mixed Hat League</h4>
+          <ul class="ev-meta tnum">
+            <li><span>Season</span><b>Jun 1 – Aug 10, 2026</b></li>
+            <li><span>Where</span><b>Magnuson Park, Seattle</b></li>
+            <li><span>Format</span><b>Individual signup · hat draft</b></li>
+            <li><span>Fees</span><b>Sliding scale $33–$495</b></li>
+          </ul>
+          <div class="ev-cap">
+            <div class="spots-row">
+              <b class="tnum"><span class="burn" data-from="180" data-to="38">38</span> spots left</b>
+              <span>142 of 180 claimed</span>
+            </div>
+            <div class="bar" role="img" aria-label="142 of 180 spots claimed" style="margin-top:9px"><i style="--f:.789"></i></div>
+          </div>
+          <div class="ev-actions">
+            <a class="btn btn-drop" href="#parts" data-magnet>Cop your spot</a>
+            <a class="btn btn-ghost" href="#parts">League details</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10. VOICE & TONE ============ -->
+  <section class="sec wrap" id="voice" aria-labelledby="voice-t">
+    <p class="eyebrow rv" style="--i:0"><span class="idx">09</span>Voice &amp; tone</p>
+    <h2 class="sec-title rv" style="--i:1" id="voice-t">Hype, but never hollow.</h2>
+    <p class="sec-note rv" style="--i:2">Loud, short, second-person. The energy of a drop with the honesty of a rec league — we never manufacture scarcity that isn't real, and warmth always closes the sale.</p>
+    <div class="voice-grid">
+      <div class="voice rv" style="--i:0">
+        <h3>Hero headline</h3>
+        <p class="big">Set your alarm. Spots go live Monday.</p>
+        <p class="note">Drop framing: a fixed time you show up for, not a form you get around to.</p>
+      </div>
+      <div class="voice rv" style="--i:1">
+        <h3>Registration confirmation</h3>
+        <p>You copped it. You're in for Summer Mixed Hat League — first pull is June 1 at Magnuson. Your roster and schedule post under your name about two weeks out. Welcome to the season.</p>
+        <p class="note">The receipt reads like a win, not a transaction.</p>
+      </div>
+      <div class="voice rv" style="--i:2">
+        <h3>To a nervous first-time parent</h3>
+        <p>The countdown looks intense — the sport isn't. Ultimate is non-contact and self-officiated, fees slide from $33 with no questions, and nobody expects your kid to know a huck from a hat league on day one. Just be ready to hit register.</p>
+        <p class="note">Reassurance through facts, hype dialed to warmth.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- second marquee band — opposite direction, blackout ground -->
+<div class="mq fast" aria-hidden="true" style="margin-top:clamp(72px,10vw,128px)">
+  <div class="mq-row rev">
+    <span class="mq-group"><span>Doors Open 10 AM PT</span><span>Sliding Scale From $33</span><span>Zero Referees</span><span>Spirit Of The Game</span></span>
+    <span class="mq-group"><span>Doors Open 10 AM PT</span><span>Sliding Scale From $33</span><span>Zero Referees</span><span>Spirit Of The Game</span></span>
+  </div>
+</div>
+
+<!-- ============ 11. VERDICT + FOOTER ============ -->
+<footer class="verdict wrap" id="verdict">
+  <p class="eyebrow rv" style="--i:0"><span class="idx">10</span>The honest read</p>
+  <h2 class="sec-title rv" style="--i:1">Is The Drop your direction?</h2>
+  <div class="verdict-grid">
+    <div class="verdict-card go rv" style="--i:0">
+      <h3>Choose this if…</h3>
+      <p>Your registrations genuinely fill and you want to own that energy — turning Spring Reign and summer leagues into events players set alarms for. It speaks fluently to teenagers and lapsed players, and it makes "sign up" feel like something you get to do, not something you have to.</p>
+    </div>
+    <div class="verdict-card warn rv" style="--i:1">
+      <h3>Think twice if…</h3>
+      <p>A brand-new eight-year-old and a cautious parent are your front door — drop-day urgency can read as pressure, and the tone needs a warm hand on every page so scarcity never tips into stress. It also asks for real drop moments to point the countdown at.</p>
+    </div>
+  </div>
+  <nav class="foot-nav" aria-label="Direction navigation">
+    <a href="index.html">← All directions</a>
+    <small>Direction 17 of 19 · The Drop · DiscNW hype tier</small>
+    <a href="18-combine.html">Next direction →</a>
+  </nav>
+</footer>
+
+<script>
+(function(){
+  var d=document.documentElement;
+  var anim=d.classList.contains('anim');
+  var reduce=!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: no-preference)').matches);
+  var hasIO='IntersectionObserver' in window;
+
+  /* -------- reveal engine: base is settled; reveal on entry, then unobserve -------- */
+  var reveals=[].slice.call(document.querySelectorAll('.rv,.tl'));
+  if(anim&&hasIO){
+    var rio=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); rio.unobserve(e.target); } });
+    },{threshold:.16,rootMargin:'0px 0px -6% 0px'});
+    reveals.forEach(function(el){ rio.observe(el); });
+    /* unconditional settle failsafe (<=2s) — forces the finished page no matter what */
+    setTimeout(function(){ d.classList.add('settled'); },1800);
+  }else{
+    reveals.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  /* -------- count-up / burn-down odometers (progressive; DOM already holds finals) ---- */
+  function animateNum(el){
+    var to=+el.getAttribute('data-to');
+    var from=el.getAttribute('data-from')?+el.getAttribute('data-from'):0;
+    var dur=1400,t0=performance.now();
+    (function tick(t){
+      var p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3);
+      el.textContent=Math.round(from+(to-from)*e).toLocaleString('en-US');
+      if(p<1)requestAnimationFrame(tick);
+    })(performance.now());
+  }
+  if(anim&&hasIO){
+    var nio=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ animateNum(e.target); nio.unobserve(e.target); } });
+    },{threshold:.4});
+    document.querySelectorAll('.count,.burn').forEach(function(el){ nio.observe(el); });
+    /* bar fills: add .in to the nearest spots/ev-cap wrapper so scaleX transitions */
+    var bio=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); bio.unobserve(e.target); } });
+    },{threshold:.4});
+    document.querySelectorAll('.spots,.ev-cap').forEach(function(el){ bio.observe(el); });
+  }
+
+  /* -------- THE DROP CLOCK — reel odometer countdown, shared 1s tick -------- */
+  var clocks=[];
+  function buildClock(stage){
+    var live=stage.querySelector('.clock-live');
+    if(!live) return null;
+    var units=[['d',3,'Days'],['h',2,'Hrs'],['m',2,'Min'],['s',2,'Sec']];
+    var strips=[];
+    units.forEach(function(u){
+      var unit=document.createElement('div'); unit.className='unit';
+      var reels=document.createElement('div'); reels.className='reels';
+      for(var i=0;i<u[1];i++){
+        var reel=document.createElement('span'); reel.className='reel';
+        var strip=document.createElement('span'); strip.className='strip';
+        for(var n=0;n<10;n++){ var s=document.createElement('span'); s.textContent=n; strip.appendChild(s); }
+        reel.appendChild(strip); reels.appendChild(reel); strips.push(strip);
+      }
+      var label=document.createElement('div'); label.className='unit-label'; label.textContent=u[2];
+      unit.appendChild(reels); unit.appendChild(label); live.appendChild(unit);
+    });
+    var c={stage:stage,strips:strips,target:Date.parse(stage.getAttribute('data-target')),dropped:false,real:Date.parse(stage.getAttribute('data-target'))};
+    stage.classList.add('is-ready');
+    return c;
+  }
+  function renderClock(c){
+    if(c.dropped) return;
+    var diff=c.target-Date.now();
+    if(diff<=0){ c.dropped=true; c.stage.classList.remove('critical'); c.stage.classList.add('dropped'); return; }
+    var s=Math.floor(diff/1000);
+    var days=Math.floor(s/86400); s-=days*86400;
+    var hrs=Math.floor(s/3600); s-=hrs*3600;
+    var min=Math.floor(s/60); var sec=s-min*60;
+    if(days>999)days=999;
+    var digs=[Math.floor(days/100)%10,Math.floor(days/10)%10,days%10,
+              Math.floor(hrs/10),hrs%10,Math.floor(min/10),min%10,Math.floor(sec/10),sec%10];
+    for(var i=0;i<c.strips.length&&i<digs.length;i++){
+      c.strips[i].style.transform='translateY(-'+digs[i]+'em)';
+    }
+    c.stage.classList.toggle('critical', diff<=60000);
+  }
+  if(anim){
+    document.querySelectorAll('[data-drop-clock]').forEach(function(stage){
+      var c=buildClock(stage);
+      if(c){ clocks.push(c); }
+    });
+    if(clocks.length){
+      /* roll from 0 into the real value on first frame (a slam-in), then tick every second */
+      requestAnimationFrame(function(){ clocks.forEach(renderClock); });
+      setInterval(function(){ clocks.forEach(renderClock); },1000);
+    }
+
+    /* -------- "Run the drop" preview: fast-forward one demo clock to zero -------- */
+    var previewBtn=document.querySelector('[data-drop-preview]');
+    var resetBtn=document.querySelector('[data-drop-reset]');
+    var demo=clocks.length?clocks[0]:null;
+    if(previewBtn&&demo){
+      previewBtn.addEventListener('click',function(){
+        demo.dropped=false;
+        demo.stage.classList.remove('dropped');
+        demo.target=Date.now()+8000;   /* 8s so you see critical + the reveal */
+        renderClock(demo);
+        previewBtn.hidden=true;
+        if(resetBtn)resetBtn.hidden=false;
+      });
+    }
+    if(resetBtn&&demo){
+      resetBtn.addEventListener('click',function(){
+        demo.dropped=false;
+        demo.stage.classList.remove('dropped','critical');
+        demo.target=demo.real;
+        renderClock(demo);
+        resetBtn.hidden=true;
+        if(previewBtn)previewBtn.hidden=false;
+      });
+    }
+  }
+
+  /* -------- hero video: autoplay muted loop by default; refine with JS --------
+     No JS → the poster/loop already shows a finished hero. JS pauses under reduced
+     motion / data-saver and pauses off-screen for battery; the button toggles. */
+  try{
+    var reduceData=window.matchMedia&&window.matchMedia('(prefers-reduced-data: reduce)').matches;
+    var vid=document.querySelector('.m-hero-video');
+    var vbtn=document.querySelector('.m-vidbtn');
+    if(vid){
+      vid.muted=true;
+      var userPaused=false;
+      function play(){ if(userPaused)return; var p=vid.play(); if(p&&p.catch)p.catch(function(){}); }
+      if(reduce||reduceData){ vid.removeAttribute('autoplay'); vid.pause(); userPaused=true; if(vbtn)vbtn.classList.add('paused'); if(vbtn)vbtn.setAttribute('aria-label','Play the highlight loop'); }
+      if(vbtn){
+        vbtn.addEventListener('click',function(){
+          userPaused=!userPaused;
+          vbtn.classList.toggle('paused',userPaused);
+          vbtn.setAttribute('aria-label',userPaused?'Play the highlight loop':'Pause the highlight loop');
+          if(userPaused){vid.pause();}else{play();}
+        });
+      }
+      if(hasIO&&!reduce&&!reduceData){
+        new IntersectionObserver(function(es){
+          es.forEach(function(e){ if(e.isIntersecting){play();}else{vid.pause();} });
+        },{threshold:.2}).observe(vid);
+      }
+    }
+  }catch(e){}
+
+  /* -------- magnetic primaries + hover mirrors (fine pointers, motion only) -------- */
+  if(anim&&window.matchMedia&&window.matchMedia('(hover:hover) and (pointer:fine)').matches){
+    document.querySelectorAll('[data-magnet]').forEach(function(el){
+      var raf=0,mx=0,my=0;
+      el.addEventListener('pointermove',function(e){
+        var r=el.getBoundingClientRect();
+        mx=Math.max(-6,Math.min(6,(e.clientX-(r.left+r.width/2))*.18));
+        my=Math.max(-6,Math.min(6,(e.clientY-(r.top+r.height/2))*.3));
+        if(!raf){raf=requestAnimationFrame(function(){raf=0;el.style.transform='translate('+mx.toFixed(1)+'px,'+my.toFixed(1)+'px)';});}
+      });
+      el.addEventListener('pointerleave',function(){ if(raf){cancelAnimationFrame(raf);raf=0;} el.style.transform=''; });
+    });
+  }
+})();
+</script>
+</body>
+</html>

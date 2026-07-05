@@ -1,7 +1,7 @@
 # DiscNW Design Direction Review — Meeting Guide
 
-**With:** Matt · **Time:** ~70–85 min · **Materials:** open `index.html` in a browser; this guide on paper.
-**Goal by end of meeting:** a favorite from each of the four families, one lead direction overall, and a short list of borrowed elements — including, possibly, an experimental page's mechanism riding on a grounded system.
+**With:** Matt · **Time:** ~90–100 min · **Materials:** open `index.html` in a browser; this guide on paper.
+**Goal by end of meeting:** a favorite from each of the five families, one lead direction overall, and a short list of borrowed elements — including, possibly, an experimental page's mechanism riding on a grounded system.
 
 ---
 
@@ -9,24 +9,25 @@
 
 | Time | Item |
 |---|---|
-| 0:00–0:03 | Setup: brief, ground rules, how the four families work (3 min) |
+| 0:00–0:03 | Setup: brief, ground rules, how the five families work (3 min) |
 | 0:03–0:19 | **Place & weather** — 01 Evergreen · 07 Understory · 09 Rain or Shine · 13 Last Light → pick a favorite (16 min) |
 | 0:19–0:32 | **Sport & broadcast** — 02 Game Film · 06 One Point · 08 Game to 15 → pick a favorite (13 min) |
 | 0:32–0:51 | **People & community** — 03 Sideline Day · 04 Spirit & Story · 11 First Names · 14 Spectrum · 15 Prism → pick a favorite (19 min) |
-| 0:51–1:02 | **System & utility** — 05 Flight Path · 10 Route Map · 12 Handbook → pick a favorite (11 min) |
-| 1:02–1:10 | Cross-family final three: put the four favorites up, cut to three (8 min) |
-| 1:10–1:18 | Synthesis: cross-cutting questions + scoring grid (8 min) |
-| 1:18–1:22 | Buffer / spillover (4 min) |
+| 0:51–1:06 | **Gameday** — 16 Highlight Reel · 17 The Drop · 18 Combine · 19 Bracket → pick a favorite (15 min) |
+| 1:06–1:17 | **System & utility** — 05 Flight Path · 10 Route Map · 12 Handbook → pick a favorite (11 min) |
+| 1:17–1:26 | Cross-family final three: put the five favorites up, cut to three (9 min) |
+| 1:26–1:34 | Synthesis: cross-cutting questions + scoring grid (8 min) |
+| 1:34–1:38 | Buffer / spillover (4 min) |
 
 **Pace within a family:** grounded pages ~3 min each, experimental pages ~4 min (the scroll *is* the design), then ~2 min to name the family's favorite before moving on.
 
-**Setup script (read aloud):** "Fifteen directions for the discnw.org redesign, all built around storytelling for players, coaches, and parents. They're sorted into four families, each answering one question about how the site should feel: **Place & weather** (does it feel like HERE?), **Sport & broadcast** (does it feel like the GAME?), **People & community** (does it feel like US?), and **System & utility** (does it work harder?). Some directions are *grounded* — complete design systems you could ship — and some are *experimental* — immersive homepage experiences built around one mechanism you have to scroll to feel; a badge on each card says which. We'll walk one family at a time and pick a favorite from each, then cut those four favorites to a final three across families. React honestly — gut first, reasons second. Nothing is all-or-nothing: we can mix palettes, components, and mechanisms, and a grounded system can adopt an experimental page's mechanism."
+**Setup script (read aloud):** "Nineteen directions for the discnw.org redesign, all built around storytelling for players, coaches, and parents. They're sorted into five families, each answering one question about how the site should feel: **Place & weather** (does it feel like HERE?), **Sport & broadcast** (does it feel like the GAME?), **People & community** (does it feel like US?), **Gameday** (does it bring the energy?), and **System & utility** (does it work harder?). Some directions are *grounded* — complete design systems you could ship — and some are *experimental* — immersive homepage experiences built around one mechanism you have to scroll to feel; a badge on each card says which. We'll walk one family at a time and pick a favorite from each, then cut those five favorites to a final three across families. React honestly — gut first, reasons second. Nothing is all-or-nothing: we can mix palettes, components, and mechanisms, and a grounded system can adopt an experimental page's mechanism."
 
 ---
 
-## 2. How to read the four families (and why this order)
+## 2. How to read the five families (and why this order)
 
-Each family answers one question about what discnw.org should *feel* like. Walk them in order — it moves from the most emotional, place-driven worlds toward the most utilitarian, so the "does it actually work?" question lands while the atmosphere ones are still fresh.
+Each family answers one question about what discnw.org should *feel* like. Walk them in order — it builds from the most emotional, place-driven worlds, peaks at the loudest hype tier, and ends on the most utilitarian, so the "does it actually work?" question lands while the atmosphere ones are still fresh.
 
 1. **Place & weather — "Does it feel like HERE?"** (01 Evergreen, 07 The Understory, 09 Rain or Shine, 13 Last Light)
    The Puget Sound worlds. Start here: the warmest, most ownable territory, and it sets the bar for "no other league could wear this." Runs grounded-to-experimental — Evergreen's full system, then the field guide, the weather bulletin, and the year-long light clock.
@@ -37,10 +38,13 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 3. **People & community — "Does it feel like US?"** (03 Sideline Day, 04 Spirit & Story, 11 First Names, 14 Spectrum, 15 Prism)
    The people-first worlds. The most literal answers to the storytelling brief — a welcoming sideline, a community magazine, a roster of ten thousand names, and an expressive/inclusion pair (14 Spectrum, 15 Prism) that makes "an Ultimate community without barriers" the literal subject of the design.
 
-4. **System & utility — "Does it WORK harder?"** (05 Flight Path, 10 The Route Map, 12 The Handbook)
+4. **Gameday — "Does it bring the energy?"** (16 Highlight Reel, 17 The Drop, 18 Combine, 19 Bracket)
+   The loudest tier, modeled on how the best sports websites bring hype: a broadcast Top 10 (16 Highlight Reel), a streetwear drop-day countdown (17 The Drop), a telemetry stat-slam (18 Combine), and a live tournament bracket (19 Bracket). This is where the energy peaks — and where 08 Game to 15 was amped up to match. Two are grounded (17, 18), two experimental (16, 19).
+
+5. **System & utility — "Does it WORK harder?"** (05 Flight Path, 10 The Route Map, 12 The Handbook)
    The workhorse worlds. End here on the practical question: the trusted navy given lift, the whole program list as a transit map, the site rebuilt as a numbered handbook. Whatever wins on feeling still has to do this job.
 
-**After each family, name one favorite** — highest conviction, not consensus. The four favorites feed the final three.
+**After each family, name one favorite** — highest conviction, not consensus. The five favorites feed the final three.
 
 ---
 
@@ -83,7 +87,7 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 - Q: This is a narrative cover, not a schedule tool. Which grounded system would you put behind it — and does the flight line landing on "Register" feel earned, or engineered?
 
 #### 08 Game to 15 — "The whole site is a game to 15" · *experimental*
-**Pitch:** "The site is a game of ultimate played to 15 — a fixed scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point, ending on 'DiscNW pulls. You score.' It's pure typography: the cheapest of the fifteen to build flawlessly, and the easiest to retell in one sentence."
+**Pitch:** "The site is a game of ultimate played to 15 — a fixed scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point, ending on 'DiscNW pulls. You score.' It's pure typography turned into a live broadcast — each numeral now lands with an overshoot pop and a spark burst in its own color, a LIVE bug and momentum meter ride the strip, and at 15 the orange floods the screen. Still the cheapest of the nineteen to build flawlessly, and the easiest to retell in one sentence."
 - Q: Genius or gimmick — and if your honest answer is gimmick, is that risk still worth the launch buzz of a site people screenshot, share, and retell in one sentence?
 - Q: The scoreboard is a first-visit thrill by design. Does the joke still land on your third visit — and does that matter, if this voice sits on top of a grounded system doing the daily work?
 
@@ -120,6 +124,32 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 
 **People & community favorite:** ________________
 
+### Gameday — "Does it bring the energy?"
+
+The kit's loudest tier, modeled on how the best sports websites bring hype — broadcast adrenaline, drop-day urgency, live data and brackets. It's the counterweight to the calm directions: it turns registration into an event. Note that **08 Game to 15** (over in Sport & broadcast) was amped up to match this energy, so weigh it here too. Two of these are *grounded* systems (17 The Drop, 18 Combine), two are *experimental* single-mechanism pages (16 Highlight Reel, 19 Bracket).
+
+#### 16 Highlight Reel — "Ultimate's Top 10, played like appointment TV" · *experimental*
+**Pitch:** "The nightly SportsCenter Top 10, aimed at ultimate — a scroll-driven #10→#1 of the sport's loudest moments, each a full-bleed clip under a colossal ghosted rank numeral, broadcast lower-thirds wiping in, a live score bug riding the corner. The bet: in one scroll, a rec-league nonprofit feels like appointment television, and registering feels like joining the show."
+- Q: Does a broadcast highlight show make ultimate feel like a spectator sport worth registering for — or is it spectacle that oversells a Saturday rec league?
+- Q: This is the cold open, not the schedule grid. Which grounded system carries the standings, rosters, and rainout tools underneath it?
+
+#### 17 The Drop — "Registration as a drop you set an alarm for" · *grounded*
+**Pitch:** "Nike SNKRS on drop morning — a giant live reel-odometer countdown to a real DiscNW moment (Spring Reign 2027 registration), streetwear black-and-volt, alarm-set urgency. At 0:00 it flips to 'cop your spot.' The bet: your registrations genuinely sell out, so own that energy instead of apologizing for it."
+- Q: Does drop-day urgency make 'sign up' feel like something you *get* to do — or does scarcity read as pressure to a cautious parent registering a 7-year-old?
+- Q: This needs real drop moments to point the countdown at. Do we have enough of them across the year to keep the clock honest?
+
+#### 18 Combine — "The org's real numbers, on the jumbotron" · *grounded*
+**Pitch:** "The NFL Combine tunnel — a dark, volt-lit telemetry HUD where DiscNW's real scale (10,000+ players, 30+ years, 5 regions, a $33 floor) counts up and slams into place, dials wind, a countdown clocks the next Spring Reign. The bet: when the numbers are your best argument, put them on the jumbotron and let them slam."
+- Q: Do the numbers make a parent or sponsor feel the size and seriousness of DiscNW in the first three seconds — or does a dark neon HUD read cold before it impresses?
+- Q: Is 'the numbers are the hero' the right first impression for a nonprofit that also wants to feel human and welcoming?
+
+#### 19 Bracket — "The season as a live bracket the whole city fills out" · *experimental*
+**Pitch:** "March Madness bracket night — a two-region single-elimination tree whose connector wires ink themselves as you scroll, DiscNW's real programs seeded honestly, upset alerts detonating, the formline mark crowned as champion over Spring Reign. The bet: no generic rec league could wear it, because DiscNW actually runs the world's largest mixed youth tournament."
+- Q: Does turning the season into a bracket make registering feel like claiming a spot in the tournament — or is bracket mania a seasonal skin that fights the everyday homepage?
+- Q: This is loud by design. Which grounded system handles the standings, schedules, and rainout tools underneath the bracket voice?
+
+**Gameday favorite:** ________________
+
 ### System & utility — "Does it WORK harder?"
 
 #### 05 Flight Path — "The brand you trust, given lift" · *grounded*
@@ -143,16 +173,17 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 
 ## 4. Cross-cutting questions (synthesis)
 
-Put the **four family favorites** on the board, cut to a **final three** across families, then work these:
+Put the **five family favorites** on the board, cut to a **final three** across families, then work these:
 
-- **Cross-family final three:** of your four family favorites, which three survive — and what does cutting the fourth tell you about what DiscNW *isn't*?
-- **If we could only build ONE family's worldview, which family is DiscNW?** Place & weather, Sport & broadcast, People & community, or System & utility — pick one and say why in a sentence.
+- **Cross-family final three:** of your five family favorites, which three survive — and what does cutting the fourth tell you about what DiscNW *isn't*?
+- **If we could only build ONE family's worldview, which family is DiscNW?** Place & weather, Sport & broadcast, People & community, Gameday, or System & utility — pick one and say why in a sentence.
+- Which **hype direction** actually fits a nonprofit that welcomes 7-year-olds and 60-year-olds — where does hype help, where does it shout over the story?
 - Which **hero** made you want to scroll — and can you say why in one sentence?
 - Scrolling each page — which one **feels** most innovative, and is that feeling serving DiscNW or showing off?
 - Across the grounded directions, which **audience-pathways section** (players / coaches / parents) speaks to all three groups best?
 - Which **storytelling component** would we actually keep publishing content for a year from now?
 - If an experimental concept won your gut, which **grounded system carries its schedules, standings, and registration** — and does the pairing still feel like one brand?
-- What's **missing from all fifteen**?
+- What's **missing from all nineteen**?
 - Instinct check: if we had to launch one tomorrow, which — and which element or mechanism from another direction would you steal for it?
 
 ---
@@ -173,11 +204,15 @@ Put the **four family favorites** on the board, cut to a **final three** across 
 | 11 First Names | People & community | | | | | | | |
 | 14 Spectrum | People & community | | | | | | | |
 | 15 Prism | People & community | | | | | | | |
+| 16 Highlight Reel | Gameday | | | | | | | |
+| 17 The Drop | Gameday | | | | | | | |
+| 18 Combine | Gameday | | | | | | | |
+| 19 Bracket | Gameday | | | | | | | |
 | 05 Flight Path | System & utility | | | | | | | |
 | 10 The Route Map | System & utility | | | | | | | |
 | 12 The Handbook | System & utility | | | | | | | |
 
-*Scores are a conversation aid, not a verdict — a strong disagreement in one cell is worth more than the totals. Expect the experimental directions (06, 07, 08, 11, 13, 15) to score lopsided; that's information, not a problem.*
+*Scores are a conversation aid, not a verdict — a strong disagreement in one cell is worth more than the totals. Expect the experimental and hype directions (06, 07, 08, 11, 13, 15, 16, 19) to score lopsided; that's information, not a problem.*
 
 ---
 

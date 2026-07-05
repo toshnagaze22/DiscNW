@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction 18 — Combine · DiscNW redesign</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<meta name="description" content="Combine: DiscNW's scale rendered as a telemetry HUD — a combine readout where 10,000+ players, 30 years, and the world's largest tournament hit like adrenaline.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@500;600;700;800&family=Saira+Condensed:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DIRECTION 18 — COMBINE
+   F1 telemetry / NFL Combine / sports-data adrenaline.
+   The numbers are the hero: they count up and SLAM into place,
+   gauges wind, bars fill, a leaderboard reads live. Dark, neon, kinetic.
+   Base styles ARE the settled page — with NO JS every number shows its
+   final total, every gauge sits full, the countdown shows the event date.
+   html.anim (JS + motion-allowed + IO) unlocks the kinetics;
+   html.settled (2.4s failsafe) forces everything landed by 2.5s.
+   ============================================================ */
+:root{
+  --void:#07090c;        /* page ground — near-black */
+  --carbon:#0b0e13;      /* deep bands */
+  --panel:#12161e;       /* panel surface */
+  --panel-2:#191f2a;     /* raised chrome / tiles */
+  --line:rgba(150,166,186,.16);
+  --line-soft:rgba(150,166,186,.08);
+  --volt:#16ff9b;        /* THE data accent — volt green */
+  --volt-deep:#12e087;   /* pressed / hover */
+  --cyan:#48d6ff;        /* secondary telemetry */
+  --amber:#ffc93f;       /* mid gauge / caution */
+  --red:#ff3b6b;         /* redline / critical */
+  --ink:#f3f7fc;         /* headlines + big numbers */
+  --mono:#9ba8ba;        /* readout grey — body */
+  --mono-dim:#8793a5;    /* quiet metadata */
+  --font-disp:'Saira',system-ui,-apple-system,sans-serif;
+  --font-cond:'Saira Condensed','Saira',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  /* house easing — three curves, default 'ease' is banned.
+     snap = micro (hovers, wipes), lux = reveals/fills, pop = the number slam overshoot */
+  --ease-snap:cubic-bezier(.4,0,.1,1);
+  --ease-lux:cubic-bezier(.16,1,.3,1);
+  --ease-pop:cubic-bezier(.34,1.56,.64,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; color-scheme:dark}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+[id]{scroll-margin-top:24px}
+body{
+  margin:0; background:var(--void); color:var(--mono);
+  font-family:var(--font-disp); font-size:16.5px; line-height:1.6; font-weight:500;
+  -webkit-font-smoothing:antialiased; overflow-x:clip;
+}
+a{color:var(--ink)}
+img,video,svg{display:block; max-width:100%}
+:focus-visible{outline:2px solid var(--volt); outline-offset:3px; border-radius:2px}
+.wrap{max-width:1200px; margin:0 auto; padding:0 32px}
+@media (max-width:640px){ .wrap{padding:0 20px} }
+.mono{font-family:var(--font-mono)}
+.tnum{font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1}
+.sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0}
+
+/* ---------- MOTION SYSTEM (generic reveals) ----------
+   Every initial-hidden style requires BOTH html.anim AND no-preference,
+   so no-JS / reduced-motion / print all render the finished page. */
+@media (prefers-reduced-motion:no-preference){
+  html.anim .rv{opacity:0; transform:translateY(20px);
+    transition:opacity .7s var(--ease-lux), transform .7s var(--ease-lux);
+    transition-delay:calc(var(--i,0)*70ms);}
+  html.anim .rv.in{opacity:1; transform:none}
+  html.anim .tl{display:block; overflow:hidden; padding-bottom:.12em; margin-bottom:-.12em}
+  html.anim .tl > .tli{display:block; transform:translateY(116%);
+    transition:transform .9s var(--ease-lux); transition-delay:calc(var(--i,0)*70ms);}
+  html.anim .tl.in > .tli{transform:none}
+}
+html.settled .rv{opacity:1 !important; transform:none !important}
+html.settled .tl > .tli{transform:none !important}
+@media print{
+  .rv{opacity:1 !important; transform:none !important}
+  .tl > .tli{transform:none !important}
+}
+
+/* ---------- SECTION CHROME ---------- */
+.sec{padding-top:118px}
+@media (max-width:720px){ .sec{padding-top:78px} }
+.band{position:relative; width:100%}
+.sec-eyebrow{
+  font-family:var(--font-mono); font-weight:500; font-size:12px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--volt); margin:0 0 14px; display:flex; align-items:center; gap:10px;
+}
+.sec-eyebrow .idx{
+  color:var(--void); background:var(--volt); font-weight:700; border-radius:3px;
+  padding:2px 7px 1px; letter-spacing:.08em;
+}
+.sec-title{
+  font-family:var(--font-cond); font-weight:800; text-transform:uppercase;
+  font-size:clamp(38px,5.2vw,60px); line-height:.94; letter-spacing:.005em; color:var(--ink); margin:0 0 18px;
+}
+.sec-note{color:var(--mono); max-width:62ch; margin:0 0 46px; font-size:17px}
+.sec-note b{color:var(--ink); font-weight:600}
+
+/* ---------- 1. DIRECTION HEADER ---------- */
+.dir-head{border-bottom:1px solid var(--line); padding:76px 0 46px; position:relative; overflow:hidden}
+@media (max-width:720px){ .dir-head{padding:52px 0 38px} }
+/* faint HUD grid behind the header — abstract energy FX, never scenery */
+.dir-head::before{
+  content:""; position:absolute; inset:0; z-index:0; pointer-events:none; opacity:.5;
+  background:
+    linear-gradient(var(--line-soft) 1px,transparent 1px) 0 0/100% 46px,
+    linear-gradient(90deg,var(--line-soft) 1px,transparent 1px) 0 0/46px 100%;
+  -webkit-mask-image:radial-gradient(120% 90% at 15% 0%,#000 0%,transparent 72%);
+  mask-image:radial-gradient(120% 90% at 15% 0%,#000 0%,transparent 72%);
+}
+.dir-head .wrap{position:relative; z-index:1}
+.dir-eyebrow{
+  font-family:var(--font-mono); font-weight:500; font-size:13px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--mono); margin:0 0 18px;
+}
+.dir-eyebrow b{color:var(--volt); font-weight:700}
+.dir-name{
+  font-family:var(--font-cond); font-weight:800; text-transform:uppercase;
+  font-size:clamp(60px,12vw,148px); line-height:.86; letter-spacing:.004em; color:var(--ink);
+  margin:0 0 8px; text-shadow:0 0 40px rgba(22,255,155,.14);
+}
+.dir-name .dot{color:var(--volt)}
+.dir-thesis{margin:14px 0 24px; color:var(--mono); font-size:18px; max-width:70ch}
+.dir-thesis b{color:var(--ink); font-weight:600}
+.dir-nav{display:flex; flex-wrap:wrap; gap:8px 8px; margin:0}
+.dir-nav a{
+  font-family:var(--font-mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--mono); text-decoration:none; border:1px solid var(--line); border-radius:999px;
+  padding:6px 13px 5px; transition:color .3s var(--ease-snap), border-color .3s var(--ease-snap), background .3s var(--ease-snap);
+}
+.dir-nav a:hover{color:var(--void); background:var(--volt); border-color:var(--volt)}
+
+/* ---------- KINETIC MARQUEE BAND ---------- */
+.marquee{overflow:hidden; border-block:1px solid var(--line); background:var(--carbon); padding:12px 0}
+.marquee + .marquee{border-top:0}
+.marquee-track{display:flex; align-items:center; gap:0; width:max-content; white-space:nowrap; will-change:transform}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .marquee-track{animation:mq-slide 30s linear infinite}
+  html.anim .marquee.rev .marquee-track{animation-direction:reverse}
+  html.anim .marquee:hover .marquee-track{animation-play-state:paused}
+}
+@keyframes mq-slide{ to{ transform:translateX(-50%) } }
+.mq-word{
+  font-family:var(--font-cond); font-weight:800; text-transform:uppercase;
+  font-size:clamp(1.9rem,5.2vw,3.2rem); line-height:1; letter-spacing:.005em; color:var(--ink); padding:0 22px;
+}
+.marquee.rev .mq-word{color:var(--mono)}
+.mq-sep{color:var(--volt); font-size:clamp(1rem,2vw,1.4rem); align-self:center}
+.marquee.rev .mq-sep{color:var(--cyan)}
+
+/* ---------- 2. THE IDEA ---------- */
+.idea-copy{font-size:clamp(21px,2.2vw,26px); line-height:1.5; max-width:24ch; margin:0; color:var(--ink); font-weight:600}
+.idea-lead{max-width:34ch}
+.idea-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:clamp(28px,4vw,64px); align-items:start}
+@media (max-width:900px){ .idea-grid{grid-template-columns:1fr} }
+.idea-body p{font-size:17px; color:var(--mono); max-width:56ch; margin:0}
+.idea-body p + p{margin-top:16px}
+.idea-body b{color:var(--ink); font-weight:600}
+.idea-body .volt{color:var(--volt); font-weight:600}
+
+/* ---------- 3. PALETTE ---------- */
+.swatch-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+@media (max-width:900px){ .swatch-grid{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:560px){ .swatch-grid{grid-template-columns:1fr} }
+.swatch{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--panel)}
+.swatch-chip{height:104px; position:relative}
+.swatch-chip.bordered{box-shadow:inset 0 0 0 1px var(--line)}
+.swatch-chip .glo{position:absolute; inset:0}
+.swatch-meta{padding:15px 18px 18px}
+.swatch-name{font-family:var(--font-cond); font-weight:700; font-size:21px; letter-spacing:.02em; text-transform:uppercase; margin:0; color:var(--ink)}
+.swatch-hex{font-family:var(--font-mono); font-size:12px; color:var(--mono); letter-spacing:.06em; margin:3px 0 9px}
+.swatch-use{font-size:14px; color:var(--mono); margin:0; line-height:1.5}
+
+/* ---------- 4. TYPOGRAPHY ---------- */
+.type-board{border:1px solid var(--line); border-radius:14px; background:var(--panel); padding:44px 44px 20px}
+@media (max-width:640px){ .type-board{padding:26px 20px 8px} }
+.type-label{
+  font-family:var(--font-mono); font-weight:500; font-size:12px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--mono); margin:0 0 14px;
+}
+.type-num{
+  font-family:var(--font-cond); font-weight:800; text-transform:uppercase; color:var(--ink);
+  font-size:clamp(76px,14vw,168px); line-height:.82; letter-spacing:.005em; margin:0;
+  font-variant-numeric:tabular-nums; text-shadow:0 0 34px rgba(22,255,155,.16);
+}
+.type-num .u{color:var(--volt)}
+.type-num-sub{
+  font-family:var(--font-cond); font-weight:700; font-size:clamp(20px,2.2vw,27px);
+  text-transform:uppercase; letter-spacing:.05em; color:var(--mono); margin:12px 0 0;
+}
+.type-mono-demo{
+  font-family:var(--font-mono); font-weight:500; font-size:clamp(15px,1.8vw,19px); color:var(--volt);
+  letter-spacing:.02em; margin:0; line-height:1.9;
+}
+.type-mono-demo .k{color:var(--mono)}
+.type-body-sample{max-width:60ch; color:var(--mono); margin:0; font-size:17px}
+.type-divider{border:0; border-top:1px solid var(--line-soft); margin:38px 0}
+.type-scale{width:100%; border-collapse:collapse; margin-bottom:8px}
+.type-scale th{
+  text-align:left; font-family:var(--font-mono); font-weight:500; font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--mono); padding:0 16px 12px 0; border-bottom:1px solid var(--line-soft);
+}
+.type-scale td{padding:15px 16px 15px 0; border-bottom:1px solid var(--line-soft); vertical-align:baseline}
+.type-scale td.spec{color:var(--mono); font-family:var(--font-mono); font-size:12px; white-space:nowrap}
+.ts-d{font-family:var(--font-cond); font-weight:800; font-size:46px; text-transform:uppercase; line-height:1; color:var(--ink)}
+.ts-h2{font-family:var(--font-cond); font-weight:700; font-size:32px; text-transform:uppercase; line-height:1; color:var(--ink)}
+.ts-h3{font-family:var(--font-disp); font-weight:700; font-size:21px; line-height:1.1; color:var(--ink)}
+.ts-body{font-size:17px; color:var(--mono)}
+.ts-cap{font-family:var(--font-mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--mono)}
+@media (max-width:640px){
+  .type-scale td.spec{white-space:normal}
+  .ts-d{font-size:32px} .ts-h2{font-size:25px} .ts-h3{font-size:19px}
+  .type-scale th:nth-child(3), .type-scale td:nth-child(3){display:none}
+}
+.statline{display:flex; flex-wrap:wrap; gap:10px 40px; margin:0; padding:22px 0 30px}
+.statline dt{font-family:var(--font-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--mono)}
+.statline dd{margin:2px 0 0; font-family:var(--font-cond); font-weight:700; font-size:30px; line-height:1.05; color:var(--ink)}
+.statline .unit{color:var(--volt); font-size:17px; font-weight:700}
+
+/* ---------- BUTTONS ---------- */
+.btn{
+  display:inline-flex; align-items:center; gap:9px; font-family:var(--font-cond); font-weight:700;
+  letter-spacing:.06em; text-transform:uppercase; font-size:17px; text-decoration:none;
+  border-radius:8px; padding:14px 26px 12px; line-height:1; border:2px solid transparent; cursor:pointer;
+  transition:background .3s var(--ease-snap), color .3s var(--ease-snap), border-color .3s var(--ease-snap), box-shadow .3s var(--ease-snap);
+}
+@media (prefers-reduced-motion:reduce){ .btn{transition:none} }
+.btn-volt{background:var(--volt); color:var(--void); box-shadow:0 0 0 rgba(22,255,155,0)}
+.btn-volt:hover,.btn-volt.is-hover{background:var(--volt-deep); box-shadow:0 8px 30px -8px rgba(22,255,155,.6)}
+.btn-line{background:transparent; color:var(--ink); border-color:rgba(150,166,186,.45)}
+.btn-line:hover,.btn-line.is-hover{border-color:var(--volt); color:var(--volt)}
+.btn-ghost{
+  background:none; border:0; border-radius:3px; padding:6px 2px; color:var(--ink);
+  font-family:var(--font-mono); font-weight:500; font-size:14px; letter-spacing:.06em; text-transform:uppercase;
+  text-decoration:underline; text-underline-offset:5px; text-decoration-color:var(--line); cursor:pointer;
+  transition:color .3s var(--ease-snap), text-decoration-color .3s var(--ease-snap);
+}
+.btn-ghost:hover,.btn-ghost.is-hover{color:var(--volt); text-decoration-color:var(--volt)}
+.btn-sm{font-size:15px; padding:11px 18px 9px}
+
+/* ---------- LIVE BUG (pulsing) ---------- */
+.live-bug{
+  display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-weight:700;
+  font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--red);
+}
+.live-bug .dot{width:9px; height:9px; border-radius:50%; background:var(--red); flex:0 0 auto}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .live-bug .dot{animation:bug-pulse 1.5s var(--ease-snap) infinite}
+}
+@keyframes bug-pulse{
+  0%{box-shadow:0 0 0 0 rgba(255,59,107,.55)}
+  70%{box-shadow:0 0 0 10px rgba(255,59,107,0)}
+  100%{box-shadow:0 0 0 0 rgba(255,59,107,0)}
+}
+.live-bug.volt{color:var(--volt)} .live-bug.volt .dot{background:var(--volt)}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .live-bug.volt .dot{animation-name:bug-pulse-v}
+}
+@keyframes bug-pulse-v{
+  0%{box-shadow:0 0 0 0 rgba(22,255,155,.5)}
+  70%{box-shadow:0 0 0 10px rgba(22,255,155,0)}
+  100%{box-shadow:0 0 0 0 rgba(22,255,155,0)}
+}
+
+/* ---------- 5. SIGNATURE — THE TELEMETRY HUD ---------- */
+.hud{border:1px solid var(--line); border-radius:16px; background:var(--panel); overflow:hidden}
+.hud-bar{
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  padding:14px 18px; background:var(--carbon); border-bottom:1px solid var(--line);
+}
+/* DEEP BRAND MOMENT: the white formline mark as the HUD "system" badge —
+   clearspace on a controlled solid tile, never over churning motion. */
+.hud-badge{
+  display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+  width:52px; height:52px; padding:12px; border-radius:10px;
+  background:var(--panel-2); border:1px solid var(--line);
+}
+.hud-badge img{width:100%; height:auto}
+.hud-sys{font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; color:var(--mono); line-height:1.5}
+.hud-sys b{display:block; color:var(--ink); font-weight:700; letter-spacing:.14em; text-transform:uppercase}
+.hud-clock{margin-left:auto; font-family:var(--font-mono); font-size:12.5px; letter-spacing:.08em; color:var(--volt)}
+.hud-clock .k{color:var(--mono)}
+.radar{
+  position:relative; width:26px; height:26px; border-radius:50%; flex:0 0 auto;
+  border:1px solid var(--line); overflow:hidden;
+  background:conic-gradient(from 0deg, transparent 0 300deg, rgba(22,255,155,.55) 360deg);
+}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .radar{animation:radar-spin 2.6s linear infinite}
+}
+@keyframes radar-spin{ to{ transform:rotate(360deg) } }
+.hud-body{padding:30px 30px 34px}
+@media (max-width:640px){ .hud-body{padding:22px 16px 26px} }
+
+/* countdown strip */
+.countdown{
+  display:flex; align-items:center; gap:14px 26px; flex-wrap:wrap;
+  padding:16px 20px; margin-bottom:26px; border:1px solid var(--line); border-radius:12px;
+  background:linear-gradient(180deg, rgba(22,255,155,.05), transparent);
+}
+.cd-label{font-family:var(--font-mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--mono)}
+.cd-label b{color:var(--volt); font-weight:700}
+.cd-date{font-family:var(--font-cond); font-weight:700; font-size:22px; text-transform:uppercase; color:var(--ink); letter-spacing:.02em}
+.cd-grid{display:none; margin-left:auto; gap:10px}
+.cd-grid[data-live] .cd-unit:last-child .cd-num{color:var(--volt)}
+.cd-unit{text-align:center; min-width:56px}
+.cd-num{font-family:var(--font-cond); font-weight:800; font-size:clamp(30px,5vw,46px); line-height:1; color:var(--ink); font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1}
+.cd-cap{display:block; font-family:var(--font-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--mono); margin-top:5px}
+.cd-colon{font-family:var(--font-cond); font-weight:800; font-size:clamp(26px,4vw,40px); color:var(--mono); align-self:flex-start; padding-top:2px}
+.cd-live-badge{margin-left:auto; display:none}
+
+/* the STAT SLAM grid */
+.slam-grid{display:grid; grid-template-columns:2fr 1fr 1fr; grid-template-rows:auto auto; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden}
+.slam-grid > .slam:nth-child(1){grid-row:1 / span 2}
+@media (max-width:820px){
+  .slam-grid{grid-template-columns:1fr 1fr}
+  .slam-grid > .slam:nth-child(1){grid-row:auto; grid-column:1 / -1}
+}
+@media (max-width:460px){ .slam-grid{grid-template-columns:1fr} .slam-grid > .slam:nth-child(1){grid-column:auto} }
+.slam{background:var(--panel); padding:24px 24px 22px; display:flex; flex-direction:column; justify-content:center}
+.slam.hero-slam{padding:30px 28px 28px; background:linear-gradient(150deg, rgba(22,255,155,.07), var(--panel) 60%)}
+.slam-num{
+  font-family:var(--font-cond); font-weight:800; text-transform:uppercase; color:var(--ink);
+  font-size:clamp(52px,7vw,96px); line-height:.86; letter-spacing:.004em; margin:0;
+  font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1;
+  text-shadow:0 0 26px rgba(22,255,155,.16);
+}
+.slam.hero-slam .slam-num{font-size:clamp(72px,11vw,148px)}
+.slam-num .suf{color:var(--volt)}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .slam-num.slammed{animation:slam-pop .5s var(--ease-pop)}
+}
+@keyframes slam-pop{
+  0%{transform:scale(1.1); text-shadow:0 0 40px rgba(22,255,155,.55)}
+  100%{transform:scale(1); text-shadow:0 0 26px rgba(22,255,155,.16)}
+}
+.slam-label{font-family:var(--font-mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--volt); margin:14px 0 4px}
+.slam-sub{font-size:14px; color:var(--mono); margin:0; line-height:1.45}
+
+/* telemetry: gauges + bars */
+.tele-grid{display:grid; grid-template-columns:1.1fr 1fr; gap:20px; margin-top:20px}
+@media (max-width:820px){ .tele-grid{grid-template-columns:1fr} }
+.tele-panel{border:1px solid var(--line); border-radius:12px; background:var(--panel); padding:24px 26px 26px}
+.tele-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:22px}
+.tele-head h3{font-family:var(--font-mono); font-weight:700; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink); margin:0}
+.tele-head span{font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--mono)}
+.gauges{display:flex; gap:14px; justify-content:space-between; flex-wrap:wrap}
+.gauge{position:relative; width:118px; height:118px; flex:1 1 100px; max-width:130px}
+.gauge-svg{width:100%; height:100%; transform:rotate(-90deg)}
+.ring-track{fill:none; stroke:var(--panel-2); stroke-width:11}
+.ring-val{fill:none; stroke-width:11; stroke-linecap:round; stroke-dasharray:100; stroke-dashoffset:calc(100 - var(--val)); transform-box:fill-box}
+.gauge.volt .ring-val{stroke:var(--volt); filter:drop-shadow(0 0 6px rgba(22,255,155,.45))}
+.gauge.amber .ring-val{stroke:var(--amber); filter:drop-shadow(0 0 6px rgba(255,201,63,.4))}
+.gauge.cyan .ring-val{stroke:var(--cyan); filter:drop-shadow(0 0 6px rgba(72,214,255,.4))}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .gauge .ring-val{stroke-dashoffset:100; transition:stroke-dashoffset 1.1s var(--ease-lux) .1s}
+  html.anim .gauge.in .ring-val{stroke-dashoffset:calc(100 - var(--val))}
+}
+html.settled .gauge .ring-val{stroke-dashoffset:calc(100 - var(--val)) !important; transition:none !important}
+.gauge-center{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center}
+.gauge-num{font-family:var(--font-cond); font-weight:800; font-size:27px; line-height:1; color:var(--ink); font-variant-numeric:tabular-nums}
+.gauge-num .suf{font-size:15px; color:var(--mono)}
+.gauge-cap{font-family:var(--font-mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--mono); margin-top:4px; max-width:88px}
+.bars{display:flex; flex-direction:column; gap:20px}
+.bar-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:8px}
+.bar-k{font-family:var(--font-mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--mono)}
+.bar-v{font-family:var(--font-cond); font-weight:700; font-size:19px; color:var(--ink); font-variant-numeric:tabular-nums}
+.bar-track{height:12px; border-radius:999px; background:var(--panel-2); overflow:hidden; border:1px solid var(--line-soft)}
+.bar-fill{height:100%; border-radius:999px; width:calc(var(--pct)*1%); transform-origin:left center;
+  background:linear-gradient(90deg, var(--volt-deep), var(--volt)); box-shadow:0 0 12px rgba(22,255,155,.4)}
+.bar-fill.cyan{background:linear-gradient(90deg,#2aa8d8,var(--cyan)); box-shadow:0 0 12px rgba(72,214,255,.4)}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .bar .bar-fill{transform:scaleX(0); transition:transform .9s var(--ease-lux); transition-delay:calc(var(--i,0)*90ms); will-change:transform}
+  html.anim .bar.in .bar-fill{transform:scaleX(1)}
+}
+html.settled .bar .bar-fill{transform:none !important}
+.tele-note{font-family:var(--font-mono); font-size:11px; letter-spacing:.06em; color:var(--mono-dim); margin:18px 0 0}
+
+/* records leaderboard */
+.board{border:1px solid var(--line); border-radius:12px; background:var(--panel); margin-top:20px; overflow:hidden}
+.board-head{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 22px; border-bottom:1px solid var(--line); background:var(--carbon)}
+.board-head h3{font-family:var(--font-mono); font-weight:700; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink); margin:0}
+.board-row{
+  display:grid; grid-template-columns:44px minmax(0,1.5fr) minmax(0,1.4fr) auto; align-items:center; gap:16px;
+  padding:15px 22px; border-bottom:1px solid var(--line-soft);
+}
+.board-row:last-child{border-bottom:0}
+.board-row.lead{background:linear-gradient(90deg, rgba(22,255,155,.06), transparent 70%)}
+.rank{font-family:var(--font-cond); font-weight:800; font-size:22px; color:var(--mono); font-variant-numeric:tabular-nums}
+.board-row.lead .rank{color:var(--volt)}
+.board-name{min-width:0}
+.board-name b{display:block; font-family:var(--font-disp); font-weight:700; font-size:16px; color:var(--ink); line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.board-name span{font-family:var(--font-mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--mono)}
+.board-bar{height:9px; border-radius:999px; background:var(--panel-2); overflow:hidden}
+.board-fill{height:100%; border-radius:999px; width:calc(var(--pct)*1%); transform-origin:left center; background:linear-gradient(90deg,var(--volt-deep),var(--volt))}
+.board-row:not(.lead) .board-fill{background:linear-gradient(90deg,#3a5568,#6f8aa0)}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .board-row .board-fill{transform:scaleX(0); transition:transform .8s var(--ease-lux)}
+  html.anim .board-row.in .board-fill{transform:scaleX(1)}
+}
+html.settled .board-row .board-fill{transform:none !important}
+.board-val{font-family:var(--font-cond); font-weight:800; font-size:22px; color:var(--ink); font-variant-numeric:tabular-nums; text-align:right}
+.board-note{font-family:var(--font-mono); font-size:11px; color:var(--mono-dim); padding:12px 22px; border-top:1px solid var(--line-soft)}
+@media (max-width:640px){
+  .board-row{grid-template-columns:34px 1fr auto; gap:10px 12px}
+  .board-bar{grid-column:2 / -1; order:3}
+  .board-val{order:2}
+}
+
+/* ---------- 6. HOMEPAGE MOCK (telemetry hero) ---------- */
+.mock{border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.browser-bar{display:flex; align-items:center; gap:14px; background:#05070a; padding:11px 16px; border-bottom:1px solid var(--line-soft)}
+.browser-dots{display:flex; gap:6px}
+.browser-dots span{width:10px; height:10px; border-radius:50%; background:rgba(150,166,186,.2)}
+.browser-url{flex:1; max-width:300px; margin:0 auto; text-align:center; font-family:var(--font-mono); font-size:12px; color:var(--mono); background:rgba(150,166,186,.06); border-radius:6px; padding:4px 14px; letter-spacing:.03em}
+.site{background:var(--void)}
+.site-status{display:flex; align-items:center; gap:8px 20px; flex-wrap:wrap; padding:9px 40px; background:var(--carbon); border-bottom:1px solid var(--line-soft); font-family:var(--font-mono); font-size:12px; color:var(--mono)}
+.site-status b{color:var(--ink); font-weight:700}
+.site-status .sep{color:var(--line)}
+.site-status a{margin-left:auto; color:var(--volt); text-decoration:none; white-space:nowrap}
+@media (max-width:640px){ .site-status{padding:9px 20px} .site-status a{margin-left:0} }
+.site-nav{display:flex; align-items:center; gap:36px; padding:20px 40px; border-bottom:1px solid var(--line-soft)}
+@media (max-width:900px){ .site-nav{padding:16px 20px; gap:16px} }
+.site-logo{display:flex; align-items:center; text-decoration:none}
+.site-logo img{display:block; width:140px; height:auto}
+.site-links{display:flex; gap:26px; margin-left:auto; align-items:center}
+.site-links a:not(.btn){
+  font-family:var(--font-cond); font-weight:700; font-size:16px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--ink); text-decoration:none; padding:4px 1px 5px; border-bottom:2px solid transparent;
+  transition:color .3s var(--ease-snap), border-color .3s var(--ease-snap);
+}
+.site-links a:not(.btn):hover{color:var(--volt); border-bottom-color:var(--volt)}
+@media (max-width:900px){ .site-links a:not(.btn){display:none} }
+.m-hero{display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr); gap:36px 44px; align-items:center; padding:52px 40px 30px; background:var(--void)}
+@media (max-width:940px){ .m-hero{grid-template-columns:1fr; padding:40px 20px 26px} }
+.m-hero-l{min-width:0}
+.m-kicker{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:0 0 18px}
+.m-head{
+  font-family:var(--font-cond); font-weight:800; text-transform:uppercase; color:var(--ink);
+  font-size:clamp(46px,7vw,92px); line-height:.9; letter-spacing:.004em; margin:0 0 18px; text-wrap:balance;
+  text-shadow:0 0 40px rgba(22,255,155,.12);
+}
+.m-head .volt{color:var(--volt)}
+.m-sub{color:var(--mono); font-size:17px; max-width:44ch; margin:0 0 26px}
+.m-ctas{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-bottom:30px}
+.m-slam{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden}
+.m-slam .slam{padding:18px 18px 16px; background:var(--panel)}
+.m-slam .slam-num{font-size:clamp(34px,5vw,52px)}
+.m-slam .slam-label{margin-top:8px; font-size:11px}
+@media (max-width:460px){ .m-slam{grid-template-columns:1fr} }
+.m-media{position:relative; min-width:0}
+.vid-frame{position:relative; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#000; aspect-ratio:16/9}
+.vid-frame video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:contrast(1.03) saturate(1.04)}
+.vid-toggle{
+  position:absolute; right:12px; top:12px; z-index:3; display:none;
+  align-items:center; justify-content:center; width:34px; height:34px; border-radius:7px;
+  background:rgba(5,7,10,.82); border:1px solid var(--line); color:var(--ink); cursor:pointer; padding:0;
+}
+html.js .vid-toggle{display:inline-flex}
+.vid-toggle:hover{color:var(--volt); border-color:var(--volt)}
+.vid-toggle .i-pause{display:none}
+.media-live.playing .i-pause{display:block}
+.media-live.playing .i-play{display:none}
+/* lower-third broadcast caption — solid card (never a tint over the photo) */
+.lower3{position:absolute; left:0; bottom:16px; z-index:2; display:flex; align-items:stretch; max-width:94%}
+.l3-bar{width:6px; background:var(--volt); flex:0 0 auto; box-shadow:0 0 12px rgba(22,255,155,.5)}
+.l3-panel{background:#0a0d12; border:1px solid var(--line); border-left:0; padding:8px 16px 7px; transform:skewX(-8deg)}
+.l3-panel > *{transform:skewX(8deg); margin:0}
+.l3-k{font-family:var(--font-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--volt)}
+.l3-t{font-family:var(--font-cond); font-weight:700; font-size:16px; text-transform:uppercase; color:var(--ink); letter-spacing:.02em; line-height:1.1}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .media-live .lower3{transform:translateX(-114%); transition:transform .7s var(--ease-snap) .25s}
+  html.anim .media-live.in .lower3{transform:none}
+}
+html.settled .media-live .lower3{transform:none !important}
+/* BottomLine-style status ticker */
+.ticker{overflow-x:auto; scrollbar-width:none; background:var(--carbon); border-block:1px solid var(--line-soft)}
+.ticker::-webkit-scrollbar{display:none}
+.ticker-track{display:flex; align-items:center; width:max-content}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .ticker-track{animation:mq-slide 34s linear infinite}
+  html.anim .ticker:hover .ticker-track{animation-play-state:paused}
+}
+.tk-cell{display:flex; align-items:center; gap:9px; padding:11px 22px; border-right:1px solid var(--line-soft); font-family:var(--font-mono); font-size:12.5px; white-space:nowrap; color:var(--mono)}
+.tk-cell b{color:var(--ink); font-weight:700; letter-spacing:.04em}
+.tk-cell .tk-dot{width:7px; height:7px; border-radius:50%; background:var(--volt); flex:0 0 auto; box-shadow:0 0 8px var(--volt)}
+.tk-cell .tk-val{color:var(--volt); font-weight:700}
+.season-band{padding:40px 40px 46px; background:var(--carbon)}
+@media (max-width:640px){ .season-band{padding:30px 20px 34px} }
+.season-head{display:flex; align-items:baseline; gap:14px; margin-bottom:22px; flex-wrap:wrap}
+.season-head h3{font-family:var(--font-cond); font-weight:800; font-size:clamp(24px,3vw,34px); text-transform:uppercase; color:var(--ink); margin:0; letter-spacing:.01em}
+.season-head span{font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--mono)}
+.prog-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+@media (max-width:820px){ .prog-grid{grid-template-columns:1fr} }
+.prog-card{border:1px solid var(--line); border-radius:12px; background:var(--panel); padding:22px 24px 24px; display:flex; flex-direction:column}
+.prog-tag{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px}
+.prog-tag .t{font-family:var(--font-mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--mono)}
+.chip-open{font-family:var(--font-mono); font-weight:700; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--volt); border:1px solid rgba(22,255,155,.4); border-radius:999px; padding:3px 9px}
+.prog-card h4{font-family:var(--font-cond); font-weight:700; font-size:24px; text-transform:uppercase; color:var(--ink); margin:0 0 4px; letter-spacing:.01em; line-height:1}
+.prog-meta{font-size:13.5px; color:var(--mono); margin:0 0 18px; flex:1}
+.prog-cap{margin-top:auto}
+.m-foot{background:var(--carbon); text-align:center; padding:56px 40px 48px; border-top:1px solid var(--line-soft)}
+.m-foot-mark{width:150px; height:auto; margin:0 auto 22px}
+.m-foot-vision{font-family:var(--font-cond); font-weight:700; font-size:clamp(22px,3vw,30px); text-transform:uppercase; color:var(--ink); margin:0 0 12px; letter-spacing:.01em}
+.m-foot-meta{font-family:var(--font-mono); font-size:12.5px; color:var(--mono); margin:0}
+.m-foot-meta a{color:var(--volt); text-decoration:none}
+
+/* ---------- 7. FRONT DOORS ---------- */
+.door-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+@media (max-width:960px){ .door-grid{grid-template-columns:1fr} }
+.door{display:flex; flex-direction:column; border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--panel)}
+.door-media{position:relative; aspect-ratio:16/11; background:#000; overflow:hidden}
+.door-media img{width:100%; height:100%; object-fit:cover; filter:contrast(1.03) saturate(1.04)}
+.door-num{position:absolute; left:14px; top:12px; font-family:var(--font-mono); font-size:11px; letter-spacing:.12em; color:var(--volt); background:rgba(5,7,10,.8); border:1px solid var(--line); border-radius:5px; padding:3px 9px}
+.door-body{padding:24px 26px 26px; display:flex; flex-direction:column; flex:1}
+.door-tag{font-family:var(--font-mono); font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--mono); margin:0 0 12px}
+.door h3{font-family:var(--font-cond); font-weight:800; font-size:30px; line-height:.98; text-transform:uppercase; color:var(--ink); margin:0 0 12px; letter-spacing:.01em}
+.door-copy{margin:0 0 22px; font-size:15px; color:var(--mono); line-height:1.55; flex:1}
+.door-copy b{color:var(--ink); font-weight:600}
+.door .btn{align-self:flex-start}
+
+/* ---------- 8. STORYTELLING ---------- */
+.story{display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--panel)}
+@media (max-width:920px){ .story{grid-template-columns:1fr} }
+.story-media{position:relative; min-height:440px; background:#000}
+@media (max-width:920px){ .story-media{min-height:0; aspect-ratio:4/3} }
+.story-media video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:contrast(1.03) saturate(1.04)}
+.story-body{padding:40px 40px 38px; border-left:1px solid var(--line-soft); display:flex; flex-direction:column}
+@media (max-width:920px){ .story-body{border-left:0; border-top:1px solid var(--line-soft)} }
+@media (max-width:640px){ .story-body{padding:28px 20px} }
+.story-kick{font-family:var(--font-mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--volt); margin:0 0 18px}
+.story-quote{font-family:var(--font-cond); font-weight:700; font-size:clamp(24px,2.8vw,34px); line-height:1.12; text-transform:uppercase; color:var(--ink); margin:0 0 20px; letter-spacing:.005em}
+.story-by{font-size:14px; color:var(--mono); margin:0 0 26px}
+.story-by b{color:var(--ink); font-weight:600}
+.profile-stats{list-style:none; margin:0 0 26px; padding:16px 0 0; border-top:1px solid var(--line-soft); display:grid; grid-template-columns:1fr 1fr; gap:16px}
+.pf-k{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--mono); display:block}
+.pf-v{font-family:var(--font-cond); font-weight:800; font-size:26px; color:var(--ink); font-variant-numeric:tabular-nums; line-height:1.1}
+.pf-v .u{color:var(--volt); font-size:15px}
+.impact{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:52px}
+@media (max-width:820px){ .impact{grid-template-columns:1fr} }
+.impact-cell{border:1px solid var(--line); border-radius:12px; padding:26px 26px 24px; background:var(--panel)}
+.impact-cell b{display:block; font-family:var(--font-cond); font-weight:800; font-size:48px; line-height:1; color:var(--ink); font-variant-numeric:tabular-nums; margin-bottom:12px; text-shadow:0 0 24px rgba(22,255,155,.14)}
+.impact-cell b .suf{color:var(--volt); font-size:26px}
+.impact-cell p{margin:0; font-size:14.5px; color:var(--mono); line-height:1.55}
+
+/* ---------- 9. WORKING PARTS ---------- */
+.parts-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:18px}
+@media (max-width:920px){ .parts-grid{grid-template-columns:1fr} }
+.panel{border:1px solid var(--line); border-radius:14px; background:var(--panel); padding:30px 30px 28px}
+@media (max-width:640px){ .panel{padding:22px 18px} }
+.panel h3{font-family:var(--font-mono); font-weight:700; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--mono); margin:0 0 22px}
+.btn-rows{display:flex; flex-direction:column; gap:18px; margin-bottom:28px}
+.btn-row{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.btn-row .lab{flex:0 0 74px; font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--mono)}
+.field-form{border-top:1px solid var(--line-soft); padding-top:24px}
+.field-lab{display:block; font-family:var(--font-mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--mono); margin:0 0 10px}
+.seg{display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden; flex-wrap:wrap; margin:0 0 20px; padding:0}
+.seg label{position:relative; display:block}
+.seg input{position:absolute; opacity:0; inset:0}
+.seg span{display:block; font-family:var(--font-cond); font-weight:700; font-size:15px; letter-spacing:.06em; text-transform:uppercase; padding:9px 16px 8px; color:var(--mono); cursor:pointer; border-right:1px solid var(--line-soft)}
+.seg label:last-child span{border-right:0}
+.seg input:checked + span{background:var(--volt); color:var(--void)}
+.seg input:focus-visible + span{outline:2px solid var(--volt); outline-offset:-3px}
+.seg input:checked:focus-visible + span{outline-color:var(--void)}
+.seg span:hover{color:var(--ink)}
+.seg input:checked + span:hover{color:var(--void)}
+.field-row{display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap}
+.field{display:flex; flex-direction:column; gap:7px}
+.field select{
+  font-family:var(--font-disp); font-size:15px; color:var(--ink); background:var(--carbon);
+  border:1px solid var(--line); border-radius:8px; padding:11px 36px 11px 13px; appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2316ff9b' stroke-width='1.6'/%3E%3C/svg%3E");
+  background-position:right 13px center; background-repeat:no-repeat;
+}
+.event-card{border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--panel-2)}
+.event-top{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:18px 22px 0}
+.chip-div{font-family:var(--font-mono); font-weight:500; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--mono); border:1px solid var(--line); border-radius:5px; padding:4px 9px 3px}
+.event-card h4{font-family:var(--font-cond); font-weight:800; font-size:30px; text-transform:uppercase; color:var(--ink); margin:16px 22px 4px; letter-spacing:.01em; line-height:1}
+.event-world{font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--volt); margin:0 22px 6px}
+.event-stats{list-style:none; margin:12px 22px 18px; padding:0; border-top:1px solid var(--line-soft)}
+.event-stats li{display:flex; justify-content:space-between; gap:16px; padding:10px 0; border-bottom:1px solid var(--line-soft); font-size:14px; color:var(--mono)}
+.event-stats li span:last-child{color:var(--ink); font-weight:600; text-align:right; font-family:var(--font-mono); font-size:13px}
+.event-cap{padding:0 22px 8px}
+.cap-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:9px}
+.cap-head b{font-family:var(--font-cond); font-weight:700; font-size:16px; color:var(--ink); font-variant-numeric:tabular-nums}
+.cap-head span{font-family:var(--font-mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--mono)}
+.cap-bar{height:10px; border-radius:999px; background:var(--carbon); overflow:hidden; border:1px solid var(--line-soft)}
+.cap-fill{height:100%; border-radius:999px; width:calc(var(--pct)*1%); transform-origin:left center; background:linear-gradient(90deg,var(--volt-deep),var(--volt)); box-shadow:0 0 10px rgba(22,255,155,.4)}
+@media (prefers-reduced-motion:no-preference){
+  html.anim .bar.cap-w .cap-fill{transform:scaleX(0); transition:transform .9s var(--ease-lux)}
+  html.anim .bar.cap-w.in .cap-fill{transform:scaleX(1)}
+}
+html.settled .bar.cap-w .cap-fill{transform:none !important}
+.event-actions{display:flex; align-items:center; gap:16px; padding:8px 22px 24px}
+
+/* ---------- 10. VOICE & TONE ---------- */
+.voice-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+@media (max-width:920px){ .voice-grid{grid-template-columns:1fr} }
+.voice-card{border:1px solid var(--line); border-radius:14px; background:var(--panel); padding:26px 26px 24px; display:flex; flex-direction:column}
+.vc-label{font-family:var(--font-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--mono); margin:0 0 16px}
+.vc-disp{font-family:var(--font-cond); font-weight:800; font-size:31px; line-height:.98; text-transform:uppercase; color:var(--ink); margin:0; letter-spacing:.01em}
+.vc-body{margin:0; font-size:16px; color:var(--mono); line-height:1.6}
+.vc-body b{color:var(--ink); font-weight:600}
+.vc-note{margin:16px 0 0; padding-top:14px; border-top:1px solid var(--line-soft); font-family:var(--font-mono); font-size:12px; color:var(--mono-dim); line-height:1.5}
+
+/* ---------- 11. VERDICT + FOOTER ---------- */
+.verdict{padding-top:118px}
+@media (max-width:720px){ .verdict{padding-top:78px} }
+.verdict-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+@media (max-width:820px){ .verdict-grid{grid-template-columns:1fr} }
+.verdict-card{border:1px solid var(--line); border-radius:14px; padding:28px 30px 26px; background:var(--panel)}
+.verdict-card h3{font-family:var(--font-cond); font-weight:800; font-size:22px; letter-spacing:.03em; text-transform:uppercase; margin:0 0 10px}
+.verdict-card.go h3{color:var(--volt)}
+.verdict-card.warn h3{color:var(--amber)}
+.verdict-card p{margin:0; color:var(--mono); font-size:15.5px; line-height:1.6}
+.verdict-card b{color:var(--ink); font-weight:600}
+.foot-nav{display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap; margin-top:70px; padding:26px 0 60px; border-top:1px solid var(--line)}
+.foot-nav a{font-family:var(--font-cond); font-weight:700; font-size:17px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink); text-decoration:none; border-bottom:2px solid transparent; padding-bottom:2px; transition:color .3s var(--ease-snap), border-color .3s var(--ease-snap)}
+.foot-nav a:hover{color:var(--volt); border-bottom-color:var(--volt)}
+.foot-print{font-family:var(--font-mono); font-size:12px; color:var(--mono); letter-spacing:.06em}
+</style>
+<script>
+/* Arm kinetics ONLY when JS runs, motion is allowed, and IntersectionObserver exists.
+   Runs in <head> so reveal-hidden states apply before first paint (no FOUC).
+   Carries its own failsafe: html.settled is stamped at 2.4s no matter what the
+   body script does, guaranteeing an unconditional settle inside 2.5s. */
+(function(){try{
+  var d=document.documentElement;
+  d.classList.add('js');
+  var okMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+  if(okMotion && 'IntersectionObserver' in window){
+    d.classList.add('anim');
+    setTimeout(function(){ d.classList.add('settled'); }, 2400);
+  }
+}catch(e){}})();
+</script>
+</head>
+<body>
+<!-- ============ 1. DIRECTION HEADER ============ -->
+<header class="dir-head" id="dir-head">
+  <div class="wrap">
+    <p class="dir-eyebrow rv" style="--i:0">DiscNW redesign · <b>Design direction 18</b> · Gameday / hype tier</p>
+    <h1 class="dir-name"><span class="tl"><span class="tli">Combine<span class="dot">.</span></span></span></h1>
+    <p class="dir-thesis rv" style="--i:2">DiscNW's scale is a flex. <b>10,000+ players. 30 years. The world's largest mixed youth tournament.</b> So render the numbers like a combine readout — a telemetry HUD where every total counts up and slams into place, gauges wind to their marks, and the data hits like adrenaline. The numbers are the hero.</p>
+    <nav class="dir-nav rv" style="--i:3" aria-label="Jump to section">
+      <a href="#idea">01 Idea</a>
+      <a href="#palette">02 Palette</a>
+      <a href="#type">03 Type</a>
+      <a href="#signature">04 Signature</a>
+      <a href="#homepage">05 Homepage</a>
+      <a href="#doors">06 Doors</a>
+      <a href="#stories">07 Stories</a>
+      <a href="#parts">08 Parts</a>
+      <a href="#voice">09 Voice</a>
+      <a href="#verdict">10 Verdict</a>
+    </nav>
+  </div>
+</header>
+
+<!-- KINETIC MARQUEE — two bands, opposite directions (pure CSS; static + legible with no JS) -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="mq-word">World's largest youth tournament</span><span class="mq-sep">◆</span><span class="mq-word">10,000+ players</span><span class="mq-sep">◆</span><span class="mq-word">Since 1995</span><span class="mq-sep">◆</span><span class="mq-word">Zero referees</span><span class="mq-sep">◆</span><span class="mq-word">One code</span><span class="mq-sep">◆</span>
+    <span class="mq-word">World's largest youth tournament</span><span class="mq-sep">◆</span><span class="mq-word">10,000+ players</span><span class="mq-sep">◆</span><span class="mq-word">Since 1995</span><span class="mq-sep">◆</span><span class="mq-word">Zero referees</span><span class="mq-sep">◆</span><span class="mq-word">One code</span><span class="mq-sep">◆</span>
+  </div>
+</div>
+<div class="marquee rev" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="mq-word">The layout</span><span class="mq-sep">▸</span><span class="mq-word">The huck</span><span class="mq-sep">▸</span><span class="mq-word">The sky</span><span class="mq-sep">▸</span><span class="mq-word">The callahan</span><span class="mq-sep">▸</span><span class="mq-word">Universe point</span><span class="mq-sep">▸</span>
+    <span class="mq-word">The layout</span><span class="mq-sep">▸</span><span class="mq-word">The huck</span><span class="mq-sep">▸</span><span class="mq-word">The sky</span><span class="mq-sep">▸</span><span class="mq-word">The callahan</span><span class="mq-sep">▸</span><span class="mq-word">Universe point</span><span class="mq-sep">▸</span>
+  </div>
+</div>
+
+<main>
+  <!-- ============ 2. THE IDEA ============ -->
+  <section class="sec wrap" id="idea" aria-labelledby="idea-t">
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">01</span>The idea</p>
+    <h2 class="sec-title" id="idea-t"><span class="tl"><span class="tli">Put the numbers on the jumbotron</span></span></h2>
+    <div class="idea-grid">
+      <p class="idea-copy idea-lead rv" style="--i:1">Most nonprofits bury their scale in a footer. This one earns a HUD.</p>
+      <div class="idea-body rv" style="--i:2">
+        <p>DiscNW isn't small. <b>Ten thousand-plus players a year.</b> Thirty years of leagues since the first Potlatch in 1995. And <b>Spring Reign</b> — the largest mixed youth ultimate tournament on the planet. Those facts are the story, so this direction refuses to whisper them.</p>
+        <p>Combine borrows the language people already read adrenaline in: <span class="volt">F1 telemetry</span>, the <span class="volt">NFL Combine</span> readout, a WHOOP dashboard, the ESPN stat bug. Numbers count up and slam. Gauges wind to their marks. A leaderboard reads like it just refreshed. You don't <i>tell</i> a parent this community is huge and serious — you let the data hit them.</p>
+        <p>It stays lawful the whole way: photos and film run clean on solid mats, the crest keeps its clearspace, and with no JavaScript every total already shows its final figure. The hype is real, not fragile.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. PALETTE ============ -->
+  <section class="sec wrap" id="palette" aria-labelledby="color-t">
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">02</span>Palette</p>
+    <h2 class="sec-title" id="color-t"><span class="tl"><span class="tli">Dark telemetry, one volt signal</span></span></h2>
+    <p class="sec-note rv" style="--i:1">A near-black instrument panel, a stack of charcoals for depth, and <b>one electric data accent</b> — volt green — carrying every live value, gauge, and call to action. Cyan, amber, and redline appear only inside the gauges as a strict WHOOP-style status grammar. Photos bring all remaining color themselves, untouched.</p>
+    <div class="swatch-grid">
+      <div class="swatch rv" style="--i:0"><div class="swatch-chip" style="background:#07090c"></div><div class="swatch-meta"><h3 class="swatch-name">Void</h3><p class="swatch-hex">#07090C</p><p class="swatch-use">The ground. Page background, deep HUD wells. Always flat.</p></div></div>
+      <div class="swatch rv" style="--i:1"><div class="swatch-chip" style="background:#0b0e13"></div><div class="swatch-meta"><h3 class="swatch-name">Carbon</h3><p class="swatch-hex">#0B0E13</p><p class="swatch-use">Chrome bars, tickers, deep bands — one step up from the void.</p></div></div>
+      <div class="swatch rv" style="--i:2"><div class="swatch-chip" style="background:#12161e"></div><div class="swatch-meta"><h3 class="swatch-name">Panel</h3><p class="swatch-hex">#12161E</p><p class="swatch-use">Every card, gauge housing, and stat cell sits on this surface.</p></div></div>
+      <div class="swatch rv" style="--i:0"><div class="swatch-chip" style="background:#16ff9b"></div><div class="swatch-meta"><h3 class="swatch-name">Volt Green</h3><p class="swatch-hex">#16FF9B</p><p class="swatch-use">THE accent. Live values, filled gauges, the Register button, focus rings. Nothing decorative.</p></div></div>
+      <div class="swatch rv" style="--i:1"><div class="swatch-chip" style="background:#48d6ff"></div><div class="swatch-meta"><h3 class="swatch-name">Cyan</h3><p class="swatch-hex">#48D6FF</p><p class="swatch-use">Secondary telemetry — growth bars and one gauge. Never a CTA.</p></div></div>
+      <div class="swatch rv" style="--i:2"><div class="swatch-chip" style="background:#ffc93f"></div><div class="swatch-meta"><h3 class="swatch-name">Amber</h3><p class="swatch-hex">#FFC93F</p><p class="swatch-use">Mid-gauge / caution in the dial grammar. "Filling up."</p></div></div>
+      <div class="swatch rv" style="--i:0"><div class="swatch-chip" style="background:#ff3b6b"></div><div class="swatch-meta"><h3 class="swatch-name">Redline</h3><p class="swatch-hex">#FF3B6B</p><p class="swatch-use">The live bug and critical states only. Rare on purpose.</p></div></div>
+      <div class="swatch rv" style="--i:1"><div class="swatch-chip bordered" style="background:#f3f7fc"></div><div class="swatch-meta"><h3 class="swatch-name">Signal White</h3><p class="swatch-hex">#F3F7FC</p><p class="swatch-use">Headlines and the giant numbers — crisp at any scale.</p></div></div>
+      <div class="swatch rv" style="--i:2"><div class="swatch-chip" style="background:#9ba8ba"></div><div class="swatch-meta"><h3 class="swatch-name">Readout Grey</h3><p class="swatch-hex">#9BA8BA</p><p class="swatch-use">Body copy and every monospace label, timecode, and unit.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ============ 4. TYPOGRAPHY ============ -->
+  <section class="sec wrap" id="type" aria-labelledby="type-t">
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">03</span>Typography</p>
+    <h2 class="sec-title" id="type-t"><span class="tl"><span class="tli">Grotesk that slams, mono that reads</span></span></h2>
+    <p class="sec-note rv" style="--i:1">Saira Condensed is the scoreboard voice — squared, technical, and built to go enormous for the numbers. JetBrains Mono runs the telemetry: tabular by nature, so digits tick without ever jittering. Every stat is set in figures that hold their width.</p>
+    <div class="type-board rv" style="--i:2">
+      <p class="type-label">Display / numbers — Saira Condensed 800 · tabular figures</p>
+      <p class="type-num tnum">10,000<span class="u">+</span></p>
+      <p class="type-num-sub">Players on DiscNW fields every year</p>
+
+      <hr class="type-divider">
+
+      <p class="type-label">Telemetry — JetBrains Mono 500</p>
+      <p class="type-mono-demo"><span class="k">STATUS</span> ON &nbsp; <span class="k">CODE</span> SPIRIT_OF_THE_GAME &nbsp; <span class="k">REFS</span> 0 &nbsp; <span class="k">FLOOR</span> $33.00 &nbsp; <span class="k">HOTLINE</span> (206)&nbsp;781-5840</p>
+
+      <hr class="type-divider">
+
+      <p class="type-label">Body — Saira 500 · 17px / 1.6</p>
+      <p class="type-body-sample">A hat-league team meets twenty minutes before the first pull. By halftime somebody has named the zone, somebody has claimed the deep cut, and a stranger has laid out full-extension for your throw. That is the whole sport, compressed — strategy, trust, and a white disc against a grey Seattle sky.</p>
+
+      <hr class="type-divider">
+
+      <p class="type-label">Scale</p>
+      <table class="type-scale">
+        <thead><tr><th scope="col">Level</th><th scope="col">Specimen</th><th scope="col">Spec</th></tr></thead>
+        <tbody>
+          <tr><td class="spec">Display</td><td><span class="ts-d">Spring Reign</span></td><td class="spec">Saira Cond 800 · 76–168px</td></tr>
+          <tr><td class="spec">H2</td><td><span class="ts-h2">Summer Youth Camps</span></td><td class="spec">Saira Cond 800 · 38–60px</td></tr>
+          <tr><td class="spec">H3</td><td><span class="ts-h3">DiscNW Coaching Collective</span></td><td class="spec">Saira 700 · 21px</td></tr>
+          <tr><td class="spec">Body</td><td><span class="ts-body">Games run rain or shine — check the hotline before you drive.</span></td><td class="spec">Saira 500 · 17px</td></tr>
+          <tr><td class="spec">Readout</td><td><span class="ts-cap">Registration closes · waitlist after</span></td><td class="spec">JetBrains Mono · 12px</td></tr>
+        </tbody>
+      </table>
+
+      <p class="type-label" style="margin-top:30px">Tabular figures in the wild</p>
+      <dl class="statline tnum">
+        <div><dt>Fee floor</dt><dd>$33<span class="unit"> min</span></dd></div>
+        <div><dt>Referees</dt><dd>0</dd></div>
+        <div><dt>Hotline</dt><dd>(206) 781-5840</dd></div>
+        <div><dt>Founded</dt><dd>1995<span class="unit"> Potlatch</span></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ============ 5. SIGNATURE — THE TELEMETRY HUD ============ -->
+  <section class="sec wrap" id="signature" aria-labelledby="sig-t">
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">04</span>Signature element</p>
+    <h2 class="sec-title" id="sig-t"><span class="tl"><span class="tli">The stat slam &amp; telemetry HUD</span></span></h2>
+    <p class="sec-note rv" style="--i:1">One idea, demonstrated for real: the org's numbers rendered as a live readout. Giant totals count up and <b>slam</b> into place, dials wind to their marks, a countdown clocks the next Spring Reign, and a leaderboard reads like it just refreshed. Scroll it — then reload with JavaScript off and every figure is already correct.</p>
+
+    <div class="hud rv" style="--i:2">
+      <div class="hud-bar">
+        <!-- DEEP BRAND MOMENT: the white formline mark as the system badge, clearspace on a solid tile -->
+        <span class="hud-badge"><img src="assets/brand/logo-mark-white.png" alt="DiscNW formline mark" width="590" height="616"></span>
+        <span class="hud-sys"><b>DiscNW · Telemetry</b>system online · self-officiated</span>
+        <span class="radar" aria-hidden="true"></span>
+        <span class="hud-clock mono"><span class="k">SEASON</span> 2026 · <span class="k">REC</span> LIVE</span>
+      </div>
+      <div class="hud-body">
+
+        <!-- countdown to Spring Reign -->
+        <div class="countdown" data-countdown="2027-04-17T09:00:00-07:00">
+          <span class="cd-label"><b>T-minus</b> · Next Spring Reign — Burlington, WA</span>
+          <span class="cd-date"><time datetime="2027-04-17">Apr 17–18, 2027</time></span>
+          <div class="cd-grid" data-cd-grid>
+            <div class="cd-unit"><span class="cd-num tnum" data-cd="d">—</span><span class="cd-cap">Days</span></div>
+            <span class="cd-colon">:</span>
+            <div class="cd-unit"><span class="cd-num tnum" data-cd="h">—</span><span class="cd-cap">Hrs</span></div>
+            <span class="cd-colon">:</span>
+            <div class="cd-unit"><span class="cd-num tnum" data-cd="m">—</span><span class="cd-cap">Min</span></div>
+            <span class="cd-colon">:</span>
+            <div class="cd-unit"><span class="cd-num tnum" data-cd="s">—</span><span class="cd-cap">Sec</span></div>
+          </div>
+        </div>
+
+        <!-- the STAT SLAM -->
+        <div class="slam-grid">
+          <div class="slam hero-slam">
+            <p class="slam-num tnum"><span class="c" data-to="10000">10,000</span><span class="suf">+</span></p>
+            <p class="slam-label">Players / year</p>
+            <p class="slam-sub">Every one of them makes their own calls. No referees, ever.</p>
+          </div>
+          <div class="slam">
+            <p class="slam-num tnum"><span class="c" data-to="30">30</span><span class="suf">+</span></p>
+            <p class="slam-label">Years running</p>
+            <p class="slam-sub">Since the first Potlatch, 1995.</p>
+          </div>
+          <div class="slam">
+            <p class="slam-num tnum"><span class="c" data-to="1">1</span></p>
+            <p class="slam-label">Code</p>
+            <p class="slam-sub">Spirit of the Game — the whole rulebook of honor.</p>
+          </div>
+          <div class="slam">
+            <p class="slam-num tnum"><span class="c" data-to="33" data-pre="$">$33</span></p>
+            <p class="slam-label">Fee floor</p>
+            <p class="slam-sub">Sliding scale, no questions asked.</p>
+          </div>
+          <div class="slam">
+            <p class="slam-num tnum"><span class="c" data-to="5">5</span></p>
+            <p class="slam-label">Regions</p>
+            <p class="slam-sub">Across Puget Sound, rec to competitive.</p>
+          </div>
+        </div>
+
+        <!-- gauges + bars -->
+        <div class="tele-grid">
+          <div class="tele-panel">
+            <div class="tele-head"><h3>Season telemetry</h3><span>illustrative</span></div>
+            <div class="gauges">
+              <div class="gauge volt" style="--val:100" role="img" aria-label="Games self-officiated: 100 percent">
+                <svg class="gauge-svg" viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-track" cx="60" cy="60" r="52" pathLength="100"/><circle class="ring-val" cx="60" cy="60" r="52" pathLength="100"/></svg>
+                <span class="gauge-center"><span class="gauge-num"><span class="c" data-to="100">100</span><span class="suf">%</span></span><span class="gauge-cap">Self-officiated</span></span>
+              </div>
+              <div class="gauge amber" style="--val:78" role="img" aria-label="Summer season filled: 78 percent">
+                <svg class="gauge-svg" viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-track" cx="60" cy="60" r="52" pathLength="100"/><circle class="ring-val" cx="60" cy="60" r="52" pathLength="100"/></svg>
+                <span class="gauge-center"><span class="gauge-num"><span class="c" data-to="78">78</span><span class="suf">%</span></span><span class="gauge-cap">Summer filled</span></span>
+              </div>
+              <div class="gauge cyan" style="--val:61" role="img" aria-label="Youth and teen share: 61 percent">
+                <svg class="gauge-svg" viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-track" cx="60" cy="60" r="52" pathLength="100"/><circle class="ring-val" cx="60" cy="60" r="52" pathLength="100"/></svg>
+                <span class="gauge-center"><span class="gauge-num"><span class="c" data-to="61">61</span><span class="suf">%</span></span><span class="gauge-cap">Youth &amp; teen</span></span>
+              </div>
+            </div>
+          </div>
+          <div class="tele-panel">
+            <div class="tele-head"><h3>Participation · growth</h3><span>illustrative</span></div>
+            <div class="bars">
+              <div class="bar" style="--i:0">
+                <div class="bar-head"><span class="bar-k">Season capacity</span><span class="bar-v tnum">9,400 / 10k</span></div>
+                <div class="bar-track"><div class="bar-fill" style="--pct:94"></div></div>
+              </div>
+              <div class="bar" style="--i:1">
+                <div class="bar-head"><span class="bar-k">Growth vs 2021</span><span class="bar-v tnum">+38%</span></div>
+                <div class="bar-track"><div class="bar-fill cyan" style="--pct:62"></div></div>
+              </div>
+            </div>
+            <p class="tele-note">Gauges + bars are illustrative telemetry for layout.</p>
+          </div>
+        </div>
+
+        <!-- records leaderboard -->
+        <div class="board">
+          <div class="board-head"><h3>Season leaderboard</h3><span class="live-bug volt"><span class="dot"></span>Live · sample</span></div>
+          <div class="board-row lead"><span class="rank tnum">01</span><span class="board-name"><b>Summer Mixed Hat League</b><span>Adult · individual signup</span></span><span class="board-bar"><span class="board-fill" style="--pct:100"></span></span><span class="board-val tnum">1,840</span></div>
+          <div class="board-row"><span class="rank tnum">02</span><span class="board-name"><b>Spring Reign — Youth</b><span>World's largest · Burlington</span></span><span class="board-bar"><span class="board-fill" style="--pct:87"></span></span><span class="board-val tnum">1,600</span></div>
+          <div class="board-row"><span class="rank tnum">03</span><span class="board-name"><b>Summer Youth Camps</b><span>Ages 7–18</span></span><span class="board-bar"><span class="board-fill" style="--pct:66"></span></span><span class="board-val tnum">1,220</span></div>
+          <div class="board-row"><span class="rank tnum">04</span><span class="board-name"><b>Fall HS + MS Leagues</b><span>Middle &amp; high school</span></span><span class="board-bar"><span class="board-fill" style="--pct:53"></span></span><span class="board-val tnum">980</span></div>
+          <div class="board-row"><span class="rank tnum">05</span><span class="board-name"><b>Sea Plastic</b><span>Beach tournament</span></span><span class="board-bar"><span class="board-fill" style="--pct:25"></span></span><span class="board-val tnum">460</span></div>
+          <p class="board-note">Illustrative registrations from a sample season — one slice of 10,000+ players a year.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!-- ============ 6. HOMEPAGE MOCK ============ -->
+  <section class="sec wrap" id="homepage" aria-labelledby="home-t">
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">05</span>Homepage</p>
+    <h2 class="sec-title" id="home-t"><span class="tl"><span class="tli">discnw.org, shipped as a HUD</span></span></h2>
+    <p class="sec-note rv" style="--i:1">The top of the redesigned homepage: a live field-status strip, the real lockup in a scoreboard nav, a headline at jersey scale beside a stat slam, this week's film running clean, and a status ticker crawling programs underneath — like a broadcast that never sleeps. Below it, three programs read as capacity gauges.</p>
+
+    <div class="mock rv" style="--i:2">
+      <div class="browser-bar" aria-hidden="true">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">discnw.org</div>
+      </div>
+      <div class="site">
+        <p class="site-status"><span class="live-bug volt"><span class="dot"></span>Fields ON</span><span class="sep">·</span><b>Magnuson Park</b> — games on<span class="sep">·</span>Sat May 22<a href="tel:+12067815840">Weather hotline (206)&nbsp;781-5840</a></p>
+
+        <nav class="site-nav" aria-label="DiscNW mockup navigation">
+          <a class="site-logo" href="#homepage"><img src="assets/brand/logo-full-white.png" alt="DiscNW home — Coast Salish-style twin-bird formline mark and DiscNW wordmark, white" width="1446" height="616"></a>
+          <div class="site-links">
+            <a href="#homepage">Play</a>
+            <a href="#homepage">Youth</a>
+            <a href="#homepage">Leagues</a>
+            <a href="#homepage">Events</a>
+            <a href="#homepage">About</a>
+            <a class="btn btn-volt btn-sm" href="#homepage">Register</a>
+          </div>
+        </nav>
+
+        <div class="m-hero">
+          <div class="m-hero-l">
+            <p class="m-kicker"><span class="live-bug volt"><span class="dot"></span>Registering now</span><span class="mono" style="font-size:12px;color:var(--mono);letter-spacing:.1em">· Fall Middle &amp; High School Leagues</span></p>
+            <p class="m-head">More than a number.<br><span class="volt">10,000</span> of them.</p>
+            <p class="m-sub">DiscNW runs the leagues, camps, and tournaments where Puget Sound ultimate lives — self-officiated at every level, sliding-scale fees from $33, no questions asked.</p>
+            <div class="m-ctas">
+              <a class="btn btn-volt" href="#homepage">Register for a league</a>
+              <a class="btn btn-line" href="#homepage">See all programs</a>
+            </div>
+            <div class="m-slam">
+              <div class="slam"><p class="slam-num tnum"><span class="c" data-to="10000">10,000</span><span class="suf">+</span></p><p class="slam-label">Players / yr</p></div>
+              <div class="slam"><p class="slam-num tnum"><span class="c" data-to="30">30</span><span class="suf">+</span></p><p class="slam-label">Years</p></div>
+              <div class="slam"><p class="slam-num tnum"><span class="c" data-to="33" data-pre="$">$33</span></p><p class="slam-label">Fee floor</p></div>
+            </div>
+          </div>
+          <div class="m-media media-live">
+            <div class="vid-frame">
+              <video muted loop playsinline preload="metadata" poster="assets/video/poster-zLzKRCbhIAg.jpg" aria-label="Muted game-film loop: a player sprints deep, rises over two defenders for the catch, and vanishes into the celebration — Spring Reign 2026 high school final.">
+                <source src="assets/video/loop-hs-catch.mp4" type="video/mp4">
+              </video>
+              <button class="vid-toggle" type="button" aria-label="Play film loop">
+                <svg class="i-play" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5 L10.5 6 L2.5 10.5 Z" fill="currentColor"/></svg>
+                <svg class="i-pause" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5 h2.6 v9 h-2.6 z M6.9 1.5 h2.6 v9 h-2.6 z" fill="currentColor"/></svg>
+              </button>
+              <div class="lower3"><span class="l3-bar"></span><span class="l3-panel"><span class="l3-k">Spring Reign · HS final</span><span class="l3-t">The universe-point sky</span></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ticker" tabindex="0" role="group" aria-label="Program status ticker">
+          <div class="ticker-track">
+            <span class="tk-cell"><span class="tk-dot"></span>Summer Mixed Hat League <b>OPEN</b> <span class="tk-val">142/180</span></span>
+            <span class="tk-cell"><span class="tk-dot"></span>Summer Youth Camps <b>ROLLING</b> <span class="tk-val">7–18 yrs</span></span>
+            <span class="tk-cell"><span class="tk-dot"></span>Sea Plastic <b>WAITLIST</b> <span class="tk-val">beach</span></span>
+            <span class="tk-cell"><span class="tk-dot"></span>Fall HS + MS <b>OPENS SOON</b> <span class="tk-val">Sep</span></span>
+            <span class="tk-cell"><span class="tk-dot"></span>Spring Reign 2027 <b>COUNTDOWN</b> <span class="tk-val">Burlington</span></span>
+            <span class="tk-cell" aria-hidden="true"><span class="tk-dot"></span>Summer Mixed Hat League <b>OPEN</b> <span class="tk-val">142/180</span></span>
+            <span class="tk-cell" aria-hidden="true"><span class="tk-dot"></span>Summer Youth Camps <b>ROLLING</b> <span class="tk-val">7–18 yrs</span></span>
+            <span class="tk-cell" aria-hidden="true"><span class="tk-dot"></span>Sea Plastic <b>WAITLIST</b> <span class="tk-val">beach</span></span>
+            <span class="tk-cell" aria-hidden="true"><span class="tk-dot"></span>Fall HS + MS <b>OPENS SOON</b> <span class="tk-val">Sep</span></span>
+            <span class="tk-cell" aria-hidden="true"><span class="tk-dot"></span>Spring Reign 2027 <b>COUNTDOWN</b> <span class="tk-val">Burlington</span></span>
+          </div>
+        </div>
+
+        <div class="season-band">
+          <div class="season-head"><h3>This season</h3><span>capacity · live</span></div>
+          <div class="prog-grid">
+            <article class="prog-card">
+              <div class="prog-tag"><span class="t">Youth · Ages 7–18</span><span class="chip-open">Rolling</span></div>
+              <h4>Summer Youth Camps</h4>
+              <p class="prog-meta">A first pull to a full-field huck — a week at a time, all summer long.</p>
+              <div class="prog-cap bar cap-w">
+                <div class="cap-head"><b>68% full</b><span>spots open</span></div>
+                <div class="cap-bar"><div class="cap-fill" style="--pct:68"></div></div>
+              </div>
+            </article>
+            <article class="prog-card">
+              <div class="prog-tag"><span class="t">Youth · School</span><span class="chip-open">Registering</span></div>
+              <h4>Fall HS + MS Leagues</h4>
+              <p class="prog-meta">Middle- and high-school leagues across the region, September through November.</p>
+              <div class="prog-cap bar cap-w">
+                <div class="cap-head"><b>41% full</b><span>just opened</span></div>
+                <div class="cap-bar"><div class="cap-fill" style="--pct:41"></div></div>
+              </div>
+            </article>
+            <article class="prog-card">
+              <div class="prog-tag"><span class="t">Adult · Beach</span><span class="chip-open" style="color:var(--amber);border-color:rgba(255,201,63,.4)">Waitlist</span></div>
+              <h4>Sea Plastic</h4>
+              <p class="prog-meta">DiscNW's beach tournament — sand, sun, and the same self-officiated code.</p>
+              <div class="prog-cap bar cap-w">
+                <div class="cap-head"><b>100% full</b><span>waitlist open</span></div>
+                <div class="cap-bar"><div class="cap-fill" style="--pct:100"></div></div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <footer class="m-foot" aria-label="Mock site footer">
+          <img class="m-foot-mark" src="assets/brand/logo-full-white.png" alt="DiscNW — Disc Northwest" width="1446" height="616">
+          <p class="m-foot-vision">An Ultimate community without barriers</p>
+          <p class="m-foot-meta">Disc Northwest · Seattle 501(c)(3) · founded 1995 · <a href="tel:+12067815840">(206)&nbsp;781-5840</a></p>
+        </footer>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7. FRONT DOORS ============ -->
+  <section class="sec wrap" id="doors" aria-labelledby="doors-t">
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">06</span>Front doors</p>
+    <h2 class="sec-title" id="doors-t"><span class="tl"><span class="tli">Three ways onto the field</span></span></h2>
+    <p class="sec-note rv" style="--i:1">Players, coaches, and parents each get a door in their own language — athlete-direct for players, tool-shaped for coaches, proof-shaped for parents. Photos run clean on a solid mat; the volt is on the verb.</p>
+    <div class="door-grid">
+      <article class="door rv" style="--i:0">
+        <div class="door-media"><img src="assets/sr26-sprint-race.jpg" width="1920" height="1080" style="object-position:50% 38%" alt="Two players in a flat-out sprint downfield, tournament tents and crowd behind them."><span class="door-num">01 · PLAYERS</span></div>
+        <div class="door-body">
+          <p class="door-tag">For players</p>
+          <h3>Find your next game</h3>
+          <p class="door-copy">Pickup to hat league to club tryouts — <b>year-round mixed and single-gender play</b>, plus tournaments from Sea Plastic on the beach to Potlatch on the big weekend. Your schedule lives one tap from your name.</p>
+          <a class="btn btn-volt btn-sm" href="#doors">Find your league</a>
+        </div>
+      </article>
+      <article class="door rv" style="--i:1">
+        <div class="door-media"><img src="assets/sr26-spirit-huddle.jpg" width="1920" height="1080" style="object-position:50% 30%" alt="High-school players huddled in a tight line, arms around each other's shoulders, at the Spring Reign finals."><span class="door-num">02 · COACHES</span></div>
+        <div class="door-body">
+          <p class="door-tag">For coaches &amp; volunteers</p>
+          <h3>Run a smarter sideline</h3>
+          <p class="door-copy">The <b>DiscNW Coaching Collective</b> hands you practice plans, season templates, and a bench of coaches trading drills. Certification is a checklist here, not a maze — done before your first practice.</p>
+          <a class="btn btn-line btn-sm" href="#doors">Join the Collective</a>
+        </div>
+      </article>
+      <article class="door rv" style="--i:2">
+        <div class="door-media"><img src="assets/sr26-sideline-friends.jpg" width="1920" height="1080" style="object-position:50% 42%" alt="Two young players side by side on the sideline, one holding a disc, the field soft behind them."><span class="door-num">03 · FAMILIES</span></div>
+        <div class="door-body">
+          <p class="door-tag">For parents &amp; families</p>
+          <h3>Yes, it's a real sport</h3>
+          <p class="door-copy">Non-contact, self-officiated, coached by <b>background-checked, SafeSport-trained adults</b>. Learn the game in five minutes, sign waivers in one sitting, and pay what your household can — the price never picks the roster.</p>
+          <a class="btn btn-line btn-sm" href="#doors">Read the parent guide</a>
+        </div>
+      </article>
+    </div>
+  </section>
+  <!-- ============ 8. STORYTELLING ============ -->
+  <section class="sec wrap" id="stories" aria-labelledby="story-t">
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">07</span>Storytelling</p>
+    <h2 class="sec-title" id="story-t"><span class="tl"><span class="tli">Every player is a profile</span></span></h2>
+    <p class="sec-note rv" style="--i:1">The combine card, turned warm: one clean clip, one real voice, and a readout of the things that actually matter to a kid — their first season, their favorite play, their spirit score. Numbers with a heartbeat.</p>
+
+    <article class="story rv" style="--i:2">
+      <div class="story-media media-live">
+        <video muted loop playsinline preload="metadata" poster="assets/video/poster--vM_JH6IbDo.jpg" aria-label="Muted game-film loop: both teams form a post-game spirit tunnel of high-fives — Spring Reign 2026 middle-school final.">
+          <source src="assets/video/loop-ms-spirit-tunnel.mp4" type="video/mp4">
+        </video>
+        <button class="vid-toggle" type="button" aria-label="Play film loop">
+          <svg class="i-play" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5 L10.5 6 L2.5 10.5 Z" fill="currentColor"/></svg>
+          <svg class="i-pause" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5 h2.6 v9 h-2.6 z M6.9 1.5 h2.6 v9 h-2.6 z" fill="currentColor"/></svg>
+        </button>
+        <div class="lower3"><span class="l3-bar"></span><span class="l3-panel"><span class="l3-k">Spring Reign · MS final</span><span class="l3-t">The spirit tunnel</span></span></div>
+      </div>
+      <div class="story-body">
+        <p class="story-kick">Player profile · "My First…" series</p>
+        <blockquote class="story-quote">"My first sky was at Spring Reign. I went up over two people I'd never met — and both sidelines lost it. Nobody checked a scoreboard. They just knew."</blockquote>
+        <p class="story-by"><b>Devin, 15</b> · first year · Fall High School League</p>
+        <ul class="profile-stats tnum">
+          <li><span class="pf-k">First pull</span><span class="pf-v">2024</span></li>
+          <li><span class="pf-k">Program</span><span class="pf-v" style="font-size:20px">Fall HS</span></li>
+          <li><span class="pf-k">Favorite play</span><span class="pf-v" style="font-size:20px">The sky</span></li>
+          <li><span class="pf-k">Spirit score</span><span class="pf-v">4.0<span class="u"> /4</span></span></li>
+        </ul>
+        <a class="btn-ghost" href="#stories">Submit your first →</a>
+      </div>
+    </article>
+
+    <div class="impact">
+      <div class="impact-cell rv" style="--i:0">
+        <b class="tnum"><span class="c" data-to="10000">10,000</span><span class="suf">+</span></b>
+        <p>players take the field with DiscNW every year — and every one of them makes their own calls. No referees, ever.</p>
+      </div>
+      <div class="impact-cell rv" style="--i:1">
+        <b class="tnum"><span class="c" data-to="30">30</span><span class="suf">+</span></b>
+        <p>years of leagues, camps, and tournaments since the first Potlatch lit the fuse back in 1995.</p>
+      </div>
+      <div class="impact-cell rv" style="--i:2">
+        <b class="tnum"><span class="c" data-to="33" data-pre="$">$33</span></b>
+        <p>the sliding-scale floor. Pick the tier that fits your household — same fields, same game, no questions asked.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 9. WORKING PARTS ============ -->
+  <section class="sec wrap" id="parts" aria-labelledby="parts-t">
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">08</span>Working parts</p>
+    <h2 class="sec-title" id="parts-t"><span class="tl"><span class="tli">Kit of parts</span></span></h2>
+    <p class="sec-note rv" style="--i:1">Every control flat, labeled, and obvious — instrument-panel discipline. Volt appears exactly where a decision does. Capacity reads as a live gauge; nothing pulses that isn't actually live.</p>
+    <div class="parts-grid">
+      <div class="panel rv" style="--i:0">
+        <h3>Buttons &amp; fields</h3>
+        <div class="btn-rows">
+          <div class="btn-row"><span class="lab">Primary</span><button class="btn btn-volt" type="button">Register</button><button class="btn btn-volt is-hover" type="button" aria-label="Register, hover state shown">Hover</button></div>
+          <div class="btn-row"><span class="lab">Secondary</span><button class="btn btn-line" type="button">See schedule</button><button class="btn btn-line is-hover" type="button" aria-label="See schedule, hover state shown">Hover</button></div>
+          <div class="btn-row"><span class="lab">Quiet</span><button class="btn-ghost" type="button">Read the rules</button><button class="btn-ghost is-hover" type="button" aria-label="Read the rules, hover state shown">Hover</button></div>
+        </div>
+        <form class="field-form" action="#" onsubmit="return false">
+          <span class="field-lab" id="season-lab">Find your game — season</span>
+          <div class="seg" role="group" aria-labelledby="season-lab">
+            <label><input type="radio" name="season" value="summer" checked><span>Summer</span></label>
+            <label><input type="radio" name="season" value="fall"><span>Fall</span></label>
+            <label><input type="radio" name="season" value="winter"><span>Winter</span></label>
+            <label><input type="radio" name="season" value="spring"><span>Spring</span></label>
+          </div>
+          <div class="field-row">
+            <div class="field"><label class="field-lab" for="age">Age group</label>
+              <select id="age" name="age"><option>Adult</option><option>High school</option><option>Middle school</option><option>Elementary</option></select></div>
+            <div class="field"><label class="field-lab" for="div">Division</label>
+              <select id="div" name="div"><option>Mixed</option><option>Women's</option><option>Open</option><option>Masters</option></select></div>
+            <button class="btn btn-line btn-sm" type="submit">Show leagues</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel rv" style="--i:1">
+        <h3>Event card</h3>
+        <article class="event-card">
+          <div class="event-top"><span class="live-bug volt"><span class="dot"></span>Registering</span><span class="chip-div">Youth · Tournament</span></div>
+          <h4>Spring Reign 2027</h4>
+          <p class="event-world">World's largest mixed youth ultimate tournament</p>
+          <ul class="event-stats">
+            <li><span>When</span><span>Apr 17–18, 2027</span></li>
+            <li><span>Where</span><span>Burlington, WA</span></li>
+            <li><span>Format</span><span>Youth mixed · teams NW-wide</span></li>
+            <li><span>Cost</span><span>Sliding scale from $33</span></li>
+          </ul>
+          <div class="event-cap bar cap-w">
+            <div class="cap-head"><b>1,600 players expected</b><span>87% of field</span></div>
+            <div class="cap-bar"><div class="cap-fill" style="--pct:87"></div></div>
+          </div>
+          <div class="event-actions"><a class="btn btn-volt btn-sm" href="#parts">Register</a><a class="btn-ghost" href="#parts">Event details →</a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10. VOICE & TONE ============ -->
+  <section class="sec wrap" id="voice" aria-labelledby="voice-t">
+    <p class="sec-eyebrow rv" style="--i:0"><span class="idx">09</span>Voice &amp; tone</p>
+    <h2 class="sec-title" id="voice-t"><span class="tl"><span class="tli">Loud on the numbers, warm on the people</span></span></h2>
+    <p class="sec-note rv" style="--i:1">Combine shouts the stats and then gets out of the way. When a real person is on the other end — a nervous parent, a new registrant — the volume drops and the warmth carries.</p>
+    <div class="voice-grid">
+      <div class="voice-card rv" style="--i:0">
+        <h3 class="vc-label">Hero headline</h3>
+        <p class="vc-disp">Train all winter. Clock in at Potlatch.</p>
+        <p class="vc-note">Season-arc framing — every league builds toward a marquee weekend.</p>
+      </div>
+      <div class="voice-card rv" style="--i:1">
+        <h3 class="vc-label">Registration confirmation</h3>
+        <p class="vc-body"><b>Roster locked.</b> You're in for Summer Mixed Hat League — first pull is June 2 at Magnuson. Your schedule posts under your name about two weeks out.</p>
+        <p class="vc-note">Reads like a team announcement, not a receipt.</p>
+      </div>
+      <div class="voice-card rv" style="--i:2">
+        <h3 class="vc-label">To a nervous first-time parent</h3>
+        <p class="vc-body">Ultimate is non-contact, and the kids referee themselves — it teaches honest competition faster than any whistle could. Send cleats, water, and a rain layer. <b>We'll teach the rest, including you.</b></p>
+        <p class="vc-note">Facts first, closed with one line of warmth.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ 11. VERDICT + FOOTER ============ -->
+<footer class="verdict wrap">
+  <p class="sec-eyebrow rv" style="--i:0"><span class="idx">10</span>The honest read</p>
+  <h2 class="sec-title"><span class="tl"><span class="tli">Is Combine your direction?</span></span></h2>
+  <div class="verdict-grid">
+    <div class="verdict-card go rv" style="--i:0">
+      <h3>Choose this if…</h3>
+      <p>You want the redesign to <b>lead with scale</b> — to make a parent, a sponsor, or a first-time visitor feel the size and seriousness of DiscNW in the first three seconds. When the numbers are your best argument, put them on the jumbotron and let them slam.</p>
+    </div>
+    <div class="verdict-card warn rv" style="--i:1">
+      <h3>Think twice if…</h3>
+      <p>Your front door needs to feel <b>quiet, soft, and human</b> before anything else. A dark neon HUD is a stadium entrance — thrilling, but loud. For an audience that wants a calm hand on the shoulder first, a gentler direction opens warmer.</p>
+    </div>
+  </div>
+  <nav class="foot-nav" aria-label="Direction navigation">
+    <a href="index.html">← All directions</a>
+    <span class="foot-print">Direction 18 of 19 · Combine · DiscNW redesign</span>
+    <a href="19-bracket.html">Next direction →</a>
+  </nav>
+</footer>
+
+<script>
+(function(){
+  var d=document.documentElement;
+  var anim = d.classList.contains('anim');       /* JS + motion-allowed + IO */
+  var hasIO = 'IntersectionObserver' in window;
+  var reduce = !anim;
+
+  /* ---- reveals + gauge/bar/board fills: one observer adds .in ---- */
+  var reveals = [].slice.call(document.querySelectorAll('.rv, .tl, .gauge, .bar, .board-row, .media-live'));
+  if(!anim || !hasIO){
+    reveals.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var head=document.getElementById('dir-head'), headEls=[], rest=[];
+    reveals.forEach(function(el){ (head && head.contains(el)) ? headEls.push(el) : rest.push(el); });
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ headEls.forEach(function(el){ el.classList.add('in'); }); }); });
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, {threshold:.18, rootMargin:'0px 0px -6% 0px'});
+    rest.forEach(function(el){ io.observe(el); });
+  }
+
+  /* ---- count-up: the number ARRIVES, decelerating into its final digit ----
+     The authored text is the source of truth — we only overwrite it while a
+     count is in flight and always restore it, so no-JS and reduced-motion
+     render the correct totals with zero counting. */
+  function runCount(el){
+    var target=parseFloat(el.getAttribute('data-to'));
+    if(isNaN(target)){ return; }
+    var pre=el.getAttribute('data-pre')||'';
+    var finalText=el.textContent, dur=1300, t0=null;
+    function fmt(n){ return pre + Math.round(n).toLocaleString('en-US'); }
+    function tick(now){
+      if(t0===null){ t0=now; }
+      var p=Math.min((now-t0)/dur,1);
+      var e=1-Math.pow(1-p,3);
+      el.textContent=fmt(e*target);
+      if(p<1){ requestAnimationFrame(tick); }
+      else { el.textContent=finalText; var s=el.closest('.slam-num'); if(s){ s.classList.add('slammed'); } }
+    }
+    requestAnimationFrame(tick);
+  }
+  if(anim && hasIO){
+    var cio=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ runCount(e.target); cio.unobserve(e.target); } }); }, {threshold:.6});
+    [].forEach.call(document.querySelectorAll('[data-to]'), function(el){ cio.observe(el); });
+  }
+
+  /* ---- countdown to Spring Reign: rAF loop, tabular digits ----
+     No-JS / reduced-motion never reach here — the readable date stays visible. */
+  (function(){
+    var cd=document.querySelector('[data-countdown]');
+    if(!cd || !anim){ return; }
+    var target=new Date(cd.getAttribute('data-countdown')).getTime();
+    if(isNaN(target)){ return; }
+    var grid=cd.querySelector('[data-cd-grid]'); if(!grid){ return; }
+    var dd=cd.querySelector('[data-cd="d"]'), hh=cd.querySelector('[data-cd="h"]'), mm=cd.querySelector('[data-cd="m"]'), ss=cd.querySelector('[data-cd="s"]');
+    grid.style.display='flex';
+    var last=-1;
+    function pad(n){ return (n<10?'0':'')+n; }
+    function frame(){
+      var diff=target-Date.now(); if(diff<0){ diff=0; }
+      var s=Math.floor(diff/1000);
+      if(s!==last){ last=s;
+        dd.textContent=Math.floor(s/86400);
+        hh.textContent=pad(Math.floor(s%86400/3600));
+        mm.textContent=pad(Math.floor(s%3600/60));
+        ss.textContent=pad(s%60);
+      }
+      if(diff>0){ requestAnimationFrame(frame); }
+    }
+    frame();
+  })();
+
+  /* ---- clean muted film loops: IO play/pause + manual toggle ----
+     Playback is JS-initiated, so no-JS and reduced-motion get the honest poster. */
+  [].forEach.call(document.querySelectorAll('.media-live'), function(box){
+    var video=box.querySelector('video'); if(!video){ return; }
+    var btn=box.querySelector('.vid-toggle');
+    var userPaused=reduce;
+    video.muted=true;
+    function setUI(p){ box.classList.toggle('playing', p); if(btn){ btn.setAttribute('aria-label', p?'Pause film loop':'Play film loop'); } }
+    function tryPlay(){ var pr=video.play(); if(pr&&pr.catch){ pr.catch(function(){ setUI(false); }); } }
+    video.addEventListener('play', function(){ setUI(true); });
+    video.addEventListener('pause', function(){ setUI(false); });
+    if(btn){ btn.addEventListener('click', function(){ if(video.paused){ userPaused=false; tryPlay(); } else { userPaused=true; video.pause(); } }); }
+    setUI(false);
+    if(!reduce && hasIO){
+      new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ if(!userPaused && video.paused){ tryPlay(); } } else if(!video.paused){ video.pause(); } }); }, {threshold:.25}).observe(box);
+    }
+  });
+})();
+</script>
+</body>
+</html>
