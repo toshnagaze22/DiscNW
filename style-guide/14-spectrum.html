@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>14 · Spectrum — DiscNW design directions</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<meta name="description" content="Grounded direction 14 for the DiscNW redesign: 'an Ultimate community without barriers' made visible as the full spectrum — a breathing spectral-light hero, a recurring spectrum ribbon, and a belonging bar where every audience takes a place on one continuous spectrum.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Hanken+Grotesk:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ————————————————————————————————————————————————————————————
+   DIRECTION 14 · SPECTRUM  (grounded · family: People & community)
+   "An Ultimate community without barriers" made visible. Every
+   player belongs, so no single colour can own the brand — the whole
+   spectrum does. Colour lives in LIGHT (the breathing spectral mesh),
+   in LINE (the spectrum ribbon), and in small chips — never under
+   body copy, and never on a photograph. A festival identity with a
+   product's manners.
+
+   Contrast audit (WCAG AA, computed on #FAF9F5 paper unless noted):
+     ink #1B1B22 on paper ....................... 16.2  (AAA)
+     slate #5A5560 on paper ..................... 6.9   (AA)
+     coral-ink #BC3A2B on paper ................. 5.4   (AA)
+     ember-ink #A9520F on paper ................. 5.1   (AA)
+     gold-ink #8A6410 on paper .................. 5.1   (AA)
+     meadow-ink #1E7B44 on paper ................ 5.0   (AA)
+     tidal-ink #0F7180 on paper ................. 5.4   (AA)
+     indigo-ink #3247A8 on paper ................ 7.7   (AA)
+     violet-ink #7038A8 on paper ................ 7.1   (AA)
+     hue-ink on its own pale tint chip .......... 4.8–8  (AA)
+     paper #F0EEE8 text on ink #141319 .......... 15.6  (AAA)
+     ink #1B1B22 on white card .................. 17.0  (AAA)
+   Spectrum-as-text only ever uses the -ink variants above, on paper
+   or a solid chip. The vivid spectrum is reserved for light and line.
+———————————————————————————————————————————————————————————— */
+
+/* the shimmer position is a registered custom property so the clip-text
+   gradient interpolates smoothly; the static initial value is a complete,
+   beautiful gradient on its own (no-JS / reduced-motion fallback) */
+@property --angle{ syntax:'<angle>'; inherits:false; initial-value:96deg; }
+
+:root{
+  /* the tuned spectrum — vivid, for light & line only */
+  --coral:#E24C3F;
+  --ember:#EF7D33;
+  --gold:#F2B02E;
+  --meadow:#2FA05C;
+  --tidal:#1699AC;
+  --indigo:#3E59C4;
+  --violet:#8B4DC6;
+
+  /* AA-safe spectrum inks — the ONLY spectrum used as text */
+  --coral-ink:#BC3A2B;
+  --ember-ink:#A9520F;
+  --gold-ink:#8A6410;
+  --meadow-ink:#1E7B44;
+  --tidal-ink:#0F7180;
+  --indigo-ink:#3247A8;
+  --violet-ink:#7038A8;
+
+  /* pale chip tints */
+  --coral-t:#FBE7E3;
+  --ember-t:#FCEDDD;
+  --gold-t:#FBF0D3;
+  --meadow-t:#DEF1E5;
+  --tidal-t:#D8EFF2;
+  --indigo-t:#E3E6F8;
+  --violet-t:#EFE3F7;
+
+  /* neutrals */
+  --ink:#1B1B22;
+  --ink-2:#33333D;
+  --slate:#5A5560;
+  --paper:#FAF9F5;
+  --cloud:#F1EFE9;
+  --card:#FFFFFF;
+  --line:#E5E2D9;
+  --line-2:#D9D6CC;
+  --deep:#141319;          /* the one dark ground — footer & crest */
+  --deep-text:#F0EEE8;
+  --deep-muted:#B7B4AE;
+
+  --wrap:1200px;
+  --pad:clamp(20px,4vw,44px);
+
+  /* the two full-spectrum gradients — the whole system in one line each */
+  --vivid: linear-gradient(90deg,#E24C3F 0%,#EF7D33 17%,#F2B02E 33%,#2FA05C 50%,#1699AC 66%,#3E59C4 83%,#8B4DC6 100%);
+  /* legible jewel spectrum for clip-text: warm side deepened to hold ≥3:1 at display size */
+  --ink-spectrum: linear-gradient(96deg,#C7402B 0%,#BC6417 20%,#2E9E5B 44%,#138EA1 62%,#3E59C4 81%,#8B4DC6 100%);
+
+  /* house easing — snap (micro), lux (reveals/rises), drift (ambient breathing).
+     the default keyword 'ease' appears nowhere on this page. */
+  --ease-snap:cubic-bezier(.4,0,.1,1);
+  --ease-lux:cubic-bezier(.16,1,.3,1);
+  --ease-drift:cubic-bezier(.45,.05,.55,.95);
+}
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; background:var(--paper); }
+[id]{ scroll-margin-top:28px; }
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Figtree',system-ui,-apple-system,sans-serif;
+  font-size:17px; line-height:1.62;
+  overflow-x:clip;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+img{ display:block; max-width:100%; }
+a{ color:var(--indigo-ink); }
+::selection{ background:var(--violet); color:#fff; }
+
+:focus-visible{ outline:3px solid var(--indigo); outline-offset:2px; border-radius:5px; }
+.on-dark :focus-visible, .foot :focus-visible{ outline-color:var(--gold); }
+
+.vh{ position:absolute!important; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+.skip{
+  position:absolute; left:var(--pad); top:-72px; z-index:120;
+  background:var(--ink); color:var(--paper);
+  font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:13px; letter-spacing:.04em;
+  text-decoration:none; padding:12px 18px; border-radius:8px;
+}
+.skip:focus-visible{ top:16px; }
+
+h1,h2,h3,h4{ margin:0; font-family:'Hanken Grotesk',sans-serif; }
+
+/* ————— section rhythm ————— */
+.sec{ max-width:var(--wrap); margin:0 auto; padding:clamp(84px,10vw,128px) var(--pad); }
+.kicker{
+  position:relative; display:inline-block;
+  margin:0 0 18px; padding-bottom:13px;
+  font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:12px;
+  letter-spacing:.17em; text-transform:uppercase; color:var(--slate);
+}
+.kicker::after{
+  content:""; position:absolute; left:0; bottom:0;
+  width:52px; height:4px; border-radius:2px;
+  background:var(--vivid); background-size:200% 100%;
+  transform-origin:0 50%;
+}
+.sec-title{
+  font-weight:800; font-size:clamp(31px,4vw,50px);
+  line-height:1.02; letter-spacing:-.02em; color:var(--ink);
+  margin:0 0 18px; max-width:20ch; text-wrap:balance;
+}
+.sec-intro{ max-width:64ch; margin:0 0 46px; color:var(--slate); font-size:18.5px; line-height:1.6; }
+.note{ font-size:13.5px; font-style:italic; color:var(--slate); margin:22px 2px 0; max-width:82ch; line-height:1.6; }
+
+/* ————— photos: clean, full colour, nothing on top ————— */
+.ph{ display:block; width:100%; object-fit:cover; filter:contrast(1.03) saturate(1.04); }
+.ph-cap{ font-size:13px; color:var(--slate); margin:11px 2px 0; }
+
+/* ————— the spectrum ribbon — the system's through-line ————— */
+.ribbon{ position:relative; width:100%; height:6px; overflow:hidden; border-radius:999px; background:var(--cloud); }
+.ribbon::before{
+  content:""; position:absolute; inset:0 auto 0 0; width:200%; height:100%;
+  background:linear-gradient(90deg,
+    #E24C3F,#EF7D33,#F2B02E,#2FA05C,#1699AC,#3E59C4,#8B4DC6,
+    #E24C3F,#EF7D33,#F2B02E,#2FA05C,#1699AC,#3E59C4,#8B4DC6);
+  animation:ribbon-flow 26s linear infinite;
+}
+.ribbon.thin{ height:4px; }
+.ribbon.tall{ height:10px; }
+@keyframes ribbon-flow{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+
+/* the section divider ribbon between bands */
+.divider{ max-width:var(--wrap); margin:0 auto; padding:0 var(--pad); }
+.divider .ribbon{ opacity:.9; }
+
+/* ————— buttons ————— */
+.btn{
+  display:inline-flex; align-items:center; gap:9px; border:0; cursor:pointer;
+  font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:15.5px; line-height:1;
+  padding:15px 24px; border-radius:10px; text-decoration:none;
+  transition:transform .32s var(--ease-snap), background-color .32s var(--ease-snap),
+             color .32s var(--ease-snap), box-shadow .32s var(--ease-snap);
+}
+.btn-primary{ background:var(--ink); color:var(--paper); box-shadow:0 1px 0 rgba(0,0,0,.04); }
+.btn-primary:hover, .btn-primary.is-hover{ background:var(--ink-2); transform:translateY(-1px); box-shadow:0 10px 24px -12px rgba(20,19,25,.6); }
+.btn-primary:active{ transform:translateY(0); }
+.btn-secondary{ background:transparent; color:var(--ink); box-shadow:inset 0 0 0 2px var(--ink); }
+.btn-secondary:hover, .btn-secondary.is-hover{ background:var(--ink); color:var(--paper); transform:translateY(-1px); }
+.btn-secondary:active{ transform:translateY(0); }
+/* quiet button / link — wears the spectrum ribbon as a growing underline */
+.btn-quiet{
+  background:none; padding:15px 3px; border-radius:4px;
+  color:var(--ink); font-weight:700;
+  background-image:var(--vivid); background-repeat:no-repeat;
+  background-position:left bottom; background-size:0 3px;
+  transition:background-size .4s var(--ease-snap), color .3s var(--ease-snap);
+}
+.btn-quiet:hover, .btn-quiet.is-hover, .btn-quiet:focus-visible{ background-size:100% 3px; }
+.btn-quiet.is-static{ background-size:100% 3px; }
+.on-dark .btn-quiet{ color:var(--deep-text); }
+
+/* spectrum-underline link (used inline & in nav) */
+.slink{
+  color:var(--ink); text-decoration:none; font-weight:600;
+  padding-bottom:4px;
+  background-image:var(--vivid); background-repeat:no-repeat;
+  background-position:left bottom; background-size:0 2.5px;
+  transition:background-size .4s var(--ease-snap);
+}
+.slink:hover, .slink:focus-visible{ background-size:100% 2.5px; }
+
+/* ————— hover roll (nav labels) ————— */
+.roll{ position:relative; display:inline-block; overflow:hidden; vertical-align:top; }
+.roll-a,.roll-b{ display:block; }
+.roll-b{ position:absolute; top:100%; left:0; }
+@media (prefers-reduced-motion:no-preference){
+  .roll-a,.roll-b{ transition:transform .45s var(--ease-snap); }
+  .roll:hover .roll-a,.roll:focus-visible .roll-a,
+  .roll:hover .roll-b,.roll:focus-visible .roll-b{ transform:translateY(-100%); }
+}
+
+/* ————————————————————————————————————————————————————————————
+   THE SPECTRAL MESH — the animated background, the hero's star.
+   Six large soft radial blobs across the spectrum, drifting on long
+   eased loops over a bright paper ground — colour read as light
+   through frosted glass. Pure CSS: it is complete with NO JavaScript,
+   and it freezes to one gorgeous static state under reduced motion.
+   Text never sits on the raw mesh — a paper scrim guarantees contrast.
+———————————————————————————————————————————————————————————— */
+.mesh{ position:absolute; inset:0; z-index:0; overflow:hidden; background:var(--paper); }
+.blob{
+  position:absolute; width:clamp(320px,50vw,680px); aspect-ratio:1/1;
+  border-radius:50%; filter:blur(62px); will-change:transform; pointer-events:none;
+}
+.b-coral { top:-12%;  left:-8%;  background:radial-gradient(circle at 50% 50%,rgba(226,76,63,.62),rgba(226,76,63,0) 68%);  animation:drift-a 27s var(--ease-drift) infinite; }
+.b-gold  { top:-16%;  right:8%;  background:radial-gradient(circle at 50% 50%,rgba(242,176,46,.60),rgba(242,176,46,0) 68%); animation:drift-b 33s var(--ease-drift) infinite; }
+.b-meadow{ top:26%;   right:-14%;background:radial-gradient(circle at 50% 50%,rgba(47,160,92,.52),rgba(47,160,92,0) 68%);   animation:drift-c 31s var(--ease-drift) infinite; }
+.b-tidal { bottom:-18%;right:14%; background:radial-gradient(circle at 50% 50%,rgba(22,154,172,.54),rgba(22,154,172,0) 68%); animation:drift-d 37s var(--ease-drift) infinite; }
+.b-indigo{ bottom:-14%;left:2%;  background:radial-gradient(circle at 50% 50%,rgba(62,89,196,.48),rgba(62,89,196,0) 68%);   animation:drift-e 35s var(--ease-drift) infinite; }
+.b-violet{ top:20%;   left:-15%; background:radial-gradient(circle at 50% 50%,rgba(139,77,198,.50),rgba(139,77,198,0) 68%);  animation:drift-f 29s var(--ease-drift) infinite; }
+/* each blob breathes on its own phase — transform + scale only (GPU-friendly) */
+@keyframes drift-a{ 0%,100%{ transform:translate3d(0,0,0) scale(1); } 50%{ transform:translate3d(6%,4%,0) scale(1.12); } }
+@keyframes drift-b{ 0%,100%{ transform:translate3d(0,0,0) scale(1.05); } 50%{ transform:translate3d(-5%,5%,0) scale(1); } }
+@keyframes drift-c{ 0%,100%{ transform:translate3d(0,0,0) scale(1); } 50%{ transform:translate3d(-6%,-4%,0) scale(1.14); } }
+@keyframes drift-d{ 0%,100%{ transform:translate3d(0,0,0) scale(1.08); } 50%{ transform:translate3d(4%,-6%,0) scale(1); } }
+@keyframes drift-e{ 0%,100%{ transform:translate3d(0,0,0) scale(1); } 50%{ transform:translate3d(7%,-3%,0) scale(1.1); } }
+@keyframes drift-f{ 0%,100%{ transform:translate3d(0,0,0) scale(1.06); } 50%{ transform:translate3d(5%,5%,0) scale(1); } }
+
+/* the paper scrim — keeps the text column effectively solid paper for AA */
+.mesh-scrim{
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:
+    radial-gradient(70% 62% at 32% 60%, rgba(250,249,245,.86), rgba(250,249,245,0) 72%),
+    linear-gradient(180deg, rgba(250,249,245,.34) 0%, rgba(250,249,245,0) 22%, rgba(250,249,245,0) 74%, rgba(250,249,245,.66) 100%);
+}
+
+/* the one hero word carrying the animated spectrum; the rest stays ink.
+   The full coral→violet spectrum fills the word at rest (and in the static
+   reduced-motion state); the shimmer only tilts the gradient a few degrees,
+   so no colour is ever lost and the word stays legible at display size. */
+.grad-word{ color:var(--violet-ink); --angle:96deg; }
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .grad-word{
+    background-image:linear-gradient(var(--angle),#C7402B 2%,#BC6417 20%,#2E9E5B 46%,#138EA1 64%,#3E59C4 82%,#8B4DC6 100%);
+    background-size:100% 100%;
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent; color:transparent;
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .grad-word{ animation:shimmer 16s var(--ease-drift) infinite; }
+  }
+}
+@keyframes shimmer{ 0%,100%{ --angle:89deg; } 50%{ --angle:105deg; } }
+
+/* ————— 1 · DIRECTION HEADER (the spectral-mesh hero) ————— */
+.dirhead{ position:relative; overflow:hidden; isolation:isolate; border-bottom:1px solid var(--line); }
+.dirhead-in{
+  position:relative; z-index:2;
+  max-width:var(--wrap); margin:0 auto;
+  padding:clamp(88px,13vw,168px) var(--pad) clamp(64px,9vw,104px);
+}
+.dh-series{
+  margin:0 0 22px;
+  font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:12.5px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--slate);
+}
+.dh-name{
+  margin:0 0 24px;
+  font-weight:900; font-size:clamp(72px,13vw,168px);
+  line-height:.9; letter-spacing:-.035em; color:var(--ink);
+}
+.dh-thesis{ margin:0 0 26px; max-width:38ch; font-size:clamp(19px,2.1vw,23px); line-height:1.5; color:var(--ink); }
+.dh-thesis strong{ font-weight:600; }
+.dh-tags{ margin:0 0 34px; display:flex; flex-wrap:wrap; gap:9px; list-style:none; padding:0; }
+.dh-tags li{
+  font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:12px; letter-spacing:.06em;
+  color:var(--ink); background:rgba(255,255,255,.62); border:1px solid var(--line-2);
+  border-radius:999px; padding:6px 14px; backdrop-filter:blur(3px);
+}
+.mininav{ display:flex; flex-wrap:wrap; gap:6px 20px; align-items:baseline; }
+.mininav .mn-lab{
+  font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--slate); margin-right:4px;
+}
+.mininav a{ font-size:14.5px; }
+.dh-ribbon{ position:relative; z-index:2; }
+
+/* entrance masks (armed only under html.anim) */
+.mask{ display:block; overflow:hidden; padding-bottom:.12em; margin-bottom:-.12em; }
+.mask-in{ display:block; }
+
+/* ————— 2 · THE IDEA ————— */
+.idea-copy{ max-width:70ch; font-size:clamp(20px,2.3vw,25px); line-height:1.6; color:var(--ink); margin:0; }
+.idea-copy strong{ font-weight:700; }
+.idea-copy .em{ font-style:italic; }
+
+/* ————— 3 · PALETTE ————— */
+.swatches{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin:0 0 30px; padding:0; list-style:none; }
+.swatch{ border-radius:14px; overflow:hidden; background:var(--card); border:1px solid var(--line); }
+.swatch .chip{ height:104px; }
+.swatch .chip.outline{ box-shadow:inset 0 0 0 1px var(--line-2); }
+.sw-info{ padding:15px 17px 18px; }
+.sw-name{ margin:0 0 3px; font-weight:800; font-size:16.5px; color:var(--ink); }
+.sw-hex{ display:inline-block; margin:0 0 8px; font-family:'Hanken Grotesk',sans-serif; font-weight:600; font-size:12.5px; letter-spacing:.05em; color:var(--slate); }
+.sw-use{ margin:0; font-size:13.5px; line-height:1.45; color:var(--slate); }
+.sw-ink{ display:inline-block; margin-top:8px; font-weight:700; font-size:12.5px; }
+/* AA-safe ink strip */
+.ink-strip{ display:flex; flex-wrap:wrap; gap:10px; margin:0; padding:0; list-style:none; }
+.ink-strip li{
+  font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:14px;
+  padding:9px 15px; border-radius:999px; background:var(--card); border:1px solid var(--line);
+}
+
+/* ————— 4 · TYPOGRAPHY ————— */
+.type-cards{ display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:56px; }
+.type-card{ border-radius:16px; background:var(--card); border:1px solid var(--line); padding:26px 28px; }
+.type-card .role{ display:block; margin:0 0 12px; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.15em; text-transform:uppercase; color:var(--tidal-ink); }
+.type-card h3{ margin:0 0 8px; font-weight:800; font-size:23px; color:var(--ink); }
+.type-card p{ margin:0; color:var(--slate); font-size:15px; }
+.type-card .glyphs{ margin:16px 0 0; font-size:21px; color:var(--ink); word-break:break-word; }
+.type-card.display .glyphs{ font-family:'Hanken Grotesk',sans-serif; font-weight:900; }
+.specimen{ margin:0 0 12px; font-weight:900; font-size:clamp(42px,6.6vw,88px); line-height:.98; letter-spacing:-.03em; color:var(--ink); max-width:16ch; text-wrap:balance; }
+.specimen-sub{ margin:0 0 30px; font-weight:700; font-size:clamp(19px,2.3vw,26px); line-height:1.24; color:var(--tidal-ink); max-width:34ch; }
+.specimen-body{ max-width:62ch; font-size:17px; margin:0 0 56px; color:var(--ink); }
+.scale{ border-top:1px solid var(--line); }
+.scale-row{ display:flex; align-items:baseline; justify-content:space-between; gap:24px; padding:17px 2px; border-bottom:1px solid var(--line); }
+.scale-sample{ margin:0; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.s-display{ font-family:'Hanken Grotesk',sans-serif; font-weight:900; font-size:clamp(34px,4.4vw,60px); line-height:1; letter-spacing:-.03em; }
+.s-h2{ font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:clamp(26px,3vw,38px); line-height:1.1; letter-spacing:-.01em; }
+.s-h3{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:22px; line-height:1.25; }
+.s-body{ font-size:17px; }
+.s-cap{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:12px; letter-spacing:.15em; text-transform:uppercase; color:var(--slate); }
+.scale-spec{ flex-shrink:0; font-size:13px; color:var(--slate); font-family:'Hanken Grotesk',sans-serif; font-weight:600; letter-spacing:.03em; text-align:right; }
+
+/* ————— 5 · SIGNATURE (the ribbon + belonging bar) ————— */
+.sig-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:44px; }
+.sig-cell{ border-radius:16px; background:var(--card); border:1px solid var(--line); padding:28px 30px; }
+.sig-cell.dark{ background:var(--deep); border-color:transparent; color:var(--deep-text); }
+.sig-cell h3{ font-weight:700; font-size:12px; letter-spacing:.15em; text-transform:uppercase; color:var(--slate); margin:0 0 20px; }
+.sig-cell.dark h3{ color:var(--deep-muted); }
+.sig-cell p{ margin:16px 0 0; font-size:14.5px; line-height:1.55; color:var(--slate); }
+.sig-cell.dark p{ color:var(--deep-muted); }
+/* wordmark + ribbon demo */
+.wordmark-demo{ display:flex; flex-direction:column; align-items:flex-start; gap:16px; padding:8px 2px 4px; }
+.wordmark-demo img{ width:190px; height:auto; }
+.wordmark-demo .ribbon{ width:190px; }
+.sig-cell.dark .ribbon{ background:rgba(255,255,255,.08); }
+/* divider demo */
+.divider-demo{ display:flex; flex-direction:column; gap:14px; }
+.divider-demo .ribbon{ width:100%; }
+
+/* the belonging bar */
+.belong{ border-radius:18px; background:var(--card); border:1px solid var(--line); padding:clamp(24px,3vw,34px); }
+.belong-head{ display:flex; flex-wrap:wrap; gap:6px 24px; align-items:baseline; justify-content:space-between; margin:0 0 20px; }
+.belong-head .bl-k{ font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:15px; color:var(--ink); }
+.belong-head .bl-s{ font-size:13.5px; color:var(--slate); }
+.belong-bar{ display:flex; height:26px; border-radius:999px; overflow:hidden; box-shadow:inset 0 0 0 1px rgba(0,0,0,.04); }
+.belong-bar span{ flex:1; }
+.belong-labels{ list-style:none; margin:14px 0 0; padding:0; display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
+.belong-labels li{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:12.5px; line-height:1.2; color:var(--ink); text-align:center; }
+.belong-labels li small{ display:block; font-weight:600; font-size:10.5px; letter-spacing:.02em; color:var(--slate); margin-top:3px; }
+.belong-note{ margin:18px 0 0; font-size:14.5px; font-style:italic; color:var(--slate); }
+.belong-note b{ font-style:normal; font-weight:700; color:var(--ink); }
+
+/* ————— 6 · HOMEPAGE MOCKUP ————— */
+.browser{ border-radius:16px; overflow:hidden; border:1px solid var(--line); box-shadow:0 40px 80px -44px rgba(20,19,25,.4); background:var(--card); }
+.browser-bar{ display:flex; align-items:center; gap:14px; background:var(--cloud); padding:11px 18px; border-bottom:1px solid var(--line); }
+.browser-dots{ display:flex; gap:6px; }
+.browser-dots span{ width:11px; height:11px; border-radius:50%; background:#CFCCC3; display:block; }
+.browser-url{ flex:1; max-width:320px; background:var(--card); border:1px solid var(--line); border-radius:999px; font-size:13px; color:var(--slate); padding:5px 16px; font-family:'Hanken Grotesk',sans-serif; font-weight:600; letter-spacing:.02em; }
+/* mock nav — clean paper ground, official dark lockup, spectrum ribbon hairline */
+.mock-nav{ display:flex; align-items:center; gap:28px; background:var(--card); padding:16px clamp(20px,3vw,36px); }
+.mock-logo img{ display:block; width:132px; height:auto; }
+.mock-links{ display:flex; gap:22px; margin-left:auto; list-style:none; margin-top:0; margin-bottom:0; padding:0; }
+.mock-links a{ color:var(--ink); font-weight:600; font-size:15px; text-decoration:none; }
+.mock-reg{ background:var(--ink); color:var(--paper); font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:14.5px; padding:11px 22px; border-radius:9px; text-decoration:none; transition:background-color .3s var(--ease-snap),transform .3s var(--ease-snap); }
+.mock-reg:hover{ background:var(--ink-2); }
+.mock-burger{ display:none; margin-left:auto; }
+.mock-burger span{ display:block; width:22px; height:2.5px; background:var(--ink); margin:4px 0; border-radius:2px; }
+/* mock hero — mesh reprise, scrimmed text */
+.mock-hero{ position:relative; overflow:hidden; isolation:isolate; }
+.mock-hero-in{ position:relative; z-index:2; max-width:960px; margin:0 auto; padding:clamp(56px,7vw,92px) clamp(22px,3.4vw,40px) clamp(40px,5vw,64px); }
+.mock-eyebrow{ margin:0 0 18px; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:12.5px; letter-spacing:.15em; text-transform:uppercase; color:var(--slate); }
+.mock-h1{ margin:0 0 22px; font-family:'Hanken Grotesk',sans-serif; font-weight:900; font-size:clamp(40px,6.4vw,80px); line-height:.98; letter-spacing:-.03em; color:var(--ink); max-width:15ch; text-wrap:balance; }
+.mock-sub{ margin:0 0 28px; max-width:54ch; font-size:17.5px; line-height:1.55; color:var(--ink); }
+.mock-ctas{ display:flex; flex-wrap:wrap; gap:14px 26px; align-items:center; margin:0 0 26px; }
+.mock-belong{ display:flex; flex-wrap:wrap; align-items:center; gap:10px 12px; }
+.mock-belong .mb-k{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--slate); }
+.mchip{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:12px; padding:5px 12px; border-radius:999px; }
+.mock-photo{ display:block; width:100%; height:clamp(280px,32vw,440px); object-fit:cover; object-position:50% 24%; }
+.mock-reg-strip{ display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 22px; background:var(--deep); color:var(--deep-text); padding:20px clamp(20px,3vw,36px) 22px; font-size:15px; }
+.mock-reg-strip strong{ flex-shrink:0; color:var(--gold); font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.15em; text-transform:uppercase; }
+.mock-reg-strip ul{ margin:0; padding:0; list-style:none; display:flex; flex-wrap:wrap; }
+.mock-reg-strip li{ white-space:nowrap; }
+.mock-reg-strip li + li::before{ content:"·"; color:var(--deep-muted); padding:0 11px; }
+.mock-reg-strip .rs-more{ margin-left:auto; color:var(--gold); font-weight:700; font-size:14px; }
+
+/* ————— 7 · FRONT DOORS ————— */
+.doors{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+.door{ background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; display:flex; flex-direction:column; }
+.door .ph{ height:210px; object-position:50% 30%; }
+.door .door-ribbon{ height:5px; }   /* sits flush BELOW the photo — never over it */
+.door-body{ padding:24px 26px 28px; display:flex; flex-direction:column; flex:1; align-items:flex-start; }
+.door-tag{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.06em; padding:6px 13px; border-radius:999px; margin:0 0 14px; }
+.door h3{ margin:0 0 10px; font-weight:800; font-size:23px; line-height:1.15; color:var(--ink); text-wrap:balance; }
+.door p{ margin:0 0 22px; font-size:15px; color:var(--slate); flex:1; }
+
+/* ————— 8 · STORYTELLING ————— */
+.story-grid{ display:grid; grid-template-columns:1.12fr .88fr; gap:26px; align-items:start; }
+.report{ background:var(--card); border:1px solid var(--line); border-radius:18px; overflow:hidden; }
+.report .ph{ height:300px; object-position:50% 32%; }
+.report-body{ padding:28px 32px 30px; }
+.report-meta{ display:flex; flex-wrap:wrap; gap:6px 18px; margin:0 0 14px; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--tidal-ink); }
+.report-meta .rm-soft{ color:var(--slate); }
+.report blockquote{ margin:0 0 16px; padding:0; font-weight:700; font-family:'Hanken Grotesk',sans-serif; font-size:clamp(22px,2.6vw,29px); line-height:1.28; letter-spacing:-.01em; color:var(--ink); }
+.report .byline{ margin:0; font-size:14.5px; color:var(--slate); }
+.stats{ display:grid; gap:14px; margin:0; padding:0; list-style:none; }
+.stat{ border-radius:14px; background:var(--cloud); border:1px solid var(--line); padding:20px 24px; position:relative; overflow:hidden; }
+.stat::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--accent,var(--coral)); }
+.stat .num{ display:block; font-family:'Hanken Grotesk',sans-serif; font-weight:900; font-size:clamp(26px,3vw,34px); line-height:1.05; color:var(--ink); margin-bottom:5px; letter-spacing:-.02em; }
+.stat .why{ margin:0; font-size:14px; color:var(--slate); line-height:1.45; }
+
+/* ————— deep brand moment — the crest on solid ground ————— */
+.crest{ background:var(--deep); color:var(--deep-text); }
+.crest-in{ max-width:var(--wrap); margin:0 auto; padding:clamp(72px,10vw,120px) var(--pad); text-align:center; display:flex; flex-direction:column; align-items:center; }
+.crest-mark{ width:clamp(116px,14vw,168px); height:auto; margin:0 0 clamp(26px,3vw,36px); }
+.crest-ribbon{ width:min(360px,72%); margin:0 0 clamp(30px,4vw,44px); }
+.crest-line{ font-weight:800; font-size:clamp(26px,3.6vw,44px); line-height:1.06; letter-spacing:-.02em; color:#fff; max-width:20ch; margin:0 0 16px; text-wrap:balance; }
+.crest-sub{ margin:0; max-width:52ch; font-size:16px; line-height:1.6; color:var(--deep-muted); }
+
+/* ————— 9 · WORKING PARTS ————— */
+.parts-grid{ display:grid; grid-template-columns:.9fr 1.1fr; gap:22px; align-items:start; }
+.part{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px 30px; }
+.part h3{ margin:0 0 20px; font-weight:800; font-size:19px; color:var(--ink); }
+.btn-row{ display:flex; flex-wrap:wrap; gap:12px 14px; align-items:center; margin-bottom:6px; }
+.btn-label{ display:block; margin:16px 0 10px; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--slate); }
+/* event card */
+.event{ border-radius:16px; border:1px solid var(--line); overflow:hidden; background:var(--card); }
+.event .ribbon{ border-radius:0; }
+.event-in{ padding:24px 26px 26px; }
+.chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+.chip{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:11px; letter-spacing:.05em; text-transform:uppercase; border-radius:999px; padding:5px 12px; }
+.chip-live{ background:var(--meadow-ink); color:#fff; }
+.chip-a{ background:var(--indigo-t); color:var(--indigo-ink); }
+.chip-b{ background:var(--gold-t); color:var(--gold-ink); }
+.event h4{ margin:0 0 6px; font-weight:800; font-size:24px; line-height:1.12; color:var(--ink); }
+.event-meta{ margin:0 0 12px; font-size:14.5px; font-weight:600; color:var(--slate); }
+.event-desc{ margin:0 0 8px; font-size:15px; color:var(--ink); }
+.event-fee{ margin:0 0 20px; font-size:14px; color:var(--slate); }
+.event-foot{ display:flex; flex-wrap:wrap; gap:12px 16px; align-items:center; border-top:1px solid var(--line); padding-top:18px; }
+.event-deadline{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--tidal-ink); margin-right:auto; }
+/* form */
+.filter{ display:flex; flex-wrap:wrap; gap:16px 18px; align-items:end; }
+.filter label{ display:flex; flex-direction:column; gap:7px; font-weight:600; font-size:13.5px; color:var(--slate); }
+.filter .f-lab{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--slate); }
+.filter select{ font-family:'Figtree',sans-serif; font-size:15px; color:var(--ink); background:var(--card); border:1.5px solid var(--line-2); border-radius:9px; padding:11px 12px; min-width:186px; }
+.filter .check{ flex-direction:row; align-items:center; gap:9px; padding-bottom:11px; font-size:14.5px; color:var(--ink); }
+.filter input[type="checkbox"]{ width:18px; height:18px; accent-color:var(--indigo); }
+
+/* ————— 10 · VOICE ————— */
+.voice-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.voice-card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:26px 28px; position:relative; overflow:hidden; }
+.voice-card::before{ content:""; position:absolute; left:0; top:0; right:0; height:5px; background:var(--vivid); background-size:200% 100%; }
+.voice-card .vlabel{ display:block; margin:6px 0 14px; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--slate); }
+.voice-card .vhero{ margin:0; font-weight:900; font-size:29px; line-height:1.04; letter-spacing:-.02em; color:var(--ink); }
+.voice-card p{ margin:0; font-size:16px; color:var(--ink); line-height:1.55; }
+
+/* ————— 11 · FOOTER / VERDICT ————— */
+.foot{ background:var(--deep); color:var(--deep-text); }
+.foot-in{ max-width:var(--wrap); margin:0 auto; padding:clamp(72px,9vw,104px) var(--pad) 56px; }
+.foot-logo{ width:150px; height:auto; margin:0 0 34px; }
+.verdicts{ display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:44px; }
+.verdict{ border-radius:16px; background:#1E1D26; border:1px solid #2A2934; padding:28px 30px; }
+.verdict h2{ margin:0 0 12px; font-weight:800; font-size:17px; }
+.verdict.pick h2{ color:var(--gold); }
+.verdict.pass h2{ color:var(--tidal); }
+.verdict p{ margin:0; font-size:15.5px; line-height:1.6; color:var(--deep-text); }
+.foot-ribbon{ margin-bottom:30px; }
+.foot-nav{ display:flex; flex-wrap:wrap; gap:14px 30px; align-items:center; justify-content:space-between; }
+.foot-nav a{ color:var(--deep-text); font-weight:700; font-size:16px; text-decoration:none; }
+.foot-nav a.slink{ background-image:var(--vivid); }
+.foot-meta{ font-size:13px; color:var(--deep-muted); font-family:'Hanken Grotesk',sans-serif; font-weight:600; letter-spacing:.04em; }
+
+/* ————————————————————————————————————————————————————————————
+   ENTRANCE & SCROLL CHOREOGRAPHY — armed only when JS adds html.anim
+   (motion allowed + IntersectionObserver present). Without it — no JS,
+   print, reduced motion — every base style above is the settled page.
+   The ambient mesh, ribbon, and shimmer run in pure CSS regardless,
+   and freeze to a single static state under reduced motion below.
+———————————————————————————————————————————————————————————— */
+@keyframes mask-rise{ from{ transform:translateY(120%); } }
+@keyframes fade-rise{ from{ opacity:0; transform:translateY(18px); } }
+
+html.anim .mask .mask-in{ animation:mask-rise 1s var(--ease-lux) backwards; }
+html.anim .dh-series .mask-in{ animation-delay:.05s; }
+html.anim .dh-name .mask-in{ animation-delay:.16s; }
+html.anim .dirhead .fade{ opacity:0; transform:translateY(18px); }
+html.anim.go .dirhead .fade{ opacity:1; transform:none; transition:opacity .85s var(--ease-lux), transform .85s var(--ease-lux); transition-delay:calc(.34s + var(--i,0)*.09s); }
+
+html.anim [data-rise]{ transition:opacity .8s var(--ease-lux), transform .8s var(--ease-lux); transition-delay:calc(var(--i,0)*70ms); }
+html.anim [data-rise]:not(.in){ opacity:0; transform:translateY(20px); }
+
+html.anim [data-wipe] .ph{ transition:clip-path 1.05s var(--ease-lux), transform 1.4s var(--ease-lux); }
+html.anim [data-wipe]:not(.in) .ph{ clip-path:inset(0 0 100% 0); transform:scale(1.05); }
+
+html.anim .kicker::after{ transition:transform .75s var(--ease-snap) .1s; }
+html.anim .kicker:not(.in)::after{ transform:scaleX(0); }
+
+html.anim .belong-bar span{ transform-origin:50% 100%; }
+html.anim [data-belong]:not(.in) .belong-bar span{ transform:scaleY(.2); opacity:.5; }
+html.anim [data-belong] .belong-bar span{ transition:transform .7s var(--ease-lux), opacity .7s var(--ease-lux); }
+html.anim [data-belong] .belong-bar span:nth-child(2){ transition-delay:.06s; }
+html.anim [data-belong] .belong-bar span:nth-child(3){ transition-delay:.12s; }
+html.anim [data-belong] .belong-bar span:nth-child(4){ transition-delay:.18s; }
+html.anim [data-belong] .belong-bar span:nth-child(5){ transition-delay:.24s; }
+html.anim [data-belong] .belong-bar span:nth-child(6){ transition-delay:.30s; }
+html.anim [data-belong] .belong-bar span:nth-child(7){ transition-delay:.36s; }
+
+html.anim .crest-mark{ transition:opacity 1.1s var(--ease-lux), transform 1.1s var(--ease-lux); }
+html.anim .crest:not(.in) .crest-mark{ opacity:0; transform:translateY(14px) scale(.95); }
+
+/* ————— responsive ————— */
+@media (max-width:1000px){
+  .swatches{ grid-template-columns:repeat(2,1fr); }
+  .type-cards{ grid-template-columns:1fr; }
+  .sig-grid{ grid-template-columns:1fr; }
+  .doors{ grid-template-columns:1fr; }
+  .door{ max-width:460px; margin:0 auto; width:100%; }
+  .door .ph{ height:230px; }
+  .story-grid{ grid-template-columns:1fr; }
+  .parts-grid{ grid-template-columns:1fr; }
+  .voice-grid{ grid-template-columns:1fr; }
+  .verdicts{ grid-template-columns:1fr; }
+}
+@media (max-width:820px){
+  .mock-links{ display:none; }
+  .mock-reg{ margin-left:auto; }
+  .mock-burger{ display:block; margin-left:14px; }
+  .belong-labels{ grid-template-columns:repeat(4,1fr); gap:12px 8px; }
+  .mock-reg-strip .rs-more{ margin-left:0; }
+}
+@media (max-width:560px){
+  .sec{ padding:64px 20px; }
+  .swatches{ grid-template-columns:1fr; }
+  .belong-labels{ grid-template-columns:repeat(2,1fr); }
+  .scale-row{ flex-direction:column; gap:5px; }
+  .scale-sample{ white-space:normal; }
+  .scale-spec{ text-align:left; }
+  .dh-name{ letter-spacing:-.03em; }
+  .report-body{ padding:24px 22px 26px; }
+}
+
+/* reduced motion: freeze EVERY ambient loop to one static, beautiful state.
+   The mesh holds its composed arrangement, the ribbon its full spectrum,
+   the shimmer word its base gradient — no drift, no flow, no shimmer. */
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto; }
+  *, *::before, *::after{ animation:none !important; transition:none !important; }
+}
+
+/* print: the settled page */
+@media print{
+  .mesh, .mesh-scrim{ display:none !important; }
+  .dirhead, .mock-hero{ background:var(--paper); }
+  .browser{ box-shadow:none; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ————— 1 · DIRECTION HEADER — the breathing spectral mesh ————— -->
+<header class="dirhead">
+  <div class="mesh" aria-hidden="true">
+    <span class="blob b-coral"></span>
+    <span class="blob b-gold"></span>
+    <span class="blob b-meadow"></span>
+    <span class="blob b-tidal"></span>
+    <span class="blob b-indigo"></span>
+    <span class="blob b-violet"></span>
+  </div>
+  <div class="mesh-scrim" aria-hidden="true"></div>
+
+  <div class="dirhead-in">
+    <p class="dh-series"><span class="mask"><span class="mask-in">DiscNW · Design direction 14 of 15 · Grounded</span></span></p>
+    <h1 class="dh-name"><span class="mask"><span class="mask-in"><span class="grad-word">Spectrum</span></span></span></h1>
+    <p class="dh-thesis fade" style="--i:0"><strong>An Ultimate community without barriers — made visible.</strong> The full spectrum is the brand, because every player belongs and every colour is here.</p>
+    <ul class="dh-tags fade" style="--i:1">
+      <li>Inclusive</li><li>Joyful</li><li>Premium</li><li>Belonging</li><li>For everyone</li>
+    </ul>
+    <nav class="mininav fade" style="--i:2" aria-label="On this page">
+      <span class="mn-lab">On this page</span>
+      <a class="slink" href="#sec-idea">The idea</a>
+      <a class="slink" href="#sec-palette">Palette</a>
+      <a class="slink" href="#sec-type">Type</a>
+      <a class="slink" href="#sec-signature">Signature</a>
+      <a class="slink" href="#sec-homepage">Homepage</a>
+      <a class="slink" href="#sec-doors">Front doors</a>
+      <a class="slink" href="#sec-stories">Stories</a>
+      <a class="slink" href="#sec-parts">Components</a>
+      <a class="slink" href="#sec-voice">Voice</a>
+      <a class="slink" href="#sec-verdict">Verdict</a>
+    </nav>
+  </div>
+  <div class="dh-ribbon"><div class="ribbon tall" aria-hidden="true"></div></div>
+</header>
+
+<main id="main">
+
+  <!-- ————— 2 · THE IDEA ————— -->
+  <section class="sec" id="sec-idea" aria-labelledby="idea-title">
+    <p class="kicker">02 — The idea</p>
+    <h2 class="sec-title" id="idea-title">Every colour is here.</h2>
+    <p class="idea-copy">DiscNW&rsquo;s vision is four words: <span class="em">an Ultimate community without barriers</span>. Spectrum takes them literally. If <strong>everyone</strong> belongs — the seven-year-old at her first camp, the masters hat-leaguer, the coach, the parent learning the rules from the sideline — then no single colour can own the brand. The whole spectrum does. Red through violet becomes one continuous ribbon of belonging, where every audience has a place along it and none of them sits at the edge. It&rsquo;s built to feel like a well-run festival, not a flag: the colour lives in light and line, the type stays precise, and the photography is left completely alone. Joy, done with taste.</p>
+  </section>
+
+  <div class="divider"><div class="ribbon thin" aria-hidden="true"></div></div>
+
+  <!-- ————— 3 · PALETTE ————— -->
+  <section class="sec" id="sec-palette" aria-labelledby="palette-title">
+    <p class="kicker">03 — Palette</p>
+    <h2 class="sec-title" id="palette-title">A tuned spectrum, anchored in ink.</h2>
+    <p class="sec-intro">Seven jewel tones tuned to sit together — no default primaries, nothing garish. The vivid spectrum lives in light, ribbons, chips, and focus rings; it never runs under body copy. When a colour has to be <em>read</em> as text, it drops to an AA-safe ink. Photographs keep their own colour, always.</p>
+
+    <ul class="swatches">
+      <li class="swatch" data-rise style="--i:0">
+        <div class="chip" style="background:#E24C3F"></div>
+        <div class="sw-info"><h3 class="sw-name">Coral</h3><span class="sw-hex">#E24C3F</span>
+          <p class="sw-use">The warm start of the spectrum. Youth energy, first-timers.</p>
+          <span class="sw-ink" style="color:#BC3A2B">As text → #BC3A2B</span></div>
+      </li>
+      <li class="swatch" data-rise style="--i:1">
+        <div class="chip" style="background:#EF7D33"></div>
+        <div class="sw-info"><h3 class="sw-name">Ember</h3><span class="sw-hex">#EF7D33</span>
+          <p class="sw-use">Warm orange between coral and gold. Teens, high school.</p>
+          <span class="sw-ink" style="color:#A9520F">As text → #A9520F</span></div>
+      </li>
+      <li class="swatch" data-rise style="--i:2">
+        <div class="chip" style="background:#F2B02E"></div>
+        <div class="sw-info"><h3 class="sw-name">Gold</h3><span class="sw-hex">#F2B02E</span>
+          <p class="sw-use">The spectrum&rsquo;s high light. Highlights on dark, celebration.</p>
+          <span class="sw-ink" style="color:#8A6410">As text → #8A6410</span></div>
+      </li>
+      <li class="swatch" data-rise style="--i:3">
+        <div class="chip" style="background:#2FA05C"></div>
+        <div class="sw-info"><h3 class="sw-name">Meadow</h3><span class="sw-hex">#2FA05C</span>
+          <p class="sw-use">The field green at spectrum centre. &ldquo;Open / registering now.&rdquo;</p>
+          <span class="sw-ink" style="color:#1E7B44">As text → #1E7B44</span></div>
+      </li>
+      <li class="swatch" data-rise style="--i:4">
+        <div class="chip" style="background:#1699AC"></div>
+        <div class="sw-info"><h3 class="sw-name">Tidal</h3><span class="sw-hex">#1699AC</span>
+          <p class="sw-use">Puget Sound teal. Coaches, the calm cool of the set.</p>
+          <span class="sw-ink" style="color:#0F7180">As text → #0F7180</span></div>
+      </li>
+      <li class="swatch" data-rise style="--i:5">
+        <div class="chip" style="background:#3E59C4"></div>
+        <div class="sw-info"><h3 class="sw-name">Indigo</h3><span class="sw-hex">#3E59C4</span>
+          <p class="sw-use">The default focus ring and link ink. Volunteers.</p>
+          <span class="sw-ink" style="color:#3247A8">As text → #3247A8</span></div>
+      </li>
+      <li class="swatch" data-rise style="--i:6">
+        <div class="chip" style="background:#8B4DC6"></div>
+        <div class="sw-info"><h3 class="sw-name">Violet</h3><span class="sw-hex">#8B4DC6</span>
+          <p class="sw-use">The cool close of the spectrum. Families, the selection colour.</p>
+          <span class="sw-ink" style="color:#7038A8">As text → #7038A8</span></div>
+      </li>
+      <li class="swatch" data-rise style="--i:7">
+        <div class="chip" style="background:#1B1B22"></div>
+        <div class="sw-info"><h3 class="sw-name">Ink</h3><span class="sw-hex">#1B1B22</span>
+          <p class="sw-use">The strong neutral anchor — all body text, headlines, primary buttons.</p></div>
+      </li>
+    </ul>
+
+    <p class="note" style="margin-bottom:16px">The anchors underneath it all — a warm near-white paper and one deep ground:</p>
+    <ul class="ink-strip">
+      <li style="background:#FAF9F5;border-color:#D9D6CC">Paper #FAF9F5</li>
+      <li style="background:#F1EFE9;border-color:#D9D6CC">Cloud #F1EFE9</li>
+      <li style="background:#141319;color:#F0EEE8;border-color:#141319">Deep #141319</li>
+      <li style="color:#BC3A2B">AA inks pass on paper</li>
+      <li style="color:#1E7B44">— every one</li>
+      <li style="color:#3247A8">4.5:1 minimum</li>
+    </ul>
+    <p class="note">Every &ldquo;as text&rdquo; ink above is checked against paper at 4.5:1 or better (indigo and violet clear 7:1). The bright originals never carry small type — that discipline is what keeps a seven-colour system from turning garish.</p>
+  </section>
+
+  <div class="divider"><div class="ribbon thin" aria-hidden="true"></div></div>
+
+  <!-- ————— 4 · TYPOGRAPHY ————— -->
+  <section class="sec" id="sec-type" aria-labelledby="type-title">
+    <p class="kicker">04 — Typography</p>
+    <h2 class="sec-title" id="type-title">Joyful precision.</h2>
+    <p class="sec-intro">Hanken Grotesk carries the joy — a warm grotesk that reads rounded at a glance and sharp up close. Figtree does the quiet work: schedules, waivers, fee tables. A friendly-precise pairing that never tips into novelty.</p>
+
+    <div class="type-cards">
+      <div class="type-card display" data-rise style="--i:0">
+        <span class="role">Display · headings</span>
+        <h3>Hanken Grotesk</h3>
+        <p>A humanist grotesk with warmth in the curves and confidence in the weight. Run heavy (700–900) and tight for every loud moment.</p>
+        <p class="glyphs" aria-hidden="true">AaBbGgRr 0123456789 &amp;?!</p>
+      </div>
+      <div class="type-card" data-rise style="--i:1">
+        <span class="role">Body · UI</span>
+        <h3>Figtree</h3>
+        <p>A clean, slightly rounded humanist sans that stays legible at schedule-table and waiver-form sizes. Weights 400–700, true italics.</p>
+        <p class="glyphs" aria-hidden="true">AaBbGgRr 0123456789 — huck, hat, pull</p>
+      </div>
+    </div>
+
+    <p class="specimen">Everyone belongs on this field.</p>
+    <p class="specimen-sub">Founded in 1995 at Potlatch — now more than 10,000 players a year.</p>
+    <p class="specimen-body">Some players have thrown a disc since kindergarten; plenty have never seen one fly. By their second Saturday they all know the same things — how to cut, how to call their own fouls, and how a sideline learns your name faster than you expect. There are no referees. There is a place for you.</p>
+
+    <div class="scale">
+      <div class="scale-row"><p class="scale-sample s-display">A community, in full colour</p><span class="scale-spec">Display · Hanken 900 · 60–120px</span></div>
+      <div class="scale-row"><p class="scale-sample s-h2">Three doors, one field</p><span class="scale-spec">H2 · Hanken 800 · 38/42</span></div>
+      <div class="scale-row"><p class="scale-sample s-h3">Summer Mixed Hat League</p><span class="scale-spec">H3 · Hanken 700 · 22/28</span></div>
+      <div class="scale-row"><p class="scale-sample s-body">Sliding-scale fees from $33, no questions asked — every tier gets the same season.</p><span class="scale-spec">Body · Figtree 400 · 17/27</span></div>
+      <div class="scale-row"><p class="scale-sample s-cap">Registering now · (206) 781-5840</p><span class="scale-spec">Label · Hanken 700 caps · 12/16</span></div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="ribbon thin" aria-hidden="true"></div></div>
+
+  <!-- ————— 5 · SIGNATURE ELEMENT ————— -->
+  <section class="sec" id="sec-signature" aria-labelledby="sig-title">
+    <p class="kicker">05 — Signature element</p>
+    <h2 class="sec-title" id="sig-title">The spectrum ribbon.</h2>
+    <p class="sec-intro">One device ties the whole system together: a single, smooth full-spectrum ribbon. It underlines the wordmark, divides the sections, and — most of all — becomes the belonging bar. Its hue drifts on a long, slow loop; with reduced motion it settles to one beautiful static gradient.</p>
+
+    <div class="sig-grid">
+      <div class="sig-cell" data-rise style="--i:0">
+        <h3>Under the wordmark</h3>
+        <div class="wordmark-demo">
+          <img src="assets/brand/logo-full.png" alt="DiscNW — Disc Northwest" width="1446" height="616">
+          <div class="ribbon" aria-hidden="true"></div>
+        </div>
+        <p>The lockup is never recoloured or filtered — the spectrum lives on the keyline beneath it, so the wordmark stays official and the belonging reads underneath.</p>
+      </div>
+      <div class="sig-cell dark" data-rise style="--i:1">
+        <h3>As a section divider</h3>
+        <div class="divider-demo">
+          <div class="ribbon tall" aria-hidden="true"></div>
+          <div class="ribbon" aria-hidden="true"></div>
+          <div class="ribbon thin" aria-hidden="true"></div>
+        </div>
+        <p>Three weights of the same idea. The ribbon carries the light between bands so the pages breathe colour without ever tinting a word or a photograph.</p>
+      </div>
+    </div>
+
+    <div class="belong" data-belong data-rise>
+      <div class="belong-head">
+        <span class="bl-k">Who&rsquo;s here — the belonging bar</span>
+        <span class="bl-s">Every DiscNW audience, one continuous spectrum</span>
+      </div>
+      <div class="belong-bar" role="img" aria-label="One continuous spectrum bar divided into seven audience segments: Youth, Teens, Adults, Hat &amp; mixed, Coaches, Volunteers, and Families.">
+        <span style="background:#E24C3F"></span>
+        <span style="background:#EF7D33"></span>
+        <span style="background:#F2B02E"></span>
+        <span style="background:#2FA05C"></span>
+        <span style="background:#1699AC"></span>
+        <span style="background:#3E59C4"></span>
+        <span style="background:#8B4DC6"></span>
+      </div>
+      <ul class="belong-labels">
+        <li>Youth<small>ages 7+</small></li>
+        <li>Teens<small>MS &amp; HS</small></li>
+        <li>Adults<small>rec → club</small></li>
+        <li>Hat &amp; mixed<small>sign up solo</small></li>
+        <li>Coaches<small>the Collective</small></li>
+        <li>Volunteers<small>every event</small></li>
+        <li>Families<small>the sideline</small></li>
+      </ul>
+      <p class="belong-note"><b>One spectrum, no edges.</b> Where you enter is just a colour, not a ceiling — you can move all the way across it and never leave the community.</p>
+    </div>
+    <p class="note">Motion rule: the ribbon flows by translating an oversized gradient (GPU-friendly transform), 26-second loop, never a flash. The belonging bar grows once from the baseline when it scrolls in, then holds. Reduced motion freezes all of it to the static spectrum you see here.</p>
+  </section>
+
+  <div class="divider"><div class="ribbon thin" aria-hidden="true"></div></div>
+
+  <!-- ————— 6 · HOMEPAGE MOCKUP ————— -->
+  <section class="sec" id="sec-homepage" aria-labelledby="home-title">
+    <p class="kicker">06 — Homepage</p>
+    <h2 class="sec-title" id="home-title">discnw.org, in full spectrum.</h2>
+    <p class="sec-intro">The redesigned top of the homepage. The spectral mesh breathes behind the headline like colour through frosted glass; the wordmark and copy sit on clean paper; the photograph runs untouched. One word of the headline carries the spectrum — the rest stays ink, so it is always readable.</p>
+
+    <div class="browser">
+      <div class="browser-bar">
+        <div class="browser-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="browser-url">discnw.org</div>
+      </div>
+
+      <div role="img" aria-label="Mockup of the redesigned DiscNW homepage: a clean white navigation bar with the DiscNW wordmark and a spectrum keyline, the headline 'An Ultimate community without barriers' over a soft spectral-light background, a full-colour photo of players celebrating a catch, and a dark strip of programs registering now.">
+        <nav class="mock-nav" aria-hidden="true">
+          <span class="mock-logo"><img src="assets/brand/logo-full.png" alt="" width="1446" height="616"></span>
+          <ul class="mock-links">
+            <li><a href="#sec-homepage" class="roll"><span class="roll-a">Play</span><span class="roll-b">Play</span></a></li>
+            <li><a href="#sec-homepage" class="roll"><span class="roll-a">Youth</span><span class="roll-b">Youth</span></a></li>
+            <li><a href="#sec-homepage" class="roll"><span class="roll-a">Coaching</span><span class="roll-b">Coaching</span></a></li>
+            <li><a href="#sec-homepage" class="roll"><span class="roll-a">Events</span><span class="roll-b">Events</span></a></li>
+            <li><a href="#sec-homepage" class="roll"><span class="roll-a">About</span><span class="roll-b">About</span></a></li>
+          </ul>
+          <a class="mock-reg" href="#sec-homepage" data-magnet>Register</a>
+          <div class="mock-burger" aria-hidden="true"><span></span><span></span><span></span></div>
+        </nav>
+        <div class="ribbon" aria-hidden="true"></div>
+
+        <div class="mock-hero">
+          <div class="mesh" aria-hidden="true">
+            <span class="blob b-coral"></span>
+            <span class="blob b-gold"></span>
+            <span class="blob b-tidal"></span>
+            <span class="blob b-violet"></span>
+          </div>
+          <div class="mesh-scrim" aria-hidden="true"></div>
+          <div class="mock-hero-in">
+            <p class="mock-eyebrow">Ultimate across the Puget Sound region · a Seattle 501(c)(3)</p>
+            <p class="mock-h1">An Ultimate community without <span class="grad-word">barriers</span>.</p>
+            <p class="mock-sub">Leagues, camps, and tournaments for more than 10,000 players a year — youth to masters, first-timers to nationals qualifiers. Sliding-scale fees from $33, no questions asked. Zero referees, ever.</p>
+            <div class="mock-ctas">
+              <a class="btn btn-primary" href="#sec-homepage" data-magnet>Find your program</a>
+              <a class="btn btn-quiet" href="#sec-homepage">New to ultimate? Start here</a>
+            </div>
+            <div class="mock-belong">
+              <span class="mb-k">Who&rsquo;s here</span>
+              <span class="mchip" style="background:#FBE7E3;color:#BC3A2B">Youth</span>
+              <span class="mchip" style="background:#FBF0D3;color:#8A6410">Adults</span>
+              <span class="mchip" style="background:#D8EFF2;color:#0F7180">Coaches</span>
+              <span class="mchip" style="background:#EFE3F7;color:#7038A8">Families</span>
+              <span class="mchip" style="background:#DEF1E5;color:#1E7B44">— all of us</span>
+            </div>
+          </div>
+        </div>
+
+        <div data-wipe>
+          <img class="ph mock-photo" src="assets/sr26-catch-celebration.jpg" width="1920" height="1080" alt="A player holds the disc overhead as teammates sprint in to celebrate a score at Spring Reign 2026, arms raised against an open sky.">
+        </div>
+
+        <div class="mock-reg-strip">
+          <strong>Registering now</strong>
+          <ul>
+            <li>Summer Mixed Hat League</li>
+            <li>Summer Wonder League</li>
+            <li>Summer Youth Ultimate Camps</li>
+            <li>Sea Plastic</li>
+            <li>Potlatch</li>
+          </ul>
+          <span class="rs-more">See all programs →</span>
+        </div>
+      </div>
+    </div>
+    <p class="note">Component note: the mesh is the only place the vivid spectrum touches the hero, and it never sits under the type — a paper scrim keeps the headline column effectively solid. The wordmark uses the real dark lockup on white; the spectrum reads on the keyline below the nav. The photograph is full colour, no treatment.</p>
+  </section>
+
+  <div class="divider"><div class="ribbon thin" aria-hidden="true"></div></div>
+
+  <!-- ————— 7 · FRONT DOORS ————— -->
+  <section class="sec" id="sec-doors" aria-labelledby="doors-title">
+    <p class="kicker">07 — Three front doors</p>
+    <h2 class="sec-title" id="doors-title">Three doors. One field.</h2>
+    <p class="sec-intro">Players, coaches, parents — each gets a door in their own language, and each takes a different position on the same spectrum. Photography above, words below; the two never fight.</p>
+
+    <div class="doors">
+      <article class="door" data-rise style="--i:0">
+        <div class="door-media">
+          <img class="ph" src="assets/sr26-sprint-race.jpg" width="1920" height="1080" style="object-position:50% 40%" alt="Two players in a flat-out sprint downfield chasing a throw, tournament tents and spectators behind them.">
+          <div class="door-ribbon" style="background:#E24C3F"></div>
+        </div>
+        <div class="door-body">
+          <span class="door-tag" style="background:#FBE7E3;color:#BC3A2B">Players</span>
+          <h3>Your next team is one sign-up away.</h3>
+          <p>Hat league, team league, pickup, or a beach weekend at Sea Plastic — year-round, rec to competitive. Tell us the season and how you like to play; we&rsquo;ll show you where you fit.</p>
+          <a class="btn btn-primary" href="#sec-doors">See what&rsquo;s registering</a>
+        </div>
+      </article>
+
+      <article class="door" data-rise style="--i:1">
+        <div class="door-media">
+          <img class="ph" src="assets/sr26-spirit-huddle.jpg" width="1920" height="1080" style="object-position:50% 30%" alt="High school players stand arm in arm in a tight post-game huddle at Spring Reign, a few fists raised.">
+          <div class="door-ribbon" style="background:#1699AC"></div>
+        </div>
+        <div class="door-body">
+          <span class="door-tag" style="background:#D8EFF2;color:#0F7180">Coaches &amp; volunteers</span>
+          <h3>You don&rsquo;t have to be elite. You have to show up.</h3>
+          <p>The DiscNW Coaching Collective backs you with trainings, practice plans, and a bench of coaches to lean on — from your first background check to the season&rsquo;s last spirit circle.</p>
+          <a class="btn btn-secondary" href="#sec-doors">Start the coaching checklist</a>
+        </div>
+      </article>
+
+      <article class="door" data-rise style="--i:2">
+        <div class="door-media">
+          <img class="ph" src="assets/sr26-sideline-friends.jpg" width="1920" height="1080" style="object-position:50% 42%" alt="Two young players side by side on the sideline, one holding a disc, the field soft-focus behind them.">
+          <div class="door-ribbon" style="background:#8B4DC6"></div>
+        </div>
+        <div class="door-body">
+          <span class="door-tag" style="background:#EFE3F7;color:#7038A8">Parents &amp; families</span>
+          <h3>New to ultimate? Most of our parents were.</h3>
+          <p>Learn the game in five minutes, get the gear list, and hear the honest answer to &ldquo;where are the referees?&rdquo; — there aren&rsquo;t any, and it&rsquo;s the best thing about this sport.</p>
+          <a class="btn btn-secondary" href="#sec-doors">Read the parents&rsquo; guide</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="divider"><div class="ribbon thin" aria-hidden="true"></div></div>
+
+  <!-- ————— 8 · STORYTELLING ————— -->
+  <section class="sec" id="sec-stories" aria-labelledby="stories-title">
+    <p class="kicker">08 — Storytelling</p>
+    <h2 class="sec-title" id="stories-title">Ten thousand ways to belong.</h2>
+    <p class="sec-intro">The story unit is a community voice with a photograph and the numbers that back it up. Real people, real quotes — the part of the site that shows &ldquo;without barriers&rdquo; is a promise the community already keeps.</p>
+
+    <div class="story-grid">
+      <article class="report" data-rise style="--i:0" data-wipe>
+        <img class="ph" src="assets/sr26-spirit-tunnel.jpg" width="1920" height="1080" alt="Two lines of middle school players form a spirit tunnel after a game, trading high-fives down the row.">
+        <div class="report-body">
+          <p class="report-meta"><span>Community voice</span><span class="rm-soft">Fall Middle School Leagues · Seattle</span></p>
+          <blockquote>&ldquo;My daughter joined not knowing a soul. By the second Saturday she had a whole sideline shouting her name. There&rsquo;s no tryout for belonging here.&rdquo;</blockquote>
+          <p class="byline">— Priya M., parent &middot; first season with DiscNW</p>
+        </div>
+      </article>
+
+      <ul class="stats">
+        <li class="stat" data-rise style="--i:0;--accent:#E24C3F"><span class="num">10,000+</span><p class="why">players a year — first-graders to masters, on the same fields, in the same community.</p></li>
+        <li class="stat" data-rise style="--i:1;--accent:#F2B02E"><span class="num">1995</span><p class="why">the first Potlatch — where DiscNW started, and still runs it every summer.</p></li>
+        <li class="stat" data-rise style="--i:2;--accent:#2FA05C"><span class="num">From $33</span><p class="why">the lowest sliding-scale tier — same season, same fields, same disc. No questions asked.</p></li>
+        <li class="stat" data-rise style="--i:3;--accent:#1699AC"><span class="num">Zero referees</span><p class="why">every game, every age — players make their own calls. Spirit of the Game welcomes all.</p></li>
+        <li class="stat" data-rise style="--i:4;--accent:#8B4DC6"><span class="num">World&rsquo;s largest</span><p class="why">Spring Reign — the world&rsquo;s largest mixed youth ultimate tournament, played here every spring.</p></li>
+      </ul>
+    </div>
+    <p class="note">Component note: community voices are submitted through a story form — a sustainable pipeline, not a staff burden. Each stat wears one spectrum accent on its edge, so even the data reads as belonging rather than a leaderboard.</p>
+  </section>
+
+  <!-- ————— deep brand moment — the crest on solid ground ————— -->
+  <section class="crest" aria-labelledby="crest-title" data-rise>
+    <div class="crest-in">
+      <img class="crest-mark" src="assets/brand/logo-mark-white.png" alt="DiscNW formline mark — a flying disc held inside a circular Coast Salish-style formline design" width="590" height="616">
+      <div class="crest-ribbon"><div class="ribbon tall" aria-hidden="true"></div></div>
+      <p class="crest-line" id="crest-title">An Ultimate community without barriers.</p>
+      <p class="crest-sub">The mark holds one still centre; the spectrum runs beneath it. Everyone on the field, one crest over all of them — set in clearspace on a solid ground, never over the churning light.</p>
+    </div>
+  </section>
+
+  <!-- ————— 9 · WORKING PARTS ————— -->
+  <section class="sec" id="sec-parts" aria-labelledby="parts-title">
+    <p class="kicker">09 — Working parts</p>
+    <h2 class="sec-title" id="parts-title">The working parts.</h2>
+    <p class="sec-intro">Registration is the site&rsquo;s day job. Ink means &ldquo;this does something&rdquo;; the spectrum stays on the ribbon, the chips, and the focus ring — so the interface is joyful without ever getting in the way of a signup.</p>
+
+    <div class="parts-grid">
+      <div class="part">
+        <h3>Buttons</h3>
+        <span class="btn-label">Primary — rest / hover · leans ≤6px toward the cursor</span>
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary">Register for summer</button>
+          <button type="button" class="btn btn-primary is-hover">Register for summer</button>
+        </div>
+        <span class="btn-label">Secondary — rest / hover</span>
+        <div class="btn-row">
+          <button type="button" class="btn btn-secondary">See the schedule</button>
+          <button type="button" class="btn btn-secondary is-hover">See the schedule</button>
+        </div>
+        <span class="btn-label">Quiet — the spectrum-ribbon underline grows</span>
+        <div class="btn-row">
+          <button type="button" class="btn btn-quiet">Read the full rules</button>
+          <button type="button" class="btn btn-quiet is-static">Read the full rules</button>
+        </div>
+        <p class="note">Keyboard focus draws a 3px indigo ring (gold on dark grounds). The magnetic lean is pointer-only — touch and reduced-motion get the plain button.</p>
+      </div>
+
+      <div>
+        <article class="event" style="margin-bottom:22px">
+          <div class="ribbon" aria-hidden="true"></div>
+          <div class="event-in">
+            <div class="chip-row">
+              <span class="chip chip-a">Adult</span>
+              <span class="chip chip-b">Summer league</span>
+              <span class="chip chip-live">Registering now</span>
+            </div>
+            <h4>Summer Mixed Hat League</h4>
+            <p class="event-meta">Jun 1 – Aug 10 · Monday evenings · Seattle</p>
+            <p class="event-desc">Individual signup — we draw balanced teams. You&rsquo;ll know everyone&rsquo;s name by week two.</p>
+            <p class="event-fee">Sliding scale $33–$495 · pick the tier that fits your household. Every tier gets the same season.</p>
+            <div class="event-foot">
+              <span class="event-deadline">Registration open through May 30</span>
+              <button type="button" class="btn btn-primary">Register</button>
+              <button type="button" class="btn btn-quiet">League details</button>
+            </div>
+          </div>
+        </article>
+
+        <div class="part">
+          <h3>Find your program</h3>
+          <form class="filter" onsubmit="return false">
+            <label><span class="f-lab">Season</span>
+              <select>
+                <option>Summer — registering now</option>
+                <option>Fall</option>
+                <option>Winter</option>
+                <option>Spring — Spring Reign</option>
+              </select>
+            </label>
+            <label><span class="f-lab">Who&rsquo;s playing</span>
+              <select>
+                <option>Everyone</option>
+                <option>Youth — ages 7–18</option>
+                <option>Adults</option>
+                <option>Coaches</option>
+              </select>
+            </label>
+            <label class="check">
+              <input type="checkbox" checked>
+              Individual sign-up (hat) — no team needed
+            </label>
+            <button type="button" class="btn btn-secondary">Show programs</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="ribbon thin" aria-hidden="true"></div></div>
+
+  <!-- ————— 10 · VOICE & TONE ————— -->
+  <section class="sec" id="sec-voice" aria-labelledby="voice-title">
+    <p class="kicker">10 — Voice &amp; tone</p>
+    <h2 class="sec-title" id="voice-title">How Spectrum sounds.</h2>
+    <p class="sec-intro">Warm, direct, and openly welcoming — it talks like a captain saving you a spot on the sideline, not like league-management software. Joyful, never saccharine.</p>
+
+    <div class="voice-grid">
+      <div class="voice-card" data-rise style="--i:0">
+        <span class="vlabel">Hero headline</span>
+        <p class="vhero">Everyone belongs on this field.</p>
+      </div>
+      <div class="voice-card" data-rise style="--i:1">
+        <span class="vlabel">Registration confirmation</span>
+        <p>You&rsquo;re in — Summer Mixed Hat League, first pull June 1. We&rsquo;ll email your team after draft night. No experience required; a sideline full of new names is.</p>
+      </div>
+      <div class="voice-card" data-rise style="--i:2">
+        <span class="vlabel">To a nervous first-time parent</span>
+        <p>You don&rsquo;t need to know what a huck is. Bring a camp chair and a water bottle — the coach handles the rest, and the sideline always has room for one more.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ————— 11 · FOOTER / VERDICT ————— -->
+<footer class="foot on-dark" id="sec-verdict">
+  <div class="foot-in">
+    <img class="foot-logo" src="assets/brand/logo-full-white.png" alt="DiscNW — Disc Northwest" width="1446" height="616">
+    <div class="verdicts">
+      <div class="verdict pick">
+        <h2>Choose this direction if…</h2>
+        <p>You want the brand to say &ldquo;everyone&rdquo; out loud — a joyful, premium, unmistakably inclusive system that makes &ldquo;without barriers&rdquo; something a visitor feels in the first second, without ever tipping into novelty.</p>
+      </div>
+      <div class="verdict pass">
+        <h2>Think twice if…</h2>
+        <p>You want one ownable brand colour and a quiet, corporate restraint. Spectrum commits to the whole rainbow — it asks every future editor to protect the taste that keeps it a festival identity, not a flag.</p>
+      </div>
+    </div>
+    <div class="foot-ribbon"><div class="ribbon tall" aria-hidden="true"></div></div>
+    <nav class="foot-nav" aria-label="Direction navigation">
+      <a class="slink" href="index.html">← All directions</a>
+      <span class="foot-meta">Direction 14 of 15 · Spectrum · prepared for DiscNW</span>
+      <a class="slink" href="15-prism.html">Next direction →</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+/* SPECTRUM — progressive enhancement only.
+   The spectral mesh, the ribbon flow, and the clip-text shimmer are pure
+   CSS: the page is complete and gorgeous with NO JavaScript, and every
+   ambient loop freezes to one static state under prefers-reduced-motion.
+   JS only adds: entrance choreography, scroll reveals, magnetic CTAs, and
+   a gentle scroll hue-nudge on the hero mesh. All of it is doubly gated. */
+(function(){
+  'use strict';
+  if(!('IntersectionObserver' in window) || !window.matchMedia) return;   /* base page stands */
+  var root=document.documentElement;
+  var mq=window.matchMedia('(prefers-reduced-motion: reduce)');
+  var io=null, hueRAF=0, hueBound=false;
+
+  function armReveals(){
+    try{
+      io=new IntersectionObserver(function(entries){
+        for(var i=0;i<entries.length;i++){
+          if(entries[i].isIntersecting){ entries[i].target.classList.add('in'); io.unobserve(entries[i].target); }
+        }
+      },{ threshold:.14, rootMargin:'0px 0px -6% 0px' });
+      var t=document.querySelectorAll('[data-rise],[data-wipe],[data-belong],.kicker,.crest');
+      for(var i=0;i<t.length;i++) io.observe(t[i]);
+      root.classList.add('anim');
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ root.classList.add('go'); }); });
+    }catch(err){
+      root.classList.remove('anim');   /* any failure: settled base page */
+    }
+  }
+
+  /* gentle scroll hue-nudge — shifts the hero light a few degrees across the
+     scroll, transform-free, rAF-throttled, capped small. Never hijacks scroll. */
+  var heroMesh=document.querySelector('.dirhead .mesh');
+  function hueTick(){
+    hueRAF=0;
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    var f=h>0 ? Math.min(1,Math.max(0,(window.pageYOffset||0)/h)) : 0;
+    if(heroMesh) heroMesh.style.filter='hue-rotate('+(f*14).toFixed(2)+'deg)';
+  }
+  function onScroll(){ if(!hueRAF) hueRAF=requestAnimationFrame(hueTick); }
+  function bindHue(){ if(hueBound||!heroMesh) return; hueBound=true; window.addEventListener('scroll',onScroll,{passive:true}); hueTick(); }
+  function unbindHue(){ if(!hueBound) return; hueBound=false; window.removeEventListener('scroll',onScroll); if(hueRAF){ cancelAnimationFrame(hueRAF); hueRAF=0; } if(heroMesh) heroMesh.style.filter=''; }
+
+  /* magnetic primaries — pointer-fine only, rAF-throttled, transform only */
+  function armMagnets(){
+    if(!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    var els=document.querySelectorAll('[data-magnet]');
+    for(var i=0;i<els.length;i++){ (function(el){
+      var raf=0,x=0,y=0,tx=0,ty=0;
+      function step(){
+        x+=(tx-x)*.18; y+=(ty-y)*.18;
+        if(Math.abs(tx-x)<.1&&Math.abs(ty-y)<.1){ x=tx; y=ty; raf=0; } else { raf=requestAnimationFrame(step); }
+        el.style.transform=(x||y)?'translate('+x.toFixed(2)+'px,'+y.toFixed(2)+'px)':'';
+      }
+      el.addEventListener('pointermove',function(e){
+        if(mq.matches) return;
+        var r=el.getBoundingClientRect();
+        tx=Math.max(-6,Math.min(6,(e.clientX-r.left-r.width/2)*.16));
+        ty=Math.max(-6,Math.min(6,(e.clientY-r.top-r.height/2)*.3));
+        if(!raf) raf=requestAnimationFrame(step);
+      });
+      el.addEventListener('pointerleave',function(){ tx=0; ty=0; if(!raf) raf=requestAnimationFrame(step); });
+    })(els[i]); }
+  }
+
+  function enable(){
+    if(mq.matches){ disable(); return; }
+    if(!root.classList.contains('anim')) armReveals();
+    bindHue();
+  }
+  function disable(){
+    unbindHue();
+    /* leave any already-revealed content in place; just stop future motion */
+    root.classList.remove('anim');
+  }
+
+  if(mq.matches){
+    /* reduced motion: the settled base page + CSS-frozen ambient. nothing to arm. */
+  }else{
+    armReveals();
+    armMagnets();
+    bindHue();
+  }
+  if(mq.addEventListener) mq.addEventListener('change',function(){ if(mq.matches){ disable(); } else { enable(); } });
+
+  /* unconditional settle — on-screen content is landed by ≤2.2s no matter what */
+  window.setTimeout(function(){
+    root.classList.add('go');
+    if(io){
+      var vh=window.innerHeight;
+      var t=document.querySelectorAll('[data-rise],[data-wipe],[data-belong],.kicker,.crest');
+      for(var i=0;i<t.length;i++){
+        if(!t[i].classList.contains('in') && t[i].getBoundingClientRect().top<vh){ t[i].classList.add('in'); io.unobserve(t[i]); }
+      }
+    }
+  },2200);
+})();
+</script>
+
+</body>
+</html>

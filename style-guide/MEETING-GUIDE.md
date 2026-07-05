@@ -1,26 +1,26 @@
 # DiscNW Design Direction Review — Meeting Guide
 
-**With:** Matt · **Time:** ~60–75 min · **Materials:** open `index.html` in a browser; this guide on paper.
+**With:** Matt · **Time:** ~70–85 min · **Materials:** open `index.html` in a browser; this guide on paper.
 **Goal by end of meeting:** a favorite from each of the four families, one lead direction overall, and a short list of borrowed elements — including, possibly, an experimental page's mechanism riding on a grounded system.
 
 ---
 
-## 1. Agenda (~60–75 min)
+## 1. Agenda (~70–85 min)
 
 | Time | Item |
 |---|---|
 | 0:00–0:03 | Setup: brief, ground rules, how the four families work (3 min) |
 | 0:03–0:19 | **Place & weather** — 01 Evergreen · 07 Understory · 09 Rain or Shine · 13 Last Light → pick a favorite (16 min) |
 | 0:19–0:32 | **Sport & broadcast** — 02 Game Film · 06 One Point · 08 Game to 15 → pick a favorite (13 min) |
-| 0:32–0:44 | **People & community** — 03 Sideline Day · 04 Spirit & Story · 11 First Names → pick a favorite (12 min) |
-| 0:44–0:55 | **System & utility** — 05 Flight Path · 10 Route Map · 12 Handbook → pick a favorite (11 min) |
-| 0:55–1:03 | Cross-family final three: put the four favorites up, cut to three (8 min) |
-| 1:03–1:11 | Synthesis: cross-cutting questions + scoring grid (8 min) |
-| 1:11–1:15 | Buffer / spillover (4 min) |
+| 0:32–0:51 | **People & community** — 03 Sideline Day · 04 Spirit & Story · 11 First Names · 14 Spectrum · 15 Prism → pick a favorite (19 min) |
+| 0:51–1:02 | **System & utility** — 05 Flight Path · 10 Route Map · 12 Handbook → pick a favorite (11 min) |
+| 1:02–1:10 | Cross-family final three: put the four favorites up, cut to three (8 min) |
+| 1:10–1:18 | Synthesis: cross-cutting questions + scoring grid (8 min) |
+| 1:18–1:22 | Buffer / spillover (4 min) |
 
 **Pace within a family:** grounded pages ~3 min each, experimental pages ~4 min (the scroll *is* the design), then ~2 min to name the family's favorite before moving on.
 
-**Setup script (read aloud):** "Thirteen directions for the discnw.org redesign, all built around storytelling for players, coaches, and parents. They're sorted into four families, each answering one question about how the site should feel: **Place & weather** (does it feel like HERE?), **Sport & broadcast** (does it feel like the GAME?), **People & community** (does it feel like US?), and **System & utility** (does it work harder?). Some directions are *grounded* — complete design systems you could ship — and some are *experimental* — immersive homepage experiences built around one mechanism you have to scroll to feel; a badge on each card says which. We'll walk one family at a time and pick a favorite from each, then cut those four favorites to a final three across families. React honestly — gut first, reasons second. Nothing is all-or-nothing: we can mix palettes, components, and mechanisms, and a grounded system can adopt an experimental page's mechanism."
+**Setup script (read aloud):** "Fifteen directions for the discnw.org redesign, all built around storytelling for players, coaches, and parents. They're sorted into four families, each answering one question about how the site should feel: **Place & weather** (does it feel like HERE?), **Sport & broadcast** (does it feel like the GAME?), **People & community** (does it feel like US?), and **System & utility** (does it work harder?). Some directions are *grounded* — complete design systems you could ship — and some are *experimental* — immersive homepage experiences built around one mechanism you have to scroll to feel; a badge on each card says which. We'll walk one family at a time and pick a favorite from each, then cut those four favorites to a final three across families. React honestly — gut first, reasons second. Nothing is all-or-nothing: we can mix palettes, components, and mechanisms, and a grounded system can adopt an experimental page's mechanism."
 
 ---
 
@@ -34,8 +34,8 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 2. **Sport & broadcast — "Does it feel like the GAME?"** (02 Game Film, 06 One Point, 08 Game to 15)
    The athlete's worlds. The counterweight to place: intensity, scoreboards, broadcast treatment. Tests how far toward "serious sport" DiscNW should lean.
 
-3. **People & community — "Does it feel like US?"** (03 Sideline Day, 04 Spirit & Story, 11 First Names)
-   The people-first worlds. The most literal answers to the storytelling brief — a welcoming sideline, a community magazine, a roster of ten thousand names.
+3. **People & community — "Does it feel like US?"** (03 Sideline Day, 04 Spirit & Story, 11 First Names, 14 Spectrum, 15 Prism)
+   The people-first worlds. The most literal answers to the storytelling brief — a welcoming sideline, a community magazine, a roster of ten thousand names, and an expressive/inclusion pair (14 Spectrum, 15 Prism) that makes "an Ultimate community without barriers" the literal subject of the design.
 
 4. **System & utility — "Does it WORK harder?"** (05 Flight Path, 10 The Route Map, 12 The Handbook)
    The workhorse worlds. End here on the practical question: the trusted navy given lift, the whole program list as a transit map, the site rebuilt as a numbered handbook. Whatever wins on feeling still has to do this job.
@@ -83,7 +83,7 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 - Q: This is a narrative cover, not a schedule tool. Which grounded system would you put behind it — and does the flight line landing on "Register" feel earned, or engineered?
 
 #### 08 Game to 15 — "The whole site is a game to 15" · *experimental*
-**Pitch:** "The site is a game of ultimate played to 15 — a fixed scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point, ending on 'DiscNW pulls. You score.' It's pure typography: the cheapest of the thirteen to build flawlessly, and the easiest to retell in one sentence."
+**Pitch:** "The site is a game of ultimate played to 15 — a fixed scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point, ending on 'DiscNW pulls. You score.' It's pure typography: the cheapest of the fifteen to build flawlessly, and the easiest to retell in one sentence."
 - Q: Genius or gimmick — and if your honest answer is gimmick, is that risk still worth the launch buzz of a site people screenshot, share, and retell in one sentence?
 - Q: The scoreboard is a first-visit thrill by design. Does the joke still land on your third visit — and does that matter, if this voice sits on top of a grounded system doing the daily work?
 
@@ -105,6 +105,18 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 **Pitch:** "The hero is the community itself — a composed census of ten thousand first names — and five of those names get followed through real programs until the roster becomes a set of stories. Every screen argues toward one CTA: add your name."
 - Q: Does 'people first, programs second' make the mission self-evident — or do you need program-first wayfinding on day one?
 - Q: This is strongest when the wall goes *real* — opt-in names from actual registration. Would invented sample names sit uneasily beside your member data until then?
+
+#### 14 Spectrum — "An Ultimate community without barriers, in colour" · *grounded*
+**Pitch:** "This says the quiet part out loud — a community without barriers, in colour. One full-spectrum ribbon recurs under the wordmark and becomes a 'belonging bar' where every audience (youth, teens, adults, hat & mixed, coaches, volunteers, families) takes a place along one continuous spectrum, none of them at the edge — all above a hero of soft colour breathing like light through frosted glass. Joyful and premium, never a novelty or a pride-flag graphic."
+- Q: Committing to the whole spectrum instead of one ownable brand colour — does that read as 'for everyone' at a glance, or does it ask more taste-discipline than every future editor can guarantee?
+- Q: The belonging bar puts every audience on one line with no edge. Does that land as inclusion you can *feel* in the first second — or as a diagram people scroll past?
+
+#### 15 Prism — "Every color. One community." · *experimental*
+**Pitch:** "The boldest, most emotional front door in the kit. A beam of white light enters a prism and fans into the whole spectrum on near-black — color flowing like an aurora — and the DiscNW story surfaces panel by panel, each program a different color of the same beam, recombining to white at the close above 'Every color. One community.' White light holds every color; so does a community without barriers. No other sports org could wear it without also meaning it."
+- Q: Scroll it once: does 'white light holding every color' make 'community without barriers' something you can *see* in five seconds — or is it a beautiful light show first, message second?
+- Q: A spectral show on near-black wants very few things on stage and every word legible. Can you guarantee editors keep text on the dark panels — and that the homepage never needs standings and dozens of links above the fold?
+
+**These two as a pair:** 14 Spectrum and 15 Prism are the kit's *expressive / inclusion pair* — the two directions that make "an Ultimate community without barriers" the literal subject of the design. Spectrum is the grounded, shippable everyday system; Prism is the experimental, boldest single-mechanism front door. Weigh them together: how loudly should DiscNW say "everyone belongs"?
 
 **People & community favorite:** ________________
 
@@ -140,7 +152,7 @@ Put the **four family favorites** on the board, cut to a **final three** across 
 - Across the grounded directions, which **audience-pathways section** (players / coaches / parents) speaks to all three groups best?
 - Which **storytelling component** would we actually keep publishing content for a year from now?
 - If an experimental concept won your gut, which **grounded system carries its schedules, standings, and registration** — and does the pairing still feel like one brand?
-- What's **missing from all thirteen**?
+- What's **missing from all fifteen**?
 - Instinct check: if we had to launch one tomorrow, which — and which element or mechanism from another direction would you steal for it?
 
 ---
@@ -159,11 +171,13 @@ Put the **four family favorites** on the board, cut to a **final three** across 
 | 03 Sideline Day | People & community | | | | | | | |
 | 04 Spirit & Story | People & community | | | | | | | |
 | 11 First Names | People & community | | | | | | | |
+| 14 Spectrum | People & community | | | | | | | |
+| 15 Prism | People & community | | | | | | | |
 | 05 Flight Path | System & utility | | | | | | | |
 | 10 The Route Map | System & utility | | | | | | | |
 | 12 The Handbook | System & utility | | | | | | | |
 
-*Scores are a conversation aid, not a verdict — a strong disagreement in one cell is worth more than the totals. Expect the experimental directions (06, 07, 08, 11, 13) to score lopsided; that's information, not a problem.*
+*Scores are a conversation aid, not a verdict — a strong disagreement in one cell is worth more than the totals. Expect the experimental directions (06, 07, 08, 11, 13, 15) to score lopsided; that's information, not a problem.*
 
 ---
 
