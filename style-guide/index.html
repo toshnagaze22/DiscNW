@@ -3,1060 +3,319 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DiscNW — Design directions</title>
+<title>Design directions for discnw.org</title>
 <link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
-  /* Deliberately neutral: system fonts, white ground, quiet greys.
-     This page is the gallery wall label, not a ninth contender. */
-  :root {
-    --ink: #1a1a1a;
-    --grey: #52525b;
-    --grey-soft: #6b7280;
-    --line: #e4e4e7;
-    --line-strong: #d4d4d8;
-    --wash: #fafafa;
-    --ease-out: cubic-bezier(.2,.7,.3,1);
+  :root{
+    --ink:#191a1c; --desc:#3d3e42; --muted:#71716c; --line:#e7e6e1;
+    --bg:#f6f5f2; --card:#ffffff; --accent:#1f6e4a; --accent-ink:#175738;
+    --ease:cubic-bezier(.2,.7,.3,1);
   }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: var(--ink);
-    background: #ffffff;
-    line-height: 1.55;
-    font-size: 16px;
-    -webkit-font-smoothing: antialiased;
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Hanken Grotesk",system-ui,-apple-system,sans-serif;
+    font-size:17px; line-height:1.55; -webkit-font-smoothing:antialiased;
   }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
-
-  a { color: var(--ink); }
-  a:focus-visible,
-  button:focus-visible {
-    outline: 2px solid var(--ink);
-    outline-offset: 2px;
-    border-radius: 2px;
-  }
-
-  .sr-only {
-    position: absolute; width: 1px; height: 1px;
-    padding: 0; margin: -1px; overflow: hidden;
-    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
-  }
+  .wrap{max-width:1180px; margin:0 auto; padding:0 28px}
+  .mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+  a{color:inherit; text-decoration:none}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
 
   /* Header */
-  header.site { padding: 56px 0 40px; border-bottom: 1px solid var(--line); }
-  header.site h1 { font-size: 28px; font-weight: 700; margin: 0 0 12px; letter-spacing: -0.01em; }
-  header.site p { max-width: 62ch; margin: 0; color: var(--grey); }
-  header.site .brand { display: block; width: 140px; height: auto; margin: 0 0 20px; }
+  header.top{padding:64px 0 30px}
+  .eyebrow{font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent-ink); margin:0 0 20px}
+  header.top .mark{width:46px; height:auto; display:block; margin:0 0 22px}
+  h1{font-size:clamp(33px,5.2vw,56px); font-weight:800; line-height:1.02;
+    letter-spacing:-.02em; margin:0 0 20px; max-width:16ch}
+  .lede{font-size:clamp(17px,2.1vw,20px); color:var(--desc); max-width:60ch; margin:0 0 26px}
+  .lede b{color:var(--ink); font-weight:600}
+  .facts{display:flex; flex-wrap:wrap; gap:10px 12px; align-items:center;
+    font-family:"JetBrains Mono",monospace; font-size:12.5px; color:var(--muted)}
+  .facts .chip{border:1px solid var(--line); border-radius:999px; padding:5px 11px; background:var(--card)}
+  .facts .chip b{color:var(--ink); font-weight:600}
 
-  /* Tiers */
-  .tier { padding: 40px 0 8px; }
-  .tier + .tier { border-top: 1px solid var(--line); }
-  .tier-head { margin: 0 0 24px; }
-  .tier-head h2 { font-size: 21px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; }
-  .tier-head p { margin: 0; color: var(--grey); font-size: 14.5px; max-width: 68ch; }
-  .tier-head p strong { color: var(--ink); font-weight: 700; }
+  /* Family sections */
+  .fam{padding:44px 0 8px; border-top:1px solid var(--line); margin-top:40px}
+  .fam:first-of-type{border-top:0; margin-top:14px}
+  .fam-head{margin:0 0 26px; max-width:64ch}
+  .fam-idx{font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.14em; color:var(--muted)}
+  .fam-head h2{font-size:clamp(25px,3.4vw,36px); font-weight:800; letter-spacing:-.015em; margin:8px 0 8px}
+  .fam-q{margin:0; font-size:16.5px; color:var(--muted)}
+  .fam-q strong{color:var(--ink); font-weight:700}
 
-  /* Cards — hero preview beside the spec sheet */
-  .card {
-    display: grid;
-    grid-template-columns: minmax(0, 42%) 1fr;
-    align-items: stretch;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    margin: 0 0 24px;
-    background: #fff;
-    overflow: hidden;
-    transition: box-shadow .25s var(--ease-out), border-color .25s var(--ease-out);
-  }
-  .card:hover { box-shadow: 0 12px 30px -14px rgba(0,0,0,0.22); border-color: var(--line-strong); }
-  .card-media {
-    position: relative;
-    display: block;
-    align-self: stretch;
-    min-height: 240px;
-    background: var(--wash);
-    border-right: 1px solid var(--line);
-    overflow: hidden;
-  }
-  .card-media img {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    object-fit: cover; object-position: 50% 0%;
-    display: block;
-  }
-  /* A still of the redesigned homepage hero, anchored to the top so every
-     preview frames the same way. It never moves on scroll; hovering just
-     lifts the card and surfaces the View affordance. */
-  .card-media::after {
-    content: "View →";
-    position: absolute; left: 12px; bottom: 12px;
-    font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
-    color: #fff; background: rgba(20,20,22,0.82);
-    padding: 5px 10px; border-radius: 999px;
-    opacity: 0; transform: translateY(4px);
-    transition: opacity .25s var(--ease-out), transform .25s var(--ease-out);
-    pointer-events: none;
-  }
-  .card:hover .card-media::after { opacity: 1; transform: translateY(0); }
-  .card-body { padding: 28px 28px 24px; min-width: 0; }
-  .card-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 0 0 4px; }
-  .card-num {
-    font-size: 13px; font-weight: 600; color: var(--grey-soft);
-    letter-spacing: 0.08em;
-  }
-  .card h3 { font-size: 21px; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
-  .badge {
-    margin-left: auto; align-self: center;
-    font-size: 10.5px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.08em; padding: 3px 9px; border-radius: 999px;
-    border: 1px solid var(--line-strong); color: var(--grey-soft);
-    white-space: nowrap;
-  }
-  .badge.experimental { color: var(--grey); border-color: var(--grey); }
-  .tagline { font-style: italic; color: var(--grey); margin: 0 0 14px; }
-  .thesis { margin: 0 0 18px; max-width: 68ch; }
-
-  .spec-label {
-    display: block;
-    font-size: 11px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.1em; color: var(--grey-soft); margin: 0 0 6px;
-  }
-
-  .palette { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 0 0 16px; padding: 0; list-style: none; }
-  .palette li { display: flex; align-items: center; gap: 7px; }
-  .dot {
-    width: 18px; height: 18px; border-radius: 50%;
-    display: inline-block; flex: none;
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.14);
-  }
-  .swatch-name { font-size: 12.5px; color: var(--grey); }
-  .swatch-name code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: var(--grey-soft); }
-
-  .fonts, .signature, .mechanism { margin: 0 0 16px; font-size: 14.5px; color: var(--grey); max-width: 68ch; }
-  .fonts strong, .signature strong, .mechanism strong { color: var(--ink); font-weight: 600; }
-
-  .feels { margin: 0 0 16px; font-size: 13.5px; color: var(--grey-soft); max-width: 68ch; }
-  .feels strong { color: var(--grey); font-weight: 600; }
-
-  .verdicts { margin: 0 0 20px; padding: 14px 16px; background: var(--wash); border-radius: 6px; }
-  .verdicts p { margin: 0 0 8px; font-size: 14.5px; max-width: 70ch; }
-  .verdicts p:last-child { margin-bottom: 0; }
-  .verdicts strong { font-weight: 600; }
-
-  .open-link {
-    display: inline-block;
-    background: var(--ink); color: #fff;
-    text-decoration: none;
-    font-size: 14.5px; font-weight: 600;
-    padding: 10px 18px; border-radius: 6px;
-  }
-  .open-link:hover { background: #000; }
-
-  /* Comparison table */
-  .compare { padding: 40px 0 16px; border-top: 1px solid var(--line); }
-  .compare h2 { font-size: 21px; font-weight: 700; margin: 0 0 16px; }
-  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
-  table { border-collapse: collapse; width: 100%; min-width: 860px; font-size: 14px; }
-  .table-note { text-align: left; font-size: 13px; color: var(--grey-soft); margin: 0 0 10px; }
-  th, td { text-align: left; padding: 10px 14px; border: 1px solid var(--line); vertical-align: top; }
-  thead th { background: var(--wash); font-size: 12px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--grey); }
-  tbody th { font-weight: 600; white-space: nowrap; }
-  .dots { letter-spacing: 2px; font-size: 13px; color: var(--ink); white-space: nowrap; }
+  /* Grid + cards */
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:30px 30px}
+  .card{display:flex; flex-direction:column; background:var(--card);
+    border:1px solid var(--line); border-radius:16px; overflow:hidden;
+    transition:transform .28s var(--ease), box-shadow .28s var(--ease), border-color .28s var(--ease)}
+  .card:hover{transform:translateY(-4px); box-shadow:0 22px 44px -26px rgba(20,22,20,.38); border-color:#d7d6cf}
+  .shot{display:block; position:relative; aspect-ratio:16/10; overflow:hidden; background:#eeeeea;
+    border-bottom:1px solid var(--line)}
+  .shot img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 0%; display:block}
+  .meta{display:flex; flex-direction:column; gap:12px; padding:20px 22px 22px}
+  .row1{display:flex; align-items:center; gap:11px}
+  .idx{font-family:"JetBrains Mono",monospace; font-size:13px; color:var(--muted); font-weight:600}
+  .name{font-size:20px; font-weight:700; letter-spacing:-.01em}
+  .badge{margin-left:auto; font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+    letter-spacing:.1em; text-transform:uppercase; padding:4px 9px; border-radius:999px;
+    border:1px solid var(--line); color:var(--muted); white-space:nowrap}
+  .badge.grounded{background:#f1f4f1; border-color:#dbe5dd; color:var(--accent-ink)}
+  .desc{font-size:15.5px; line-height:1.5; color:var(--desc); margin:0}
+  .row3{display:flex; align-items:center; justify-content:space-between; margin-top:2px}
+  .dots{display:inline-flex; gap:6px}
+  .dot{width:15px; height:15px; border-radius:50%; box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+  .go{font-family:"JetBrains Mono",monospace; font-size:12.5px; font-weight:600; color:var(--accent-ink);
+    display:inline-flex; align-items:center; gap:6px}
+  .arw{transition:transform .28s var(--ease)}
+  .card:hover .arw{transform:translateX(4px)}
 
   /* Footer */
-  footer.site { margin-top: 40px; padding: 28px 0 56px; border-top: 1px solid var(--line); }
-  footer.site p { margin: 0 0 10px; color: var(--grey); font-size: 14.5px; max-width: 68ch; }
-  footer.site p:last-child { margin-bottom: 0; }
+  footer.end{margin-top:56px; border-top:1px solid var(--line); padding:34px 0 72px}
+  footer.end p{margin:0; color:var(--muted); font-size:15.5px; max-width:66ch}
+  footer.end a{color:var(--accent-ink); text-decoration:underline; text-underline-offset:2px}
 
-  /* Stack the hero above the spec sheet on narrow screens */
-  @media (max-width: 720px) {
-    .card { grid-template-columns: 1fr; }
-    .card-media {
-      border-right: 0; border-bottom: 1px solid var(--line);
-      aspect-ratio: 16 / 10; min-height: 0;
-    }
-    .card-body { padding: 22px 20px 20px; }
+  @media (max-width:820px){
+    .grid{grid-template-columns:1fr; gap:24px}
+    header.top{padding:44px 0 22px}
   }
-  @media (max-width: 560px) {
-    header.site { padding: 40px 0 28px; }
-    header.site h1 { font-size: 24px; }
-    .card-body { padding: 20px 18px 18px; }
-    .open-link { display: block; text-align: center; }
+  @media (prefers-reduced-motion:reduce){
+    .card, .arw{transition:none}
+    .card:hover{transform:none}
   }
 </style>
 </head>
 <body>
 
-<header class="site">
+<header class="top">
   <div class="wrap">
-    <img class="brand" src="assets/brand/logo-full.png" alt="DiscNW — formline disc mark and wordmark" width="1446" height="616">
-    <h1>DiscNW — Design directions</h1>
-    <p>Nineteen directions for the discnw.org redesign, each built around storytelling for players, coaches, and parents. They're sorted into five families — Place &amp; weather, Sport &amp; broadcast, People &amp; community, System &amp; utility, and Gameday, the loudest bring-the-energy tier — each opening with the question it answers about how discnw.org should feel; read a family top to bottom, where a small badge marks every direction as either a grounded, shippable design system or an experimental, single-mechanism homepage. Every direction is built on real DiscNW photography and film, with the formline mark integrated throughout and motion choreography informed by Awwwards Site-of-the-Year winners. Each card previews that direction's redesigned homepage; open it to explore the full page live. Open each one and react honestly — first impressions count. Nothing here is all-or-nothing: directions can be mixed, and a grounded system can adopt an experimental page's mechanism.</p>
+    <img class="mark" src="assets/brand/logo-mark.png" alt="DiscNW mark" width="590" height="616">
+    <p class="eyebrow">DiscNW &middot; site redesign</p>
+    <h1>Design directions for the new discnw.org</h1>
+    <p class="lede">Nineteen ways the site could look and feel &mdash; each one a real page you can click into and try. They're grouped into five families by the question they answer. <b>Open the ones that catch your eye and tell us what feels right for DiscNW.</b></p>
+    <div class="facts">
+      <span class="chip"><b>19</b> directions</span>
+      <span class="chip"><b>5</b> families</span>
+      <span class="chip"><b>Grounded</b> &middot; a full, shippable system</span>
+      <span class="chip"><b>Experimental</b> &middot; one bold idea</span>
+    </div>
   </div>
 </header>
 
 <main class="wrap">
 
-  <section class="tier" aria-labelledby="family-place-heading">
-    <div class="tier-head">
-      <h2 id="family-place-heading">Place &amp; weather</h2>
-      <p><strong>Does the site feel like HERE?</strong> Directions rooted in Puget Sound — its rain, light, forests, and seasons — so the brand could only belong to Seattle ultimate.</p>
+  <section class="fam" aria-labelledby="fam-place">
+    <div class="fam-head">
+      <span class="fam-idx">01 / 05</span>
+      <h2 id="fam-place">Place &amp; weather</h2>
+      <p class="fam-q"><strong>Does it feel like here?</strong> Rooted in Puget Sound — the rain, the light, the seasons we actually play in.</p>
     </div>
-
-    <article class="card">
-      <a class="card-media" href="01-evergreen.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/01-evergreen.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 01</span>
-        <h3>Evergreen</h3>
-        <span class="badge grounded">Grounded</span>
-      </div>
-      <p class="tagline">Rooted in the place we play</p>
-      <p class="thesis">Ultimate as the Pacific Northwest plays it — the brand is rooted in the wet grass, fog, firs, and long June light where the game actually happens.</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#14291F"></span><span class="swatch-name">Old Fir <code>#14291F</code></span></li>
-        <li><span class="dot" style="background:#24513B"></span><span class="swatch-name">Hemlock <code>#24513B</code></span></li>
-        <li><span class="dot" style="background:#3DAE54"></span><span class="swatch-name">Wet Grass <code>#3DAE54</code></span></li>
-        <li><span class="dot" style="background:#94A9B4"></span><span class="swatch-name">Fog Bank <code>#94A9B4</code></span></li>
-        <li><span class="dot" style="background:#F1F3EE"></span><span class="swatch-name">Morning Fog <code>#F1F3EE</code></span></li>
-        <li><span class="dot" style="background:#44554D"></span><span class="swatch-name">Rain Slate <code>#44554D</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Archivo (expanded, 700–900) + Source Sans 3</p>
-      <p class="signature"><strong>Signature:</strong> Real weather as the structure — fog and old-growth photography as full-bleed atmosphere bands with quiet fir-plate captions, the formline mark crest-quiet on deep fir, and weather-paced atmosphere choreography (mask-rise masthead, clip-path band wipes, magnetic CTAs) on one house easing language.</p>
-      <p class="feels"><strong>Feels like:</strong> weather moving through — bands wipe in like lifting fog, type rises out of the mist, and buttons lean gently toward your hand.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> you want a brand that could only belong to Puget Sound ultimate — instantly familiar to anyone who's played a March game in the rain, and warm enough to hand a nervous parent.</p>
-        <p><strong>Think twice if:</strong> you want the site to lead with scores, speed, and sports-tech energy — Evergreen leads with place and belonging, and it will always feel more forest than stadium.</p>
-      </div>
-
-      <a class="open-link" href="01-evergreen.html">Open 01 — Evergreen</a>
+    <div class="grid">
+      <a class="card" href="01-evergreen.html">
+        <span class="shot"><img src="previews/scroll/01-evergreen.jpeg" alt="Preview of the Evergreen homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">01</span><span class="name">Evergreen</span><span class="badge grounded">Grounded</span></span>
+          <span class="desc">Ultimate the way the Northwest plays it: wet grass, fog, firs, and long June light.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#14291F"></span><span class="dot" style="background:#24513B"></span><span class="dot" style="background:#3DAE54"></span><span class="dot" style="background:#94A9B4"></span><span class="dot" style="background:#F1F3EE"></span><span class="dot" style="background:#44554D"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
+      <a class="card" href="07-understory.html">
+        <span class="shot"><img src="previews/scroll/07-understory.jpeg" alt="Preview of the The Understory homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">07</span><span class="name">The Understory</span><span class="badge experimental">Experimental</span></span>
+          <span class="desc">The season as a photographic field guide, in an old national-park-poster style.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#F5EEDA"></span><span class="dot" style="background:#1F3A2E"></span><span class="dot" style="background:#7E9AA8"></span><span class="dot" style="background:#AE4527"></span><span class="dot" style="background:#5B8A4A"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
+      <a class="card" href="09-rain-or-shine.html">
+        <span class="shot"><img src="previews/scroll/09-rain-or-shine.jpeg" alt="Preview of the Rain or Shine homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">09</span><span class="name">Rain or Shine</span><span class="badge grounded">Grounded</span></span>
+          <span class="desc">Seattle weather as a badge, not an apology. A live field board where nearly every game reads ON.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#161D24"></span><span class="dot" style="background:#EDF0F1"></span><span class="dot" style="background:#3BD97F"></span><span class="dot" style="background:#0C6E3E"></span><span class="dot" style="background:#F5AE3D"></span><span class="dot" style="background:#46545F"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
+      <a class="card" href="13-last-light.html">
+        <span class="shot"><img src="previews/scroll/13-last-light.jpeg" alt="Preview of the Last Light homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">13</span><span class="name">Last Light</span><span class="badge experimental">Experimental</span></span>
+          <span class="desc">One scroll through a year of Northwest light, from 9 p.m. June sun to December's early dark.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#14112A"></span><span class="dot" style="background:#E1955A"></span><span class="dot" style="background:#D08238"></span><span class="dot" style="background:#3C5480"></span><span class="dot" style="background:#F0B87E"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
     </div>
-    </article>
-
-    <article class="card">
-      <a class="card-media" href="07-understory.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/07-understory.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 07</span>
-        <h3>The Understory</h3>
-        <span class="badge experimental">Experimental</span>
-      </div>
-      <p class="tagline">The place is the brand, photographed in the field</p>
-      <p class="thesis">A photographic field guide to the Pacific Northwest season, kept in the WPA park-poster voice: the place is the brand, and the season is a trail map through it.</p>
-
-      <span class="spec-label">Palette — poster inks</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#F5EEDA"></span><span class="swatch-name">Paper Cream <code>#F5EEDA</code></span></li>
-        <li><span class="dot" style="background:#1F3A2E"></span><span class="swatch-name">Deep Fir <code>#1F3A2E</code></span></li>
-        <li><span class="dot" style="background:#7E9AA8"></span><span class="swatch-name">Glacier <code>#7E9AA8</code></span></li>
-        <li><span class="dot" style="background:#AE4527"></span><span class="swatch-name">Sunset Coral <code>#AE4527</code></span></li>
-        <li><span class="dot" style="background:#5B8A4A"></span><span class="swatch-name">Meadow <code>#5B8A4A</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Big Shoulders (WPA condensed caps) + Source Serif 4 (the field-guide voice)</p>
-      <p class="signature"><strong>Signature:</strong> A photographic field guide to the season — real fog-and-old-growth imagery carries the place while one dashed coral trail draws itself down the year, waypoint photographs develop like specimen prints, and the formline mark stands as the trailhead medallion.</p>
-      <p class="mechanism"><strong>The mechanism:</strong> one scroll-linked trail — the dashed coral route draws itself down the year while the fog-forest hero drifts in real-photo parallax, transform-only and clamped — settling to a fully drawn route without JS or with reduced motion.</p>
-      <p class="feels"><strong>Feels like:</strong> a walk down the trail — the route draws underfoot, waypoints pin-drop into place, and specimen photographs develop like prints in the tray.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> you want an identity no other sports organization in America could copy — place-first, craft-heavy, warm to parents and volunteers, and endlessly extensible into posters, patches, stamps and sideline merch.</p>
-        <p><strong>Think twice if:</strong> you need score-forward, sports-tech energy or fast template production — here the field-guide craft is the brand, and every major new page asks for photography worth pinning.</p>
-      </div>
-
-      <a class="open-link" href="07-understory.html">Open 07 — The Understory</a>
-    </div>
-    </article>
-
-    <article class="card">
-      <a class="card-media" href="09-rain-or-shine.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/09-rain-or-shine.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 09</span>
-        <h3>Rain or Shine</h3>
-        <span class="badge grounded">Grounded</span>
-      </div>
-      <p class="tagline">Seattle weather turned from apology into credential</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#161D24"></span><span class="swatch-name">Front Ink <code>#161D24</code></span></li>
-        <li><span class="dot" style="background:#EDF0F1"></span><span class="swatch-name">Overcast Paper <code>#EDF0F1</code></span></li>
-        <li><span class="dot" style="background:#3BD97F"></span><span class="swatch-name">Radar Green <code>#3BD97F</code></span></li>
-        <li><span class="dot" style="background:#0C6E3E"></span><span class="swatch-name">Wet-Season Green <code>#0C6E3E</code></span></li>
-        <li><span class="dot" style="background:#F5AE3D"></span><span class="swatch-name">Sunbreak <code>#F5AE3D</code></span></li>
-        <li><span class="dot" style="background:#46545F"></span><span class="swatch-name">Barometer Slate <code>#46545F</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Space Grotesk + IBM Plex Mono</p>
-      <p class="signature"><strong>Signature:</strong> A meteorological field bulletin that treats Seattle weather as a credential rather than an apology — anchored by a live conditions board where you read straight down the status column and keep finding the same word: ON.</p>
-      <p class="feels"><strong>Feels like:</strong> a departures board ticking through field status on the hour, then going dead still.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> You want a brand no other league could wear — Seattle weather turned from an excuse into a credential, a live conditions board that answers the only question players ask at dawn, and data warm enough to reassure a parent. It could only belong to ultimate in the Puget Sound rain.</p>
-        <p><strong>Think twice if:</strong> Your front door needs sun-and-smiles reassurance first. A monospace bulletin leads with facts and instruments, and its charm is dry — it can read cool to a brand-new family for a beat before the devotion in the data lands.</p>
-      </div>
-
-      <a class="open-link" href="09-rain-or-shine.html">Open 09 — Rain or Shine</a>
-    </div>
-    </article>
-
-    <article class="card">
-      <a class="card-media" href="13-last-light.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/13-last-light.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 13</span>
-        <h3>Last Light</h3>
-        <span class="badge experimental">Experimental</span>
-      </div>
-      <p class="tagline">One scroll through a whole year of Seattle light</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#14112A"></span><span class="swatch-name">Zenith Ink <code>#14112A</code></span></li>
-        <li><span class="dot" style="background:#E1955A"></span><span class="swatch-name">Nine-PM Gold <code>#E1955A</code></span></li>
-        <li><span class="dot" style="background:#D08238"></span><span class="swatch-name">October Amber <code>#D08238</code></span></li>
-        <li><span class="dot" style="background:#3C5480"></span><span class="swatch-name">Blue Hour <code>#3C5480</code></span></li>
-        <li><span class="dot" style="background:#F0B87E"></span><span class="swatch-name">Returning Peach <code>#F0B87E</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Fraunces + Spline Sans Mono</p>
-      <p class="signature"><strong>Signature:</strong> The page is a year-long light clock — five real Seattle skies crossfaded by scroll, every DiscNW program placed at the hour of light it is actually played in, and a year that deliberately closes brightening at Spring Reign rather than darkening.</p>
-      <p class="feels"><strong>Feels like:</strong> the sky easing through a whole year of light as you scroll — dusk to noon to blue hour and back to spring.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> The calendar is your best argument — you want visitors to feel why a Seattle season is worth registering for before anyone tells them, and one scroll to explain the entire year, ending on the spring CTA.</p>
-        <p><strong>Think twice if:</strong> You need a dense utility homepage — standings, schedules, dozens of links above the fold. A light clock wants very few things on stage at once, and its gradients ask for restraint from every future content editor.</p>
-      </div>
-
-      <a class="open-link" href="13-last-light.html">Open 13 — Last Light</a>
-    </div>
-    </article>
-
   </section>
 
-  <section class="tier" aria-labelledby="family-sport-heading">
-    <div class="tier-head">
-      <h2 id="family-sport-heading">Sport &amp; broadcast</h2>
-      <p><strong>Does it feel like the GAME?</strong> Directions that speak to the athlete — the film room, the flight of a single point, the scoreboard — giving a rec-league game the seriousness players feel.</p>
+  <section class="fam" aria-labelledby="fam-sport">
+    <div class="fam-head">
+      <span class="fam-idx">02 / 05</span>
+      <h2 id="fam-sport">Sport &amp; broadcast</h2>
+      <p class="fam-q"><strong>Does it feel like the game?</strong> The speed, the film, the score.</p>
     </div>
-
-    <article class="card">
-      <a class="card-media" href="02-game-film.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/02-game-film.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 02</span>
-        <h3>Game Film</h3>
-        <span class="badge grounded">Grounded</span>
-      </div>
-      <p class="tagline">The sport taken seriously, chalk and floodlights</p>
-      <p class="thesis">DiscNW players train, scheme, and compete — so the site speaks to the athlete with playbook diagrams, film-room contrast, and stat culture, with Spirit of the Game as its code of honor rather than a softener.</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#0B1626"></span><span class="swatch-name">Night Game <code>#0B1626</code></span></li>
-        <li><span class="dot" style="background:#11243D"></span><span class="swatch-name">Field Navy <code>#11243D</code></span></li>
-        <li><span class="dot" style="background:#F2F6F8"></span><span class="swatch-name">Chalk <code>#F2F6F8</code></span></li>
-        <li><span class="dot" style="background:#FF6B1C"></span><span class="swatch-name">Cone Orange <code>#FF6B1C</code></span></li>
-        <li><span class="dot" style="background:#6F9E83"></span><span class="swatch-name">Turf Line <code>#6F9E83</code></span></li>
-        <li><span class="dot" style="background:#8FA3BA"></span><span class="swatch-name">Press Box Slate <code>#8FA3BA</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Barlow Condensed + Inter</p>
-      <p class="signature"><strong>Signature:</strong> Kinetic broadcast — the page opens like a title sequence, headlines slide from masks, the box score rolls to its totals, and hovering real game film scrubs it like a coach at the tape — every frame signed by the formline crest.</p>
-      <p class="feels"><strong>Feels like:</strong> floodlit precision — one easing language, 90ms staggers, digits rolling like an odometer before landing true, and film that answers your pointer like a jog wheel.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> your first job is convincing competitive players, captains, and ambitious teenagers that DiscNW takes the sport as seriously as they do — and you want parents to read that seriousness as legitimacy.</p>
-        <p><strong>Think twice if:</strong> the nervous eight-year-old and the brand-new parent are your front door — film-room intensity can read as a tryout rather than a welcome, and this direction needs discipline to stay friendly at the edges.</p>
-      </div>
-
-      <a class="open-link" href="02-game-film.html">Open 02 — Game Film</a>
+    <div class="grid">
+      <a class="card" href="02-game-film.html">
+        <span class="shot"><img src="previews/scroll/02-game-film.jpeg" alt="Preview of the Game Film homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">02</span><span class="name">Game Film</span><span class="badge grounded">Grounded</span></span>
+          <span class="desc">The film room. Ultimate broken down like a coach going through tape — chalk, floodlights, real footage.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#0B1626"></span><span class="dot" style="background:#11243D"></span><span class="dot" style="background:#F2F6F8"></span><span class="dot" style="background:#FF6B1C"></span><span class="dot" style="background:#6F9E83"></span><span class="dot" style="background:#8FA3BA"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
+      <a class="card" href="06-one-point.html">
+        <span class="shot"><img src="previews/scroll/06-one-point.jpeg" alt="Preview of the One Point homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">06</span><span class="name">One Point</span><span class="badge experimental">Experimental</span></span>
+          <span class="desc">One point of ultimate, start to finish. The whole page is a single play you scroll through.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#070D1E"></span><span class="dot" style="background:#16203F"></span><span class="dot" style="background:#59303F"></span><span class="dot" style="background:#F2EEE3"></span><span class="dot" style="background:#FF6A2B"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
+      <a class="card" href="08-game-to-15.html">
+        <span class="shot"><img src="previews/scroll/08-game-to-15.jpeg" alt="Preview of the Game to 15 homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">08</span><span class="name">Game to 15</span><span class="badge experimental">Experimental</span></span>
+          <span class="desc">The site scored like a game to 15. Fifteen big numbers, one true thing about ultimate at each.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#FAFAF7"></span><span class="dot" style="background:#101010"></span><span class="dot" style="background:#FF4A00"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
     </div>
-    </article>
-
-    <article class="card">
-      <a class="card-media" href="06-one-point.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/06-one-point.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 06</span>
-        <h3>One Point</h3>
-        <span class="badge experimental">Experimental</span>
-      </div>
-      <p class="tagline">A single point of ultimate, narrated pull to catch</p>
-      <p class="thesis">The page is a single point of ultimate, narrated pull to catch: one ember flight line draws itself down the whole story as you scroll, while the evening deepens from dusk to field-light navy around it.</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#070D1E"></span><span class="swatch-name">First Dark <code>#070D1E</code></span></li>
-        <li><span class="dot" style="background:#16203F"></span><span class="swatch-name">Field Navy <code>#16203F</code></span></li>
-        <li><span class="dot" style="background:#59303F"></span><span class="swatch-name">Duskline <code>#59303F</code></span></li>
-        <li><span class="dot" style="background:#F2EEE3"></span><span class="swatch-name">Chalk <code>#F2EEE3</code></span></li>
-        <li><span class="dot" style="background:#FF6A2B"></span><span class="swatch-name">Ember <code>#FF6A2B</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Big Shoulders Display + Schibsted Grotesk, with Spline Sans Mono for the broadcast chyrons</p>
-      <p class="signature"><strong>Signature:</strong> One point, pull to catch — an ember flight line drags with real momentum past mask-revealed headlines while a crest-badged broadcast bug calls the stations, until the cursor becomes the disc and the corner flips CAUGHT — GAME ON.</p>
-      <p class="mechanism"><strong>The mechanism:</strong> one velocity-lagged motion system — the flight line and its disc lerp toward your scroll instead of tracking it 1:1, while the corner chyron rolls at every station; without JS, in print, or with reduced motion, the route renders fully flown.</p>
-      <p class="feels"><strong>Feels like:</strong> thrown, not tracked — the line lags your scroll and catches up, the chyron cuts to the next play, and the dusk glow eases out as you descend.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> you want the presentation people retell the next morning — a front door that argues, in one continuous gesture, that a rec league point deserves broadcast treatment, and that makes registering feel like catching the goal.</p>
-        <p><strong>Think twice if:</strong> you need workhorse information architecture first — this is a narrative cover, not a schedule tool, and standings, rosters, and rainout utilities still need one of the grounded systems behind it.</p>
-      </div>
-
-      <a class="open-link" href="06-one-point.html">Open 06 — One Point</a>
-    </div>
-    </article>
-
-    <article class="card">
-      <a class="card-media" href="08-game-to-15.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/08-game-to-15.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 08</span>
-        <h3>Game to 15</h3>
-        <span class="badge experimental">Experimental</span>
-      </div>
-      <p class="tagline">The whole site is a game to 15</p>
-      <p class="thesis">The site is a game of Ultimate played to 15: a fixed scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point — the whole personality lives in the typesetting.</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#FAFAF7"></span><span class="swatch-name">Line Chalk <code>#FAFAF7</code></span></li>
-        <li><span class="dot" style="background:#101010"></span><span class="swatch-name">Stat Ink <code>#101010</code></span></li>
-        <li><span class="dot" style="background:#FF4A00"></span><span class="swatch-name">Universe Orange <code>#FF4A00</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Space Grotesk (colossal tabular numerals and the scoreboard) + Newsreader (the editorial columns, sharp and small)</p>
-      <p class="signature"><strong>Signature:</strong> The crested score strip — "DISCNW 0 — 0 YOU" now carrying an equalizer, a pulsing LIVE bug and a momentum meter — tallies your reading. Each colossal numeral lands on an overshoot pop and detonates an abstract ring + multi-color spark burst in its own accent (indigo, tidal, orange), a halftime video highlight breaks in mid-run, the final points run hot, and at 15 the orange still floods down out of the scoreboard itself.</p>
-      <p class="mechanism"><strong>The mechanism:</strong> a fixed scoreboard scores a point each time a numbered section crosses mid-viewport — scroll back and the point un-scores — with a static strip for reduced motion and no-JS.</p>
-      <p class="feels"><strong>Feels like:</strong> a live game building to universe point — scoreboard kinetics with the crowd turned up. Numbers slam and spark as they land, each point flashes its own color, the momentum meter fills and the LIVE strip surges through the hot final stretch, until point 15 erupts into a full-screen orange flood.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> you want the page a jury retells in one sentence — "the site is a game to 15" — pure typography turned into a live broadcast: the cheapest hype-tier direction to build flawlessly, with the sport's own structure doing the branding.</p>
-        <p><strong>Think twice if:</strong> you need a working homepage, not a manifesto — schedules, standings and registration paths still require one of the grounded directions underneath this louder voice.</p>
-      </div>
-
-      <a class="open-link" href="08-game-to-15.html">Open 08 — Game to 15</a>
-    </div>
-    </article>
-
   </section>
 
-  <section class="tier" aria-labelledby="family-people-heading">
-    <div class="tier-head">
-      <h2 id="family-people-heading">People &amp; community</h2>
-      <p><strong>Does it feel like US?</strong> Directions that lead with the people — real voices, a Saturday sideline, ten thousand first names — so every program reads as what it gives a person.</p>
+  <section class="fam" aria-labelledby="fam-people">
+    <div class="fam-head">
+      <span class="fam-idx">03 / 05</span>
+      <h2 id="fam-people">People &amp; community</h2>
+      <p class="fam-q"><strong>Does it feel like us?</strong> About the players, not the product.</p>
     </div>
-
-    <article class="card">
-      <a class="card-media" href="03-sideline.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/03-sideline.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 03</span>
-        <h3>Sideline Day</h3>
-        <span class="badge grounded">Grounded</span>
-      </div>
-      <p class="tagline">Saturday at the fields, zero intimidation</p>
-      <p class="thesis">The truest picture of DiscNW is a Saturday at the fields — camp chairs, orange slices, a first layout — so the site should feel like being welcomed onto that sideline, built first for parents and brand-new players.</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#1F7A33"></span><span class="swatch-name">Field Green <code>#1F7A33</code></span></li>
-        <li><span class="dot" style="background:#1D6FB5"></span><span class="swatch-name">Clear Sky <code>#1D6FB5</code></span></li>
-        <li><span class="dot" style="background:#FFB61E"></span><span class="swatch-name">Marigold <code>#FFB61E</code></span></li>
-        <li><span class="dot" style="background:#1B3022"></span><span class="swatch-name">Evergreen Ink <code>#1B3022</code></span></li>
-        <li><span class="dot" style="background:#FFFFFF"></span><span class="swatch-name">Daylight White <code>#FFFFFF</code></span></li>
-        <li><span class="dot" style="background:#EAF4FC"></span><span class="swatch-name">Morning Sky <code>#EAF4FC</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Baloo 2 + Atkinson Hyperlegible</p>
-      <p class="signature"><strong>Signature:</strong> The sunny sticker-sheet welcome — die-cut water-bottle badges curated like a good sticker sheet, where the DiscNW crest signs the page at an easy 2° and every badge lands with a spring.</p>
-      <p class="feels"><strong>Feels like:</strong> springy and tactile — stickers pop in with peel-and-press physics, the hero photo lifts its curtain, and marigold highlighter sweeps under every overline.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> growing the community is the job — you want the site that recruits new families and first-time players hardest, and makes "no barriers" something a visitor can feel in the first five seconds.</p>
-        <p><strong>Think twice if:</strong> your competitive club players and tournament veterans need to see themselves first — this direction leads with newcomers, and elite intensity deliberately rides in the back seat.</p>
-      </div>
-
-      <a class="open-link" href="03-sideline.html">Open 03 — Sideline Day</a>
+    <div class="grid">
+      <a class="card" href="03-sideline.html">
+        <span class="shot"><img src="previews/scroll/03-sideline.jpeg" alt="Preview of the Sideline Day homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">03</span><span class="name">Sideline Day</span><span class="badge grounded">Grounded</span></span>
+          <span class="desc">A bright, friendly Saturday at the fields. Built for the family that showed up nervous and left hooked.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#1F7A33"></span><span class="dot" style="background:#1D6FB5"></span><span class="dot" style="background:#FFB61E"></span><span class="dot" style="background:#1B3022"></span><span class="dot" style="background:#FFFFFF"></span><span class="dot" style="background:#EAF4FC"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
+      <a class="card" href="04-spirit-editorial.html">
+        <span class="shot"><img src="previews/scroll/04-spirit-editorial.jpeg" alt="Preview of the Spirit & Story homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">04</span><span class="name">Spirit & Story</span><span class="badge grounded">Grounded</span></span>
+          <span class="desc">A community magazine. Big quotes, real photos, players telling it in their own words.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#FAFAF7"></span><span class="dot" style="background:#10192B"></span><span class="dot" style="background:#0E5F41"></span><span class="dot" style="background:#5E635A"></span><span class="dot" style="background:#E9F0E9"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
+      <a class="card" href="11-first-names.html">
+        <span class="shot"><img src="previews/scroll/11-first-names.jpeg" alt="Preview of the First Names homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">11</span><span class="name">First Names</span><span class="badge experimental">Experimental</span></span>
+          <span class="desc">The community as ten thousand first names — a roster you scroll and start to recognize.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#FAF4E8"></span><span class="dot" style="background:#23201B"></span><span class="dot" style="background:#17703D"></span><span class="dot" style="background:#2C55C4"></span><span class="dot" style="background:#B23A1C"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
+      <a class="card" href="14-spectrum.html">
+        <span class="shot"><img src="previews/scroll/14-spectrum.jpeg" alt="Preview of the Spectrum homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">14</span><span class="name">Spectrum</span><span class="badge grounded">Grounded</span></span>
+          <span class="desc">Every color, everyone in. “A community without barriers,” said out loud.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#E24C3F"></span><span class="dot" style="background:#EF7D33"></span><span class="dot" style="background:#F2B02E"></span><span class="dot" style="background:#2FA05C"></span><span class="dot" style="background:#1699AC"></span><span class="dot" style="background:#3E59C4"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
+      <a class="card" href="15-prism.html">
+        <span class="shot"><img src="previews/scroll/15-prism.jpeg" alt="Preview of the Prism homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">15</span><span class="name">Prism</span><span class="badge experimental">Experimental</span></span>
+          <span class="desc">White light holds every color. The site becomes a prism you fall through.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#0A0A12"></span><span class="dot" style="background:#FFFFFF"></span><span class="dot" style="background:#FF4D6D"></span><span class="dot" style="background:#3EE08A"></span><span class="dot" style="background:#4D7BFF"></span><span class="dot" style="background:#B06BFF"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
     </div>
-    </article>
-
-    <article class="card">
-      <a class="card-media" href="04-spirit-editorial.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/04-spirit-editorial.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 04</span>
-        <h3>Spirit &amp; Story</h3>
-        <span class="badge grounded">Grounded</span>
-      </div>
-      <p class="tagline">Every program is a person's story</p>
-      <p class="thesis">The site reads like a beautifully edited community magazine — real voices at headline scale, documentary photography, Spirit of the Game as the editorial voice — so every page answers "what will this give my kid?" with a person, not a pitch.</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#FAFAF7"></span><span class="swatch-name">Pull-Sky Paper <code>#FAFAF7</code></span></li>
-        <li><span class="dot" style="background:#10192B"></span><span class="swatch-name">Puget Ink <code>#10192B</code></span></li>
-        <li><span class="dot" style="background:#0E5F41"></span><span class="swatch-name">Spirit Green <code>#0E5F41</code></span></li>
-        <li><span class="dot" style="background:#5E635A"></span><span class="swatch-name">Sideline Grey <code>#5E635A</code></span></li>
-        <li><span class="dot" style="background:#E9F0E9"></span><span class="swatch-name">Grass Tint <code>#E9F0E9</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Newsreader + Public Sans</p>
-      <p class="signature"><strong>Signature:</strong> The community magazine that reads like print and moves like one being made — the oversized attributed pull quote ("— Priya S., Spring Reign parent") inks in line-by-line, photographs develop on arrival, rules draw themselves, and the formline mark is set like a press seal.</p>
-      <p class="feels"><strong>Feels like:</strong> a press run — ink dries line-by-line, prints come off the roller, and the colophon seal lands last.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> you want the site itself to prove the storytelling goal — every program introduced by a person who lived it — and you can commit to gathering a handful of real photos and quotes each season to keep the magazine honest.</p>
-        <p><strong>Think twice if:</strong> registration throughput is the whole job this year: an editorial site needs a steady trickle of fresh stories, and a magazine with stale features reads worse than a plain catalog.</p>
-      </div>
-
-      <a class="open-link" href="04-spirit-editorial.html">Open 04 — Spirit &amp; Story</a>
-    </div>
-    </article>
-
-    <article class="card">
-      <a class="card-media" href="11-first-names.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/11-first-names.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 11</span>
-        <h3>First Names</h3>
-        <span class="badge experimental">Experimental</span>
-      </div>
-      <p class="tagline">The community as a living roster of ten thousand names</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#FAF4E8"></span><span class="swatch-name">Warm Paper <code>#FAF4E8</code></span></li>
-        <li><span class="dot" style="background:#23201B"></span><span class="swatch-name">Roster Ink <code>#23201B</code></span></li>
-        <li><span class="dot" style="background:#17703D"></span><span class="swatch-name">Camp Green <code>#17703D</code></span></li>
-        <li><span class="dot" style="background:#2C55C4"></span><span class="swatch-name">League Blue <code>#2C55C4</code></span></li>
-        <li><span class="dot" style="background:#B23A1C"></span><span class="swatch-name">Hat-League Brick <code>#B23A1C</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Bricolage Grotesque + Instrument Sans</p>
-      <p class="signature"><strong>Signature:</strong> The community rendered as a living roster of ten thousand first names — a composed census as the hero, five names followed through real programs until the roster becomes a set of stories, every screen arguing toward one CTA: add your name.</p>
-      <p class="feels"><strong>Feels like:</strong> a crowd assembling — names rising in tight staggers, a census filling in, never confetti.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> You want the mission self-evident — people first, programs shown as what they do for a person — and a hero no other sports organization can copy without also having ten thousand names behind it.</p>
-        <p><strong>Think twice if:</strong> You need program-first wayfinding on day one, or invented sample names would sit uneasily beside your real member data. This direction is strongest when the wall eventually goes real — opt-in first names from actual registration.</p>
-      </div>
-
-      <a class="open-link" href="11-first-names.html">Open 11 — First Names</a>
-    </div>
-    </article>
-
-    <article class="card">
-      <a class="card-media" href="14-spectrum.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/14-spectrum.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 14</span>
-        <h3>Spectrum</h3>
-        <span class="badge grounded">Grounded</span>
-      </div>
-      <p class="tagline">An Ultimate community without barriers, said out loud in colour</p>
-      <p class="thesis">DiscNW's "community without barriers" made literal: colour is treated as light rather than decoration, and instead of one brand hue the whole spectrum carries the identity. Every audience shares one continuous ribbon, so "everyone belongs" reads as structure, not slogan.</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#E24C3F"></span><span class="swatch-name">Coral <code>#E24C3F</code></span></li>
-        <li><span class="dot" style="background:#EF7D33"></span><span class="swatch-name">Ember <code>#EF7D33</code></span></li>
-        <li><span class="dot" style="background:#F2B02E"></span><span class="swatch-name">Gold <code>#F2B02E</code></span></li>
-        <li><span class="dot" style="background:#2FA05C"></span><span class="swatch-name">Meadow <code>#2FA05C</code></span></li>
-        <li><span class="dot" style="background:#1699AC"></span><span class="swatch-name">Tidal <code>#1699AC</code></span></li>
-        <li><span class="dot" style="background:#3E59C4"></span><span class="swatch-name">Indigo <code>#3E59C4</code></span></li>
-        <li><span class="dot" style="background:#8B4DC6"></span><span class="swatch-name">Violet <code>#8B4DC6</code></span></li>
-        <li><span class="dot" style="background:#1B1B22"></span><span class="swatch-name">Ink <code>#1B1B22</code></span></li>
-        <li><span class="dot" style="background:#FAF9F5"></span><span class="swatch-name">Paper <code>#FAF9F5</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Hanken Grotesk + Figtree</p>
-      <p class="signature"><strong>Signature:</strong> The spectrum ribbon — one smooth full-spectrum keyline that recurs under the wordmark and as section dividers, then becomes a "belonging bar" where every DiscNW audience (youth → teens → adults → hat &amp; mixed → coaches → volunteers → families) takes a place along one continuous spectrum, none of them at the edge — all riding above a breathing spectral-light hero.</p>
-      <p class="feels"><strong>Feels like:</strong> soft colour breathing behind the headline like light through frosted glass — calm, premium, joyful, and unmistakably for everyone.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> You want the brand to say "everyone" out loud — a joyful, premium, unmistakably inclusive system that makes "an Ultimate community without barriers" something a visitor feels in the first second, without ever tipping into novelty or a pride-flag graphic.</p>
-        <p><strong>Think twice if:</strong> You want one ownable brand colour and a quiet, corporate restraint. Spectrum commits to the whole rainbow — it asks every future editor to protect the taste that keeps it a festival identity, not a flag.</p>
-      </div>
-
-      <a class="open-link" href="14-spectrum.html">Open 14 — Spectrum</a>
-    </div>
-    </article>
-
-    <article class="card">
-      <a class="card-media" href="15-prism.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/15-prism.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 15</span>
-        <h3>Prism</h3>
-        <span class="badge experimental">Experimental</span>
-      </div>
-      <p class="tagline">Every color. One community.</p>
-      <p class="thesis">The rainbow grounded as belonging, not decoration: if a beam of white light holds every color, so can a community without barriers. Each DiscNW program reads as a different color of the same light — and at the close they recombine to white.</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#0A0A12"></span><span class="swatch-name">Void <code>#0A0A12</code></span></li>
-        <li><span class="dot" style="background:#FFFFFF"></span><span class="swatch-name">Light Source <code>#FFFFFF</code></span></li>
-        <li><span class="dot" style="background:#FF4D6D"></span><span class="swatch-name">Spectrum Red <code>#FF4D6D</code></span></li>
-        <li><span class="dot" style="background:#3EE08A"></span><span class="swatch-name">Spectrum Green <code>#3EE08A</code></span></li>
-        <li><span class="dot" style="background:#4D7BFF"></span><span class="swatch-name">Spectrum Blue <code>#4D7BFF</code></span></li>
-        <li><span class="dot" style="background:#B06BFF"></span><span class="swatch-name">Spectrum Violet <code>#B06BFF</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Outfit (airy geometric grotesk, thin as a beam) + Hanken Grotesk (clean, legible body on the dark glass) + Spline Sans Mono (the wavelength readouts and labels)</p>
-      <p class="signature"><strong>Signature:</strong> The prism split — a beam of white light fanning into the full spectrum — from the hero down through every section transition, so the DiscNW story keeps emerging out of the light; and the white formline mark held in clearspace as the light source every color flows from, landing large at the close above "Every color. One community."</p>
-      <p class="feels"><strong>Feels like:</strong> a beam of white light entering a prism and fanning into the whole spectrum — color flowing like an aurora on near-black while the story surfaces panel by panel.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> You want the boldest, most emotional front door in the kit — one that makes "an Ultimate community without barriers" something a visitor can see in five seconds: white light holding every color, and a community that does the same. No other sports org could wear it without also meaning it.</p>
-        <p><strong>Think twice if:</strong> You need a dense utility homepage — standings, schedules, dozens of links above the fold — or you can't guarantee editors will keep text on the dark panels. A spectral light show wants very few things on stage and real discipline to stay legible.</p>
-      </div>
-
-      <a class="open-link" href="15-prism.html">Open 15 — Prism</a>
-    </div>
-    </article>
-
   </section>
 
-  <section class="tier" aria-labelledby="family-system-heading">
-    <div class="tier-head">
-      <h2 id="family-system-heading">System &amp; utility</h2>
-      <p><strong>Does it WORK harder?</strong> Directions that make the site itself do more — a trusted navy given lift, a transit map of every program, a numbered handbook — so visitors find the answer fast.</p>
+  <section class="fam" aria-labelledby="fam-system">
+    <div class="fam-head">
+      <span class="fam-idx">04 / 05</span>
+      <h2 id="fam-system">System &amp; utility</h2>
+      <p class="fam-q"><strong>Does it work harder?</strong> Built to help people find what they came for.</p>
     </div>
-
-    <article class="card">
-      <a class="card-media" href="05-flight-path.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/05-flight-path.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 05</span>
-        <h3>Flight Path</h3>
-        <span class="badge grounded">Grounded</span>
-      </div>
-      <p class="tagline">The brand you trust, given lift</p>
-      <p class="thesis">Keep the navy 10,000 members already trust and give it lift — sky gradients, generous space, product-grade polish, and one disc-flight arc that ties every page together.</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#1c3b65"></span><span class="swatch-name">Anchor Navy <code>#1c3b65</code></span></li>
-        <li><span class="dot" style="background:#11243d"></span><span class="swatch-name">Night Flight <code>#11243d</code></span></li>
-        <li><span class="dot" style="background:#27528d"></span><span class="swatch-name">Cascade Blue <code>#27528d</code></span></li>
-        <li><span class="dot" style="background:#5b93d1"></span><span class="swatch-name">Midday Sky <code>#5b93d1</code></span></li>
-        <li><span class="dot" style="background:#e7f1fb"></span><span class="swatch-name">Morning Sky <code>#e7f1fb</code></span></li>
-        <li><span class="dot" style="background:#ffb43a"></span><span class="swatch-name">Sunrise Gold <code>#ffb43a</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Sora + Inter</p>
-      <p class="signature"><strong>Signature:</strong> The navy you trust with product-grade lift — the homepage assembles in one buttery 60ms-stagger pass on two house curves, one gold hyzer arc lands last, and the formline mark closes at crest scale.</p>
-      <p class="feels"><strong>Feels like:</strong> buttery product polish — cards tilt a few degrees under the pointer, gold buttons are gently magnetic, and the arc always draws itself last.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> you want the redesign members recognize on day one and the board approves in one meeting — the same trusted navy with product-grade polish, one disciplined signature, shippable page by page alongside the existing registration tools.</p>
-        <p><strong>Think twice if:</strong> you're hoping this redesign announces a bold new chapter — an evolved navy will read as a refresh, not a reinvention, and it stays in visual territory other sports leagues already occupy.</p>
-      </div>
-
-      <a class="open-link" href="05-flight-path.html">Open 05 — Flight Path</a>
+    <div class="grid">
+      <a class="card" href="05-flight-path.html">
+        <span class="shot"><img src="previews/scroll/05-flight-path.jpeg" alt="Preview of the Flight Path homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">05</span><span class="name">Flight Path</span><span class="badge grounded">Grounded</span></span>
+          <span class="desc">The navy you already trust, cleaned up and given a little lift. The safe, shippable evolution.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#1c3b65"></span><span class="dot" style="background:#11243d"></span><span class="dot" style="background:#27528d"></span><span class="dot" style="background:#5b93d1"></span><span class="dot" style="background:#e7f1fb"></span><span class="dot" style="background:#ffb43a"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
+      <a class="card" href="10-route-map.html">
+        <span class="shot"><img src="previews/scroll/10-route-map.jpeg" alt="Preview of the The Route Map homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">10</span><span class="name">The Route Map</span><span class="badge grounded">Grounded</span></span>
+          <span class="desc">The site drawn as a transit map. Every program is a stop; every player has a route in.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#14181D"></span><span class="dot" style="background:#F6F4EF"></span><span class="dot" style="background:#0C7A3F"></span><span class="dot" style="background:#C2410C"></span><span class="dot" style="background:#235BA8"></span><span class="dot" style="background:#7C2D8E"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
+      <a class="card" href="12-handbook.html">
+        <span class="shot"><img src="previews/scroll/12-handbook.jpeg" alt="Preview of the The Handbook homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">12</span><span class="name">The Handbook</span><span class="badge grounded">Grounded</span></span>
+          <span class="desc">The site as the community's handbook. Calm, numbered answers for the parent Googling at 9 p.m.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#FAF6EC"></span><span class="dot" style="background:#221E18"></span><span class="dot" style="background:#77202C"></span><span class="dot" style="background:#FFE45C"></span><span class="dot" style="background:#665E51"></span><span class="dot" style="background:#EDE4D2"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
     </div>
-    </article>
-
-    <article class="card">
-      <a class="card-media" href="10-route-map.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/10-route-map.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 10</span>
-        <h3>The Route Map</h3>
-        <span class="badge grounded">Grounded</span>
-      </div>
-      <p class="tagline">The whole system drawn as one transit map</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#14181D"></span><span class="swatch-name">Signal Ink <code>#14181D</code></span></li>
-        <li><span class="dot" style="background:#F6F4EF"></span><span class="swatch-name">Service White <code>#F6F4EF</code></span></li>
-        <li><span class="dot" style="background:#0C7A3F"></span><span class="swatch-name">Youth Line <code>#0C7A3F</code></span></li>
-        <li><span class="dot" style="background:#C2410C"></span><span class="swatch-name">School Line <code>#C2410C</code></span></li>
-        <li><span class="dot" style="background:#235BA8"></span><span class="swatch-name">Adult Line <code>#235BA8</code></span></li>
-        <li><span class="dot" style="background:#7C2D8E"></span><span class="swatch-name">Spirit Line <code>#7C2D8E</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Overpass + Overpass Mono + Inter</p>
-      <p class="signature"><strong>Signature:</strong> Transit-system wayfinding that turns DiscNW's dozens of programs into one legible map — four color-coded lines, real programs as stations, the big tournaments as interchanges — so the site stops describing the system and starts being it.</p>
-      <p class="feels"><strong>Feels like:</strong> a transit map drawing itself — lines pulling out of the origin station, stops popping in travel order, YOU ARE HERE pulsing once.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> The loudest complaint about the current site is getting lost. The Route Map makes navigation itself the brand: every program gets an address on a line, every audience gets a door, and the system grows by adding stations — not redesigning pages.</p>
-        <p><strong>Think twice if:</strong> You want the first feeling to be atmosphere and emotion. Signage is proudly utilitarian — if the destination photography ever thins out, this direction can read schedule-first, community-second.</p>
-      </div>
-
-      <a class="open-link" href="10-route-map.html">Open 10 — The Route Map</a>
-    </div>
-    </article>
-
-    <article class="card">
-      <a class="card-media" href="12-handbook.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/12-handbook.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 12</span>
-        <h3>The Handbook</h3>
-        <span class="badge grounded">Grounded</span>
-      </div>
-      <p class="tagline">The sport runs on a shared text — so does the site</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#FAF6EC"></span><span class="swatch-name">Vellum <code>#FAF6EC</code></span></li>
-        <li><span class="dot" style="background:#221E18"></span><span class="swatch-name">Ink <code>#221E18</code></span></li>
-        <li><span class="dot" style="background:#77202C"></span><span class="swatch-name">Regulation Oxblood <code>#77202C</code></span></li>
-        <li><span class="dot" style="background:#FFE45C"></span><span class="swatch-name">Highlighter <code>#FFE45C</code></span></li>
-        <li><span class="dot" style="background:#665E51"></span><span class="swatch-name">Pencil <code>#665E51</code></span></li>
-        <li><span class="dot" style="background:#EDE4D2"></span><span class="swatch-name">Buckram <code>#EDE4D2</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Literata + IBM Plex Mono</p>
-      <p class="signature"><strong>Signature:</strong> A sport that runs on a shared text deserves a site that reads like one — discnw.org rebuilt as the community's beautifully typeset reference shelf, where numbered clauses, marginalia and cross-references are the information architecture, not decoration.</p>
-      <p class="feels"><strong>Feels like:</strong> a well-set manual laying its pages — clause numbers inking in left to right, and nothing else moving.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> Your visitors arrive with a question and a deadline — the parent at 9 p.m., the new coach mid-practice — and you want calm, numbered authority that makes every answer feel one lookup away, in the one sport that literally runs on a shared handbook.</p>
-        <p><strong>Think twice if:</strong> You need the homepage to sell adrenaline — The Handbook is deliberately quiet, and its reference-desk welcome can read like a syllabus next to a poster to the highlight-reel teenager, or to a sponsor who wants spectacle above the fold.</p>
-      </div>
-
-      <a class="open-link" href="12-handbook.html">Open 12 — The Handbook</a>
-    </div>
-    </article>
-
   </section>
 
-  <section class="tier" aria-labelledby="family-gameday-heading">
-    <div class="tier-head">
-      <h2 id="family-gameday-heading">Gameday</h2>
-      <p><strong>Does it bring the energy?</strong> The kit's loudest tier, modeled on how the best sports websites bring hype — broadcast adrenaline, drop-day urgency, live scoreboards and brackets — turning registration from a form into an event you get to join.</p>
+  <section class="fam" aria-labelledby="fam-gameday">
+    <div class="fam-head">
+      <span class="fam-idx">05 / 05</span>
+      <h2 id="fam-gameday">Gameday</h2>
+      <p class="fam-q"><strong>Does it bring the energy?</strong> The loudest ideas, borrowed from real sports sites.</p>
     </div>
-
-    <article class="card">
-      <a class="card-media" href="16-highlight-reel.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/16-highlight-reel.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 16</span>
-        <h3>Highlight Reel</h3>
-        <span class="badge experimental">Experimental</span>
-      </div>
-      <p class="tagline">Ultimate's Top 10, played like appointment TV</p>
-      <p class="thesis">Ultimate as a spectator sport: DiscNW's loudest ten moments counted down like a broadcast, so a first-time visitor lands mid-highlight-show — and registering feels like joining the cast, not filling out a form.</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#0A0B0D"></span><span class="swatch-name">Broadcast Black <code>#0A0B0D</code></span></li>
-        <li><span class="dot" style="background:#F6F7F9"></span><span class="swatch-name">Broadcast White <code>#F6F7F9</code></span></li>
-        <li><span class="dot" style="background:#FF4655"></span><span class="swatch-name">Fastbreak Red <code>#FF4655</code></span></li>
-        <li><span class="dot" style="background:#9AA0A8"></span><span class="swatch-name">Press Grey <code>#9AA0A8</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Anton (heavy condensed — ranks, mega-headline, every broadcast lower-third) + Inter (400–800, captions, metadata, body, with tabular figures on every clock and score)</p>
-      <p class="signature"><strong>Signature:</strong> The Top 10 Countdown — a scroll-driven #10→#1 of ultimate's loudest moments, each a full-bleed video loop or Spring Reign still under a colossal ghosted rank numeral that slams in on the overshoot curve, with a broadcast lower-third (accent bar + solid panel) wiping in beneath it, while a persistent score “bug” badged with the white formline mark rides the corner the whole way down — reading perfectly with zero JS.</p>
-      <p class="feels"><strong>Feels like:</strong> the nightly SportsCenter Top 10 — broadcast adrenaline, ghost numerals and lower-thirds slamming and wiping in, a pulsing LIVE bug in the corner, kinetic marquees crawling under everything. Loud on purpose, readable on principle: you fall into a highlight show and it dares you to stay to #1.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> You want a front door that makes a rec-league nonprofit feel like appointment television — proof, in one scroll, that ultimate is a spectator sport, and that registering is joining the show rather than filling out a form.</p>
-        <p><strong>Think twice if:</strong> You need the working homepage first. This is the cold open, not the schedule grid — standings, rosters, rainout utilities and account flows still ride one of the grounded directions underneath this broadcast voice.</p>
-      </div>
-
-      <a class="open-link" href="16-highlight-reel.html">Open 16 — Highlight Reel</a>
-    </div>
-    </article>
-
-    <article class="card">
-      <a class="card-media" href="17-the-drop.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/17-the-drop.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 17</span>
-        <h3>The Drop</h3>
-        <span class="badge grounded">Grounded</span>
-      </div>
-      <p class="tagline">Registration as a drop you set an alarm for</p>
-      <p class="thesis">Registration as a drop: a giant live countdown to a real DiscNW moment — Spring Reign 2027 — in streetwear black-and-volt, betting that the thing behind the hype is a rec sport that genuinely sells out.</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#0B0B0F"></span><span class="swatch-name">Blackout <code>#0B0B0F</code></span></li>
-        <li><span class="dot" style="background:#16161C"></span><span class="swatch-name">Asphalt <code>#16161C</code></span></li>
-        <li><span class="dot" style="background:#CCFF00"></span><span class="swatch-name">Volt <code>#CCFF00</code></span></li>
-        <li><span class="dot" style="background:#FF2D55"></span><span class="swatch-name">Flare <code>#FF2D55</code></span></li>
-        <li><span class="dot" style="background:#EDEEF1"></span><span class="swatch-name">Paper <code>#EDEEF1</code></span></li>
-        <li><span class="dot" style="background:#9CA3AE"></span><span class="swatch-name">Ash <code>#9CA3AE</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Anton (single heavy condensed weight — the drop poster, section titles, every countdown digit) + Archivo (400–900, body, UI, tabular figures)</p>
-      <p class="signature"><strong>Signature:</strong> A giant live countdown + drop — mechanical reel-odometer digits (DAYS:HRS:MIN:SEC) tick toward a real, hardcoded DiscNW moment: Spring Reign 2027 registration, Mon Jan 11, 2027, 10:00 AM PT. Inside the last minute the whole clock turns flare and breathes; at 0:00 it flips to a “cop your spot” reveal with an abstract confetti burst. It runs in two places off one shared tick — and with no JS or reduced motion, the ticking clock is hidden and an honest &lt;time&gt; date stands in, so the number never lies.</p>
-      <p class="feels"><strong>Feels like:</strong> Nike SNKRS on drop morning — refreshing a concert on-sale at 9:59 with your whole team on the call, screaming when it goes live. Streetwear-loud, black-and-volt, alarm-set urgency — but the thing behind the hype is a real rec sport that genuinely sells out.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> Your registrations genuinely fill and you want to own that energy — turning Spring Reign and summer leagues into events players set alarms for. It speaks fluently to teenagers and lapsed players and makes “sign up” feel like something you get to do, not something you have to.</p>
-        <p><strong>Think twice if:</strong> A brand-new eight-year-old and a cautious parent are your front door — drop-day urgency can read as pressure, so the tone needs a warm hand on every page to keep scarcity from tipping into stress. It also asks for real drop moments to point the countdown at.</p>
-      </div>
-
-      <a class="open-link" href="17-the-drop.html">Open 17 — The Drop</a>
-    </div>
-    </article>
-
-    <article class="card">
-      <a class="card-media" href="18-combine.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/18-combine.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 18</span>
-        <h3>Combine</h3>
-        <span class="badge grounded">Grounded</span>
-      </div>
-      <p class="tagline">The org's real numbers, on the jumbotron</p>
-      <p class="thesis">F1 telemetry, NFL Combine, sports-data adrenaline — a dark neon HUD where DiscNW's scale is rendered as a live combine readout, and the numbers are the hero.</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#07090C"></span><span class="swatch-name">Void <code>#07090C</code></span></li>
-        <li><span class="dot" style="background:#0B0E13"></span><span class="swatch-name">Carbon <code>#0B0E13</code></span></li>
-        <li><span class="dot" style="background:#12161E"></span><span class="swatch-name">Panel <code>#12161E</code></span></li>
-        <li><span class="dot" style="background:#16FF9B"></span><span class="swatch-name">Volt Green <code>#16FF9B</code></span></li>
-        <li><span class="dot" style="background:#48D6FF"></span><span class="swatch-name">Cyan <code>#48D6FF</code></span></li>
-        <li><span class="dot" style="background:#FFC93F"></span><span class="swatch-name">Amber <code>#FFC93F</code></span></li>
-        <li><span class="dot" style="background:#FF3B6B"></span><span class="swatch-name">Redline <code>#FF3B6B</code></span></li>
-        <li><span class="dot" style="background:#F3F7FC"></span><span class="swatch-name">Signal White <code>#F3F7FC</code></span></li>
-        <li><span class="dot" style="background:#9BA8BA"></span><span class="swatch-name">Readout Grey <code>#9BA8BA</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Saira Condensed (800, scoreboard-scale numbers) + JetBrains Mono (telemetry, with tabular figures so digits tick without jitter)</p>
-      <p class="signature"><strong>Signature:</strong> The Stat Slam &amp; Telemetry HUD — the org's real numbers rendered as a live instrument panel. Giant totals (10,000+ players, 30+ years, $33 floor, 1 code, 5 regions) count up and slam into place on scroll with an overshoot pop; SVG dials wind to their marks, participation and growth bars fill, a countdown clocks the next Spring Reign, and a records leaderboard plus a BottomLine-style program ticker read like they just refreshed. The white formline mark rides the HUD chrome as the system badge. With no JavaScript every final total is already in the DOM; reduced motion is calm and static.</p>
-      <p class="feels"><strong>Feels like:</strong> stepping into the tunnel at the combine — a dark, volt-lit instrument panel where the numbers arrive instead of appearing, dials breathe, a marquee refuses to sit still, and a red LIVE bug pulses. The data hits like adrenaline, then decelerates and locks in like an official result.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> You want the redesign to lead with scale — to make a parent, sponsor, or first-time visitor feel the size and seriousness of DiscNW in the first three seconds. When the numbers are your best argument, put them on the jumbotron and let them slam.</p>
-        <p><strong>Think twice if:</strong> Your front door needs to feel quiet, soft, and human before anything else. A dark neon HUD is a stadium entrance — thrilling but loud — and an audience that wants a calm hand on the shoulder first will open warmer with a gentler direction.</p>
-      </div>
-
-      <a class="open-link" href="18-combine.html">Open 18 — Combine</a>
-    </div>
-    </article>
-
-    <article class="card">
-      <a class="card-media" href="19-bracket.html" tabindex="-1" aria-hidden="true"><img src="previews/scroll/19-bracket.jpeg" alt="" loading="lazy"></a>
-      <div class="card-body">
-      <div class="card-head">
-        <span class="card-num">DIRECTION 19</span>
-        <h3>Bracket</h3>
-        <span class="badge experimental">Experimental</span>
-      </div>
-      <p class="tagline">The season as a live bracket the whole city fills out</p>
-      <p class="thesis">The season as a bracket the whole city fills out: DiscNW's real programs seeded into a live single-elimination tree, crowned by the formline mark — because DiscNW actually runs the world's largest mixed youth tournament.</p>
-
-      <span class="spec-label">Palette</span>
-      <ul class="palette">
-        <li><span class="dot" style="background:#0A0D16"></span><span class="swatch-name">Court Black <code>#0A0D16</code></span></li>
-        <li><span class="dot" style="background:#141A2B"></span><span class="swatch-name">Card Slate <code>#141A2B</code></span></li>
-        <li><span class="dot" style="background:#FFC53D"></span><span class="swatch-name">Championship Gold <code>#FFC53D</code></span></li>
-        <li><span class="dot" style="background:#F4F5FA"></span><span class="swatch-name">Chalk <code>#F4F5FA</code></span></li>
-        <li><span class="dot" style="background:#FF4646"></span><span class="swatch-name">Live Red <code>#FF4646</code></span></li>
-        <li><span class="dot" style="background:#9198AC"></span><span class="swatch-name">Steel <code>#9198AC</code></span></li>
-      </ul>
-
-      <p class="fonts"><strong>Type:</strong> Anton (blocky poster display — mega-type, round labels, scores, the champion) + Archivo (700–900, seeded matchup cards and body) + Spline Sans Mono (seeds, timecodes, kickers, the live countdown)</p>
-      <p class="signature"><strong>Signature:</strong> The live bracket — a two-region, single-elimination tournament tree whose SVG connector wires ink themselves round by round as you scroll, matchup cards sliding in with DiscNW's real programs seeded honestly, two illustrative UPSET ALERTs detonating with screen-shake and an expanding gold shockwave, a sticky road-to-the-final rail filling as you go, and the white formline mark revealed as the champion crest atop the tree — crowning Spring Reign, the world's largest mixed youth tournament. No JS shows the bracket fully drawn; reduced motion is calm.</p>
-      <p class="feels"><strong>Feels like:</strong> March Madness bracket season on championship night — a deep tournament-black arena lit by championship gold, a ticking countdown and kinetic marquees, connector wires racing toward a crowned champion like a lit fuse. Loud, event-driven, and unmistakably a tournament you scroll rather than a page you read.</p>
-
-      <div class="verdicts">
-        <p><strong>Choose if:</strong> You want the loudest, most event-driven front door in the kit — one that turns the DiscNW season into a bracket the whole city fills out and makes registering feel like claiming a spot in the tournament. No generic rec league could wear it, because DiscNW actually runs the world's largest mixed youth tournament.</p>
-        <p><strong>Think twice if:</strong> You need a calm, dense utility homepage first. Bracket mania is a seasonal campaign skin, loud by design; its energy can overwhelm the standings, schedules and rainout tools that the grounded directions handle better underneath this voice.</p>
-      </div>
-
-      <a class="open-link" href="19-bracket.html">Open 19 — Bracket</a>
-    </div>
-    </article>
-
-  </section>
-
-  <section class="compare" aria-labelledby="compare-heading">
-    <h2 id="compare-heading">At a glance</h2>
-    <p class="table-note" id="boldness-note">Boldness = how far the direction departs from the current discnw.org, from 1 (closest) to 5 (furthest). The experimental concepts sit at 4–5 by design.</p>
-    <div class="table-scroll">
-      <table aria-describedby="boldness-note">
-        <thead>
-          <tr>
-            <th scope="col">Direction</th>
-            <th scope="col">Family</th>
-            <th scope="col">Feels like</th>
-            <th scope="col">Leads with</th>
-            <th scope="col">Best for</th>
-            <th scope="col">Boldness</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">01 Evergreen</th>
-            <td>Place &amp; weather</td>
-            <td>A foggy Saturday morning on a Puget Sound field</td>
-            <td>Place and belonging</td>
-            <td>A brand only Seattle ultimate could own</td>
-            <td><span class="dots" aria-hidden="true">●●●●○</span><span class="sr-only">4 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">07 The Understory</th>
-            <td>Place &amp; weather</td>
-            <td>A photographic field guide you can walk into</td>
-            <td>Real Northwest photography, season as trail map</td>
-            <td>An identity no other sports org could copy</td>
-            <td><span class="dots" aria-hidden="true">●●●●●</span><span class="sr-only">5 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">09 Rain or Shine</th>
-            <td>Place &amp; weather</td>
-            <td>A departures board ticking field status, then dead still</td>
-            <td>Seattle weather as a credential, a live conditions board</td>
-            <td>A brand no other league could wear</td>
-            <td><span class="dots" aria-hidden="true">●●●●○</span><span class="sr-only">4 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">13 Last Light</th>
-            <td>Place &amp; weather</td>
-            <td>The sky easing through a year of light as you scroll</td>
-            <td>A year-long light clock, skies crossfaded by scroll</td>
-            <td>Making the calendar the reason to register</td>
-            <td><span class="dots" aria-hidden="true">●●●●●</span><span class="sr-only">5 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">02 Game Film</th>
-            <td>Sport &amp; broadcast</td>
-            <td>The film room under floodlights</td>
-            <td>Athletic seriousness and playbook craft</td>
-            <td>Competitive players, captains, ambitious teens</td>
-            <td><span class="dots" aria-hidden="true">●●●○○</span><span class="sr-only">3 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">06 One Point</th>
-            <td>Sport &amp; broadcast</td>
-            <td>One point under the lights, narrated pull to catch</td>
-            <td>A scroll-drawn flight line — the interface is the disc</td>
-            <td>A front door people retell the next morning</td>
-            <td><span class="dots" aria-hidden="true">●●●●●</span><span class="sr-only">5 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">08 Game to 15</th>
-            <td>Sport &amp; broadcast</td>
-            <td>A game you win by reading</td>
-            <td>Colossal typography and a live scoreboard</td>
-            <td>Launch buzz at the lowest build cost</td>
-            <td><span class="dots" aria-hidden="true">●●●●○</span><span class="sr-only">4 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">03 Sideline Day</th>
-            <td>People &amp; community</td>
-            <td>Being handed a camp chair and orange slices</td>
-            <td>Welcome and zero intimidation</td>
-            <td>Recruiting new families and first-time players</td>
-            <td><span class="dots" aria-hidden="true">●●●●●</span><span class="sr-only">5 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">04 Spirit &amp; Story</th>
-            <td>People &amp; community</td>
-            <td>A beautifully edited community magazine</td>
-            <td>Real voices and documentary stories</td>
-            <td>Proving the storytelling goal on every page</td>
-            <td><span class="dots" aria-hidden="true">●●●○○</span><span class="sr-only">3 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">11 First Names</th>
-            <td>People &amp; community</td>
-            <td>A crowd assembling, a census filling in</td>
-            <td>People first — a roster of ten thousand names</td>
-            <td>Making the mission self-evident: people, not programs</td>
-            <td><span class="dots" aria-hidden="true">●●●●●</span><span class="sr-only">5 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">14 Spectrum</th>
-            <td>People &amp; community</td>
-            <td>Soft colour breathing behind the headline, like frosted light</td>
-            <td>Inclusion as the brand — the whole spectrum read as light</td>
-            <td>Saying "everyone belongs" out loud, in the first second</td>
-            <td><span class="dots" aria-hidden="true">●●●●○</span><span class="sr-only">4 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">15 Prism</th>
-            <td>People &amp; community</td>
-            <td>A white beam fanning into an aurora on near-black</td>
-            <td>White light holding every color — belonging, not decoration</td>
-            <td>The boldest, most emotional front door in the kit</td>
-            <td><span class="dots" aria-hidden="true">●●●●●</span><span class="sr-only">5 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">16 Highlight Reel</th>
-            <td>Gameday</td>
-            <td>The nightly SportsCenter Top 10, broadcast adrenaline</td>
-            <td>A scroll-driven Top 10 countdown of ultimate's loudest moments</td>
-            <td>Making a rec-league nonprofit feel like appointment television</td>
-            <td><span class="dots" aria-hidden="true">●●●●●</span><span class="sr-only">5 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">17 The Drop</th>
-            <td>Gameday</td>
-            <td>Nike SNKRS on drop morning, alarm set for 9:59</td>
-            <td>A live reel-odometer countdown to a real registration drop</td>
-            <td>Turning Spring Reign into an event players set alarms for</td>
-            <td><span class="dots" aria-hidden="true">●●●●○</span><span class="sr-only">4 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">18 Combine</th>
-            <td>Gameday</td>
-            <td>The combine tunnel — a dark, volt-lit instrument panel</td>
-            <td>The org's real numbers as a live telemetry HUD</td>
-            <td>Leading with scale — size and seriousness in three seconds</td>
-            <td><span class="dots" aria-hidden="true">●●●●○</span><span class="sr-only">4 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">19 Bracket</th>
-            <td>Gameday</td>
-            <td>March Madness bracket night, wires racing to a champion</td>
-            <td>A live single-elimination bracket you scroll, not read</td>
-            <td>The loudest, most event-driven front door in the kit</td>
-            <td><span class="dots" aria-hidden="true">●●●●●</span><span class="sr-only">5 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">05 Flight Path</th>
-            <td>System &amp; utility</td>
-            <td>The site you already trust, professionally rebuilt</td>
-            <td>Continuity and product-grade polish</td>
-            <td>Fast approval and a low-risk, page-by-page ship</td>
-            <td><span class="dots" aria-hidden="true">●○○○○</span><span class="sr-only">1 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">10 The Route Map</th>
-            <td>System &amp; utility</td>
-            <td>A transit map drawing itself, stops in travel order</td>
-            <td>Wayfinding — navigation as the brand</td>
-            <td>When getting lost is the loudest complaint</td>
-            <td><span class="dots" aria-hidden="true">●●●●○</span><span class="sr-only">4 out of 5</span></td>
-          </tr>
-          <tr>
-            <th scope="row">12 The Handbook</th>
-            <td>System &amp; utility</td>
-            <td>A well-set manual laying its pages</td>
-            <td>Numbered clauses and calm, lookup-fast authority</td>
-            <td>The parent at 9 p.m. with a question and a deadline</td>
-            <td><span class="dots" aria-hidden="true">●●●○○</span><span class="sr-only">3 out of 5</span></td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="grid">
+      <a class="card" href="16-highlight-reel.html">
+        <span class="shot"><img src="previews/scroll/16-highlight-reel.jpeg" alt="Preview of the Highlight Reel homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">16</span><span class="name">Highlight Reel</span><span class="badge experimental">Experimental</span></span>
+          <span class="desc">Ultimate's Top 10, counted down like SportsCenter. You land in the middle of a highlight show.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#0A0B0D"></span><span class="dot" style="background:#F6F7F9"></span><span class="dot" style="background:#FF4655"></span><span class="dot" style="background:#9AA0A8"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
+      <a class="card" href="17-the-drop.html">
+        <span class="shot"><img src="previews/scroll/17-the-drop.jpeg" alt="Preview of the The Drop homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">17</span><span class="name">The Drop</span><span class="badge grounded">Grounded</span></span>
+          <span class="desc">Registration as a drop. A live countdown to Spring Reign, in streetwear black and volt.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#0B0B0F"></span><span class="dot" style="background:#16161C"></span><span class="dot" style="background:#CCFF00"></span><span class="dot" style="background:#FF2D55"></span><span class="dot" style="background:#EDEEF1"></span><span class="dot" style="background:#9CA3AE"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
+      <a class="card" href="18-combine.html">
+        <span class="shot"><img src="previews/scroll/18-combine.jpeg" alt="Preview of the Combine homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">18</span><span class="name">Combine</span><span class="badge grounded">Grounded</span></span>
+          <span class="desc">The real numbers as the flex — 10,000 players, 30 years — clocked like a stadium stat readout.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#07090C"></span><span class="dot" style="background:#0B0E13"></span><span class="dot" style="background:#12161E"></span><span class="dot" style="background:#16FF9B"></span><span class="dot" style="background:#48D6FF"></span><span class="dot" style="background:#FFC93F"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
+      <a class="card" href="19-bracket.html">
+        <span class="shot"><img src="previews/scroll/19-bracket.jpeg" alt="Preview of the Bracket homepage" loading="lazy"></span>
+        <span class="meta">
+          <span class="row1"><span class="idx">19</span><span class="name">Bracket</span><span class="badge experimental">Experimental</span></span>
+          <span class="desc">Bracket season for the world's largest youth tournament. The wires draw their way to a champion.</span>
+          <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#0A0D16"></span><span class="dot" style="background:#141A2B"></span><span class="dot" style="background:#FFC53D"></span><span class="dot" style="background:#F4F5FA"></span><span class="dot" style="background:#FF4646"></span><span class="dot" style="background:#9198AC"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
+        </span>
+      </a>
     </div>
   </section>
 
 </main>
 
-<footer class="site">
+<footer class="end">
   <div class="wrap">
-    <p><strong>How to view:</strong> open any card above to see the full page — the grounded directions as eleven-section design systems, the experimental ones as scroll-through homepage experiences.</p>
-    <p>Each direction's footer links back to this hub and on to the next direction, and the cycle wraps: 01 → 02 → … → 19 → 01. Start anywhere and you can loop through all nineteen without returning here.</p>
+    <p>Every direction is built on real DiscNW photos and video, and nothing here is all-or-nothing &mdash; a calm system can borrow one loud idea. Pick the ones that feel right and we'll take it from there.</p>
   </div>
 </footer>
 
