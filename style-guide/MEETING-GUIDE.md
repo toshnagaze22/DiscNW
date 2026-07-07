@@ -10,11 +10,11 @@
 | Time | Item |
 |---|---|
 | 0:00–0:03 | Setup: brief, ground rules, how the five families work (3 min) |
-| 0:03–0:19 | **Place & weather** — 01 Evergreen · 07 Understory · 09 Rain or Shine · 13 Last Light → pick a favorite (16 min) |
-| 0:19–0:32 | **Sport & broadcast** — 02 Game Film · 06 One Point · 08 Game to 15 → pick a favorite (13 min) |
-| 0:32–0:51 | **People & community** — 03 Sideline Day · 04 Spirit & Story · 11 First Names · 14 Spectrum · 15 Prism → pick a favorite (19 min) |
+| 0:03–0:19 | **Place & weather** — 01 Evergreen · 02 Understory · 03 Rain or Shine · 04 Last Light → pick a favorite (16 min) |
+| 0:19–0:32 | **Sport & broadcast** — 05 Game Film · 06 One Point · 07 Game to 15 → pick a favorite (13 min) |
+| 0:32–0:51 | **People & community** — 08 Sideline Day · 09 Spirit & Story · 10 First Names · 11 Spectrum · 12 Prism → pick a favorite (19 min) |
 | 0:51–1:06 | **Gameday** — 16 Highlight Reel · 17 The Drop · 18 Combine · 19 Bracket → pick a favorite (15 min) |
-| 1:06–1:17 | **System & utility** — 05 Flight Path · 10 Route Map · 12 Handbook → pick a favorite (11 min) |
+| 1:06–1:17 | **System & utility** — 13 Flight Path · 14 Route Map · 15 Handbook → pick a favorite (11 min) |
 | 1:17–1:26 | Cross-family final three: put the five favorites up, cut to three (9 min) |
 | 1:26–1:34 | Synthesis: cross-cutting questions + scoring grid (8 min) |
 | 1:34–1:38 | Buffer / spillover (4 min) |
@@ -29,19 +29,19 @@
 
 Each family answers one question about what discnw.org should *feel* like. Walk them in order — it builds from the most emotional, place-driven worlds, peaks at the loudest hype tier, and ends on the most utilitarian, so the "does it actually work?" question lands while the atmosphere ones are still fresh.
 
-1. **Place & weather — "Does it feel like HERE?"** (01 Evergreen, 07 The Understory, 09 Rain or Shine, 13 Last Light)
+1. **Place & weather — "Does it feel like HERE?"** (01 Evergreen, 02 The Understory, 03 Rain or Shine, 04 Last Light)
    The Puget Sound worlds. Start here: the warmest, most ownable territory, and it sets the bar for "no other league could wear this." Runs grounded-to-experimental — Evergreen's full system, then the field guide, the weather bulletin, and the year-long light clock.
 
-2. **Sport & broadcast — "Does it feel like the GAME?"** (02 Game Film, 06 One Point, 08 Game to 15)
+2. **Sport & broadcast — "Does it feel like the GAME?"** (05 Game Film, 06 One Point, 07 Game to 15)
    The athlete's worlds. The counterweight to place: intensity, scoreboards, broadcast treatment. Tests how far toward "serious sport" DiscNW should lean.
 
-3. **People & community — "Does it feel like US?"** (03 Sideline Day, 04 Spirit & Story, 11 First Names, 14 Spectrum, 15 Prism)
-   The people-first worlds. The most literal answers to the storytelling brief — a welcoming sideline, a community magazine, a roster of ten thousand names, and an expressive/inclusion pair (14 Spectrum, 15 Prism) that makes "an Ultimate community without barriers" the literal subject of the design.
+3. **People & community — "Does it feel like US?"** (08 Sideline Day, 09 Spirit & Story, 10 First Names, 11 Spectrum, 12 Prism)
+   The people-first worlds. The most literal answers to the storytelling brief — a welcoming sideline, a community magazine, a roster of ten thousand names, and an expressive/inclusion pair (11 Spectrum, 12 Prism) that makes "an Ultimate community without barriers" the literal subject of the design.
 
 4. **Gameday — "Does it bring the energy?"** (16 Highlight Reel, 17 The Drop, 18 Combine, 19 Bracket)
-   The loudest tier, modeled on how the best sports websites bring hype: a broadcast Top 10 (16 Highlight Reel), a streetwear drop-day countdown (17 The Drop), a telemetry stat-slam (18 Combine), and a live tournament bracket (19 Bracket). This is where the energy peaks — and where 08 Game to 15 was amped up to match. Two are grounded (17, 18), two experimental (16, 19).
+   The loudest tier, modeled on how the best sports websites bring hype: a broadcast Top 10 (16 Highlight Reel), a streetwear drop-day countdown (17 The Drop), a telemetry stat-slam (18 Combine), and a live tournament bracket (19 Bracket). This is where the energy peaks — and where 07 Game to 15 was amped up to match. Two are grounded (17, 18), two experimental (16, 19).
 
-5. **System & utility — "Does it WORK harder?"** (05 Flight Path, 10 The Route Map, 12 The Handbook)
+5. **System & utility — "Does it WORK harder?"** (13 Flight Path, 14 The Route Map, 15 The Handbook)
    The workhorse worlds. End here on the practical question: the trusted navy given lift, the whole program list as a transit map, the site rebuilt as a numbered handbook. Whatever wins on feeling still has to do this job.
 
 **After each family, name one favorite** — highest conviction, not consensus. The five favorites feed the final three.
@@ -57,17 +57,17 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 - Q: Does this feel like it could *only* be Puget Sound ultimate — or could it be any outdoorsy Northwest nonprofit?
 - Q: Forest, not stadium: does that trade cost us anything with competitive players and score-driven visitors?
 
-#### 07 The Understory — "The place is the brand, photographed in the field" · *experimental*
+#### 02 The Understory — "The place is the brand, photographed in the field" · *experimental*
 **Pitch:** "A photographic field guide to the Pacific Northwest season in the WPA park-poster voice — real fog and old-growth imagery carrying the place, one dashed coral line that is both the disc's flight and the trail through the year, waypoint photographs developing like pinned specimens. The bet is that no other sports organization in America could copy it, and that it extends into posters, patches, and sideline merch on day one."
 - Q: Gut call: is this photographic field guide ownable brand genius — or too precious for a sports org that also has to post rainouts, rosters, and refund policies?
 - Q: The field-guide craft *is* the brand, so every major new page asks for photography worth pinning. Who shoots page 40 next spring — and knowing that answer, would you still pick it?
 
-#### 09 Rain or Shine — "Seattle weather as a credential, not an apology" · *grounded*
+#### 03 Rain or Shine — "Seattle weather as a credential, not an apology" · *grounded*
 **Pitch:** "This treats Seattle weather as a credential, not an apology — the homepage is a live conditions board where you read straight down the status column and keep finding the same word: ON. It's a monospace field bulletin: dry, factual, instrument-like, and warm in the data itself."
 - Q: Does 'weather as a credential' make you proud of the rain — or does a monospace bulletin read cool to a brand-new family before the devotion in the data lands?
 - Q: The conditions board answers the one question players ask at dawn. Is that a hero you'd still love in a dry July, or a winter idea?
 
-#### 13 Last Light — "One scroll through a whole year of light" · *experimental*
+#### 04 Last Light — "One scroll through a whole year of light" · *experimental*
 **Pitch:** "The whole page is a year-long light clock — five real Seattle skies crossfaded as you scroll, every program placed at the hour of light it's actually played in, and a year that closes by *brightening* at Spring Reign instead of darkening. One scroll explains the entire season and lands on the spring registration call."
 - Q: Scroll it once: does the year of light make you *feel* why a Seattle season is worth registering for — before anyone tells you?
 - Q: A light clock wants very few things on stage at once. Can you live with the restraint it asks of every future content editor?
@@ -76,7 +76,7 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 
 ### Sport & broadcast — "Does it feel like the GAME?"
 
-#### 02 Game Film — "The sport taken seriously, chalk and floodlights" · *grounded*
+#### 05 Game Film — "The sport taken seriously, chalk and floodlights" · *grounded*
 **Pitch:** "This one speaks to the athlete — playbook X's and O's, film-room contrast, stat culture, with Spirit of the Game as a code of honor, not a softener. The bet is that seriousness reads as legitimacy, even to parents."
 - Q: Does the film-room intensity read as legitimacy to a parent — or as a tryout their kid isn't invited to?
 - Q: Which of the play-diagram motifs would survive on a rec-league page about Saturday mornings and orange slices?
@@ -86,7 +86,7 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 - Q: Scroll it once, honestly: does the story make you *feel* the sport — the turnover in your stomach, the catch — or is it a beautifully produced tour you're being walked through?
 - Q: This is a narrative cover, not a schedule tool. Which grounded system would you put behind it — and does the flight line landing on "Register" feel earned, or engineered?
 
-#### 08 Game to 15 — "The whole site is a game to 15" · *experimental*
+#### 07 Game to 15 — "The whole site is a game to 15" · *experimental*
 **Pitch:** "The site is a game of ultimate played to 15 — a fixed scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point, ending on 'DiscNW pulls. You score.' It's pure typography turned into a live broadcast — each numeral now lands with an overshoot pop and a spark burst in its own color, a LIVE bug and momentum meter ride the strip, and at 15 the orange floods the screen. Still the cheapest of the nineteen to build flawlessly, and the easiest to retell in one sentence."
 - Q: Genius or gimmick — and if your honest answer is gimmick, is that risk still worth the launch buzz of a site people screenshot, share, and retell in one sentence?
 - Q: The scoreboard is a first-visit thrill by design. Does the joke still land on your third visit — and does that matter, if this voice sits on top of a grounded system doing the daily work?
@@ -95,38 +95,38 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 
 ### People & community — "Does it feel like US?"
 
-#### 03 Sideline Day — "Saturday at the fields, zero intimidation" · *grounded*
+#### 08 Sideline Day — "Saturday at the fields, zero intimidation" · *grounded*
 **Pitch:** "The truest picture of DiscNW is a Saturday at the fields — camp chairs, orange slices, a first layout. This is built first for parents and brand-new players: stickers, hand-drawn disc flight, zero intimidation."
 - Q: Would a nervous parent registering a 9-year-old feel at home here within five seconds?
 - Q: Would a club captain hesitate to send this link to their team — and how much does that cost us?
 
-#### 04 Spirit & Story — "Every program is a person's story" · *grounded*
+#### 09 Spirit & Story — "Every program is a person's story" · *grounded*
 **Pitch:** "This reads like a community magazine — a real attributed quote at headline scale wherever a slogan would go, documentary photos, every program introduced by a person who lived it. It's the most literal execution of the storytelling goal."
 - Q: Can we honestly commit to fresh quotes and photos every season — and who owns that? (A stale magazine reads worse than a plain catalog.)
 - Q: Does a pull quote in the hero make you trust DiscNW more, or slow you down on the way to Register?
 
-#### 11 First Names — "The community as ten thousand first names" · *experimental*
+#### 10 First Names — "The community as ten thousand first names" · *experimental*
 **Pitch:** "The hero is the community itself — a composed census of ten thousand first names — and five of those names get followed through real programs until the roster becomes a set of stories. Every screen argues toward one CTA: add your name."
 - Q: Does 'people first, programs second' make the mission self-evident — or do you need program-first wayfinding on day one?
 - Q: This is strongest when the wall goes *real* — opt-in names from actual registration. Would invented sample names sit uneasily beside your member data until then?
 
-#### 14 Spectrum — "An Ultimate community without barriers, in colour" · *grounded*
+#### 11 Spectrum — "An Ultimate community without barriers, in colour" · *grounded*
 **Pitch:** "This says the quiet part out loud — a community without barriers, in colour. One full-spectrum ribbon recurs under the wordmark and becomes a 'belonging bar' where every audience (youth, teens, adults, hat & mixed, coaches, volunteers, families) takes a place along one continuous spectrum, none of them at the edge — all above a hero of soft colour breathing like light through frosted glass. Joyful and premium, never a novelty or a pride-flag graphic."
 - Q: Committing to the whole spectrum instead of one ownable brand colour — does that read as 'for everyone' at a glance, or does it ask more taste-discipline than every future editor can guarantee?
 - Q: The belonging bar puts every audience on one line with no edge. Does that land as inclusion you can *feel* in the first second — or as a diagram people scroll past?
 
-#### 15 Prism — "Every color. One community." · *experimental*
+#### 12 Prism — "Every color. One community." · *experimental*
 **Pitch:** "The boldest, most emotional front door in the kit. A beam of white light enters a prism and fans into the whole spectrum on near-black — color flowing like an aurora — and the DiscNW story surfaces panel by panel, each program a different color of the same beam, recombining to white at the close above 'Every color. One community.' White light holds every color; so does a community without barriers. No other sports org could wear it without also meaning it."
 - Q: Scroll it once: does 'white light holding every color' make 'community without barriers' something you can *see* in five seconds — or is it a beautiful light show first, message second?
 - Q: A spectral show on near-black wants very few things on stage and every word legible. Can you guarantee editors keep text on the dark panels — and that the homepage never needs standings and dozens of links above the fold?
 
-**These two as a pair:** 14 Spectrum and 15 Prism are the kit's *expressive / inclusion pair* — the two directions that make "an Ultimate community without barriers" the literal subject of the design. Spectrum is the grounded, shippable everyday system; Prism is the experimental, boldest single-mechanism front door. Weigh them together: how loudly should DiscNW say "everyone belongs"?
+**These two as a pair:** 11 Spectrum and 12 Prism are the kit's *expressive / inclusion pair* — the two directions that make "an Ultimate community without barriers" the literal subject of the design. Spectrum is the grounded, shippable everyday system; Prism is the experimental, boldest single-mechanism front door. Weigh them together: how loudly should DiscNW say "everyone belongs"?
 
 **People & community favorite:** ________________
 
 ### Gameday — "Does it bring the energy?"
 
-The kit's loudest tier, modeled on how the best sports websites bring hype — broadcast adrenaline, drop-day urgency, live data and brackets. It's the counterweight to the calm directions: it turns registration into an event. Note that **08 Game to 15** (over in Sport & broadcast) was amped up to match this energy, so weigh it here too. Two of these are *grounded* systems (17 The Drop, 18 Combine), two are *experimental* single-mechanism pages (16 Highlight Reel, 19 Bracket).
+The kit's loudest tier, modeled on how the best sports websites bring hype — broadcast adrenaline, drop-day urgency, live data and brackets. It's the counterweight to the calm directions: it turns registration into an event. Note that **07 Game to 15** (over in Sport & broadcast) was amped up to match this energy, so weigh it here too. Two of these are *grounded* systems (17 The Drop, 18 Combine), two are *experimental* single-mechanism pages (16 Highlight Reel, 19 Bracket).
 
 #### 16 Highlight Reel — "Ultimate's Top 10, played like appointment TV" · *experimental*
 **Pitch:** "The nightly SportsCenter Top 10, aimed at ultimate — a scroll-driven #10→#1 of the sport's loudest moments, each a full-bleed clip under a colossal ghosted rank numeral, broadcast lower-thirds wiping in, a live score bug riding the corner. The bet: in one scroll, a rec-league nonprofit feels like appointment television, and registering feels like joining the show."
@@ -152,17 +152,17 @@ The kit's loudest tier, modeled on how the best sports websites bring hype — b
 
 ### System & utility — "Does it WORK harder?"
 
-#### 05 Flight Path — "The brand you trust, given lift" · *grounded*
+#### 13 Flight Path — "The brand you trust, given lift" · *grounded*
 **Pitch:** "This keeps the navy 10,000 members already trust and gives it lift — sky gradients, generous space, and one disc-flight arc tying every page together. It's the redesign members recognize on day one and the board approves in one meeting."
 - Q: If we shipped this, would anyone say "new chapter" — or just "nice refresh"? And which do we actually need?
 - Q: Is the gold flight-path arc a signature you'd still love on page 40, or a decoration you'd stop noticing?
 
-#### 10 The Route Map — "The whole system as one transit map" · *grounded*
+#### 14 The Route Map — "The whole system as one transit map" · *grounded*
 **Pitch:** "This turns DiscNW's dozens of programs into one transit map — four color-coded lines, programs as stations, the big tournaments as interchanges. The site stops *describing* the system and starts *being* it: every program gets an address, every audience gets a door."
 - Q: The loudest complaint about today's site is getting lost. Does making navigation itself the brand fix that — or does signage read schedule-first, community-second?
 - Q: Could you add next year's new program by adding a station, without redesigning a page — and is that the kind of growth you need?
 
-#### 12 The Handbook — "The sport runs on a shared text — so does the site" · *grounded*
+#### 15 The Handbook — "The sport runs on a shared text — so does the site" · *grounded*
 **Pitch:** "A sport that runs on a shared text deserves a site that reads like one — discnw.org as the community's beautifully typeset reference shelf, where numbered clauses, marginalia, and cross-references *are* the information architecture. It's the calmest, most lookup-fast direction, built for the parent at 9 p.m. with a question and a deadline."
 - Q: For that parent at 9 p.m. and the new coach mid-practice, does numbered authority make every answer feel one lookup away?
 - Q: The homepage is deliberately quiet. Does a reference-desk welcome read like a syllabus to the highlight-reel teenager — and does that matter?
@@ -193,26 +193,26 @@ Put the **five family favorites** on the board, cut to a **final three** across 
 | Direction | Family | First impression | Players | Coaches | Parents | Storytelling | Feels like DiscNW | Total |
 |---|---|---|---|---|---|---|---|---|
 | 01 Evergreen | Place & weather | | | | | | | |
-| 07 The Understory | Place & weather | | | | | | | |
-| 09 Rain or Shine | Place & weather | | | | | | | |
-| 13 Last Light | Place & weather | | | | | | | |
-| 02 Game Film | Sport & broadcast | | | | | | | |
+| 02 The Understory | Place & weather | | | | | | | |
+| 03 Rain or Shine | Place & weather | | | | | | | |
+| 04 Last Light | Place & weather | | | | | | | |
+| 05 Game Film | Sport & broadcast | | | | | | | |
 | 06 One Point | Sport & broadcast | | | | | | | |
-| 08 Game to 15 | Sport & broadcast | | | | | | | |
-| 03 Sideline Day | People & community | | | | | | | |
-| 04 Spirit & Story | People & community | | | | | | | |
-| 11 First Names | People & community | | | | | | | |
-| 14 Spectrum | People & community | | | | | | | |
-| 15 Prism | People & community | | | | | | | |
+| 07 Game to 15 | Sport & broadcast | | | | | | | |
+| 08 Sideline Day | People & community | | | | | | | |
+| 09 Spirit & Story | People & community | | | | | | | |
+| 10 First Names | People & community | | | | | | | |
+| 11 Spectrum | People & community | | | | | | | |
+| 12 Prism | People & community | | | | | | | |
 | 16 Highlight Reel | Gameday | | | | | | | |
 | 17 The Drop | Gameday | | | | | | | |
 | 18 Combine | Gameday | | | | | | | |
 | 19 Bracket | Gameday | | | | | | | |
-| 05 Flight Path | System & utility | | | | | | | |
-| 10 The Route Map | System & utility | | | | | | | |
-| 12 The Handbook | System & utility | | | | | | | |
+| 13 Flight Path | System & utility | | | | | | | |
+| 14 The Route Map | System & utility | | | | | | | |
+| 15 The Handbook | System & utility | | | | | | | |
 
-*Scores are a conversation aid, not a verdict — a strong disagreement in one cell is worth more than the totals. Expect the experimental and hype directions (06, 07, 08, 11, 13, 15, 16, 19) to score lopsided; that's information, not a problem.*
+*Scores are a conversation aid, not a verdict — a strong disagreement in one cell is worth more than the totals. Expect the experimental and hype directions (02, 04, 06, 07, 10, 12, 16, 19) to score lopsided; that's information, not a problem.*
 
 ---
 
