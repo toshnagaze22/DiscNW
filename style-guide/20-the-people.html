@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction 20 · The People — DiscNW redesign</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<meta name="description" content="Experimental direction 20 for the DiscNW redesign: the site opens with the real people. A wall of actual DiscNW staff and board, every face framed the same, first names and one plain role — the humans who keep the community running.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Hanken+Grotesk:wght@400..800&display=swap" rel="stylesheet">
+<style>
+/* ————————————————————————————————————————————————
+   DIRECTION 20 · THE PEOPLE  (experimental)
+
+   A rec league runs on people, so the site opens with
+   the real ones. An immersive scroll of the actual
+   DiscNW staff and board: real faces, first names, one
+   plain role. The cousin of 11 First Names, with
+   photographs instead of typeset names.
+
+   Real photos render clean. No blend modes, no tints,
+   no overlays, no texture. The headshots are small to
+   medium, so they are held at tile size only and never
+   pushed past ~1.15x their native pixel width.
+
+   Contrast ratios computed (AA):
+     ink #241E17 on paper #F4ECDF ........... 14.2
+     muted #574E40 on paper ................. 6.89
+     muted #574E40 on card #E6DBC6 .......... 5.94
+     muted #574E40 on sand #EBE0CE .......... 6.19
+     clay #A84324 on paper .................. 5.11
+     clay #A84324 on sand ................... 4.59
+     soft #EDE3D2 on ink .................... 13.0
+     clay-lt #E9A886 on ink ................. 8.25
+     paper on ink ...........................14.2
+———————————————————————————————————————————————— */
+:root{
+  --paper:#F4ECDF;        /* warm cream — the page ground        */
+  --paper-2:#EBE0CE;      /* warm sand  — bands and the plate    */
+  --card:#E6DBC6;         /* card oat   — the neutral face frame  */
+  --ink:#241E17;          /* espresso   — text and dark grounds   */
+  --brand-ground:#28211A; /* warm dark  — the crest moment        */
+  --muted:#574E40;        /* warm taupe — secondary text          */
+  --clay:#A84324;         /* clay       — the one warm accent      */
+  --soft:#EDE3D2;         /* soft paper — text on dark            */
+  --clay-lt:#E9A886;      /* light clay — accent on dark          */
+  --hair:rgba(36,30,23,.15);
+  --hair-strong:rgba(36,30,23,.32);
+  --wrap:1220px;
+  --pad:clamp(18px,4vw,40px);
+  --disp:"Fraunces",ui-serif,Georgia,"Times New Roman",serif;
+  --body:"Hanken Grotesk","Helvetica Neue",Arial,sans-serif;
+  /* house easing — two curves, used everywhere, never default ease */
+  --ease-snap:cubic-bezier(.4,0,.1,1);   /* 240–400ms micro moves         */
+  --ease-lux:cubic-bezier(.16,1,.3,1);   /* 700–900ms reveals and settles */
+}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+html{
+  scroll-behavior:smooth;
+  overflow-x:clip;
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+}
+html,body{
+  background:var(--paper);
+}
+body{
+  font-family:var(--body);
+  color:var(--ink);
+  font-size:17px;
+  line-height:1.6;
+  overflow-x:clip;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+::selection{
+  background:var(--ink);
+  color:var(--paper);
+}
+img{
+  max-width:100%;
+  height:auto;
+  display:block;
+}
+h1,h2,h3{
+  font-family:var(--disp);
+  font-optical-sizing:auto;
+  line-height:1.02;
+  letter-spacing:-.01em;
+}
+a{color:var(--ink)}
+:focus-visible{
+  outline:3px solid var(--clay);
+  outline-offset:3px;
+  border-radius:2px;
+}
+.on-dark :focus-visible,
+.on-dark a:focus-visible{
+  outline-color:var(--clay-lt);
+}
+.visually-hidden{
+  position:absolute!important;
+  width:1px;height:1px;
+  margin:-1px;padding:0;
+  overflow:hidden;
+  clip:rect(0 0 0 0);
+  white-space:nowrap;border:0;
+}
+.skip{
+  position:absolute;left:-9999px;top:0;
+  background:var(--ink);color:var(--paper);
+  padding:10px 18px;z-index:99;
+  font-family:var(--body);font-weight:700;font-size:13px;
+  letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+}
+.skip:focus{left:12px;top:12px}
+
+.wrap{
+  max-width:var(--wrap);
+  margin-inline:auto;
+  padding-inline:var(--pad);
+}
+.tag{
+  font-family:var(--body);
+  font-weight:700;
+  font-size:12.5px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+
+/* ————— top bar (kit chrome, minimal) ————— */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  flex-wrap:wrap;
+  max-width:var(--wrap);
+  margin-inline:auto;
+  padding:15px var(--pad) 13px;
+  border-bottom:1px solid var(--hair);
+}
+.topbar .lockup{
+  width:138px;height:auto;flex:none;
+}
+.topbar .side{
+  display:flex;align-items:center;gap:22px;
+}
+.topbar .side .tag{color:var(--muted)}
+.topbar a{
+  font-family:var(--body);font-weight:700;font-size:13px;
+  letter-spacing:.09em;text-transform:uppercase;text-decoration:none;
+  border-bottom:2px solid var(--hair-strong);
+  padding-bottom:2px;white-space:nowrap;
+}
+.topbar a:hover{border-bottom-color:var(--ink)}
+@media (max-width:640px){
+  .topbar .side .tag{display:none}
+  .topbar .lockup{width:120px}
+}
+
+/* ————— quiet header band — the site's own posterized skyline ————— */
+.hband{
+  max-width:1600px;
+  margin-inline:auto;
+  height:clamp(160px,25vw,280px);
+  overflow:hidden;
+  border-bottom:1px solid var(--hair);
+}
+.hband img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 42%;
+}
+
+/* ————— masthead ————— */
+.hero{padding:clamp(40px,7vh,80px) 0 clamp(30px,5vh,52px)}
+.kicker{color:var(--clay);display:block}
+.hero h1{
+  font-weight:560;
+  font-size:clamp(46px,7.8vw,108px);
+  letter-spacing:-.02em;
+  line-height:.98;
+  margin-top:16px;
+  text-transform:none;
+  max-width:14ch;
+}
+.standfirst{
+  margin-top:clamp(20px,3vh,30px);
+  max-width:56ch;
+  font-size:clamp(17.5px,1.7vw,20.5px);
+  line-height:1.55;
+  color:var(--ink);
+}
+.standfirst .q{font-family:var(--disp);font-style:italic;font-weight:500}
+
+/* ————— facts band (dark) ————— */
+.facts{background:var(--ink);color:var(--soft)}
+.facts .in{
+  max-width:var(--wrap);
+  margin-inline:auto;
+  padding:18px var(--pad);
+  display:flex;
+  flex-wrap:wrap;
+  gap:11px 34px;
+  justify-content:space-between;
+  align-items:baseline;
+}
+.facts .tag{color:var(--soft)}
+.facts .tag b{color:var(--paper);font-weight:800;letter-spacing:.02em}
+.facts a{
+  color:var(--paper);text-decoration:none;
+  border-bottom:2px solid rgba(237,227,210,.45);padding-bottom:1px;
+}
+.facts a:hover{border-bottom-color:var(--paper)}
+
+/* ————— section scaffolding ————— */
+.sec{max-width:var(--wrap);margin-inline:auto;padding:clamp(56px,9vh,108px) var(--pad) 0}
+.sec-k{color:var(--clay);display:block}
+
+/* shared "lead" heading used by the paper sections */
+.lead-h2{
+  font-weight:560;
+  font-size:clamp(31px,4.4vw,58px);
+  letter-spacing:-.018em;
+  margin-top:12px;
+  max-width:20ch;
+}
+.lead-lede{
+  max-width:58ch;
+  margin-top:18px;
+  font-size:clamp(16.5px,1.5vw,19px);
+}
+
+/* ————— THE FACE WALL — the signature ————— */
+.wallhead{max-width:var(--wrap);margin-inline:auto;padding:clamp(56px,9vh,108px) var(--pad) 0}
+.facewall{
+  list-style:none;
+  max-width:1080px;
+  margin:clamp(28px,4vh,44px) auto 0;
+  padding-inline:var(--pad);
+  display:grid;
+  gap:clamp(12px,1.5vw,16px);
+  grid-template-columns:repeat(2,1fr);
+}
+@media (min-width:480px){.facewall{grid-template-columns:repeat(3,1fr)}}
+@media (min-width:768px){.facewall{grid-template-columns:repeat(4,1fr)}}
+.face{
+  background:var(--card);
+  border:1px solid var(--hair);
+  overflow:hidden;
+}
+.face .ph{
+  aspect-ratio:1/1;
+  background:var(--card);
+  overflow:hidden;
+}
+.face .ph img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:50% 30%;
+}
+.face .meta{padding:11px 12px 13px}
+.face .who{
+  font-family:var(--disp);
+  font-weight:560;
+  font-size:clamp(18px,1.7vw,21px);
+  letter-spacing:-.01em;
+  line-height:1.05;
+  display:block;
+}
+.face .role{
+  display:block;
+  margin-top:5px;
+  color:var(--muted);
+  font-family:var(--body);
+  font-weight:700;
+  font-size:10.5px;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.wallfoot{
+  max-width:1080px;
+  margin:clamp(22px,3vh,32px) auto 0;
+  padding-inline:var(--pad);
+  color:var(--muted);
+  font-size:15px;
+  font-style:italic;
+  max-width:66ch;
+}
+
+/* ————— group photo anchor ————— */
+.anchor{max-width:800px;margin:clamp(40px,6vh,68px) auto 0;padding-inline:var(--pad)}
+.anchor figure{margin:0}
+.anchor .ph{overflow:hidden;border:1px solid var(--hair-strong)}
+.anchor .ph img{width:100%}
+.anchor figcaption{
+  margin-top:11px;
+  color:var(--muted);
+  font-family:var(--body);
+  font-weight:700;
+  font-size:12px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+/* ————— interlude — a face comes forward ————— */
+.lude{max-width:var(--wrap);margin-inline:auto;padding:clamp(56px,9vh,112px) var(--pad) 0}
+.lude-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,auto);
+  gap:clamp(28px,5vw,72px);
+  align-items:center;
+}
+.lude.rev .lude-grid>.lude-face{order:-1}
+.lude-note{
+  font-family:var(--disp);
+  font-weight:500;
+  font-size:clamp(26px,3.3vw,44px);
+  line-height:1.14;
+  letter-spacing:-.015em;
+  max-width:16ch;
+}
+.lude-face{
+  width:100%;
+  max-width:380px;
+  justify-self:center;
+}
+.lude-face figure{margin:0}
+.lude-face .ph{
+  overflow:hidden;
+  background:var(--card);
+  border:1px solid var(--hair-strong);
+}
+.lude-face .ph img{width:100%}
+.lude-face figcaption{margin-top:11px}
+.lude-face .who{
+  font-family:var(--disp);
+  font-weight:560;
+  font-size:clamp(19px,1.8vw,23px);
+  letter-spacing:-.01em;
+  display:block;
+}
+.lude-face .role{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  font-family:var(--body);
+  font-weight:700;
+  font-size:11px;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+
+/* ————— programs band (sand) — what the people run ————— */
+.programs{
+  background:var(--paper-2);
+  border-block:1px solid var(--hair);
+  margin-top:clamp(56px,9vh,112px);
+}
+.programs .in{max-width:var(--wrap);margin-inline:auto;padding:clamp(52px,8vh,92px) var(--pad)}
+.prog-list{
+  list-style:none;
+  margin-top:clamp(26px,4vh,40px);
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:1px;
+  border:1px solid var(--hair);
+  background:var(--hair);
+}
+.prog-list li{
+  background:var(--paper-2);
+  padding:18px 20px;
+  transition:background-color .3s var(--ease-snap);
+}
+.prog-list li:hover{background:var(--paper)}
+.prog-name{
+  font-family:var(--disp);
+  font-weight:600;
+  font-size:clamp(18px,1.7vw,21px);
+  letter-spacing:-.01em;
+  display:block;
+}
+.prog-note{
+  display:block;
+  margin-top:5px;
+  color:var(--muted);
+  font-size:14.5px;
+  line-height:1.5;
+}
+.prog-cta{margin-top:clamp(24px,4vh,36px)}
+
+/* ————— spirit band (dark) ————— */
+.spirit{
+  background:var(--ink);
+  color:var(--soft);
+  margin-top:clamp(56px,9vh,112px);
+}
+.spirit .in{max-width:var(--wrap);margin-inline:auto;padding:clamp(52px,8vh,96px) var(--pad)}
+.spirit .sec-k{color:var(--clay-lt)}
+.spirit h2{
+  color:var(--paper);
+  font-weight:560;
+  font-size:clamp(31px,4.6vw,62px);
+  letter-spacing:-.02em;
+  margin-top:12px;
+  max-width:18ch;
+}
+.spirit p{
+  margin-top:20px;
+  max-width:60ch;
+  font-size:clamp(16.5px,1.5vw,19px);
+}
+
+/* ————— fee band (sand) ————— */
+.fee-band{
+  background:var(--paper-2);
+  border-block:1px solid var(--hair);
+  margin-top:clamp(56px,9vh,112px);
+}
+.fee-band .in{max-width:var(--wrap);margin-inline:auto;padding:clamp(52px,8vh,92px) var(--pad)}
+.fee-band .sec-k{color:var(--clay)}
+.fee-band h2{
+  font-weight:560;
+  font-size:clamp(30px,4.4vw,58px);
+  letter-spacing:-.018em;
+  margin-top:12px;
+  max-width:18ch;
+}
+.fee-band p{
+  margin-top:18px;
+  max-width:56ch;
+  font-size:clamp(16.5px,1.5vw,19px);
+}
+.fee-band .cta-row{margin-top:clamp(22px,4vh,34px)}
+
+/* ————— shared CTA button ————— */
+.cta-row{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+.btn{
+  display:inline-block;
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--body);
+  font-weight:700;
+  font-size:14.5px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  text-decoration:none;
+  padding:15px 26px 14px;
+  border:2px solid var(--ink);
+}
+.btn:hover{background:#15110C;border-color:#15110C}
+.btn .roll{display:block;position:relative;overflow:hidden}
+.btn .roll span{display:block}
+.btn .roll span[aria-hidden]{position:absolute;left:0;top:100%;width:100%}
+.fee-note{color:var(--muted);font-size:13.5px}
+.fee-note a{color:var(--muted)}
+
+/* ————— get involved ————— */
+.involve{max-width:var(--wrap);margin-inline:auto;padding:clamp(56px,9vh,112px) var(--pad) 0}
+.involve .lead-lede{max-width:56ch}
+.ways{
+  margin-top:clamp(26px,4vh,40px);
+  list-style:none;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:12px;
+}
+.way{
+  border:1px solid var(--hair-strong);
+  background:var(--paper);
+}
+.way a{
+  display:block;
+  text-decoration:none;
+  padding:18px 20px;
+  height:100%;
+}
+.way .w-name{
+  font-family:var(--disp);
+  font-weight:600;
+  font-size:clamp(20px,1.9vw,25px);
+  letter-spacing:-.01em;
+  display:block;
+}
+.way .w-note{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:14px;
+}
+.way .w-go{
+  display:block;
+  margin-top:14px;
+  font-family:var(--body);
+  font-weight:700;
+  font-size:11.5px;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--clay);
+}
+.way a:hover{background:var(--paper-2)}
+
+/* ————— deep brand moment — the crest, clearspace, solid ground ————— */
+.brand{
+  background:var(--brand-ground);
+  color:var(--soft);
+  text-align:center;
+  margin-top:clamp(64px,11vh,132px);
+}
+.brand .in{max-width:var(--wrap);margin-inline:auto;padding:clamp(76px,13vh,150px) var(--pad)}
+.brand .mark{
+  width:clamp(88px,9.5vw,124px);
+  height:auto;
+  margin:0 auto clamp(30px,5vh,52px);
+}
+.brand p{
+  font-family:var(--disp);
+  font-weight:500;
+  color:var(--paper);
+  font-size:clamp(28px,4.6vw,62px);
+  letter-spacing:-.02em;
+  line-height:1.05;
+  max-width:16ch;
+  margin-inline:auto;
+}
+.brand .sub{
+  margin-top:20px;
+  font-family:var(--body);
+  font-weight:700;
+  color:var(--clay-lt);
+  font-size:12.5px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+
+/* ————— closing ————— */
+.close{
+  max-width:var(--wrap);
+  margin-inline:auto;
+  text-align:center;
+  padding:clamp(72px,12vh,148px) var(--pad) clamp(56px,9vh,108px);
+}
+.close h2{
+  font-weight:560;
+  font-size:clamp(36px,5.6vw,82px);
+  letter-spacing:-.022em;
+  line-height:1.02;
+  max-width:15ch;
+  margin-inline:auto;
+}
+.close .why{
+  max-width:52ch;
+  margin:20px auto 0;
+  font-size:clamp(16.5px,1.6vw,19.5px);
+  color:var(--ink);
+}
+.close .cta-final{margin-top:clamp(28px,5vh,44px);justify-content:center}
+.btn-big{font-size:clamp(16px,1.7vw,20px);padding:19px 40px 18px}
+.close .fee-note{display:block;margin-top:16px}
+.close .signoff{
+  margin-top:clamp(34px,6vh,52px);
+  color:var(--muted);
+  font-family:var(--disp);
+  font-style:italic;
+  font-weight:500;
+  font-size:clamp(15px,1.5vw,18px);
+  line-height:1.6;
+  max-width:44ch;
+  margin-inline:auto;
+}
+
+/* ————— appendix ————— */
+.appendix{max-width:var(--wrap);margin-inline:auto;padding:clamp(48px,8vh,88px) var(--pad) clamp(56px,9vh,96px)}
+.appendix .plate{
+  border:1px solid var(--hair-strong);
+  background:var(--paper-2);
+  padding:clamp(24px,3.6vw,46px);
+}
+.appendix .tag{color:var(--clay)}
+.appendix h2{
+  font-weight:600;
+  font-size:clamp(27px,3.4vw,42px);
+  letter-spacing:-.015em;
+  margin-top:8px;
+}
+.ap-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(268px,1fr));
+  gap:24px 44px;
+  margin-top:26px;
+}
+.ap-item h3{
+  font-family:var(--body);
+  font-weight:800;
+  font-size:12px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+.ap-item p{font-size:15px;line-height:1.62}
+.chips{display:flex;flex-direction:column;gap:8px}
+.chip{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--muted)}
+.chip i{width:18px;height:18px;border:1px solid var(--hair-strong);flex:none}
+.chip code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--muted)}
+
+/* ————— footer ————— */
+footer{background:var(--ink);color:var(--soft)}
+footer .in{
+  max-width:var(--wrap);
+  margin-inline:auto;
+  padding:26px var(--pad);
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px 28px;
+  justify-content:space-between;
+  align-items:center;
+}
+footer .brandmark{display:flex;align-items:center;gap:14px}
+footer .brandmark img{width:118px;height:auto}
+footer .links{display:flex;gap:22px}
+footer a{
+  color:var(--paper);
+  font-family:var(--body);
+  font-weight:700;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  font-size:14px;
+  text-decoration:none;
+  border-bottom:2px solid rgba(237,227,210,.45);
+  padding-bottom:2px;
+}
+footer a:hover{border-bottom-color:var(--paper)}
+footer .mid{font-size:12.5px;color:var(--soft);opacity:.85}
+
+/* ————————————————————————————————————————————————
+   MOTION — calm. Faces fade up as you scroll; a few come
+   forward with a small rise. No filter, tint, or overlay
+   ever touches a photo. Transform and opacity only.
+
+   Every pre-hidden state lives under html.anim (added by
+   JS only) AND inside prefers-reduced-motion:no-preference.
+   With no JS, reduced motion, or print, the base styles
+   above ARE the settled page. A safety timer lands
+   everything on screen by 2.3s.
+———————————————————————————————————————————————— */
+@media screen and (prefers-reduced-motion:no-preference){
+
+  /* entrance — the bar and masthead settle on load */
+  html.anim .topbar{opacity:0;transform:translateY(-10px)}
+  html.anim.go .topbar{
+    opacity:1;transform:none;
+    transition:opacity .6s var(--ease-lux) .05s,transform .7s var(--ease-lux) .05s;
+  }
+  html.anim .hband img{transform:scale(1.04)}
+  html.anim.go .hband img{transform:none;transition:transform 1.4s var(--ease-lux)}
+
+  html.anim .hero .kicker,
+  html.anim .hero h1,
+  html.anim .hero .standfirst{opacity:0;transform:translateY(16px)}
+  html.anim.go .hero .kicker{
+    opacity:1;transform:none;
+    transition:opacity .6s var(--ease-lux) .12s,transform .7s var(--ease-lux) .12s;
+  }
+  html.anim.go .hero h1{
+    opacity:1;transform:none;
+    transition:opacity .7s var(--ease-lux) .22s,transform .85s var(--ease-lux) .22s;
+  }
+  html.anim.go .hero .standfirst{
+    opacity:1;transform:none;
+    transition:opacity .6s var(--ease-lux) .42s,transform .7s var(--ease-lux) .42s;
+  }
+
+  html.anim .facts .in>*{opacity:0;transform:translateY(10px)}
+  html.anim.go .facts .in>*{
+    opacity:1;transform:none;
+    transition:opacity .5s var(--ease-lux) calc(.5s + var(--i,0)*.06s),
+               transform .6s var(--ease-lux) calc(.5s + var(--i,0)*.06s);
+  }
+
+  /* generic scroll reveals — IO adds .in once, then unobserves */
+  html.anim .rv{opacity:0;transform:translateY(20px)}
+  html.anim .rv.in{
+    opacity:1;transform:none;
+    transition:opacity .7s var(--ease-lux),transform .8s var(--ease-lux);
+  }
+
+  /* the face wall assembles on a tight, even stagger */
+  html.anim .facewall .face{opacity:0;transform:translateY(16px)}
+  html.anim .facewall.in .face{
+    opacity:1;transform:none;
+    transition:opacity .5s var(--ease-lux) calc(var(--i,0)*.045s),
+               transform .6s var(--ease-lux) calc(var(--i,0)*.045s);
+  }
+
+  /* an interlude face comes forward with a small rise */
+  html.anim .lude .lude-note,
+  html.anim .lude .lude-face{opacity:0;transform:translateY(20px)}
+  html.anim .lude.in .lude-note{
+    opacity:1;transform:none;
+    transition:opacity .65s var(--ease-lux) .05s,transform .8s var(--ease-lux) .05s;
+  }
+  html.anim .lude.in .lude-face{
+    opacity:1;transform:none;
+    transition:opacity .7s var(--ease-lux) .18s,transform .9s var(--ease-lux) .18s;
+  }
+
+  /* micro-interactions — snap curve only */
+  .btn{transition:background-color .3s var(--ease-snap),border-color .3s var(--ease-snap),transform .3s var(--ease-snap)}
+  .face{transition:transform .3s var(--ease-snap),box-shadow .3s var(--ease-snap)}
+  .way a{transition:background-color .3s var(--ease-snap)}
+  .topbar a,.facts a,footer a{transition:border-color .3s var(--ease-snap)}
+}
+
+/* face + button hover — pointer-accurate devices only */
+@media screen and (hover:hover) and (pointer:fine){
+  .face:hover{transform:translateY(-3px);box-shadow:0 10px 24px -16px rgba(36,30,23,.5)}
+}
+@media screen and (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+  .btn .roll span{transition:transform .38s var(--ease-snap)}
+  .btn:hover .roll span,
+  .btn:focus-visible .roll span{transform:translateY(-100%)}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:active{transform:translateY(0)}
+}
+
+/* belt-and-braces: if reduced motion is on, force the resting state.
+   (The script bails before adding .anim, so this is a backstop only.) */
+@media (prefers-reduced-motion:reduce){
+  .rv,
+  .facewall .face,
+  .lude .lude-note,
+  .lude .lude-face,
+  .hero .kicker,
+  .hero h1,
+  .hero .standfirst,
+  .facts .in>*,
+  .topbar{opacity:1!important;transform:none!important}
+  .hband img{transform:none!important}
+}
+
+/* ————— responsive ————— */
+@media (max-width:820px){
+  .lude-grid{grid-template-columns:1fr}
+  .lude.rev .lude-grid>.lude-face{order:0}
+  .lude-face{justify-self:start;max-width:340px}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .facts .in{gap:9px 22px}
+  footer .in{gap:12px 20px}
+  footer .links{gap:18px}
+}
+@media print{
+  .skip{display:none}
+  .lude,.programs,.spirit,.brand,.close{break-inside:avoid}
+  html.anim .topbar,
+  html.anim .hband img,
+  html.anim .hero .kicker,
+  html.anim .hero h1,
+  html.anim .hero .standfirst,
+  html.anim .facts .in>*,
+  html.anim .rv,
+  html.anim .facewall .face,
+  html.anim .lude .lude-note,
+  html.anim .lude .lude-face{opacity:1!important;transform:none!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <img class="lockup" src="assets/brand/logo-full.png" alt="DiscNW logo: circular Coast Salish-style formline disc mark beside the DiscNW wordmark" width="1446" height="616">
+  <div class="side">
+    <span class="tag">DiscNW · Design direction 20 · Experimental</span>
+    <a href="index.html">← All directions</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ————————— QUIET HEADER BAND ————————— -->
+  <div class="hband">
+    <img src="assets/discnw-1.jpg" alt="DiscNW brand graphic: a posterized Seattle skyline with the DiscNW formline disc mark" width="1600" height="1066">
+  </div>
+
+  <!-- ————————— MASTHEAD ————————— -->
+  <section class="hero wrap" aria-labelledby="hero-h">
+    <span class="kicker tag">The people</span>
+    <h1 id="hero-h">A rec league runs on people.</h1>
+    <p class="standfirst">So this page opens with the real ones. These are some of the DiscNW staff and board. They are the reason more than 10,000 players get on the field every year. A homepage could open with action photos. This one opens with faces.</p>
+  </section>
+
+  <!-- ————————— FACTS BAND ————————— -->
+  <aside class="facts on-dark" role="note" aria-label="A few plain facts">
+    <div class="in">
+      <span class="tag" style="--i:0"><b>10,000+</b> players a year</span>
+      <span class="tag" style="--i:1">Started in <b>1995</b> at Potlatch</span>
+      <span class="tag" style="--i:2">Fees from <b>$33</b>, sliding scale</span>
+      <span class="tag" style="--i:3"><b>0</b> referees</span>
+      <span class="tag" style="--i:4"><a href="tel:+12067815840">(206) 781-5840</a></span>
+    </div>
+  </aside>
+
+  <!-- ————————— THE FACE WALL (signature) ————————— -->
+  <section class="wallhead" aria-labelledby="wall-h">
+    <span class="sec-k tag">The board and staff</span>
+    <h2 class="lead-h2" id="wall-h">Start with the faces.</h2>
+    <p class="lead-lede">Every one of these is a real person from DiscNW. Same size, same frame, so the group reads as one. First names, because that is how it works on the field.</p>
+  </section>
+
+  <ul class="facewall" aria-label="DiscNW board and staff, twelve faces">
+    <li class="face" style="--i:0">
+      <div class="ph"><img src="assets/erin-armstrong-head-shot-1.jpg" alt="Erin Armstrong" width="900" height="600"></div>
+      <div class="meta"><span class="who">Erin</span><span class="role">Board &amp; staff</span></div>
+    </li>
+    <li class="face" style="--i:1">
+      <div class="ph"><img src="assets/lili-gu.jpg" alt="Lili Gu" width="901" height="600"></div>
+      <div class="meta"><span class="who">Lili</span><span class="role">Board &amp; staff</span></div>
+    </li>
+    <li class="face" style="--i:2">
+      <div class="ph"><img src="assets/sarah-titcomb-2.jpg" alt="Sarah Titcomb" width="800" height="600"></div>
+      <div class="meta"><span class="who">Sarah</span><span class="role">Board &amp; staff</span></div>
+    </li>
+    <li class="face" style="--i:3">
+      <div class="ph"><img src="assets/taylor-kanemori.jpg" alt="Taylor Kanemori" width="800" height="533"></div>
+      <div class="meta"><span class="who">Taylor</span><span class="role">Board &amp; staff</span></div>
+    </li>
+    <li class="face" style="--i:4">
+      <div class="ph"><img src="assets/joe-bisignano.jpg" alt="Joe Bisignano" width="600" height="600"></div>
+      <div class="meta"><span class="who">Joe</span><span class="role">Board &amp; staff</span></div>
+    </li>
+    <li class="face" style="--i:5">
+      <div class="ph"><img src="assets/matt-stenovec.jpg" alt="Matt Stenovec" width="649" height="600"></div>
+      <div class="meta"><span class="who">Matt</span><span class="role">Board &amp; staff</span></div>
+    </li>
+    <li class="face" style="--i:6">
+      <div class="ph"><img src="assets/chris-page.jpg" alt="Chris Page" width="292" height="600"></div>
+      <div class="meta"><span class="who">Chris</span><span class="role">Board &amp; staff</span></div>
+    </li>
+    <li class="face" style="--i:7">
+      <div class="ph"><img src="assets/alan-hensley.png" alt="Alan Hensley" width="294" height="365"></div>
+      <div class="meta"><span class="who">Alan</span><span class="role">Board &amp; staff</span></div>
+    </li>
+    <li class="face" style="--i:8">
+      <div class="ph"><img src="assets/khalif-photo-5-002.jpg" alt="Khalif" width="442" height="600"></div>
+      <div class="meta"><span class="who">Khalif</span><span class="role">Board &amp; staff</span></div>
+    </li>
+    <li class="face" style="--i:9">
+      <div class="ph"><img src="assets/sheila-camarena.jpg" alt="Sheila Camarena" width="640" height="480"></div>
+      <div class="meta"><span class="who">Sheila</span><span class="role">Board &amp; staff</span></div>
+    </li>
+    <li class="face" style="--i:10">
+      <div class="ph"><img src="assets/qxhna-profile-picture.jpg" alt="Qxhna" width="439" height="600"></div>
+      <div class="meta"><span class="who">Qxhna</span><span class="role">Board &amp; staff</span></div>
+    </li>
+    <li class="face" style="--i:11">
+      <div class="ph"><img src="assets/mel-clark.jpg" alt="Mel Clark" width="250" height="260"></div>
+      <div class="meta"><span class="who">Mel</span><span class="role">Board &amp; staff</span></div>
+    </li>
+  </ul>
+  <p class="wallfoot rv">That is twelve of them. There are more staff, plus the coaches and the volunteers who make the rest of it happen. Same idea, more faces.</p>
+
+  <!-- group photo anchor -->
+  <div class="anchor rv">
+    <figure>
+      <div class="ph"><img src="assets/2024-discnw-board-and-staff-strategic-planning-retreat-group-photo.jpg" alt="DiscNW board and staff standing together for a group photo at the 2024 strategic planning retreat" width="800" height="600"></div>
+      <figcaption>The board and staff, 2024 planning retreat. Once a year most of them are in the same room.</figcaption>
+    </figure>
+  </div>
+
+  <!-- ————————— INTERLUDE A · KHALIF ————————— -->
+  <section class="lude rv" aria-label="A note about the people">
+    <div class="lude-grid">
+      <p class="lude-note">Most of them played here first. Some of them started as kids.</p>
+      <div class="lude-face" style="max-width:340px">
+        <figure>
+          <div class="ph"><img src="assets/khalif-photo-5-002.jpg" alt="Khalif" width="442" height="600"></div>
+          <figcaption><span class="who">Khalif</span><span class="role">Board &amp; staff</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ————————— PROGRAMS — what the people run ————————— -->
+  <section class="programs" aria-labelledby="prog-h">
+    <div class="in">
+      <span class="sec-k tag rv">What they run</span>
+      <h2 class="lead-h2 rv" id="prog-h">The people run the programs.</h2>
+      <p class="lead-lede rv">Here is some of what they put on. All of it is real, and most of it happens every year.</p>
+      <ul class="prog-list rv">
+        <li><span class="prog-name">Summer Youth Ultimate Camps</span><span class="prog-note">For ages 7 to 18. No experience needed.</span></li>
+        <li><span class="prog-name">Summer Mixed Hat League</span><span class="prog-note">Sign up on your own. You get placed on a team.</span></li>
+        <li><span class="prog-name">Summer Wonder League</span><span class="prog-note">Adult ultimate on the long June evenings.</span></li>
+        <li><span class="prog-name">Fall middle and high school leagues</span><span class="prog-note">Across the Seattle area, every autumn.</span></li>
+        <li><span class="prog-name">Spring Reign</span><span class="prog-note">The world's largest mixed youth ultimate tournament.</span></li>
+        <li><span class="prog-name">Sea Plastic</span><span class="prog-note">The beach tournament. Cleats come off.</span></li>
+        <li><span class="prog-name">Potlatch</span><span class="prog-note">The summer tournament DiscNW grew out of, back in 1995.</span></li>
+        <li><span class="prog-name">DiscNW Coaching Collective</span><span class="prog-note">Training for the people who coach.</span></li>
+      </ul>
+      <div class="prog-cta cta-row rv">
+        <a class="btn" href="https://www.discnw.org/"><span class="roll"><span>See programs and register</span><span aria-hidden="true">See programs and register</span></span></a>
+        <span class="fee-note">Fees start at $33, with a sliding scale.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ————————— INTERLUDE B · SHEILA ————————— -->
+  <section class="lude rev rv" aria-label="A note about the people">
+    <div class="lude-grid">
+      <p class="lude-note">People stick around because someone learned their name in the first week.</p>
+      <div class="lude-face" style="max-width:420px">
+        <figure>
+          <div class="ph"><img src="assets/sheila-camarena.jpg" alt="Sheila Camarena" width="640" height="480"></div>
+          <figcaption><span class="who">Sheila</span><span class="role">Board &amp; staff</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ————————— SPIRIT — the people officiate themselves ————————— -->
+  <section class="spirit on-dark" aria-labelledby="spirit-h">
+    <div class="in">
+      <span class="sec-k tag rv">How the games are run</span>
+      <h2 class="rv" id="spirit-h">No referees. The players make the calls.</h2>
+      <p class="rv">Every DiscNW game is self-officiated, at every age and in every division. When a call is close, the players on the field settle it themselves. That has been the system since 1995. It works because of the people, not in spite of them.</p>
+    </div>
+  </section>
+
+  <!-- ————————— FEE — no barriers ————————— -->
+  <section class="fee-band" aria-labelledby="fee-h">
+    <div class="in">
+      <span class="sec-k tag rv">The money part</span>
+      <h2 class="rv" id="fee-h">No one is turned away for lack of money.</h2>
+      <p class="rv">Fees start at $33. There is a sliding scale and financial aid. If cost is the problem, it gets solved. That is what "an Ultimate community without barriers" means in practice.</p>
+      <div class="cta-row rv">
+        <a class="btn" href="https://www.discnw.org/"><span class="roll"><span>How fees and aid work</span><span aria-hidden="true">How fees and aid work</span></span></a>
+        <span class="fee-note">Questions? Call <a href="tel:+12067815840">(206) 781-5840</a>.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ————————— INTERLUDE C · ERIN ————————— -->
+  <section class="lude rv" aria-label="A note about the people">
+    <div class="lude-grid">
+      <p class="lude-note">A league with no referees needs people who show up. These are some of them.</p>
+      <div class="lude-face" style="max-width:440px">
+        <figure>
+          <div class="ph"><img src="assets/erin-armstrong-head-shot-1.jpg" alt="Erin Armstrong" width="900" height="600"></div>
+          <figcaption><span class="who">Erin</span><span class="role">Board &amp; staff</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ————————— GET INVOLVED ————————— -->
+  <section class="involve" aria-labelledby="inv-h">
+    <span class="sec-k tag rv">Be one of them</span>
+    <h2 class="lead-h2 rv" id="inv-h">Want in?</h2>
+    <p class="lead-lede rv">You do not have to have played before. Every face on this page started somewhere. There are four plain ways in.</p>
+    <ul class="ways rv">
+      <li class="way"><a href="https://www.discnw.org/"><span class="w-name">Play</span><span class="w-note">Youth, school, or adult. Any level.</span><span class="w-go">Register →</span></a></li>
+      <li class="way"><a href="https://www.discnw.org/"><span class="w-name">Coach</span><span class="w-note">The Coaching Collective trains you. No whistle needed.</span><span class="w-go">Get started →</span></a></li>
+      <li class="way"><a href="https://www.discnw.org/"><span class="w-name">Volunteer</span><span class="w-note">Fields, tournaments, the board. Bring an hour.</span><span class="w-go">Help out →</span></a></li>
+      <li class="way"><a href="https://www.discnw.org/"><span class="w-name">Give</span><span class="w-note">Your gift keeps fees low and aid open.</span><span class="w-go">Donate →</span></a></li>
+    </ul>
+  </section>
+
+  <!-- ————————— DEEP BRAND MOMENT — the crest ————————— -->
+  <section class="brand on-dark" aria-labelledby="brand-h">
+    <div class="in">
+      <img class="mark" src="assets/brand/logo-mark-white.png" alt="DiscNW formline mark: a flying disc held within a circular Coast Salish-style design" width="590" height="616">
+      <p id="brand-h">The people who make it run.</p>
+      <span class="sub">DiscNW · Seattle · since 1995</span>
+    </div>
+  </section>
+
+  <!-- ————————— CLOSING ————————— -->
+  <section class="close rv" aria-labelledby="close-h">
+    <h2 id="close-h">Come be one of the people.</h2>
+    <p class="why">You can play, coach, volunteer, or give. Fees start at $33, with a sliding scale and financial aid. No one is turned away for lack of money.</p>
+    <p class="cta-final cta-row"><a class="btn btn-big" href="https://www.discnw.org/"><span class="roll"><span>Get involved</span><span aria-hidden="true">Get involved</span></span></a></p>
+    <span class="fee-note">Start at discnw.org · or call <a href="tel:+12067815840" style="color:inherit">(206) 781-5840</a></span>
+    <p class="signoff">Erin · Lili · Sarah · Taylor · Joe · Matt · Chris · Alan · Khalif · Sheila · Qxhna · Mel — and you.</p>
+  </section>
+
+  <!-- ————————— ABOUT THIS DIRECTION ————————— -->
+  <section class="appendix" aria-labelledby="ap-h">
+    <div class="plate rv">
+      <span class="tag">About this direction</span>
+      <h2 id="ap-h">Nº 20 — The People</h2>
+      <div class="ap-grid">
+        <div class="ap-item">
+          <h3>The idea</h3>
+          <p>A rec league runs on people, so the site opens with the real ones. It leads with the actual DiscNW staff and board instead of action photos. The programs, the fees, and the no-referee rule are all told as things these people run.</p>
+        </div>
+        <div class="ap-item">
+          <h3>Signature</h3>
+          <p>The face wall. Real headshots on varied backgrounds, all held in the same square frame at the same size, so a mixed set of photos reads as one intentional group. A first name and one plain role under each. A few faces come forward as you scroll.</p>
+        </div>
+        <div class="ap-item">
+          <h3>Palette — warm, built to sit behind photos</h3>
+          <div class="chips">
+            <span class="chip"><i style="background:#F4ECDF"></i>Warm Paper <code>#F4ECDF</code></span>
+            <span class="chip"><i style="background:#EBE0CE"></i>Warm Sand <code>#EBE0CE</code></span>
+            <span class="chip"><i style="background:#E6DBC6"></i>Card Oat <code>#E6DBC6</code></span>
+            <span class="chip"><i style="background:#241E17"></i>Espresso <code>#241E17</code></span>
+            <span class="chip"><i style="background:#A84324"></i>Clay <code>#A84324</code></span>
+          </div>
+        </div>
+        <div class="ap-item">
+          <h3>Type</h3>
+          <p><strong>Fraunces</strong> for the headlines and names, a warm humanist serif with a human feel. <strong>Hanken Grotesk</strong> for body and labels, a friendly, plain humanist sans.</p>
+        </div>
+        <div class="ap-item">
+          <h3>Motion</h3>
+          <p>Faces fade up in a tight, even wave. A few come forward with a small rise. No filter, tint, or overlay ever touches a photo. Everything settles within about two seconds. Turn motion off and the page is already there.</p>
+        </div>
+        <div class="ap-item">
+          <h3>Choose this if</h3>
+          <p>You want the mission obvious on the first screen: people first, programs second. And you want a homepage built from assets you already have, which are real faces, real program names, and the real fee model.</p>
+        </div>
+        <div class="ap-item">
+          <h3>Think twice if</h3>
+          <p>You need program-first wayfinding above the fold, or you cannot keep the headshots current. The wall is only as good as the photos in it, and it works best when every face is recent and framed the same.</p>
+        </div>
+        <div class="ap-item">
+          <h3>The assets shown</h3>
+          <p>Twelve real DiscNW headshots, the 2024 board and staff group photo, the program names, and the sliding-scale fee. The formline mark closes the page with clearspace on a solid ground.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="on-dark">
+  <div class="in">
+    <span class="brandmark">
+      <img src="assets/brand/logo-full-white.png" alt="DiscNW" width="1446" height="616">
+    </span>
+    <span class="mid">Direction 20 of 22 · The People · prepared for DiscNW</span>
+    <span class="links">
+      <a href="index.html">← All directions</a>
+      <a href="21-the-programs.html">Next direction →</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+/* THE MOTION SYSTEM — "the people arrive."
+   · entrance: the top bar and masthead settle on load; the header
+     band eases its scale to rest.
+   · scroll: an IntersectionObserver adds .in once, then unobserves.
+     The face wall assembles on a tight, even stagger; interlude faces
+     come forward with a small rise; sections fade up.
+   · guarantees: the base styles are the settled page (no JS, print,
+     or reduced motion). Whatever is on screen is force-settled by 2.3s.
+     Native scroll is never touched. Transform and opacity only. */
+(function(){
+  var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (mq.matches) return;                          /* settled base page */
+  if (!('IntersectionObserver' in window)) return; /* settled base page */
+  var doc = document.documentElement;
+  doc.classList.add('anim');
+
+  try{
+    /* entrance — two frames in, so pre-states paint first */
+    window.requestAnimationFrame(function(){
+      window.requestAnimationFrame(function(){ doc.classList.add('go'); });
+    });
+
+    /* scroll reveals — fire once, then unobserve */
+    var revs = Array.prototype.slice.call(
+      document.querySelectorAll('.rv, .facewall')
+    );
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, {rootMargin:'0px 0px -8% 0px', threshold:.06});
+    revs.forEach(function(el){ io.observe(el); });
+
+    /* bounded settle — whatever is on screen is landed by 2.3s, no exceptions */
+    window.setTimeout(function(){
+      doc.classList.add('go');
+      var vh = window.innerHeight;
+      revs.forEach(function(el){
+        var r = el.getBoundingClientRect();
+        if (!el.classList.contains('in') && r.top < vh && r.bottom > 0){
+          el.classList.add('in'); io.unobserve(el);
+        }
+      });
+    }, 2300);
+  }catch(err){
+    /* any failure returns the settled base page */
+    doc.classList.remove('anim');
+    doc.classList.remove('go');
+  }
+})();
+</script>
+</body>
+</html>

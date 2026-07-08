@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction 21 · The Programs — DiscNW redesign</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<meta name="description" content="The Programs: a clean directory of everything DiscNW runs. Every program on its own tile with its real logo, sorted by season and by who it is for, so anyone can find their program in seconds.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B1E23;          /* graphite ink — dark sections, headline text */
+    --ink-soft:#252A31;     /* raised panel on dark */
+    --ink-deep:#111418;     /* deepest strip, crest ground */
+    --paper:#ECEBE8;        /* warm light-grey page ground */
+    --card:#FFFFFF;         /* cards and the logo tiles */
+    --hair:#DFDED9;         /* hairlines and dividers on light */
+    --hair-dark:rgba(203,207,214,.14); /* hairlines on dark */
+    --grey:#565B62;         /* secondary text and meta — AA on paper and white */
+    --dim:#6E747C;          /* dim labels and mono — AA on white */
+    --accent:#35607F;       /* the one accent — slate blue, UI only */
+    --accent-deep:#284B63;  /* accent pressed / hover */
+    --accent-tint:#E7EDF1;  /* accent wash — active chip, open pill */
+    --accent-l:#8FB2CC;     /* accent on dark grounds */
+    --ondark:#C9CDD2;       /* body text on dark */
+    --ondark-dim:#8B9199;   /* dim text on dark */
+    --soft:#F1F1EC;         /* faint tint pill / inset */
+    --wrap:1200px;
+
+    /* house easing — default 'ease' is banned on this page.
+       snap: micro moves · lux: reveals. Both curves, nothing else. */
+    --ease-snap:cubic-bezier(.4,0,.1,1);
+    --ease-lux:cubic-bezier(.16,1,.3,1);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  [id]{ scroll-margin-top:24px; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', system-ui, -apple-system, sans-serif;
+    font-size:17px; line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--accent); color:#fff; }
+  img{ display:block; max-width:100%; }
+  a{ color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
+  a:hover{ color:var(--ink); }
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible{
+    outline:3px solid var(--accent); outline-offset:2px; border-radius:4px;
+  }
+  .on-dark a:focus-visible, .on-dark button:focus-visible{ outline-color:var(--accent-l); }
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+  }
+  .heading{ font-family:'Hanken Grotesk', system-ui, sans-serif; }
+  .mono{ font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  /* ---------- shared rhythm ---------- */
+  .sec{ max-width:var(--wrap); margin:0 auto; padding:104px 32px; }
+  .sec + .sec{ border-top:1px solid var(--hair); }
+  .kicker{
+    font-family:'JetBrains Mono', ui-monospace, monospace;
+    font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent);
+    display:flex; align-items:center; gap:10px; margin:0 0 16px;
+  }
+  .kicker::before{ content:""; width:20px; height:2px; background:var(--accent); flex:none; transform-origin:0 50%; }
+  .on-dark .kicker{ color:var(--accent-l); }
+  .on-dark .kicker::before{ background:var(--accent-l); }
+  .sec-title{
+    font-family:'Hanken Grotesk', system-ui, sans-serif;
+    font-weight:800; font-size:clamp(30px, 3.4vw, 43px);
+    line-height:1.05; letter-spacing:-.02em; color:var(--ink);
+    margin:0 0 16px; text-wrap:balance;
+  }
+  .sec-intro{ max-width:66ch; margin:0 0 44px; color:var(--grey); font-size:17.5px; }
+  .on-dark .sec-title{ color:#fff; }
+  .on-dark .sec-intro{ color:var(--ondark); }
+  .note{
+    font-family:'JetBrains Mono', ui-monospace, monospace;
+    font-size:12.5px; color:var(--dim); line-height:1.6;
+    margin:20px 2px 0; max-width:92ch;
+  }
+  .on-dark .note{ color:var(--ondark-dim); }
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-block; border:0; cursor:pointer; text-decoration:none;
+    font-family:'Hanken Grotesk', sans-serif; font-weight:700; font-size:15.5px; line-height:1;
+    padding:15px 22px; border-radius:9px;
+    transition:background-color .28s var(--ease-snap), color .28s var(--ease-snap),
+               box-shadow .28s var(--ease-snap), transform .28s var(--ease-snap);
+  }
+  .btn-primary{ background:var(--accent); color:#fff; }
+  .btn-primary:hover, .btn-primary.demo-hover{ background:var(--accent-deep); transform:translateY(-1px); }
+  .btn-primary:active{ transform:translateY(0); }
+  .btn-secondary{ background:transparent; color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--ink); }
+  .btn-secondary:hover, .btn-secondary.demo-hover{ background:var(--ink); color:#fff; }
+  .btn-quiet{
+    background:none; padding:15px 2px; border-radius:4px;
+    font-family:'Hanken Grotesk', sans-serif; font-weight:700; font-size:14.5px;
+    color:var(--accent); text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1.5px;
+  }
+  .btn-quiet:hover, .btn-quiet.demo-hover{ color:var(--ink); text-decoration-thickness:3px; }
+
+  /* hover roll — footer nav labels */
+  .roll{ position:relative; display:inline-block; overflow:hidden; vertical-align:top; }
+  .roll-a, .roll-b{ display:block; transition:transform .42s var(--ease-snap); }
+  .roll-b{ position:absolute; top:100%; left:0; }
+  .roll:hover .roll-a, .roll:focus-visible .roll-a,
+  .roll:hover .roll-b, .roll:focus-visible .roll-b{ transform:translateY(-100%); }
+
+  /* ---------- 1 · masthead ---------- */
+  .masthead{ background:var(--ink); color:var(--ondark); }
+  .masthead-in{ max-width:var(--wrap); margin:0 auto; padding:80px 32px 68px; }
+  .crest{
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:22px; margin:0 0 30px;
+    background:var(--ink-deep); border:1px solid var(--hair-dark); border-radius:18px;
+  }
+  .crest img{ width:80px; height:auto; }
+  .mast-series{
+    font-family:'JetBrains Mono', ui-monospace, monospace;
+    font-weight:600; font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ondark-dim); margin:0 0 20px;
+  }
+  .mast-name{
+    font-family:'Hanken Grotesk', sans-serif; font-weight:800;
+    font-size:clamp(52px, 7.4vw, 100px); line-height:.98; letter-spacing:-.03em; color:#fff;
+    margin:0 0 22px;
+  }
+  .mast-thesis{ margin:0 0 30px; font-size:18.5px; line-height:1.6; color:var(--ondark); max-width:60ch; }
+  .mast-nav{ display:flex; flex-wrap:wrap; gap:8px 10px; list-style:none; margin:0; padding:0; }
+  .mast-nav a{
+    display:block; text-decoration:none;
+    font-family:'JetBrains Mono', ui-monospace, monospace;
+    font-weight:500; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ondark);
+    border:1px solid var(--hair-dark); border-radius:999px; padding:6px 13px;
+    transition:color .28s var(--ease-snap), background-color .28s var(--ease-snap), border-color .28s var(--ease-snap);
+  }
+  .mast-nav a:hover{ color:#fff; background:var(--accent); border-color:var(--accent); }
+
+  /* masthead entrance — pure CSS, base is the settled state, all still by ~1.6s */
+  .mline{ display:block; overflow:hidden; padding-bottom:.14em; margin-bottom:-.14em; }
+  .mline-in{ display:block; }
+  @media (prefers-reduced-motion: no-preference){
+    @keyframes mask-rise{ from{ transform:translateY(120%); } }
+    @keyframes fade-rise{ from{ opacity:0; transform:translateY(14px); } }
+    @keyframes crest-in{ from{ opacity:0; transform:translateY(10px) scale(.94); } }
+    .crest{ animation:crest-in .8s var(--ease-lux) .04s backwards; }
+    .mast-series{ animation:fade-rise .7s var(--ease-lux) .16s backwards; }
+    .mast-name .mline-in{ animation:mask-rise .9s var(--ease-lux) .26s backwards; }
+    .mast-thesis{ animation:fade-rise .8s var(--ease-lux) .44s backwards; }
+    .mast-nav{ animation:fade-rise .8s var(--ease-lux) .54s backwards; }
+  }
+
+  /* ---------- brand bar: the lockup, dark on light ---------- */
+  .brandbar{
+    max-width:var(--wrap); margin:0 auto;
+    display:flex; flex-wrap:wrap; align-items:center; gap:18px 34px;
+    padding:26px 32px; border-bottom:1px solid var(--hair);
+  }
+  .brandbar img{ width:150px; height:auto; flex:none; }
+  .brandbar p{ margin:0; font-size:14.5px; color:var(--grey); max-width:60ch; }
+
+  /* ---------- 2 · idea ---------- */
+  .idea-grid{ display:grid; grid-template-columns:1.3fr .7fr; gap:32px 56px; align-items:start; }
+  .idea-copy{ font-size:19px; line-height:1.65; color:var(--ink); }
+  .idea-copy p{ margin:0 0 18px; }
+  .idea-copy p:last-child{ margin-bottom:0; }
+  .idea-aside{ background:var(--card); border:1px solid var(--hair); border-radius:14px; padding:24px 26px 12px; }
+  .idea-aside h3{
+    margin:0 0 4px; font-family:'Hanken Grotesk', sans-serif; font-weight:800; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--dim);
+  }
+  .idea-aside ul{ margin:0; padding:0; list-style:none; }
+  .idea-aside li{ padding:14px 0; font-size:15px; line-height:1.5; color:var(--grey); border-top:1px solid var(--hair); }
+  .idea-aside li:first-of-type{ border-top:0; }
+  .idea-aside b{ color:var(--ink); font-weight:600; }
+
+  /* ---------- 3 · palette ---------- */
+  .swatches{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; list-style:none; }
+  .swatch{ border:1px solid var(--hair); border-radius:12px; overflow:hidden; background:var(--card); }
+  .swatch-chip{ height:104px; }
+  .swatch-chip.outline{ box-shadow:inset 0 0 0 1px var(--hair); }
+  .swatch-info{ padding:16px 18px 18px; }
+  .swatch-name{ margin:0 0 3px; font-family:'Hanken Grotesk', sans-serif; font-size:16.5px; font-weight:700; color:var(--ink); }
+  .swatch-hex{
+    display:inline-block; margin:0 0 9px;
+    font-family:'JetBrains Mono', ui-monospace, monospace; font-weight:500; font-size:12.5px; color:var(--grey);
+  }
+  .swatch-use{ margin:0; font-size:14px; color:var(--grey); line-height:1.5; }
+
+  /* ---------- 4 · typography ---------- */
+  .type-cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:48px; }
+  .type-card{ border:1px solid var(--hair); border-radius:12px; padding:24px 26px; background:var(--card); }
+  .type-card .role{
+    display:block; margin:0 0 12px;
+    font-family:'JetBrains Mono', ui-monospace, monospace;
+    font-weight:600; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent);
+  }
+  .type-card h3{ margin:0 0 6px; font-family:'Hanken Grotesk', sans-serif; font-weight:800; font-size:24px; color:var(--ink); }
+  .type-card h3.f-body{ font-family:'Inter', sans-serif; font-weight:700; }
+  .type-card h3.f-mono{ font-family:'JetBrains Mono', ui-monospace, monospace; font-weight:700; font-size:21px; }
+  .type-card p{ margin:0; color:var(--grey); font-size:14.5px; }
+  .type-card .glyphs{ margin:16px 0 0; font-size:18px; color:var(--ink); word-break:break-word; }
+  .type-card .glyphs.f-mono{ font-family:'JetBrains Mono', ui-monospace, monospace; font-size:15px; }
+  .specimen{
+    margin:0 0 14px; font-family:'Hanken Grotesk', sans-serif; font-weight:800;
+    font-size:clamp(40px, 5.6vw, 76px); line-height:1.0; letter-spacing:-.03em; color:var(--ink); text-wrap:balance;
+  }
+  .specimen em{ font-style:normal; color:var(--accent); }
+  .specimen-mono{
+    margin:0 0 40px; padding:18px 20px;
+    background:var(--ink); border-radius:10px;
+    font-family:'JetBrains Mono', ui-monospace, monospace; font-size:13.5px; line-height:1.7; color:var(--ondark); letter-spacing:.02em;
+    overflow-x:auto;
+  }
+  .specimen-mono .a{ color:var(--accent-l); }
+  .specimen-mono .k{ color:var(--ondark-dim); }
+  .scale{ border-top:1px solid var(--hair); }
+  .scale-row{
+    display:flex; align-items:baseline; justify-content:space-between; gap:24px;
+    padding:18px 2px; border-bottom:1px solid var(--hair);
+  }
+  .scale-sample{ margin:0; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .s-display{ font-family:'Hanken Grotesk', sans-serif; font-weight:800; font-size:clamp(32px,4.4vw,56px); line-height:1; letter-spacing:-.03em; }
+  .s-h2{ font-family:'Hanken Grotesk', sans-serif; font-weight:700; font-size:clamp(26px,3vw,36px); line-height:1.1; letter-spacing:-.02em; }
+  .s-h3{ font-family:'Hanken Grotesk', sans-serif; font-weight:600; font-size:22px; line-height:1.25; }
+  .s-body{ font-size:17px; font-weight:400; }
+  .s-mono{ font-family:'JetBrains Mono', ui-monospace, monospace; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--grey); }
+  .scale-spec{
+    flex-shrink:0; font-size:12px; color:var(--grey);
+    font-family:'JetBrains Mono', ui-monospace, monospace; letter-spacing:.02em; text-align:right;
+  }
+
+  /* ---------- 5 · signature: the program directory ----------
+     A wall of every program, each on its own consistent white tile,
+     filterable by season and by who it is for. */
+  .filters{ display:flex; flex-direction:column; gap:12px; margin:0 0 26px; }
+  .filter-line{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; }
+  .filter-label{
+    width:58px; flex:none;
+    font-family:'JetBrains Mono', ui-monospace, monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--dim);
+  }
+  .chip{
+    font-family:'Hanken Grotesk', sans-serif; font-weight:600; font-size:13.5px; color:var(--grey);
+    background:var(--card); border:1px solid var(--hair); border-radius:999px; padding:8px 15px; cursor:pointer;
+    transition:color .25s var(--ease-snap), background-color .25s var(--ease-snap), border-color .25s var(--ease-snap);
+  }
+  .chip:hover{ border-color:#C6C6BF; color:var(--ink); }
+  .chip[aria-pressed="true"]{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .filter-count{
+    margin-left:auto; align-self:center;
+    font-family:'JetBrains Mono', ui-monospace, monospace; font-size:12px; color:var(--grey); letter-spacing:.02em;
+  }
+
+  .prog-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:18px; }
+  .prog{
+    display:flex; flex-direction:column; background:var(--card);
+    border:1px solid var(--hair); border-radius:14px; overflow:hidden;
+    box-shadow:0 18px 30px -30px rgba(27,30,35,.55);
+    transition:transform .3s var(--ease-snap), box-shadow .3s var(--ease-snap);
+  }
+  .prog:hover{ transform:translateY(-3px); box-shadow:0 26px 42px -26px rgba(27,30,35,.5); }
+  .prog.is-hidden{ display:none; }
+  /* the tile: same size box, same white ground, same padding for every logo */
+  .prog-well{
+    position:relative; height:132px;
+    display:flex; align-items:center; justify-content:center; padding:22px 20px;
+    background:var(--card); border-bottom:1px solid var(--hair);
+  }
+  .prog-ch{
+    position:absolute; top:10px; left:13px;
+    font-family:'JetBrains Mono', ui-monospace, monospace; font-size:11px; letter-spacing:.08em; color:var(--dim);
+  }
+  .prog-logo{ max-height:86px; max-width:156px; width:auto; height:auto; object-fit:contain; }
+  .prog-body{ padding:15px 18px 18px; display:flex; flex-direction:column; flex:1; }
+  .prog-meta{
+    margin:0 0 7px;
+    font-family:'JetBrains Mono', ui-monospace, monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--grey);
+  }
+  .prog-meta span + span::before{ content:"·"; padding:0 7px; color:var(--dim); }
+  .prog-name{ margin:0 0 6px; font-family:'Hanken Grotesk', sans-serif; font-weight:700; font-size:18px; line-height:1.2; color:var(--ink); }
+  .prog-who{ margin:0 0 16px; font-size:14px; color:var(--grey); flex:1; }
+  .prog-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .pill{
+    font-family:'Hanken Grotesk', sans-serif; font-weight:700; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;
+    padding:5px 10px; border-radius:999px; white-space:nowrap;
+  }
+  .pill-open{ background:var(--accent-tint); color:var(--accent-deep); }
+  .pill-soon{ background:transparent; color:var(--grey); box-shadow:inset 0 0 0 1px var(--hair); }
+  .pill-soft{ background:var(--soft); color:var(--grey); }
+  .prog-go{ font-family:'Hanken Grotesk', sans-serif; font-weight:700; font-size:13.5px; color:var(--accent); text-decoration:none; white-space:nowrap; }
+  .prog-go span{ display:inline-block; transition:transform .3s var(--ease-snap); }
+  .prog:hover .prog-go span, .prog-go:hover span{ transform:translateX(3px); }
+
+  /* ---------- 6 · homepage mockup ---------- */
+  .browser{
+    border:1px solid var(--hair); border-radius:12px; overflow:hidden;
+    box-shadow:0 34px 70px -40px rgba(27,30,35,.5); background:var(--card);
+  }
+  .browser-bar{ display:flex; align-items:center; gap:14px; background:#E3E2DD; border-bottom:1px solid var(--hair); padding:10px 16px; }
+  .browser-dots{ display:flex; gap:6px; }
+  .browser-dots i{ width:10px; height:10px; border-radius:50%; background:#C4C3BC; display:block; }
+  .browser-url{
+    flex:1; max-width:320px; background:var(--card); border:1px solid var(--hair); border-radius:999px;
+    font-family:'JetBrains Mono', ui-monospace, monospace; font-size:12.5px; color:var(--grey); padding:5px 16px; text-align:center;
+  }
+  .mock-nav{ display:flex; align-items:center; gap:26px; background:var(--ink); padding:15px clamp(16px,3vw,30px); }
+  .mock-logo img{ display:block; width:138px; height:auto; }
+  .mock-links{ display:flex; gap:4px; margin-left:auto; list-style:none; }
+  .mock-links a{ display:block; padding:8px 11px; color:var(--ondark); text-decoration:none; font-family:'Hanken Grotesk',sans-serif; font-size:14.5px; font-weight:600; }
+  .mock-links a:hover{ color:#fff; }
+  .mock-register{
+    background:var(--accent); color:#fff; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:14.5px;
+    padding:11px 20px; border-radius:8px; text-decoration:none; white-space:nowrap;
+    transition:background-color .28s var(--ease-snap);
+  }
+  .mock-register:hover{ background:var(--accent-deep); }
+  .mock-burger{ display:none; margin-left:auto; }
+  .mock-burger i{ display:block; width:22px; height:2px; background:var(--ondark); margin:5px 0; border-radius:2px; }
+
+  .mock-hero{ background:var(--card); padding:clamp(36px,4.6vw,60px) clamp(18px,3vw,44px) clamp(28px,3vw,40px); }
+  .mock-eyebrow{
+    margin:0 0 14px; font-family:'JetBrains Mono', ui-monospace, monospace;
+    font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent);
+  }
+  .mock-h1{
+    margin:0 0 16px; font-family:'Hanken Grotesk', sans-serif; font-weight:800;
+    font-size:clamp(34px,4.8vw,58px); line-height:1.0; letter-spacing:-.03em; color:var(--ink); text-wrap:balance;
+  }
+  .mock-sub{ margin:0 0 26px; color:var(--grey); font-size:16.5px; max-width:52ch; }
+  .mock-finder{
+    display:flex; flex-wrap:wrap; gap:12px; align-items:end;
+    background:var(--paper); border:1px solid var(--hair); border-radius:12px; padding:18px 20px;
+  }
+  .mf-field{ display:flex; flex-direction:column; gap:6px; flex:1; min-width:150px; }
+  .mf-field label{ font-family:'JetBrains Mono', ui-monospace, monospace; font-size:10.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--grey); }
+  .mf-field select{
+    font-family:'Inter',sans-serif; font-size:15px; font-weight:500; color:var(--ink);
+    border:1.5px solid #B7B7AE; border-radius:8px; background:var(--card); padding:11px 12px; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.5 L6 6.5 L11 1.5' fill='none' stroke='%2335607F' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 12px center; padding-right:34px;
+  }
+  .mock-dir{ background:var(--paper); padding:clamp(24px,3vw,36px) clamp(18px,3vw,44px); border-top:1px solid var(--hair); }
+  .mock-dir-head{
+    display:flex; flex-wrap:wrap; gap:6px 16px; align-items:baseline; margin:0 0 18px;
+    font-family:'JetBrains Mono', ui-monospace, monospace; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--grey);
+  }
+  .mock-dir-head .m-count{ margin-left:auto; color:var(--accent); font-weight:600; }
+  .mock-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:12px; }
+  .mtile{
+    display:flex; flex-direction:column; background:var(--card); border:1px solid var(--hair); border-radius:11px; overflow:hidden; text-decoration:none;
+    transition:transform .3s var(--ease-snap), box-shadow .3s var(--ease-snap);
+  }
+  .mtile:hover{ transform:translateY(-2px); box-shadow:0 16px 26px -22px rgba(27,30,35,.55); }
+  .mtile-well{ height:78px; display:flex; align-items:center; justify-content:center; padding:12px; border-bottom:1px solid var(--hair); }
+  .mtile-well img{ max-height:52px; max-width:104px; width:auto; height:auto; object-fit:contain; }
+  .mtile-body{ padding:11px 13px 13px; }
+  .mtile-name{ display:block; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:13.5px; line-height:1.2; color:var(--ink); }
+  .mtile-meta{ display:block; margin-top:5px; font-family:'JetBrains Mono', ui-monospace, monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--grey); }
+  .mock-openline{
+    display:flex; flex-wrap:wrap; align-items:center; gap:8px 18px;
+    background:var(--accent-tint); color:var(--accent-deep); padding:16px clamp(18px,3vw,44px);
+    font-size:15px; border-top:1px solid #D5DFE6;
+  }
+  .mock-openline b{ font-weight:700; }
+  .mock-openline .oline-tag{
+    font-family:'JetBrains Mono', ui-monospace, monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:600;
+    flex:none;
+  }
+  .mock-foot{
+    display:flex; flex-wrap:wrap; align-items:center; gap:14px 24px;
+    background:var(--ink); padding:24px clamp(18px,3vw,44px); border-top:1px solid var(--hair-dark);
+  }
+  .mock-foot .m-mark{ display:flex; align-items:center; gap:11px; }
+  .mock-foot .m-mark img{ width:30px; height:auto; }
+  .mock-foot .m-mark span{ font-family:'JetBrains Mono', ui-monospace, monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ondark-dim); line-height:1.5; }
+  .mock-foot .m-vision{ margin-left:auto; font-family:'Hanken Grotesk',sans-serif; font-weight:600; font-size:16px; color:#fff; }
+
+  /* ---------- 7 · front doors ---------- */
+  .doors{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .door{ border:1px solid var(--hair); border-radius:14px; background:var(--card); display:flex; flex-direction:column; overflow:hidden; }
+  .door-top{ display:flex; gap:10px; padding:20px 22px; background:var(--paper); border-bottom:1px solid var(--hair); }
+  .door-mini{ flex:1; height:60px; background:var(--card); border:1px solid var(--hair); border-radius:9px; display:flex; align-items:center; justify-content:center; padding:9px; }
+  .door-mini img{ max-height:40px; max-width:100%; width:auto; height:auto; object-fit:contain; }
+  .door-body{ padding:22px 24px 26px; display:flex; flex-direction:column; flex:1; align-items:flex-start; }
+  .door-tag{
+    margin:0 0 12px; display:inline-flex; align-items:center; gap:8px;
+    font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent-deep); background:var(--accent-tint); border-radius:5px; padding:4px 9px;
+  }
+  .door h3{ margin:0 0 10px; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:21px; line-height:1.2; color:var(--ink); text-wrap:balance; }
+  .door p{ margin:0 0 22px; font-size:15px; color:var(--grey); flex:1; }
+
+  /* ---------- 8 · spotlight (dark) ---------- */
+  .dark-stripe{ background:var(--ink); color:var(--ondark); }
+  .dark-stripe .sec{ border-top:0; }
+  .spot-grid{ display:grid; grid-template-columns:1.08fr .92fr; gap:24px; align-items:start; }
+  .spot{ background:var(--card); color:var(--ink); border-radius:14px; overflow:hidden; }
+  .spot-photo-wrap{ background:var(--paper); border-bottom:1px solid var(--hair); padding:22px; display:flex; justify-content:center; }
+  .spot-photo{ width:100%; max-width:400px; height:auto; border-radius:8px; }
+  .spot-body{ padding:24px 28px 28px; }
+  .spot-head{ display:flex; align-items:center; gap:14px; margin:0 0 16px; }
+  .spot-mark{ width:64px; height:64px; flex:none; background:var(--card); border:1px solid var(--hair); border-radius:11px; display:flex; align-items:center; justify-content:center; padding:8px; }
+  .spot-mark img{ max-height:46px; max-width:100%; width:auto; height:auto; object-fit:contain; }
+  .spot-kick{ display:block; font-family:'JetBrains Mono', ui-monospace, monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 3px; }
+  .spot h3{ margin:0; font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:24px; line-height:1.1; color:var(--ink); }
+  .spot blockquote{ margin:0 0 16px; padding:2px 0 2px 18px; border-left:3px solid var(--accent); font-size:17.5px; line-height:1.5; color:var(--ink); }
+  .spot .byline{ margin:0; font-family:'JetBrains Mono', ui-monospace, monospace; font-size:12px; color:var(--grey); letter-spacing:.03em; }
+  .year{ background:var(--ink-soft); border:1px solid var(--hair-dark); border-radius:14px; padding:26px 28px 12px; }
+  .year h3{ margin:0 0 16px; font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent-l); }
+  .year-row{ padding:14px 0; border-top:1px solid var(--hair-dark); }
+  .year-row:first-of-type{ border-top:0; }
+  .year-season{ font-family:'JetBrains Mono', ui-monospace, monospace; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ondark-dim); margin:0 0 4px; }
+  .year-progs{ margin:0; font-size:15px; color:#fff; }
+
+  /* ---------- 9 · working parts ---------- */
+  .ui-grid{ display:grid; grid-template-columns:.95fr 1.05fr; gap:18px; align-items:start; }
+  .ui-cell{ border:1px solid var(--hair); border-radius:14px; padding:26px 28px; background:var(--card); }
+  .ui-cell h3{ margin:0 0 20px; font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
+  .btn-row{ display:flex; flex-wrap:wrap; gap:12px 14px; align-items:center; margin-bottom:10px; }
+  .btn-note{ width:62px; flex:none; font-family:'JetBrains Mono', ui-monospace, monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--grey); }
+  .ev-card{ border:1px solid var(--hair); border-radius:12px; overflow:hidden; background:var(--paper); }
+  .ev-head{ display:flex; align-items:center; gap:14px; padding:18px 20px; background:var(--card); border-bottom:1px solid var(--hair); }
+  .ev-logo{ width:54px; height:54px; flex:none; background:var(--card); border:1px solid var(--hair); border-radius:10px; display:flex; align-items:center; justify-content:center; padding:6px; }
+  .ev-logo img{ max-height:40px; max-width:100%; width:auto; height:auto; object-fit:contain; }
+  .ev-head-meta{ font-family:'JetBrains Mono', ui-monospace, monospace; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--grey); margin:0 0 3px; }
+  .ev-head h4{ margin:0; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:20px; letter-spacing:-.01em; color:var(--ink); }
+  .ev-open{ margin-left:auto; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-deep); background:var(--accent-tint); border-radius:999px; padding:5px 11px; white-space:nowrap; }
+  .ev-inner{ padding:20px; }
+  .ev-meta{ list-style:none; margin:0 0 18px; padding:0; }
+  .ev-meta li{ position:relative; padding:4px 0 4px 18px; font-size:14.5px; color:var(--grey); }
+  .ev-meta li::before{ content:""; position:absolute; left:0; top:12px; width:6px; height:6px; border-radius:50%; background:var(--accent); }
+  .ev-cap-row{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; margin-bottom:9px; }
+  .ev-cap-row b{ font-family:'JetBrains Mono', ui-monospace, monospace; font-size:13px; font-weight:600; color:var(--ink); }
+  .ev-cap-row span{ font-family:'JetBrains Mono', ui-monospace, monospace; font-size:11px; color:var(--grey); letter-spacing:.02em; }
+  .ev-bar{ height:6px; border-radius:999px; background:#DDDCD5; overflow:hidden; }
+  .ev-bar i{ display:block; height:100%; width:79%; border-radius:999px; background:var(--accent); }
+  .ev-actions{ display:flex; flex-wrap:wrap; gap:12px 16px; align-items:center; margin-top:18px; }
+  .finder{ background:var(--paper); border-radius:10px; padding:22px 24px; }
+  .finder .flegend{ margin:0 0 16px; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:17px; color:var(--ink); }
+  .filter-form{ display:flex; flex-wrap:wrap; gap:14px; align-items:end; }
+  .f-field{ display:flex; flex-direction:column; gap:6px; flex:1; min-width:140px; }
+  .f-field label{ font-family:'JetBrains Mono', ui-monospace, monospace; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--grey); }
+  .f-field select{
+    font-family:'Inter',sans-serif; font-size:15px; font-weight:500; color:var(--ink);
+    border:1.5px solid #B7B7AE; border-radius:8px; background:var(--card); padding:11px 12px; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.5 L6 6.5 L11 1.5' fill='none' stroke='%2335607F' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 12px center; padding-right:34px;
+  }
+
+  /* ---------- 10 · voice ---------- */
+  .voice-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .voice-cell{ border:1px solid var(--hair); border-radius:12px; padding:24px 26px; background:var(--card); }
+  .voice-cell h3{ margin:0 0 14px; font-family:'JetBrains Mono', ui-monospace, monospace; font-weight:600; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); }
+  .voice-cell .v-hero{ margin:0; font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:26px; line-height:1.12; letter-spacing:-.02em; color:var(--ink); }
+  .voice-cell p{ margin:0; font-size:15.5px; color:var(--ink); line-height:1.55; }
+
+  /* ---------- 11 · verdict + footer ---------- */
+  .prop-footer{ background:var(--ink); color:var(--ondark); }
+  .prop-in{ max-width:var(--wrap); margin:0 auto; padding:88px 32px 56px; }
+  .verdicts{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:52px; }
+  .verdict{ border:1px solid var(--hair-dark); border-radius:12px; padding:26px 28px; background:var(--ink-soft); }
+  .verdict h2{ margin:0 0 12px; font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:16px; color:var(--accent-l); }
+  .verdict.twice h2{ color:#D9B27C; }
+  .verdict p{ margin:0; font-size:15.5px; line-height:1.6; color:var(--ondark); }
+  .prop-nav{ display:flex; flex-wrap:wrap; gap:14px 28px; align-items:center; justify-content:space-between; border-top:1px solid var(--hair-dark); padding-top:28px; }
+  .prop-nav a{ color:var(--accent-l); font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:15.5px; text-decoration:none; }
+  .prop-nav a.roll{ text-decoration:none; }
+  .prop-nav a:hover{ color:#fff; }
+  .prop-nav small{ font-family:'JetBrains Mono', ui-monospace, monospace; font-size:12px; color:var(--ondark-dim); letter-spacing:.04em; text-transform:uppercase; }
+
+  /* ---------- motion: reveals armed only under html.anim ----------
+     Base styles ARE the settled page — no JS, print, reduced motion render complete. */
+  html.anim [data-rise]{ transition:opacity .8s var(--ease-lux), transform .8s var(--ease-lux); transition-delay:calc(var(--i,0) * 70ms); }
+  html.anim [data-rise]:not(.in){ opacity:0; transform:translateY(16px); }
+  html.anim .kicker::before{ transition:transform .6s var(--ease-snap) .1s; }
+  html.anim .kicker:not(.in)::before{ transform:scaleX(0); }
+  /* directory: cards settle in on grid arrival; filtering never leaves one hidden */
+  html.anim .prog-grid [data-card]{ transition:opacity .55s var(--ease-lux), transform .55s var(--ease-lux); transition-delay:calc(var(--i,0) * 32ms); }
+  html.anim .prog-grid:not(.in) [data-card]{ opacity:0; transform:translateY(14px); }
+  /* mock boots: nav, hero, then tiles */
+  html.anim .browser [data-mb]{ transition:opacity .6s var(--ease-lux), transform .6s var(--ease-lux); transition-delay:calc(var(--i,0) * 80ms); }
+  html.anim .browser:not(.in) [data-mb]{ opacity:0; transform:translateY(14px); }
+
+  /* unconditional settle — stamped by ~2.2s so a screenshot or print is always whole */
+  html.settled [data-rise], html.settled .prog-grid [data-card], html.settled .browser [data-mb]{
+    opacity:1 !important; transform:none !important; transition:none !important;
+  }
+  html.settled .kicker::before{ transform:none !important; transition:none !important; }
+
+  @media print{
+    [data-rise], .prog-grid [data-card], .browser [data-mb]{ opacity:1 !important; transform:none !important; }
+    .mline-in{ transform:none !important; animation:none !important; }
+    *{ animation:none !important; }
+    .masthead, .dark-stripe, .prop-footer, .mock-nav, .mock-foot{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 980px){
+    .idea-grid{ grid-template-columns:1fr; }
+    .swatches{ grid-template-columns:repeat(2,1fr); }
+    .type-cards{ grid-template-columns:1fr; }
+    .doors{ grid-template-columns:1fr; }
+    .door{ max-width:460px; }
+    .spot-grid{ grid-template-columns:1fr; }
+    .ui-grid{ grid-template-columns:1fr; }
+    .voice-grid{ grid-template-columns:1fr; }
+    .verdicts{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 760px){
+    .mock-links{ display:none; }
+    .mock-register{ margin-left:auto; }
+    .mock-burger{ display:block; margin-left:14px; }
+    .scale-row{ flex-direction:column; gap:4px; }
+    .scale-sample{ white-space:normal; }
+    .scale-spec{ text-align:left; }
+    .mock-foot .m-vision{ margin-left:0; width:100%; }
+  }
+  @media (max-width: 560px){
+    .sec{ padding:64px 20px; }
+    .masthead-in{ padding:56px 20px 52px; }
+    .brandbar{ padding:22px 20px; }
+    .swatches{ grid-template-columns:1fr; }
+    .prop-in{ padding:64px 20px 44px; }
+    .filter-label{ width:100%; }
+    .filter-count{ margin-left:0; width:100%; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *, *::before, *::after{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 1 · DIRECTION HEADER ============
+     The formline mark opens as a crest on solid ink — the page's deep brand
+     moment — then the name and thesis settle in. -->
+<header class="masthead">
+  <div class="masthead-in">
+    <span class="crest"><img src="assets/brand/logo-mark-white.png" alt="DiscNW formline mark" width="590" height="616"></span>
+    <p class="mast-series">DiscNW · Design direction 21 of 22</p>
+    <h1 class="mast-name"><span class="mline"><span class="mline-in">The Programs</span></span></h1>
+    <p class="mast-thesis">DiscNW runs a lot of programs. This direction lays them all out in one place, like a channel guide. Every program gets its own tile with its real logo, its season, and who it is for. Pick a season and who is playing, and the list narrows to your options.</p>
+    <ul class="mast-nav" aria-label="On this page">
+      <li><a href="#idea">The idea</a></li>
+      <li><a href="#palette">Palette</a></li>
+      <li><a href="#type">Type</a></li>
+      <li><a href="#directory">The directory</a></li>
+      <li><a href="#home">Homepage</a></li>
+      <li><a href="#doors">Front doors</a></li>
+      <li><a href="#spotlight">Spotlight</a></li>
+      <li><a href="#parts">Parts</a></li>
+      <li><a href="#voice">Voice</a></li>
+      <li><a href="#verdict">Verdict</a></li>
+    </ul>
+  </div>
+</header>
+
+<!-- the real lockup, dark on light — same asset the header shows white on dark -->
+<aside class="brandbar" aria-label="DiscNW wordmark">
+  <img src="assets/brand/logo-full.png" alt="DiscNW logo" width="1446" height="616">
+  <p>The real DiscNW wordmark, dark on light. Up in the header, the formline mark sits white on dark. It is the same set of assets each time, with clearspace, never stretched and never recolored.</p>
+</aside>
+
+<main>
+
+  <!-- ============ 2 · THE IDEA ============ -->
+  <section class="sec" id="idea" aria-labelledby="idea-title">
+    <p class="kicker">02 · The idea</p>
+    <h2 class="sec-title" id="idea-title">One clean directory of everything DiscNW runs</h2>
+    <div class="idea-grid">
+      <div class="idea-copy">
+        <p>DiscNW is big. It has served more than 10,000 players a year since it started at Potlatch in 1995. It runs leagues, camps, and tournaments, for kids and for adults, in every season.</p>
+        <p>That is a lot to hold on one website. Today you have to already know the name of the thing you want before you can find it. A new parent and a twenty-year captain get the same long list of links.</p>
+        <p>The fix is a directory. Think of a channel guide or an app grid: every program on its own tile, each with its real logo, its season, and who it is for. You choose a season and who is playing, and the wall narrows to the programs that fit. A new family or a first-time adult player should find the right one in a few seconds.</p>
+      </div>
+      <aside class="idea-aside" data-rise aria-label="Why this fits DiscNW">
+        <h3>Why this fits</h3>
+        <ul>
+          <li>DiscNW already has strong, distinct program logos. <b>This design lets them do the work.</b></li>
+          <li>The hard part of a big org is finding the right door. <b>A directory is the answer to that.</b></li>
+          <li>Staff can add a program by adding a tile. <b>No new page design each time.</b></li>
+          <li>The palette stays quiet on purpose, <b>so the logos carry the color.</b></li>
+        </ul>
+      </aside>
+    </div>
+    <p class="note">Plain goal: a parent types nothing and reads nothing long. They pick "Summer" and "Youth" and see four options with logos they may already recognize.</p>
+  </section>
+
+  <!-- ============ 3 · PALETTE ============ -->
+  <section class="sec" id="palette" aria-labelledby="palette-title">
+    <p class="kicker">03 · Palette</p>
+    <h2 class="sec-title" id="palette-title">Quiet on purpose, so the logos carry the color</h2>
+    <p class="sec-intro">The page is built from neutrals. Two grey grounds, white tiles, and one calm slate-blue accent for the parts you click. Every program logo is already colorful, so the interface stays out of their way. The accent does one job: it marks what is interactive.</p>
+    <ul class="swatches">
+      <li class="swatch" data-rise style="--i:0">
+        <div class="swatch-chip" style="background:#1B1E23"></div>
+        <div class="swatch-info"><h3 class="swatch-name">Graphite Ink</h3><span class="swatch-hex">#1B1E23</span><p class="swatch-use">Dark sections, the header, and headline text.</p></div>
+      </li>
+      <li class="swatch" data-rise style="--i:1">
+        <div class="swatch-chip outline" style="background:#ECEBE8"></div>
+        <div class="swatch-info"><h3 class="swatch-name">Paper Grey</h3><span class="swatch-hex">#ECEBE8</span><p class="swatch-use">The page ground. Warm, not clinical, so white tiles pop.</p></div>
+      </li>
+      <li class="swatch" data-rise style="--i:2">
+        <div class="swatch-chip outline" style="background:#FFFFFF"></div>
+        <div class="swatch-info"><h3 class="swatch-name">Tile White</h3><span class="swatch-hex">#FFFFFF</span><p class="swatch-use">The logo tiles. One neutral ground for every program.</p></div>
+      </li>
+      <li class="swatch" data-rise style="--i:3">
+        <div class="swatch-chip" style="background:#35607F"></div>
+        <div class="swatch-info"><h3 class="swatch-name">Slate Blue</h3><span class="swatch-hex">#35607F</span><p class="swatch-use">The one accent. Buttons, links, and active filters.</p></div>
+      </li>
+      <li class="swatch" data-rise style="--i:4">
+        <div class="swatch-chip" style="background:#284B63"></div>
+        <div class="swatch-info"><h3 class="swatch-name">Slate Deep</h3><span class="swatch-hex">#284B63</span><p class="swatch-use">The accent when pressed or hovered. Same family, darker.</p></div>
+      </li>
+      <li class="swatch" data-rise style="--i:5">
+        <div class="swatch-chip" style="background:#565B62"></div>
+        <div class="swatch-info"><h3 class="swatch-name">Reading Grey</h3><span class="swatch-hex">#565B62</span><p class="swatch-use">Secondary text, seasons, and who-it-is-for lines.</p></div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============ 4 · TYPOGRAPHY ============ -->
+  <section class="sec" id="type" aria-labelledby="type-title">
+    <p class="kicker">04 · Typography</p>
+    <h2 class="sec-title" id="type-title">Clean and legible, directory-grade</h2>
+    <p class="sec-intro">A directory has to be easy to scan, so the type is plain and clear. Hanken Grotesk sets the names and headings. Inter sets the body. JetBrains Mono handles the small parts a guide needs: channel numbers, seasons, and short labels. All three load from Google Fonts.</p>
+
+    <div class="type-cards">
+      <div class="type-card" data-rise style="--i:0">
+        <span class="role">Names &amp; headings</span>
+        <h3 class="heading">Hanken Grotesk</h3>
+        <p>Friendly and clear at a glance. Used at 700 and 800 for program names and section titles.</p>
+        <p class="glyphs heading" aria-hidden="true">AaGgRr 0123456789 — Summer, Youth</p>
+      </div>
+      <div class="type-card" data-rise style="--i:1">
+        <span class="role">Body text</span>
+        <h3 class="f-body">Inter</h3>
+        <p>The workhorse for the who-it-is-for lines and longer copy. Legible at small sizes, calm in a wall of cards.</p>
+        <p class="glyphs" aria-hidden="true">AaGgRr 0123456789 — one game a week</p>
+      </div>
+      <div class="type-card" data-rise style="--i:2">
+        <span class="role">Labels &amp; numbers</span>
+        <h3 class="f-mono">JetBrains Mono</h3>
+        <p>The channel-guide voice. Tile numbers, seasons, and short codes are set here so they line up cleanly.</p>
+        <p class="glyphs f-mono" aria-hidden="true">CH 04 · SUMMER · ADULT</p>
+      </div>
+    </div>
+
+    <p class="specimen">Find your <em>program</em>.</p>
+    <div class="specimen-mono" aria-label="Example directory labels">
+      <div><span class="k">FILTER</span> season = summer · playing = youth</div>
+      <div><span class="k">SHOWING</span> <span class="a">4 of 16 programs</span> · sorted so a new family lands first</div>
+      <div><span class="k">TILE</span> CH 01 · Summer Wonder League · <span class="a">Registering</span></div>
+    </div>
+
+    <div class="scale">
+      <div class="scale-row"><p class="scale-sample s-display">Find your program</p><span class="scale-spec">Display · Hanken 800 · 40–76px</span></div>
+      <div class="scale-row"><p class="scale-sample s-h2">Every program, one place</p><span class="scale-spec">H2 · Hanken 700 · 30–43px</span></div>
+      <div class="scale-row"><p class="scale-sample s-h3">Summer Mixed Hat League</p><span class="scale-spec">H3 · Hanken 600 · 22px</span></div>
+      <div class="scale-row"><p class="scale-sample s-body">Adults, teams drawn from a hat. One game a week in summer.</p><span class="scale-spec">Body · Inter 400 · 17px</span></div>
+      <div class="scale-row"><p class="scale-sample s-mono">CH 04 · Summer · Adult · Registering</p><span class="scale-spec">Label · JetBrains Mono 500 · 13px</span></div>
+    </div>
+  </section>
+
+  <!-- ============ 5 · SIGNATURE: THE PROGRAM DIRECTORY ============ -->
+  <section class="sec" id="directory" aria-labelledby="directory-title">
+    <p class="kicker">05 · Signature element</p>
+    <h2 class="sec-title" id="directory-title">The program directory</h2>
+    <p class="sec-intro">One device carries the whole direction: a wall of every DiscNW program, each on its own white tile with its real logo, its season, and who it is for. Pick a season and who is playing to narrow the list. Without any filters it shows everything, so nothing is ever hidden by default.</p>
+
+    <div class="filters" role="group" aria-label="Filter programs">
+      <div class="filter-line" data-group="season">
+        <span class="filter-label" id="lbl-season">Season</span>
+        <button type="button" class="chip" data-filter="season" data-value="all" aria-pressed="true" aria-describedby="lbl-season">All</button>
+        <button type="button" class="chip" data-filter="season" data-value="spring" aria-pressed="false" aria-describedby="lbl-season">Spring</button>
+        <button type="button" class="chip" data-filter="season" data-value="summer" aria-pressed="false" aria-describedby="lbl-season">Summer</button>
+        <button type="button" class="chip" data-filter="season" data-value="fall" aria-pressed="false" aria-describedby="lbl-season">Fall</button>
+        <button type="button" class="chip" data-filter="season" data-value="winter" aria-pressed="false" aria-describedby="lbl-season">Winter</button>
+      </div>
+      <div class="filter-line" data-group="aud">
+        <span class="filter-label" id="lbl-aud">Playing</span>
+        <button type="button" class="chip" data-filter="aud" data-value="all" aria-pressed="true" aria-describedby="lbl-aud">All</button>
+        <button type="button" class="chip" data-filter="aud" data-value="youth" aria-pressed="false" aria-describedby="lbl-aud">Youth</button>
+        <button type="button" class="chip" data-filter="aud" data-value="school" aria-pressed="false" aria-describedby="lbl-aud">School</button>
+        <button type="button" class="chip" data-filter="aud" data-value="adult" aria-pressed="false" aria-describedby="lbl-aud">Adult</button>
+        <button type="button" class="chip" data-filter="aud" data-value="coaches" aria-pressed="false" aria-describedby="lbl-aud">Coaches</button>
+        <span class="filter-count" id="prog-count" aria-live="polite">16 programs</span>
+      </div>
+    </div>
+
+    <div class="prog-grid" id="prog-grid">
+      <article class="prog" data-card data-season="summer" data-aud="youth" style="--i:0">
+        <div class="prog-well"><span class="prog-ch">01</span><img class="prog-logo" src="assets/2025-swl-logo.png" alt="Summer Wonder League logo" width="800" height="801"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Summer</span><span>Youth</span></p>
+          <h3 class="prog-name">Summer Wonder League</h3>
+          <p class="prog-who">New young players, learning the game by playing it.</p>
+          <div class="prog-foot"><span class="pill pill-open">Registering</span><a class="prog-go" href="#directory">Sign up <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="summer" data-aud="youth" style="--i:1">
+        <div class="prog-well"><span class="prog-ch">02</span><img class="prog-logo" src="assets/discnw-summer-camp-disc.jpg" alt="Summer Youth Ultimate Camps logo" width="503" height="504"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Summer</span><span>Youth</span></p>
+          <h3 class="prog-name">Summer Youth Ultimate Camps</h3>
+          <p class="prog-who">Day camps for ages 7 to 18, across the summer.</p>
+          <div class="prog-foot"><span class="pill pill-open">Registering</span><a class="prog-go" href="#directory">Sign up <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="summer" data-aud="youth" style="--i:2">
+        <div class="prog-well"><span class="prog-ch">03</span><img class="prog-logo" src="assets/colorcamp-logo.png" alt="Color Camp logo" width="1756" height="896"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Summer</span><span>Youth</span></p>
+          <h3 class="prog-name">Color Camp</h3>
+          <p class="prog-who">A week of camp skills and games for younger players.</p>
+          <div class="prog-foot"><span class="pill pill-open">Registering</span><a class="prog-go" href="#directory">Sign up <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="summer" data-aud="adult" style="--i:3">
+        <div class="prog-well"><span class="prog-ch">04</span><img class="prog-logo" src="assets/mshatleague-logo-with-hat.png" alt="Summer Mixed Hat League logo" width="1024" height="1024"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Summer</span><span>Adult</span></p>
+          <h3 class="prog-name">Summer Mixed Hat League</h3>
+          <p class="prog-who">Adults. Sign up on your own; teams are drawn from a hat.</p>
+          <div class="prog-foot"><span class="pill pill-open">Registering</span><a class="prog-go" href="#directory">Sign up <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="summer" data-aud="adult" style="--i:4">
+        <div class="prog-well"><span class="prog-ch">05</span><img class="prog-logo" src="assets/corpleaguelogo.png" alt="Corporate League logo" width="829" height="809"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Summer</span><span>Adult</span></p>
+          <h3 class="prog-name">Corporate League</h3>
+          <p class="prog-who">Teams from local workplaces. All levels welcome.</p>
+          <div class="prog-foot"><span class="pill pill-open">Registering</span><a class="prog-go" href="#directory">Sign up <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="summer" data-aud="youth" style="--i:5">
+        <div class="prog-well"><span class="prog-ch">06</span><img class="prog-logo" src="assets/training-camp-logo-full-color-web.png" alt="Training Camp logo" width="600" height="600"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Summer</span><span>Youth</span></p>
+          <h3 class="prog-name">Training Camp</h3>
+          <p class="prog-who">A skills camp for keen young players who want more.</p>
+          <div class="prog-foot"><span class="pill pill-open">Registering</span><a class="prog-go" href="#directory">Sign up <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="fall" data-aud="adult" style="--i:6">
+        <div class="prog-well"><span class="prog-ch">07</span><img class="prog-logo" src="assets/fall-hat-league.png" alt="Fall Hat League logo" width="600" height="600"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Fall</span><span>Adult</span></p>
+          <h3 class="prog-name">Fall Hat League</h3>
+          <p class="prog-who">Adults. One game a week as the season turns.</p>
+          <div class="prog-foot"><span class="pill pill-soon">Opens soon</span><a class="prog-go" href="#directory">Details <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="fall" data-aud="youth" style="--i:7">
+        <div class="prog-well"><span class="prog-ch">08</span><img class="prog-logo" src="assets/fall-friz.png" alt="Fall Frisbee logo" width="904" height="1170"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Fall</span><span>Youth</span></p>
+          <h3 class="prog-name">Fall Frisbee</h3>
+          <p class="prog-who">A youth league to keep playing into the fall.</p>
+          <div class="prog-foot"><span class="pill pill-soon">Opens soon</span><a class="prog-go" href="#directory">Details <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="fall" data-aud="school" style="--i:8">
+        <div class="prog-well"><span class="prog-ch">09</span><img class="prog-logo" src="assets/mcclurelogo-1.jpg" alt="McClure Middle School ultimate logo" width="776" height="600"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Fall</span><span>School</span></p>
+          <h3 class="prog-name">McClure</h3>
+          <p class="prog-who">One of our middle school teams in the school league.</p>
+          <div class="prog-foot"><span class="pill pill-soft">Fall</span><a class="prog-go" href="#directory">Details <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="fall spring" data-aud="school" style="--i:9">
+        <div class="prog-well"><span class="prog-ch">10</span><img class="prog-logo" src="assets/discnw-sps-league-logo.jpg" alt="Seattle Public Schools League logo" width="1464" height="1464"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Fall &amp; Spring</span><span>School</span></p>
+          <h3 class="prog-name">Seattle Public Schools League</h3>
+          <p class="prog-who">Middle and high school teams across the district.</p>
+          <div class="prog-foot"><span class="pill pill-soft">School year</span><a class="prog-go" href="#directory">Details <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="spring" data-aud="adult" style="--i:10">
+        <div class="prog-well"><span class="prog-ch">11</span><img class="prog-logo" src="assets/seaplastic-2026-logo.png" alt="Sea Plastic logo" width="613" height="595"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Spring</span><span>Adult</span></p>
+          <h3 class="prog-name">Sea Plastic</h3>
+          <p class="prog-who">Beach ultimate for adults, out on the coast.</p>
+          <div class="prog-foot"><span class="pill pill-soft">Spring</span><a class="prog-go" href="#directory">Details <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="spring" data-aud="school" style="--i:11">
+        <div class="prog-well"><span class="prog-ch">12</span><img class="prog-logo" src="assets/discnw-jv-jamboree.png" alt="DiscNW JV Jamboree logo" width="500" height="500"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Spring</span><span>School</span></p>
+          <h3 class="prog-name">JV Jamboree</h3>
+          <p class="prog-who">A first tournament for junior varsity teams.</p>
+          <div class="prog-foot"><span class="pill pill-soft">Spring</span><a class="prog-go" href="#directory">Details <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="spring" data-aud="school" style="--i:12">
+        <div class="prog-well"><span class="prog-ch">13</span><img class="prog-logo" src="assets/discnw-invite.png" alt="DiscNW Invite logo" width="500" height="500"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Spring</span><span>School</span></p>
+          <h3 class="prog-name">DiscNW Invite</h3>
+          <p class="prog-who">High school teams from around the region, in one place.</p>
+          <div class="prog-foot"><span class="pill pill-soft">Spring</span><a class="prog-go" href="#directory">Details <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="winter" data-aud="adult" style="--i:13">
+        <div class="prog-well"><span class="prog-ch">14</span><img class="prog-logo" src="assets/heatup-sq.png" alt="Heat Up logo" width="600" height="600"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Winter</span><span>Adult</span></p>
+          <h3 class="prog-name">Heat Up</h3>
+          <p class="prog-who">Indoor games for adults through the winter.</p>
+          <div class="prog-foot"><span class="pill pill-soft">Winter</span><a class="prog-go" href="#directory">Details <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="all" data-aud="youth" style="--i:14">
+        <div class="prog-well"><span class="prog-ch">15</span><img class="prog-logo" src="assets/ageup-logo.jpg" alt="Age Up logo" width="1242" height="1237"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Year-round</span><span>Youth</span></p>
+          <h3 class="prog-name">Age Up</h3>
+          <p class="prog-who">Mentorship and ultimate for teens, all year.</p>
+          <div class="prog-foot"><span class="pill pill-soft">Year-round</span><a class="prog-go" href="#directory">Details <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+
+      <article class="prog" data-card data-season="all" data-aud="coaches" style="--i:15">
+        <div class="prog-well"><span class="prog-ch">16</span><img class="prog-logo" src="assets/discnw-coaching-collective-3.png" alt="DiscNW Coaching Collective logo" width="352" height="322"></div>
+        <div class="prog-body">
+          <p class="prog-meta"><span>Year-round</span><span>Coaches</span></p>
+          <h3 class="prog-name">DiscNW Coaching Collective</h3>
+          <p class="prog-who">Training and support for new and returning coaches.</p>
+          <div class="prog-foot"><span class="pill pill-soft">Year-round</span><a class="prog-go" href="#directory">Details <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+      </article>
+    </div>
+    <p class="note">Each logo sits in the same size box, on the same white ground, with the same padding, so a wall of different shapes reads even. Logos are never stretched or recolored. With filters off, all sixteen show. The complete list is the resting state.</p>
+  </section>
+
+  <!-- ============ 6 · HOMEPAGE MOCKUP ============ -->
+  <section class="sec" id="home" aria-labelledby="home-title">
+    <p class="kicker">06 · Homepage</p>
+    <h2 class="sec-title" id="home-title">discnw.org, redesigned</h2>
+    <p class="sec-intro">The top of the new homepage. A "find your program" hero sits above the directory grid, so the first thing a visitor sees is the question they came to answer. The nav carries the real DiscNW lockup; the footer signs off with the formline mark.</p>
+
+    <div class="browser">
+      <div class="browser-bar">
+        <span class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="browser-url">discnw.org</span>
+      </div>
+
+      <div role="img" aria-label="Mockup of the redesigned DiscNW homepage: a dark navigation bar with the white DiscNW logo lockup, a light hero headed 'Find your program.' with season and who-is-playing menus, a grid of program tiles each showing its real logo, a slate-blue line reading fees start at 33 dollars with no one turned away, and a dark footer with the formline mark and the line an Ultimate community without barriers.">
+        <nav class="mock-nav" data-mb style="--i:0" aria-hidden="true">
+          <span class="mock-logo"><img src="assets/brand/logo-full-white.png" alt="" width="1446" height="616"></span>
+          <ul class="mock-links">
+            <li><a href="#home"><span class="roll"><span class="roll-a">Programs</span><span class="roll-b">Programs</span></span></a></li>
+            <li><a href="#home"><span class="roll"><span class="roll-a">Youth</span><span class="roll-b">Youth</span></span></a></li>
+            <li><a href="#home"><span class="roll"><span class="roll-a">Adult</span><span class="roll-b">Adult</span></span></a></li>
+            <li><a href="#home"><span class="roll"><span class="roll-a">Coaches</span><span class="roll-b">Coaches</span></span></a></li>
+            <li><a href="#home"><span class="roll"><span class="roll-a">About</span><span class="roll-b">About</span></span></a></li>
+          </ul>
+          <a class="mock-register" href="#home">Register</a>
+          <span class="mock-burger" aria-hidden="true"><i></i><i></i><i></i></span>
+        </nav>
+
+        <div class="mock-hero" data-mb style="--i:1">
+          <p class="mock-eyebrow">Every DiscNW program, one place</p>
+          <h2 class="mock-h1">Find your program.</h2>
+          <p class="mock-sub">Leagues, camps, and tournaments for more than 10,000 players a year. Pick a season and who is playing, and we will show you what fits.</p>
+          <div class="mock-finder" aria-hidden="true">
+            <div class="mf-field"><label for="mf-season">Season</label><select id="mf-season"><option>Summer</option><option>Fall</option><option>Winter</option><option>Spring</option></select></div>
+            <div class="mf-field"><label for="mf-who">Who is playing</label><select id="mf-who"><option>Youth</option><option>School teams</option><option>Adults</option><option>Coaches</option></select></div>
+            <a class="btn btn-primary" href="#home">Show programs</a>
+          </div>
+        </div>
+
+        <div class="mock-dir" data-mb style="--i:2">
+          <p class="mock-dir-head"><span>Summer &middot; open now</span><span class="m-count">6 of 16 programs</span></p>
+          <div class="mock-grid">
+            <a class="mtile" href="#home">
+              <span class="mtile-well"><img src="assets/mshatleague-logo-with-hat.png" alt="Summer Mixed Hat League logo" width="1024" height="1024"></span>
+              <span class="mtile-body"><span class="mtile-name">Summer Mixed Hat League</span><span class="mtile-meta">Summer · Adult</span></span>
+            </a>
+            <a class="mtile" href="#home">
+              <span class="mtile-well"><img src="assets/2025-swl-logo.png" alt="Summer Wonder League logo" width="800" height="801"></span>
+              <span class="mtile-body"><span class="mtile-name">Summer Wonder League</span><span class="mtile-meta">Summer · Youth</span></span>
+            </a>
+            <a class="mtile" href="#home">
+              <span class="mtile-well"><img src="assets/discnw-summer-camp-disc.jpg" alt="Summer Youth Ultimate Camps logo" width="503" height="504"></span>
+              <span class="mtile-body"><span class="mtile-name">Summer Youth Camps</span><span class="mtile-meta">Summer · Youth</span></span>
+            </a>
+            <a class="mtile" href="#home">
+              <span class="mtile-well"><img src="assets/corpleaguelogo.png" alt="Corporate League logo" width="829" height="809"></span>
+              <span class="mtile-body"><span class="mtile-name">Corporate League</span><span class="mtile-meta">Summer · Adult</span></span>
+            </a>
+            <a class="mtile" href="#home">
+              <span class="mtile-well"><img src="assets/training-camp-logo-full-color-web.png" alt="Training Camp logo" width="600" height="600"></span>
+              <span class="mtile-body"><span class="mtile-name">Training Camp</span><span class="mtile-meta">Summer · Youth</span></span>
+            </a>
+            <a class="mtile" href="#home">
+              <span class="mtile-well"><img src="assets/colorcamp-logo.png" alt="Color Camp logo" width="1756" height="896"></span>
+              <span class="mtile-body"><span class="mtile-name">Color Camp</span><span class="mtile-meta">Summer · Youth</span></span>
+            </a>
+          </div>
+        </div>
+
+        <div class="mock-openline" data-mb style="--i:3" aria-hidden="true">
+          <span class="oline-tag">Cost</span>
+          <span>Fees start at <b>$33</b>. There is a sliding scale and financial aid, and <b>no one is turned away</b> for lack of money.</span>
+        </div>
+
+        <div class="mock-foot" data-mb style="--i:4" aria-hidden="true">
+          <span class="m-mark">
+            <img src="assets/brand/logo-mark-white.png" alt="" width="590" height="616">
+            <span>Seattle 501(c)(3)<br>Founded 1995 · (206) 781-5840</span>
+          </span>
+          <span class="m-vision">An Ultimate community without barriers.</span>
+        </div>
+      </div>
+    </div>
+    <p class="note">The lockup in the nav is the real white asset, undistorted. The formline mark signs the footer with clearspace on solid ink. Every homepage tile is a real program logo on the same white ground. Nav labels roll on hover; Register deepens on hover.</p>
+  </section>
+
+  <!-- ============ 7 · FRONT DOORS ============ -->
+  <section class="sec" id="doors" aria-labelledby="doors-title">
+    <p class="kicker">07 · Front doors</p>
+    <h2 class="sec-title" id="doors-title">Three front doors</h2>
+    <p class="sec-intro">Most people arrive as one of three: a player, a coach or volunteer, or a parent. Each door opens on the programs made for them, shown by their own logos, with plain words underneath.</p>
+
+    <div class="doors">
+      <article class="door" data-rise style="--i:0">
+        <div class="door-top" aria-hidden="true">
+          <span class="door-mini"><img src="assets/mshatleague-logo-with-hat.png" alt="" width="1024" height="1024"></span>
+          <span class="door-mini"><img src="assets/fall-hat-league.png" alt="" width="600" height="600"></span>
+          <span class="door-mini"><img src="assets/corpleaguelogo.png" alt="" width="829" height="809"></span>
+        </div>
+        <div class="door-body">
+          <p class="door-tag">Players</p>
+          <h3>You do not need a team to play.</h3>
+          <p>Hat leagues, workplace teams, and a beach weekend at Sea Plastic. Pick a season and sign up on your own; we will sort the teams.</p>
+          <a class="btn btn-primary" href="#directory">See adult programs</a>
+        </div>
+      </article>
+
+      <article class="door" data-rise style="--i:1">
+        <div class="door-top" aria-hidden="true">
+          <span class="door-mini"><img src="assets/discnw-coaching-collective-3.png" alt="" width="352" height="322"></span>
+          <span class="door-mini"><img src="assets/mcclurelogo-1.jpg" alt="" width="776" height="600"></span>
+          <span class="door-mini"><img src="assets/discnw-jv-jamboree.png" alt="" width="500" height="500"></span>
+        </div>
+        <div class="door-body">
+          <p class="door-tag">Coaches &amp; volunteers</p>
+          <h3>You do not have to be elite. You have to show up.</h3>
+          <p>The DiscNW Coaching Collective backs you with training and a bench of coaches to lean on, from your first season to your tenth.</p>
+          <a class="btn btn-secondary" href="#directory">Start with the Collective</a>
+        </div>
+      </article>
+
+      <article class="door" data-rise style="--i:2">
+        <div class="door-top" aria-hidden="true">
+          <span class="door-mini"><img src="assets/2025-swl-logo.png" alt="" width="800" height="801"></span>
+          <span class="door-mini"><img src="assets/discnw-summer-camp-disc.jpg" alt="" width="503" height="504"></span>
+          <span class="door-mini"><img src="assets/colorcamp-logo.png" alt="" width="1756" height="896"></span>
+        </div>
+        <div class="door-body">
+          <p class="door-tag">Parents &amp; families</p>
+          <h3>New to ultimate? Most of our parents were.</h3>
+          <p>Wonder League, camps, and fall frisbee for kids and teens. There are no referees; players make their own calls. It is called Spirit of the Game.</p>
+          <a class="btn btn-secondary" href="#directory">See youth programs</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ 8 · SPOTLIGHT (dark) ============ -->
+  <section class="dark-stripe on-dark" id="spotlight" aria-labelledby="spotlight-title">
+    <div class="sec">
+      <p class="kicker">08 · Storytelling</p>
+      <h2 class="sec-title" id="spotlight-title">A spotlight, and the year at a glance</h2>
+      <p class="sec-intro">Two reusable components. A program spotlight puts one program forward with a real photo, its logo, and one plain voice. Beside it, the year list shows what runs in each season, so the calendar is never a mystery.</p>
+
+      <div class="spot-grid">
+        <article class="spot" data-rise style="--i:0">
+          <div class="spot-photo-wrap">
+            <img class="spot-photo" src="assets/coaching-2.jpg" width="400" height="267" alt="A DiscNW coach in a cap kneels and talks with a group of young players sitting on the grass at a summer practice, a wooden fence and house behind them.">
+          </div>
+          <div class="spot-body">
+            <div class="spot-head">
+              <span class="spot-mark"><img src="assets/discnw-coaching-collective-3.png" alt="DiscNW Coaching Collective logo" width="352" height="322"></span>
+              <span><span class="spot-kick">Program spotlight</span><h3>The DiscNW Coaching Collective</h3></span>
+            </div>
+            <blockquote>&ldquo;I had never coached before. The Collective gave me a practice plan for week one and a group chat full of people who had done it. By spring, I was the one answering questions.&rdquo;</blockquote>
+            <p class="byline">— A SECOND-YEAR YOUTH COACH</p>
+          </div>
+        </article>
+
+        <div class="year" data-rise style="--i:1">
+          <h3>The DiscNW year</h3>
+          <div class="year-row"><p class="year-season">Spring</p><p class="year-progs">Sea Plastic · JV Jamboree · DiscNW Invite · high school</p></div>
+          <div class="year-row"><p class="year-season">Summer</p><p class="year-progs">Mixed Hat League · Wonder League · youth camps · Corporate League</p></div>
+          <div class="year-row"><p class="year-season">Fall</p><p class="year-progs">Fall Hat League · Fall Frisbee · middle and high schools</p></div>
+          <div class="year-row"><p class="year-season">Winter</p><p class="year-progs">Heat Up indoor · planning for spring</p></div>
+          <div class="year-row"><p class="year-season">All year</p><p class="year-progs">Age Up · the Coaching Collective · Spring Reign, the world&rsquo;s largest mixed youth tournament</p></div>
+        </div>
+      </div>
+      <p class="note">The spotlight is one photo, one logo, and one short quote, so any staff member can build one. The year list is the same program data as the directory, grouped by season instead of filtered.</p>
+    </div>
+  </section>
+
+  <!-- ============ 9 · WORKING PARTS ============ -->
+  <section class="sec" id="parts" aria-labelledby="parts-title">
+    <p class="kicker">09 · Working parts</p>
+    <h2 class="sec-title" id="parts-title">The working parts</h2>
+    <p class="sec-intro">Signing up is the site&rsquo;s day job. These pieces keep it plain: the accent marks what you can click, the program card carries real details, and the finder is the same idea as the directory filter.</p>
+
+    <div class="ui-grid">
+      <div class="ui-cell">
+        <h3>Buttons</h3>
+        <div class="btn-row">
+          <span class="btn-note">Primary</span>
+          <button type="button" class="btn btn-primary">Sign up for summer</button>
+          <button type="button" class="btn btn-primary demo-hover">Sign up for summer</button>
+        </div>
+        <div class="btn-row">
+          <span class="btn-note">Second</span>
+          <button type="button" class="btn btn-secondary">See the schedule</button>
+          <button type="button" class="btn btn-secondary demo-hover">See the schedule</button>
+        </div>
+        <div class="btn-row">
+          <span class="btn-note">Quiet</span>
+          <button type="button" class="btn btn-quiet">Read the program details</button>
+          <button type="button" class="btn btn-quiet demo-hover">Read the program details</button>
+        </div>
+        <p class="note">Rows show rest and hover. Focus draws a 3px slate-blue ring. The primary lifts one pixel on hover; with motion off, it stays put.</p>
+      </div>
+
+      <div class="ui-cell">
+        <h3>Program card</h3>
+        <article class="ev-card">
+          <div class="ev-head">
+            <span class="ev-logo"><img src="assets/mshatleague-logo-with-hat.png" alt="Summer Mixed Hat League logo" width="1024" height="1024"></span>
+            <span>
+              <p class="ev-head-meta">Summer · Adult</p>
+              <h4>Summer Mixed Hat League</h4>
+            </span>
+            <span class="ev-open">Registering</span>
+          </div>
+          <div class="ev-inner">
+            <ul class="ev-meta">
+              <li>Mondays, June 1 to August 10, at Magnuson Park</li>
+              <li>Sign up on your own; teams are drawn from a hat</li>
+              <li>Fees start at $33 on a sliding scale, no one turned away</li>
+            </ul>
+            <div class="ev-cap-row"><b>142 of 180 spots filled</b><span>closes May 30</span></div>
+            <div class="ev-bar" role="img" aria-label="Capacity: 142 of 180 spots filled"><i></i></div>
+            <div class="ev-actions">
+              <button type="button" class="btn btn-primary">Sign up</button>
+              <button type="button" class="btn btn-quiet">Program details</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="ui-cell" style="grid-column:1/-1">
+        <h3>Program finder</h3>
+        <form class="finder" action="#" onsubmit="return false">
+          <p class="flegend">Find your program</p>
+          <div class="filter-form">
+            <div class="f-field">
+              <label for="f-season">Season</label>
+              <select id="f-season" name="season"><option>Summer — open now</option><option>Fall</option><option>Winter</option><option>Spring</option></select>
+            </div>
+            <div class="f-field">
+              <label for="f-who">Who is playing</label>
+              <select id="f-who" name="who"><option>Youth</option><option>School teams</option><option>Adults</option><option>Coaches</option></select>
+            </div>
+            <div class="f-field">
+              <label for="f-level">How you like to play</label>
+              <select id="f-level" name="level"><option>Any</option><option>Just for fun</option><option>Competitive</option></select>
+            </div>
+            <button type="submit" class="btn btn-secondary">Show programs</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10 · VOICE &amp; TONE ============ -->
+  <section class="sec" id="voice" aria-labelledby="voice-title">
+    <p class="kicker">10 · Voice &amp; tone</p>
+    <h2 class="sec-title" id="voice-title">How The Programs sounds</h2>
+    <p class="sec-intro">Plain and helpful, like a good guide. It names the thing, says the season, and says who it is for. It never oversells, and it always says the true thing about cost.</p>
+
+    <div class="voice-grid">
+      <div class="voice-cell" data-rise style="--i:0">
+        <h3>Hero headline</h3>
+        <p class="v-hero">Find your program.</p>
+      </div>
+      <div class="voice-cell" data-rise style="--i:1">
+        <h3>A program tile</h3>
+        <p>Summer Mixed Hat League. Adults, teams drawn from a hat, Mondays in summer at Magnuson. Fees start at $33.</p>
+      </div>
+      <div class="voice-cell" data-rise style="--i:2">
+        <h3>To a parent worried about cost</h3>
+        <p>Fees start at $33, and there is a sliding scale and financial aid. No one is turned away for lack of money. Call us at (206) 781-5840.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ 11 · VERDICT + FOOTER ============ -->
+<footer class="prop-footer on-dark" id="verdict">
+  <div class="prop-in">
+    <div class="verdicts">
+      <div class="verdict choose">
+        <h2>Choose this direction if&hellip;</h2>
+        <p>You want the size of DiscNW to feel like a strength, not a maze. A directory puts every program one glance away, lets the real logos carry the color, and gives staff a place to add the next program without redesigning a page.</p>
+      </div>
+      <div class="verdict twice">
+        <h2>Think twice if&hellip;</h2>
+        <p>You want the homepage to lead with one big story or one photograph. This direction leads with a grid. It is built to help people find and sort, so it reads more like a useful tool than a single bold statement.</p>
+      </div>
+    </div>
+    <nav class="prop-nav" aria-label="Direction navigation">
+      <a class="roll" href="index.html"><span class="roll-a">&larr; All directions</span><span class="roll-b" aria-hidden="true">&larr; All directions</span></a>
+      <small>Direction 21 of 22 · The Programs · prepared for DiscNW</small>
+      <a class="roll" href="22-open-to-all.html"><span class="roll-a">Next direction &rarr;</span><span class="roll-b" aria-hidden="true">Next direction &rarr;</span></a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+/* Progressive enhancement only. Base styles are the settled page: no JS, print,
+   screenshots, and reduced motion all render the complete directory with no motion. */
+(function(){
+  'use strict';
+  var root=document.documentElement;
+  var mq=window.matchMedia;
+  var allow=mq&&mq('(prefers-reduced-motion: no-preference)').matches;
+
+  /* ---- the directory filter: works the same with or without motion ---- */
+  try{
+    var grid=document.getElementById('prog-grid');
+    var count=document.getElementById('prog-count');
+    if(grid&&count){
+      var cards=grid.querySelectorAll('[data-card]');
+      var total=cards.length;
+      var sel={season:'all',aud:'all'};
+      var chips=document.querySelectorAll('.chip[data-filter]');
+
+      function apply(){
+        var shown=0;
+        for(var i=0;i<cards.length;i++){
+          var c=cards[i];
+          var s=(c.getAttribute('data-season')||'').split(' ');
+          var a=(c.getAttribute('data-aud')||'').split(' ');
+          var okS=sel.season==='all'||s.indexOf('all')>-1||s.indexOf(sel.season)>-1;
+          var okA=sel.aud==='all'||a.indexOf('all')>-1||a.indexOf(sel.aud)>-1;
+          var ok=okS&&okA;
+          c.classList.toggle('is-hidden',!ok);
+          if(ok){ shown++; }
+        }
+        count.textContent = shown===total ? (total+' programs') : (shown+' of '+total+' programs');
+      }
+
+      Array.prototype.forEach.call(chips,function(chip){
+        chip.addEventListener('click',function(){
+          var group=chip.getAttribute('data-filter');
+          var value=chip.getAttribute('data-value');
+          sel[group]=value;
+          var peers=document.querySelectorAll('.chip[data-filter="'+group+'"]');
+          Array.prototype.forEach.call(peers,function(p){ p.setAttribute('aria-pressed', p===chip ? 'true':'false'); });
+          apply();
+        });
+      });
+    }
+  }catch(e){}
+
+  if(!allow||!('IntersectionObserver' in window)){ return; } /* settled base page */
+
+  /* ---- scroll reveals: section rises, kicker ticks, directory + mock boots ---- */
+  try{
+    var io=new IntersectionObserver(function(es){
+      for(var j=0;j<es.length;j++){ if(es[j].isIntersecting){ es[j].target.classList.add('in'); io.unobserve(es[j].target); } }
+    },{threshold:.14,rootMargin:'0px 0px -6% 0px'});
+    var nodes=document.querySelectorAll('[data-rise], .kicker, .prog-grid, .browser');
+    for(var n=0;n<nodes.length;n++){ io.observe(nodes[n]); }
+    root.classList.add('anim');
+    /* unconditional settle: the whole page is landed by 2.2s, also the catch for any failure */
+    setTimeout(function(){ root.classList.add('settled'); },2200);
+  }catch(err){ root.classList.remove('anim'); root.classList.add('settled'); }
+})();
+</script>
+
+</body>
+</html>

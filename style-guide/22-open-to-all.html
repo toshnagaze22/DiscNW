@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction 22 · Open to All — DiscNW redesign</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<meta name="description" content="Open to All: a front door built around what it costs to play. DiscNW's real sliding scale, financial aid, and a plain promise that no one is turned away for lack of money.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#241C16;        /* espresso — warm near-black; text and dark grounds */
+    --ink-2:#30251C;      /* raised warm panel on ink */
+    --ink-deep:#1A130E;   /* deepest strip on ink */
+    --paper:#F7F2EA;      /* open cream — the page ground */
+    --sand:#F2E8D6;       /* warm tinted band */
+    --card:#FFFFFF;       /* card white */
+    --card-2:#FBF6EE;     /* warm card, headshot tile ground */
+
+    --copper:#B0532B;     /* DiscNW copper — the brand accent, primary buttons */
+    --copper-deep:#8F4020;/* deeper copper — links and normal-size accent text on cream */
+    --copper-l:#E28A57;   /* light copper — accent text on ink */
+    --copper-soft:#F0E1D3;/* copper tint ground */
+
+    --pine:#2E5248;       /* trust pine — the base rate, secondary buttons */
+    --pine-soft:#E4EBE4;  /* pine tint ground — the accessibility rate */
+    --sage:#5E7E68;       /* welcome sage */
+    --wheat:#EADFC8;      /* field wheat — the support rate ground, warm panels */
+    --gold:#9A6B1E;       /* warm gold — support-rate accent text (AA on wheat/cream) */
+
+    --slate:#6B5E50;      /* warm grey — secondary text on light */
+    --ondark:#EBE2D6;     /* body text on ink */
+    --dim:#B9AA93;        /* dim labels on ink */
+    --line:#E5DCCC;       /* hairline on cream */
+    --line-2:#D8CDB9;     /* stronger hairline / field borders */
+    --line-dark:rgba(247,242,234,.15); /* hairline on ink */
+
+    --wrap:1160px;
+
+    /* house easing — default 'ease' is banned on this page.
+       snap: micro moves · lux: reveals */
+    --ease-snap:cubic-bezier(.4,0,.1,1);
+    --ease-lux:cubic-bezier(.16,1,.3,1);
+
+    --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+    --sans:'Public Sans', system-ui, -apple-system, Segoe UI, sans-serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  [id]{ scroll-margin-top:24px; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:17px; line-height:1.62;
+    font-optical-sizing:auto;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--copper); color:#fff; }
+  img{ display:block; max-width:100%; }
+  a{ color:var(--copper-deep); text-decoration:underline; text-underline-offset:3px; }
+  a:hover{ color:var(--ink); }
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, label:focus-visible{
+    outline:3px solid var(--copper-deep); outline-offset:2px; border-radius:4px;
+  }
+  .on-dark a:focus-visible, .on-dark button:focus-visible{ outline-color:var(--copper-l); }
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+  }
+
+  /* ---------- shared rhythm ---------- */
+  .sec{ max-width:var(--wrap); margin:0 auto; padding:104px 32px; }
+  .sec + .sec{ border-top:1px solid var(--line); }
+  .kicker{
+    font-family:var(--sans);
+    font-weight:700; font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--copper-deep);
+    display:flex; align-items:center; gap:10px;
+    margin:0 0 16px;
+  }
+  .kicker::before{ content:""; width:26px; height:3px; background:var(--copper); flex:none; }
+  .on-dark .kicker{ color:var(--copper-l); }
+  .on-dark .kicker::before{ background:var(--copper-l); }
+  .sec-title{
+    font-family:var(--serif); font-weight:600; font-size:clamp(31px, 3.6vw, 46px);
+    line-height:1.05; letter-spacing:-.01em;
+    margin:0 0 16px; text-wrap:balance;
+  }
+  .sec-intro{ max-width:64ch; margin:0 0 44px; color:var(--slate); font-size:18px; }
+  .on-dark .sec-title{ color:var(--paper); }
+  .on-dark .sec-intro{ color:var(--ondark); }
+  .note{ font-size:14px; color:var(--slate); line-height:1.6; margin:18px 2px 0; max-width:84ch; }
+  .on-dark .note{ color:var(--dim); }
+  .lead{ max-width:66ch; font-size:20px; line-height:1.6; color:var(--ink); }
+  .lead em{ font-style:normal; color:var(--copper-deep); font-weight:600; }
+
+  /* ---------- photos: clean, full color, framed, never covered ---------- */
+  .ph{ display:block; width:100%; object-fit:cover; }
+  .frame{ display:block; overflow:hidden; background:var(--card-2); }
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-block; border:0; cursor:pointer; text-decoration:none;
+    font-family:var(--sans); font-weight:600; font-size:15.5px; line-height:1;
+    padding:15px 22px; border-radius:8px;
+    transition:background-color .28s var(--ease-snap), color .28s var(--ease-snap), box-shadow .28s var(--ease-snap);
+  }
+  .btn-primary{ background:var(--copper); color:#fff; }
+  .btn-primary:hover, .btn-primary.demo-hover{ background:var(--copper-deep); }
+  .btn-primary.magnet, .mock-register.magnet{ transition:background-color .28s var(--ease-snap), color .28s var(--ease-snap); }
+  .btn-secondary{ background:transparent; color:var(--pine); box-shadow:inset 0 0 0 2px var(--pine); }
+  .btn-secondary:hover, .btn-secondary.demo-hover{ background:var(--pine); color:#fff; }
+  .btn-quiet{
+    background:none; padding:15px 2px; border-radius:4px;
+    font-weight:600; font-size:15px; color:var(--copper-deep);
+    text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1.5px;
+  }
+  .btn-quiet:hover, .btn-quiet.demo-hover{ color:var(--ink); text-decoration-thickness:3px; }
+
+  /* ---------- hover roll on footer links ---------- */
+  .roll{ position:relative; display:inline-block; overflow:hidden; vertical-align:top; }
+  .roll-a, .roll-b{ display:block; transition:transform .42s var(--ease-snap); }
+  .roll-b{ position:absolute; top:100%; left:0; }
+  .roll:hover .roll-a, .roll:focus-visible .roll-a,
+  .roll:hover .roll-b, .roll:focus-visible .roll-b{ transform:translateY(-100%); }
+
+  /* ============ THE RATE PICKER — the signature ============
+     A plain three-tier sliding scale. Same season for everyone; the only
+     thing that changes is what you choose to pay. Real radio inputs, so it
+     works and is reachable with no JavaScript. */
+  .picker{ border:1px solid var(--line-2); border-radius:16px; background:var(--card); overflow:hidden; }
+  .picker fieldset{ border:0; }
+  .picker legend{
+    display:block; width:100%; padding:22px 26px 0;
+    font-family:var(--serif); font-weight:600; font-size:22px; color:var(--ink);
+  }
+  .picker .legend-sub{ padding:6px 26px 0; margin:0; color:var(--slate); font-size:15.5px; }
+  .rate-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; padding:22px 26px 4px; }
+  .rate{
+    position:relative; display:flex; flex-direction:column; gap:5px;
+    padding:20px 20px 22px; cursor:pointer;
+    background:var(--card-2); border:1.5px solid var(--line-2); border-radius:13px;
+    transition:border-color .25s var(--ease-snap), box-shadow .25s var(--ease-snap), background-color .25s var(--ease-snap), transform .25s var(--ease-snap);
+  }
+  .rate:hover{ transform:translateY(-2px); }
+  .rate input{ position:absolute; opacity:0; width:1px; height:1px; }
+  .rate-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .rate-name{ font-weight:700; font-size:13px; letter-spacing:.05em; text-transform:uppercase; color:var(--slate); }
+  .rate-mark{
+    width:22px; height:22px; border-radius:50%; flex:none;
+    border:2px solid var(--line-2); background:var(--card); position:relative;
+    transition:border-color .2s var(--ease-snap);
+  }
+  .rate input:checked ~ .rate-top .rate-mark{ border-color:var(--copper); }
+  .rate input:checked ~ .rate-top .rate-mark::after{
+    content:""; position:absolute; inset:4px; border-radius:50%; background:var(--copper);
+  }
+  .rate-amt{ font-family:var(--serif); font-weight:600; font-size:40px; line-height:1; letter-spacing:-.01em; color:var(--ink); font-variant-numeric:tabular-nums; }
+  .rate-per{ font-size:13px; color:var(--slate); font-weight:500; }
+  .rate-who{ margin-top:8px; font-size:14.5px; color:var(--ink); line-height:1.5; }
+  .rate .flag{
+    align-self:flex-start; margin-bottom:2px;
+    font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    padding:4px 9px; border-radius:999px;
+  }
+  /* tier grounds */
+  .rate-support{ background:var(--wheat); }
+  .rate-support .flag{ background:rgba(154,107,30,.16); color:var(--gold); }
+  .rate-base{ background:var(--pine-soft); }
+  .rate-base .flag{ background:var(--pine); color:#fff; }
+  .rate-access{ background:var(--card-2); }
+  .rate-access .flag{ background:rgba(94,126,104,.16); color:var(--pine); }
+  /* selected card */
+  .rate:has(input:checked){ border-color:var(--copper); box-shadow:0 0 0 1.5px var(--copper); background:var(--card); }
+  .rate:focus-within{ outline:3px solid var(--copper-deep); outline-offset:2px; }
+  .picker-assure{
+    display:flex; flex-wrap:wrap; align-items:center; gap:12px 22px;
+    padding:20px 26px 24px; margin-top:14px;
+    background:var(--ink); color:var(--ondark);
+  }
+  .picker-assure p{ margin:0; font-size:15.5px; max-width:56ch; }
+  .picker-assure p b{ color:#fff; font-weight:700; }
+  .picker-assure .btn{ margin-left:auto; }
+  @media (max-width:760px){ .picker-assure .btn{ margin-left:0; } }
+
+  /* ---------- 1 · MASTHEAD / direction header ---------- */
+  .masthead{ background:var(--paper); border-bottom:1px solid var(--line); }
+  .masthead-in{ max-width:var(--wrap); margin:0 auto; padding:80px 32px 76px;
+    display:grid; grid-template-columns:1.08fr .92fr; gap:clamp(30px,4vw,56px); align-items:center; }
+  .eyebrow{ font-weight:700; font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--copper-deep); margin:0 0 20px; }
+  .mast-name{ font-family:var(--serif); font-weight:600; font-size:clamp(52px,7.4vw,98px); line-height:.98; letter-spacing:-.02em; color:var(--ink); margin:0 0 22px; }
+  .mast-thesis{ margin:0 0 26px; font-size:19px; line-height:1.58; color:var(--slate); max-width:52ch; }
+  .mast-thesis strong{ color:var(--ink); font-weight:600; }
+  .mast-nav{ display:flex; flex-wrap:wrap; gap:8px 10px; list-style:none; margin:0; padding:0; }
+  .mast-nav a{
+    display:block; text-decoration:none;
+    font-weight:600; font-size:12.5px; letter-spacing:.04em;
+    color:var(--slate); background:var(--card); border:1px solid var(--line-2); border-radius:999px; padding:7px 14px;
+    transition:color .25s var(--ease-snap), border-color .25s var(--ease-snap), background-color .25s var(--ease-snap);
+  }
+  .mast-nav a:hover{ color:#fff; background:var(--copper); border-color:var(--copper); }
+
+  /* the masthead cost card — a glance at what a season costs */
+  .cost-card{ background:var(--card); border:1px solid var(--line-2); border-radius:16px; overflow:hidden; box-shadow:0 30px 60px -46px rgba(36,28,22,.5); }
+  .cost-head{ display:flex; align-items:center; gap:11px; padding:16px 22px; border-bottom:1px solid var(--line); }
+  .cost-head img{ width:26px; height:auto; flex:none; }
+  .cost-head .lbl{ font-weight:700; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--slate); }
+  .cost-head .lbl b{ display:block; font-family:var(--serif); font-weight:600; font-size:16px; letter-spacing:0; text-transform:none; color:var(--ink); }
+  .cost-big{ padding:22px 22px 6px; }
+  .cost-big .amt{ font-family:var(--serif); font-weight:600; font-size:64px; line-height:1; letter-spacing:-.02em; color:var(--copper-deep); font-variant-numeric:tabular-nums; }
+  .cost-big .cap{ display:block; margin-top:6px; font-size:14.5px; color:var(--slate); }
+  .cost-rows{ list-style:none; margin:14px 0 0; padding:0 22px; }
+  .cost-rows li{ display:flex; align-items:baseline; justify-content:space-between; gap:14px; padding:11px 0; border-top:1px solid var(--line); font-size:14.5px; color:var(--ink); }
+  .cost-rows li span{ color:var(--slate); }
+  .cost-rows li b{ font-family:var(--serif); font-weight:600; font-size:18px; color:var(--ink); font-variant-numeric:tabular-nums; }
+  .cost-foot{ margin-top:14px; padding:15px 22px; background:var(--pine-soft); color:var(--pine); font-weight:600; font-size:14px; }
+
+  /* entrance — base is the settled state; motion only adds a calm rise. Settled by ~1.5s. */
+  @media (prefers-reduced-motion: no-preference){
+    @keyframes fade-rise{ from{ opacity:0; transform:translateY(14px); } }
+    .eyebrow{ animation:fade-rise .7s var(--ease-lux) .04s backwards; }
+    .mast-name{ animation:fade-rise .8s var(--ease-lux) .12s backwards; }
+    .mast-thesis{ animation:fade-rise .8s var(--ease-lux) .24s backwards; }
+    .mast-nav{ animation:fade-rise .8s var(--ease-lux) .34s backwards; }
+    .cost-card{ animation:fade-rise .9s var(--ease-lux) .3s backwards; }
+  }
+
+  /* ---------- 3 · palette ---------- */
+  .swatches{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; list-style:none; }
+  .swatch{ border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--card); }
+  .swatch-chip{ height:104px; position:relative; }
+  .swatch-chip.chip-outline{ box-shadow:inset 0 0 0 1px var(--line); }
+  .swatch-flag{ position:absolute; left:12px; bottom:11px; font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:4px 9px; border-radius:999px; }
+  .swatch-info{ padding:16px 18px 18px; }
+  .swatch-name{ font-family:var(--serif); margin:0 0 3px; font-size:19px; font-weight:600; color:var(--ink); }
+  .swatch-hex{ display:inline-block; margin:0 0 9px; font-size:13px; font-weight:600; letter-spacing:.03em; color:var(--slate); font-variant-numeric:tabular-nums; }
+  .swatch-use{ margin:0; font-size:14px; color:var(--slate); line-height:1.5; }
+
+  /* ---------- 4 · typography ---------- */
+  .type-cards{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:40px; }
+  .type-card{ border:1px solid var(--line); border-radius:14px; padding:26px 28px; background:var(--card); }
+  .type-card .role{ display:block; margin:0 0 14px; font-weight:700; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--copper-deep); }
+  .type-card h3{ font-family:var(--serif); margin:0 0 6px; font-weight:600; font-size:30px; color:var(--ink); }
+  .type-card p{ margin:0; color:var(--slate); font-size:15px; }
+  .type-card .glyphs{ margin:16px 0 0; font-size:20px; color:var(--ink); word-break:break-word; }
+  .type-card .glyphs.serif{ font-family:var(--serif); }
+  .specimen{ font-family:var(--serif); margin:0 0 14px; font-weight:600; font-size:clamp(40px,5.6vw,76px); line-height:1.02; letter-spacing:-.02em; color:var(--ink); text-wrap:balance; }
+  .specimen em{ font-style:normal; color:var(--copper-deep); }
+  .price-specimen{
+    margin:0 0 38px; padding:22px 24px; background:var(--ink); border-radius:14px;
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 26px;
+  }
+  .price-specimen .p{ font-family:var(--serif); font-weight:600; font-size:clamp(38px,5vw,58px); line-height:1; color:#fff; font-variant-numeric:tabular-nums; }
+  .price-specimen .p .u{ color:var(--copper-l); }
+  .price-specimen .cap{ color:var(--dim); font-size:14px; margin-left:auto; max-width:30ch; }
+  .scale{ border-top:1px solid var(--line); }
+  .scale-row{ display:flex; align-items:baseline; justify-content:space-between; gap:24px; padding:18px 2px; border-bottom:1px solid var(--line); }
+  .scale-sample{ margin:0; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .s-display{ font-family:var(--serif); font-weight:600; font-size:clamp(32px,4.6vw,58px); line-height:1; letter-spacing:-.02em; }
+  .s-h2{ font-family:var(--serif); font-weight:600; font-size:clamp(26px,3vw,36px); line-height:1.1; }
+  .s-h3{ font-family:var(--serif); font-weight:600; font-size:23px; line-height:1.2; }
+  .s-body{ font-size:17px; font-weight:400; }
+  .s-label{ font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--slate); }
+  .scale-spec{ flex-shrink:0; font-size:12.5px; color:var(--slate); letter-spacing:.02em; text-align:right; font-variant-numeric:tabular-nums; }
+
+  /* ---------- 5 · signature explainers ---------- */
+  .sig-cells{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:34px; }
+  .sig-cell{ border:1px solid var(--line); border-radius:13px; padding:24px 26px; background:var(--card); }
+  .sig-cell h3{ font-family:var(--serif); margin:0 0 10px; font-weight:600; font-size:20px; color:var(--ink); display:flex; align-items:baseline; gap:9px; }
+  .sig-cell h3 .n{ font-family:var(--sans); font-weight:700; font-size:12px; letter-spacing:.08em; color:var(--copper-deep); }
+  .sig-cell p{ margin:0; font-size:15px; color:var(--slate); line-height:1.55; }
+
+  /* ---------- 6 · homepage mockup ---------- */
+  .browser{ border:1px solid var(--line-2); border-radius:14px; overflow:hidden; box-shadow:0 34px 70px -42px rgba(36,28,22,.5); background:var(--card); }
+  .browser-bar{ display:flex; align-items:center; gap:14px; background:#EDE5D7; border-bottom:1px solid var(--line-2); padding:10px 16px; }
+  .browser-dots{ display:flex; gap:6px; }
+  .browser-dots i{ width:10px; height:10px; border-radius:50%; background:#CDBFA9; display:block; }
+  .browser-url{ flex:1; max-width:320px; background:var(--card); border:1px solid var(--line-2); border-radius:999px; font-size:12.5px; color:var(--slate); padding:6px 16px; text-align:center; letter-spacing:.02em; }
+  .mock-nav{ display:flex; align-items:center; gap:26px; background:var(--ink); padding:15px clamp(16px,3vw,30px); }
+  .mock-logo img{ display:block; width:130px; height:auto; }
+  .mock-links{ display:flex; gap:2px; margin-left:auto; list-style:none; }
+  .mock-links a{ display:block; padding:8px 12px; color:var(--ondark); text-decoration:none; font-size:14.5px; font-weight:500; }
+  .mock-links a:hover{ color:#fff; }
+  .mock-register{ background:var(--copper); color:#fff; font-weight:600; font-size:14.5px; padding:11px 20px; border-radius:8px; text-decoration:none; white-space:nowrap; transition:background-color .28s var(--ease-snap); }
+  .mock-register:hover{ background:var(--copper-deep); }
+  .mock-burger{ display:none; margin-left:auto; }
+  .mock-burger i{ display:block; width:22px; height:2px; background:var(--ondark); margin:5px 0; border-radius:2px; }
+  .mock-promise{
+    display:flex; flex-wrap:wrap; align-items:center; gap:6px 14px;
+    background:var(--pine); color:#fff; padding:10px clamp(16px,3vw,30px);
+    font-size:13px; font-weight:500; letter-spacing:.01em;
+  }
+  .mock-promise .dot{ opacity:.5; }
+  .mock-promise b{ font-weight:700; }
+  .mock-hero{ background:var(--card); padding:clamp(38px,5vw,62px) clamp(16px,3vw,30px); }
+  .mock-hero-grid{ display:grid; grid-template-columns:1.02fr .98fr; gap:clamp(26px,4vw,46px); align-items:center; }
+  .mock-eyebrow{ margin:0 0 15px; font-weight:700; font-size:12px; letter-spacing:.13em; text-transform:uppercase; color:var(--copper-deep); }
+  .mock-h1{ font-family:var(--serif); margin:0 0 18px; font-weight:600; font-size:clamp(34px,4.6vw,54px); line-height:1.02; letter-spacing:-.02em; color:var(--ink); text-wrap:balance; }
+  .mock-sub{ margin:0 0 24px; color:var(--slate); font-size:17px; max-width:44ch; }
+  .mock-ctas{ display:flex; flex-wrap:wrap; gap:12px 16px; align-items:center; margin:0 0 22px; }
+  .mock-trust{ list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .mock-trust li{ position:relative; padding-left:24px; font-size:14.5px; color:var(--ink); }
+  .mock-trust li::before{ content:""; position:absolute; left:0; top:7px; width:13px; height:8px; border-left:2.5px solid var(--pine); border-bottom:2.5px solid var(--pine); transform:rotate(-45deg); }
+
+  /* the compact rate picker inside the hero — a picture, not a control */
+  .mock-picker{ border:1px solid var(--line-2); border-radius:14px; background:var(--card-2); overflow:hidden; }
+  .mock-picker .mp-head{ padding:14px 18px 0; }
+  .mock-picker .mp-head b{ font-family:var(--serif); font-weight:600; font-size:17px; color:var(--ink); }
+  .mock-picker .mp-head span{ display:block; margin-top:3px; font-size:13px; color:var(--slate); }
+  .mp-rows{ display:flex; flex-direction:column; gap:9px; padding:14px 18px 18px; }
+  .mp-row{ display:flex; align-items:center; gap:12px; padding:13px 15px; border-radius:11px; background:var(--card); border:1.5px solid var(--line-2); }
+  .mp-row .mp-dot{ width:18px; height:18px; border-radius:50%; border:2px solid var(--line-2); flex:none; }
+  .mp-row .mp-name{ font-weight:600; font-size:14px; color:var(--ink); }
+  .mp-row .mp-name small{ display:block; font-weight:500; font-size:12px; color:var(--slate); }
+  .mp-row .mp-amt{ margin-left:auto; font-family:var(--serif); font-weight:600; font-size:22px; color:var(--ink); font-variant-numeric:tabular-nums; }
+  .mp-row.on{ border-color:var(--copper); box-shadow:0 0 0 1.5px var(--copper); background:var(--pine-soft); }
+  .mp-row.on .mp-dot{ border-color:var(--copper); background:radial-gradient(circle at center, var(--copper) 0 5px, transparent 5px); }
+
+  .mock-how{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border-top:1px solid var(--line); }
+  .mock-how .cell{ background:var(--card); padding:24px clamp(16px,3vw,30px); }
+  .mock-how h4{ font-family:var(--serif); margin:0 0 6px; font-weight:600; font-size:18px; color:var(--ink); }
+  .mock-how p{ margin:0; font-size:14px; color:var(--slate); line-height:1.5; }
+  .mock-how .cell .num{ font-weight:700; font-size:12px; letter-spacing:.1em; color:var(--copper-deep); }
+  .mock-reg{ display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 20px; background:var(--sand); color:var(--ink); padding:18px clamp(16px,3vw,30px); font-size:14px; border-top:1px solid var(--line); }
+  .mock-reg .lbl{ font-weight:700; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--copper-deep); flex:none; }
+  .mock-reg ul{ list-style:none; display:flex; flex-wrap:wrap; }
+  .mock-reg li{ white-space:nowrap; }
+  .mock-reg li + li::before{ content:"·"; color:var(--line-2); padding:0 11px; }
+  .mock-reg .more{ margin-left:auto; color:var(--copper-deep); font-weight:600; }
+  .mock-foot{ display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; background:var(--ink); padding:24px clamp(16px,3vw,30px); }
+  .mock-foot .chip{ display:flex; align-items:center; gap:10px; }
+  .mock-foot .chip img{ width:30px; height:auto; }
+  .mock-foot .chip .t{ font-weight:700; font-size:11.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--dim); line-height:1.5; }
+  .mock-foot .vision{ margin-left:auto; font-family:var(--serif); font-weight:500; font-size:17px; color:var(--paper); }
+  @media (max-width:760px){ .mock-foot .vision{ margin-left:0; width:100%; } }
+
+  /* ---------- 7 · front doors ---------- */
+  .doors{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .door{ border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--card); display:flex; flex-direction:column; }
+  .door .frame{ height:188px; }
+  .door .ph{ height:100%; }
+  .door-body{ padding:22px 24px 26px; display:flex; flex-direction:column; flex:1; align-items:flex-start; }
+  .door-tag{ margin:0 0 11px; display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:11px; letter-spacing:.13em; text-transform:uppercase; color:var(--copper-deep); }
+  .door-tag::before{ content:""; width:7px; height:7px; background:var(--copper); border-radius:50%; }
+  .door h3{ font-family:var(--serif); margin:0 0 10px; font-weight:600; font-size:23px; line-height:1.15; color:var(--ink); text-wrap:balance; }
+  .door p{ margin:0 0 22px; font-size:15px; color:var(--slate); flex:1; }
+
+  /* ---------- 8 · stories (tinted band) ---------- */
+  .band-tint{ background:var(--sand); }
+  .band-tint .sec{ border-top:0; }
+  .quote-lead{ display:flex; gap:24px; align-items:flex-start; max-width:80ch; margin-bottom:44px; }
+  .q-avatar{ width:112px; height:112px; border-radius:16px; object-fit:cover; background:var(--card-2); flex:none; border:1px solid var(--line-2); }
+  .quote-lead blockquote{ margin:0; }
+  .quote-lead .q-text{ font-family:var(--serif); font-weight:500; font-size:clamp(23px,2.8vw,30px); line-height:1.28; letter-spacing:-.01em; color:var(--ink); }
+  .quote-lead .q-by{ margin-top:14px; font-size:14px; font-weight:600; color:var(--slate); letter-spacing:.02em; }
+  .who-grid{ display:grid; grid-template-columns:1fr 1fr; gap:26px; align-items:center; }
+  .who-fig{ margin:0; max-width:640px; }
+  .who-fig .frame{ border-radius:14px; border:1px solid var(--line-2); }
+  .who-fig .ph{ aspect-ratio:4/3; }
+  .who-fig figcaption{ margin-top:10px; font-size:13px; color:var(--slate); }
+  .facts h3{ font-family:var(--serif); margin:0 0 6px; font-weight:600; font-size:26px; color:var(--ink); }
+  .facts p{ margin:0 0 18px; color:var(--slate); font-size:16px; }
+  .facts ul{ list-style:none; margin:0; padding:0; border-top:1px solid var(--line-2); }
+  .facts li{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:13px 0; border-bottom:1px solid var(--line-2); }
+  .facts li span{ font-size:15px; color:var(--slate); }
+  .facts li b{ font-family:var(--serif); font-weight:600; font-size:20px; color:var(--ink); white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .facts li b.copper{ color:var(--copper-deep); }
+
+  /* program logo wall — every program, same tile */
+  .logos-head{ margin:52px 0 18px; }
+  .logos-head h3{ font-family:var(--serif); font-weight:600; font-size:24px; color:var(--ink); margin:0 0 6px; }
+  .logos-head p{ margin:0; color:var(--slate); font-size:16px; max-width:60ch; }
+  .logos{ display:grid; grid-template-columns:repeat(5,1fr); gap:14px; }
+  .logo-tile{ aspect-ratio:1/1; display:grid; place-items:center; padding:18px; background:var(--card); border:1px solid var(--line-2); border-radius:14px; }
+  .logo-tile img{ max-width:100%; max-height:96px; width:auto; height:auto; object-fit:contain; }
+
+  /* ---------- brand crest band (dark anchor) ---------- */
+  .crest-band{ background:var(--ink); color:var(--ondark); }
+  .crest-in{ max-width:var(--wrap); margin:0 auto; padding:92px 32px; text-align:center; }
+  .crest-in img{ width:120px; height:auto; margin:0 auto 30px; }
+  .crest-line{ font-family:var(--serif); font-weight:500; font-size:clamp(26px,3.6vw,40px); line-height:1.2; letter-spacing:-.01em; color:var(--paper); margin:0 auto; max-width:20ch; }
+  .crest-sub{ margin:20px auto 0; color:var(--dim); font-size:14px; letter-spacing:.02em; }
+
+  /* ---------- 9 · working parts ---------- */
+  .ui-grid{ display:grid; grid-template-columns:.95fr 1.05fr; gap:18px; align-items:start; }
+  .ui-cell{ border:1px solid var(--line); border-radius:14px; padding:26px 28px; background:var(--card); }
+  .ui-cell h3{ font-family:var(--serif); margin:0 0 20px; font-weight:600; font-size:20px; color:var(--ink); }
+  .btn-row{ display:flex; flex-wrap:wrap; gap:12px 14px; align-items:center; margin-bottom:12px; }
+  .btn-note{ width:64px; flex:none; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--slate); }
+  .ev-card{ border:1px solid var(--line-2); border-radius:12px; padding:24px; background:var(--card-2); }
+  .ev-top{ display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; margin-bottom:14px; }
+  .ev-open{ font-weight:700; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:#fff; background:var(--pine); border-radius:999px; padding:5px 11px; }
+  .ev-tags{ font-size:13px; color:var(--slate); }
+  .ev-card h4{ font-family:var(--serif); margin:0 0 12px; font-weight:600; font-size:24px; color:var(--ink); }
+  .ev-meta{ list-style:none; margin:0 0 18px; padding:0; }
+  .ev-meta li{ position:relative; padding:4px 0 4px 20px; font-size:14.5px; color:var(--slate); }
+  .ev-meta li::before{ content:""; position:absolute; left:0; top:11px; width:7px; height:7px; border-radius:50%; background:var(--copper); }
+  .ev-meta li.fee{ color:var(--ink); font-weight:600; }
+  .ev-cap{ padding:16px 0 18px; border-top:1px solid var(--line-2); }
+  .ev-cap-row{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; margin-bottom:10px; }
+  .ev-cap-row b{ font-weight:700; font-size:14px; color:var(--ink); font-variant-numeric:tabular-nums; }
+  .ev-cap-row span{ font-size:12.5px; color:var(--slate); }
+  .ev-bar{ height:8px; border-radius:999px; background:#E3D8C4; overflow:hidden; }
+  .ev-bar i{ display:block; height:100%; width:72%; border-radius:999px; background:var(--pine); }
+  .ev-actions{ display:flex; flex-wrap:wrap; gap:12px 16px; align-items:center; margin-top:18px; }
+  .startform{ background:var(--card-2); border-radius:12px; padding:24px 26px; }
+  .startform .flegend{ font-family:var(--serif); margin:0 0 18px; font-weight:600; font-size:19px; color:var(--ink); }
+  .f-row{ display:flex; flex-wrap:wrap; gap:16px; align-items:end; }
+  .f-field{ display:flex; flex-direction:column; gap:6px; flex:1; min-width:150px; }
+  .f-field label{ font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--slate); }
+  .f-field input, .f-field select{
+    font-family:var(--sans); font-size:15px; font-weight:500; color:var(--ink);
+    border:1.5px solid var(--line-2); border-radius:9px; background:var(--card); padding:12px 13px; width:100%;
+  }
+  .f-field select{ appearance:none; padding-right:34px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.5 L6 6.5 L11 1.5' fill='none' stroke='%238F4020' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 13px center; }
+  .f-field input::placeholder{ color:#A99B88; }
+  .f-row .btn{ flex:none; }
+
+  /* ---------- 10 · voice ---------- */
+  .voice-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .voice-cell{ border:1px solid var(--line); border-radius:13px; padding:24px 26px; background:var(--card); }
+  .voice-cell h3{ margin:0 0 14px; font-weight:700; font-size:11px; letter-spacing:.13em; text-transform:uppercase; color:var(--copper-deep); }
+  .voice-cell .v-hero{ font-family:var(--serif); margin:0; font-weight:600; font-size:27px; line-height:1.14; letter-spacing:-.01em; color:var(--ink); }
+  .voice-cell p{ margin:0; font-size:15.5px; color:var(--ink); line-height:1.55; }
+
+  /* ---------- about appendix ---------- */
+  .about-grid{ display:grid; grid-template-columns:1.1fr .9fr; gap:30px; }
+  .about-grid p{ color:var(--slate); font-size:16px; margin:0 0 16px; max-width:60ch; }
+  .about-grid p strong{ color:var(--ink); font-weight:600; }
+  .asset-list{ list-style:none; margin:0; padding:24px 26px; background:var(--card); border:1px solid var(--line); border-radius:13px; }
+  .asset-list h3{ font-family:var(--serif); margin:0 0 14px; font-weight:600; font-size:18px; color:var(--ink); }
+  .asset-list li{ padding:8px 0; border-top:1px solid var(--line); font-size:14px; color:var(--ink); display:flex; justify-content:space-between; gap:14px; }
+  .asset-list li span{ color:var(--slate); text-align:right; }
+
+  /* ---------- 11 · verdict + footer ---------- */
+  .prop-footer{ background:var(--ink); color:var(--ondark); }
+  .prop-in{ max-width:var(--wrap); margin:0 auto; padding:88px 32px 56px; }
+  .verdicts{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:50px; }
+  .verdict{ border:1px solid var(--line-dark); border-radius:13px; padding:26px 28px; background:var(--ink-2); }
+  .verdict h2{ font-family:var(--serif); margin:0 0 12px; font-weight:600; font-size:22px; color:var(--copper-l); }
+  .verdict.twice h2{ color:var(--dim); }
+  .verdict p{ margin:0; font-size:15.5px; line-height:1.6; color:var(--ondark); }
+  .prop-nav{ display:flex; flex-wrap:wrap; gap:14px 28px; align-items:center; justify-content:space-between; border-top:1px solid var(--line-dark); padding-top:28px; }
+  .prop-nav a{ color:var(--copper-l); font-weight:600; font-size:15.5px; text-decoration:none; }
+  .prop-nav a.roll{ text-decoration:none; }
+  .prop-nav a:hover{ color:var(--paper); }
+  .prop-nav small{ font-size:12.5px; color:var(--dim); letter-spacing:.03em; }
+
+  /* ---------- motion: scroll reveals, armed only under html.anim ----------
+     Base styles ARE the settled page — no JS, print, and reduced motion all
+     render complete. Each target fires once, then is left alone. */
+  html.anim [data-wipe] .ph{ transition:clip-path 1s var(--ease-lux), transform 1.3s var(--ease-lux); }
+  html.anim [data-wipe]:not(.in) .ph{ clip-path:inset(0 0 100% 0); transform:scale(1.04); }
+  html.anim [data-rise]{ transition:opacity .8s var(--ease-lux), transform .8s var(--ease-lux); transition-delay:calc(var(--i,0) * 80ms); }
+  html.anim [data-rise]:not(.in){ opacity:0; transform:translateY(16px); }
+  html.anim .kicker::before{ transition:transform .5s var(--ease-snap) .1s; transform-origin:0 50%; }
+  html.anim .kicker:not(.in)::before{ transform:scaleX(0); }
+
+  /* unconditional settle — JS stamps html.settled by 2.2s so a screenshot or
+     print never catches a mid-reveal frame, and it catches any failure path */
+  html.settled [data-rise]{ opacity:1 !important; transform:none !important; transition:none !important; }
+  html.settled [data-wipe] .ph{ clip-path:inset(0 0 0 0) !important; transform:none !important; transition:none !important; }
+  html.settled .kicker::before{ transform:none !important; transition:none !important; }
+
+  @media print{
+    .masthead, .crest-band, .prop-footer, .mock-nav, .mock-promise, .mock-reg, .mock-foot, .picker-assure{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    [data-rise]{ opacity:1 !important; transform:none !important; }
+    [data-wipe] .ph{ clip-path:none !important; transform:none !important; }
+    *{ animation:none !important; }
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 980px){
+    .masthead-in{ grid-template-columns:1fr; }
+    .cost-card{ max-width:460px; }
+    .swatches{ grid-template-columns:repeat(2,1fr); }
+    .type-cards{ grid-template-columns:1fr; }
+    .rate-grid{ grid-template-columns:1fr; }
+    .sig-cells{ grid-template-columns:1fr; }
+    .mock-hero-grid{ grid-template-columns:1fr; }
+    .mock-how{ grid-template-columns:1fr; }
+    .doors{ grid-template-columns:1fr; }
+    .door{ max-width:400px; }
+    .who-grid{ grid-template-columns:1fr; }
+    .who-fig{ margin:0 auto; }
+    .logos{ grid-template-columns:repeat(3,1fr); }
+    .ui-grid{ grid-template-columns:1fr; }
+    .voice-grid{ grid-template-columns:1fr; }
+    .about-grid{ grid-template-columns:1fr; }
+    .verdicts{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 760px){
+    .mock-links{ display:none; }
+    .mock-register{ margin-left:auto; }
+    .mock-burger{ display:block; margin-left:14px; }
+    .quote-lead{ flex-direction:column; gap:16px; }
+    .scale-row{ flex-direction:column; gap:4px; }
+    .scale-sample{ white-space:normal; }
+    .scale-spec{ text-align:left; }
+  }
+  @media (max-width: 560px){
+    .sec{ padding:64px 20px; }
+    .masthead-in{ padding:56px 20px 56px; }
+    .swatches{ grid-template-columns:1fr; }
+    .logos{ grid-template-columns:repeat(2,1fr); }
+    .crest-in{ padding:64px 20px; }
+    .prop-in{ padding:64px 20px 44px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *, *::before, *::after{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 1 · DIRECTION HEADER ============ -->
+<header class="masthead">
+  <div class="masthead-in">
+    <div>
+      <p class="eyebrow">DiscNW &middot; Design direction 22</p>
+      <h1 class="mast-name">Open to All</h1>
+      <p class="mast-thesis">For a lot of families, the first question is not about the sport. It is <strong>&ldquo;can we afford this?&rdquo;</strong> This direction answers it first. The front door is built around what it costs to play and how DiscNW keeps it open to everyone: a plain sliding scale, financial aid, and one simple promise &mdash; no one is turned away for lack of money.</p>
+      <ul class="mast-nav" aria-label="On this page">
+        <li><a href="#idea">The idea</a></li>
+        <li><a href="#palette">Palette</a></li>
+        <li><a href="#type">Type</a></li>
+        <li><a href="#picker">The rate picker</a></li>
+        <li><a href="#home">Homepage</a></li>
+        <li><a href="#doors">Front doors</a></li>
+        <li><a href="#stories">Stories</a></li>
+        <li><a href="#parts">Parts</a></li>
+        <li><a href="#voice">Voice</a></li>
+        <li><a href="#verdict">Verdict</a></li>
+      </ul>
+    </div>
+
+    <aside class="cost-card" aria-label="What a season costs">
+      <div class="cost-head">
+        <img src="assets/brand/logo-mark.png" alt="DiscNW formline disc mark" width="590" height="616">
+        <span class="lbl">DiscNW<b>What a season costs</b></span>
+      </div>
+      <div class="cost-big">
+        <span class="amt">$33</span>
+        <span class="cap">Fees start here. You choose the rate that fits.</span>
+      </div>
+      <ul class="cost-rows">
+        <li><span>Support rate</span><b>$150</b></li>
+        <li><span>Base rate</span><b>$95</b></li>
+        <li><span>Accessibility rate</span><b>from $33</b></li>
+      </ul>
+      <p class="cost-foot">Financial aid available. No one is turned away.</p>
+    </aside>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ 2 · THE IDEA ============ -->
+  <section class="sec" id="idea" aria-labelledby="idea-title">
+    <p class="kicker">02 &middot; The idea</p>
+    <h2 class="sec-title" id="idea-title">Answer the money question first</h2>
+    <p class="lead">Most league sites bury the price. You click through three pages before you learn what a season costs, and by then a worried parent has already talked themselves out of it. This direction puts the answer up front. DiscNW uses a <em>sliding scale</em>. There is a base rate that covers the real cost of running a program. If you have more, you can pay a little more and help cover someone else. If money is tight, you pay less. Fees start at $33, financial aid is there if you need it, and no one is turned away. You pick the rate that fits your family. We do not ask for proof.</p>
+    <p class="note">The point is not to look generous. It is to remove a barrier. A family that can see the real cost, and see that the low rate is offered plainly and without a catch, is a family that shows up.</p>
+  </section>
+
+  <!-- ============ 3 · PALETTE ============ -->
+  <section class="sec" id="palette" aria-labelledby="palette-title">
+    <p class="kicker">03 &middot; Palette</p>
+    <h2 class="sec-title" id="palette-title">Warm, plain, and easy to trust</h2>
+    <p class="sec-intro">The colors are warm and quiet, so the page feels like a welcome and not a sales pitch. A cream ground and espresso text do the reading. DiscNW copper is the one bright accent. The three rate tiers each get a calm color so a family can tell them apart at a glance. Photographs keep their own color and are never tinted.</p>
+    <ul class="swatches">
+      <li class="swatch" data-rise style="--i:0">
+        <div class="swatch-chip" style="background:#241C16"><span class="swatch-flag" style="background:rgba(247,242,234,.14);color:#fff">Ground</span></div>
+        <div class="swatch-info"><h3 class="swatch-name">Espresso Ink</h3><span class="swatch-hex">#241C16</span><p class="swatch-use">Warm near-black. Body text on cream, and the two dark anchor sections.</p></div>
+      </li>
+      <li class="swatch" data-rise style="--i:1">
+        <div class="swatch-chip chip-outline" style="background:#F7F2EA"><span class="swatch-flag" style="background:#fff;color:var(--slate);box-shadow:inset 0 0 0 1px var(--line)">Paper</span></div>
+        <div class="swatch-info"><h3 class="swatch-name">Open Cream</h3><span class="swatch-hex">#F7F2EA</span><p class="swatch-use">The page ground. Warm and soft, never a cold pure white.</p></div>
+      </li>
+      <li class="swatch" data-rise style="--i:2">
+        <div class="swatch-chip" style="background:#B0532B"><span class="swatch-flag" style="background:rgba(26,19,14,.7);color:#fff">Brand</span></div>
+        <div class="swatch-info"><h3 class="swatch-name">DiscNW Copper</h3><span class="swatch-hex">#B0532B</span><p class="swatch-use">The one bright accent, from the DiscNW mark. Primary buttons and links.</p></div>
+      </li>
+      <li class="swatch" data-rise style="--i:3">
+        <div class="swatch-chip" style="background:#2E5248"><span class="swatch-flag" style="background:rgba(255,255,255,.14);color:#fff">Base rate</span></div>
+        <div class="swatch-info"><h3 class="swatch-name">Trust Pine</h3><span class="swatch-hex">#2E5248</span><p class="swatch-use">A steady deep green. The base rate, secondary buttons, and the cost promise.</p></div>
+      </li>
+      <li class="swatch" data-rise style="--i:4">
+        <div class="swatch-chip" style="background:#5E7E68"><span class="swatch-flag" style="background:rgba(26,19,14,.55);color:#fff">Access rate</span></div>
+        <div class="swatch-info"><h3 class="swatch-name">Welcome Sage</h3><span class="swatch-hex">#5E7E68</span><p class="swatch-use">Soft and calm. The accessibility rate, offered without any stigma.</p></div>
+      </li>
+      <li class="swatch" data-rise style="--i:5">
+        <div class="swatch-chip" style="background:#EADFC8"><span class="swatch-flag" style="background:rgba(26,19,14,.5);color:#fff">Support rate</span></div>
+        <div class="swatch-info"><h3 class="swatch-name">Field Wheat</h3><span class="swatch-hex">#EADFC8</span><p class="swatch-use">A warm tint for the support rate and for gentle panels across the page.</p></div>
+      </li>
+    </ul>
+    <p class="note">Warm Slate (#6B5E50) carries small print and labels on cream and holds a readable contrast. Copper steps down to #8F4020 for text-size links so it stays easy to read.</p>
+  </section>
+
+  <!-- ============ 4 · TYPOGRAPHY ============ -->
+  <section class="sec" id="type" aria-labelledby="type-title">
+    <p class="kicker">04 &middot; Typography</p>
+    <h2 class="sec-title" id="type-title">Clear to read, warm to look at</h2>
+    <p class="sec-intro">Two typefaces, both from Google Fonts. Fraunces is a soft serif that gives headlines and prices a human, settled feel. Public Sans carries the body and the small print, plain and legible. There is no machine-style monospace here on purpose. Prices should feel like a person telling you the number, not a receipt.</p>
+
+    <div class="type-cards">
+      <div class="type-card" data-rise style="--i:0">
+        <span class="role">Headlines &amp; prices</span>
+        <h3>Fraunces</h3>
+        <p>A warm serif with a little character in the curves. Set at 600 for headlines and for the dollar amounts, so a price reads friendly instead of stern.</p>
+        <p class="glyphs serif" aria-hidden="true">AaGg 0123456789 &mdash; $33 $95 $150</p>
+      </div>
+      <div class="type-card" data-rise style="--i:1">
+        <span class="role">Body &amp; interface</span>
+        <h3>Public Sans</h3>
+        <p>An open, plain sans that stays easy to read at small sizes. It carries every sentence, label, and button. Nothing fancy, which is the point.</p>
+        <p class="glyphs" aria-hidden="true">AaGg 0123456789 &mdash; pick the rate that fits</p>
+      </div>
+    </div>
+
+    <p class="specimen">You can <em>afford</em> this.</p>
+    <div class="price-specimen" aria-label="The three sliding-scale rates, shown as a specimen">
+      <span class="p"><span class="u">$</span>150</span>
+      <span class="p"><span class="u">$</span>95</span>
+      <span class="p"><span class="u">$</span>33</span>
+      <span class="cap">Support, base, and accessibility rates. It starts at $33, and financial aid can go lower.</span>
+    </div>
+
+    <div class="scale">
+      <div class="scale-row"><p class="scale-sample s-display">You can afford this</p><span class="scale-spec">Display · Fraunces 600 · 40&ndash;76px</span></div>
+      <div class="scale-row"><p class="scale-sample s-h2">Pick the rate that fits</p><span class="scale-spec">H2 · Fraunces 600 · 31&ndash;46px</span></div>
+      <div class="scale-row"><p class="scale-sample s-h3">Fall Youth League</p><span class="scale-spec">H3 · Fraunces 600 · 23px</span></div>
+      <div class="scale-row"><p class="scale-sample s-body">You pick the rate that fits. We do not ask for proof, and no one is turned away.</p><span class="scale-spec">Body · Public Sans 400 · 17px</span></div>
+      <div class="scale-row"><p class="scale-sample s-label">Support &middot; Base &middot; Accessibility</p><span class="scale-spec">Label · Public Sans 700 · 13px</span></div>
+    </div>
+  </section>
+
+  <!-- ============ 5 · SIGNATURE: THE RATE PICKER ============ -->
+  <section class="sec" id="picker" aria-labelledby="picker-title">
+    <p class="kicker">05 &middot; Signature element</p>
+    <h2 class="sec-title" id="picker-title">The rate picker</h2>
+    <p class="sec-intro">One piece carries the whole direction: a plain, honest sliding scale you can read at a glance. Three rates, one season. The base rate is selected to start, because it is the true cost and the safest pick if you are not sure. Try it &mdash; it works with your keyboard and needs no login.</p>
+
+    <form class="picker" data-rise action="#" onsubmit="return false">
+      <fieldset>
+        <legend>Pick the rate that fits your family</legend>
+        <p class="legend-sub">Same season for everyone. The only thing that changes is what you choose to pay.</p>
+        <div class="rate-grid">
+          <label class="rate rate-support">
+            <input type="radio" name="season-rate" value="support">
+            <span class="flag">Support</span>
+            <span class="rate-top"><span class="rate-name">Support rate</span><span class="rate-mark" aria-hidden="true"></span></span>
+            <span class="rate-amt">$150</span>
+            <span class="rate-per">per player &middot; full season</span>
+            <span class="rate-who">You have a bit more to give right now. This covers your season and helps hold a spot for a family who needs the lower rate.</span>
+          </label>
+          <label class="rate rate-base">
+            <input type="radio" name="season-rate" value="base" checked>
+            <span class="flag">Most families pick this</span>
+            <span class="rate-top"><span class="rate-name">Base rate</span><span class="rate-mark" aria-hidden="true"></span></span>
+            <span class="rate-amt">$95</span>
+            <span class="rate-per">per player &middot; full season</span>
+            <span class="rate-who">This is what a season actually costs to run. If you are not sure which rate to pick, pick this one.</span>
+          </label>
+          <label class="rate rate-access">
+            <input type="radio" name="season-rate" value="access">
+            <span class="flag">Access</span>
+            <span class="rate-top"><span class="rate-name">Accessibility rate</span><span class="rate-mark" aria-hidden="true"></span></span>
+            <span class="rate-amt">$33</span>
+            <span class="rate-per">and lower if you need it</span>
+            <span class="rate-who">Money is tight right now. Pay what works for you. The rate starts at $33, and financial aid can bring it lower.</span>
+          </label>
+        </div>
+      </fieldset>
+      <div class="picker-assure">
+        <p>You pick the rate yourself. <b>We do not ask for proof, and no one is turned away for lack of money.</b></p>
+        <a class="btn btn-primary" href="#picker">Apply for financial aid</a>
+      </div>
+    </form>
+
+    <div class="sig-cells">
+      <div class="sig-cell" data-rise style="--i:0"><h3><span class="n">01</span> Same season, any rate</h3><p>Every player gets the same season. What you choose to pay does not change your team or your spot.</p></div>
+      <div class="sig-cell" data-rise style="--i:1"><h3><span class="n">02</span> The floor is $33</h3><p>Fees start at $33. If that is still too much, financial aid can bring it lower. Nobody is turned away.</p></div>
+      <div class="sig-cell" data-rise style="--i:2"><h3><span class="n">03</span> No questions asked</h3><p>You choose your rate yourself. There is no form to prove your income and no one to convince.</p></div>
+    </div>
+    <p class="note">The three rates are always in the same order, left to right, so the choice is quick to read. The lower rate is offered as plainly as the higher one, on purpose. Nothing about picking it should feel like asking for a favor.</p>
+  </section>
+
+  <!-- ============ 6 · HOMEPAGE MOCKUP ============ -->
+  <section class="sec" id="home" aria-labelledby="home-title">
+    <p class="kicker">06 &middot; Homepage</p>
+    <h2 class="sec-title" id="home-title">discnw.org, redesigned</h2>
+    <p class="sec-intro">The top of the new homepage leads with the answer. A thin cost promise rides under the nav, and the hero pairs one plain headline with the rate picker, because that is the first thing a new family wants to know. The real DiscNW lockup sits white on the dark nav; the formline mark signs the footer.</p>
+
+    <div class="browser">
+      <div class="browser-bar">
+        <span class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="browser-url">discnw.org</span>
+      </div>
+
+      <div role="img" aria-label="Mockup of the redesigned DiscNW homepage. A dark navigation bar carries the white DiscNW logo. A thin green bar under it reads: fees start at 33 dollars, financial aid available, no one is turned away. The hero headline is 'Here is what it costs, and how we keep it open to everyone,' next to a rate picker offering a support rate of 150 dollars, a base rate of 95 dollars, and an accessibility rate from 33 dollars. Below are three plain cards explaining the sliding scale, a strip of programs open for registration, and a footer with the DiscNW mark and the line: an Ultimate community without barriers.">
+        <nav class="mock-nav" aria-hidden="true">
+          <span class="mock-logo"><img src="assets/brand/logo-full-white.png" alt="" width="1446" height="616"></span>
+          <ul class="mock-links">
+            <li><a href="#home">Play</a></li>
+            <li><a href="#home">Youth</a></li>
+            <li><a href="#home">Cost &amp; aid</a></li>
+            <li><a href="#home">Coaching</a></li>
+            <li><a href="#home">About</a></li>
+          </ul>
+          <a class="mock-register" href="#home">Register</a>
+          <span class="mock-burger" aria-hidden="true"><i></i><i></i><i></i></span>
+        </nav>
+
+        <div class="mock-promise" aria-hidden="true">
+          <span>Fees start at <b>$33</b></span><span class="dot">&middot;</span>
+          <span>Financial aid available</span><span class="dot">&middot;</span>
+          <span><b>No one is turned away</b> for lack of money</span>
+        </div>
+
+        <div class="mock-hero">
+          <div class="mock-hero-grid">
+            <div>
+              <p class="mock-eyebrow">Youth &amp; adult ultimate in the Seattle area</p>
+              <h2 class="mock-h1">Here is what it costs, and how we keep it open to everyone.</h2>
+              <p class="mock-sub">DiscNW runs on a sliding scale. Pick the rate that fits your family. Financial aid is there if you need it, and no one is turned away for lack of money.</p>
+              <div class="mock-ctas">
+                <a class="btn btn-primary" href="#home">Find a program</a>
+                <a class="btn btn-quiet" href="#home">How the sliding scale works</a>
+              </div>
+              <ul class="mock-trust">
+                <li>Over 10,000 players a year, since 1995</li>
+                <li>Players make their own calls. No referees.</li>
+              </ul>
+            </div>
+
+            <div class="mock-picker" aria-hidden="true">
+              <div class="mp-head"><b>Pick the rate that fits</b><span>Same season for everyone.</span></div>
+              <div class="mp-rows">
+                <div class="mp-row"><span class="mp-dot"></span><span class="mp-name">Support rate<small>Helps cover another family</small></span><span class="mp-amt">$150</span></div>
+                <div class="mp-row on"><span class="mp-dot"></span><span class="mp-name">Base rate<small>The real cost of a season</small></span><span class="mp-amt">$95</span></div>
+                <div class="mp-row"><span class="mp-dot"></span><span class="mp-name">Accessibility rate<small>Starts here, aid goes lower</small></span><span class="mp-amt">$33</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mock-how" aria-hidden="true">
+          <div class="cell"><span class="num">01</span><h4>Pick your rate</h4><p>Three rates, same season. Choose the one that fits right now.</p></div>
+          <div class="cell"><span class="num">02</span><h4>Need it lower?</h4><p>Ask for financial aid in a sentence. No paperwork to dig up.</p></div>
+          <div class="cell"><span class="num">03</span><h4>You are in</h4><p>Your spot is held. No one is turned away for lack of money.</p></div>
+        </div>
+
+        <div class="mock-reg" aria-hidden="true">
+          <span class="lbl">Open now</span>
+          <ul>
+            <li>Summer Mixed Hat League</li>
+            <li>Summer Wonder League</li>
+            <li>Summer Youth Camps</li>
+            <li>Sea Plastic</li>
+          </ul>
+          <span class="more">See all programs &rarr;</span>
+        </div>
+
+        <div class="mock-foot" aria-hidden="true">
+          <span class="chip">
+            <img src="assets/brand/logo-mark-white.png" alt="" width="590" height="616">
+            <span class="t">DiscNW<br>Seattle 501(c)(3) &middot; since 1995</span>
+          </span>
+          <span class="vision">An Ultimate community without barriers.</span>
+        </div>
+      </div>
+    </div>
+    <p class="note">The cost promise and the rate picker are the same idea at two sizes: a one-line glance under the nav, and the full choice in the hero. The lockup is the real white asset, not stretched or recolored. Register leans a few pixels toward the cursor with a mouse, and holds still on touch or with motion turned off.</p>
+  </section>
+
+  <!-- ============ 7 · FRONT DOORS ============ -->
+  <section class="sec" id="doors" aria-labelledby="doors-title">
+    <p class="kicker">07 &middot; Front doors</p>
+    <h2 class="sec-title" id="doors-title">Three front doors</h2>
+    <p class="sec-intro">Players, coaches, and parents each get a door in their own words. Every door names the cost plainly, because that is what this direction is for. Photos are real DiscNW moments, shown clean at a calm size.</p>
+
+    <div class="doors">
+      <article class="door" data-rise style="--i:0">
+        <span class="frame" data-wipe><img class="ph" src="assets/discnw-summer-camp-disc.jpg" width="503" height="504" alt="A young DiscNW summer camper holding a disc, ready to throw."></span>
+        <div class="door-body">
+          <p class="door-tag">Players &amp; kids</p>
+          <h3>There is a program for every age.</h3>
+          <p>Leagues and camps for ages 7 to 18, and leagues for adults, year round. Pick a season and pick your rate. It starts at $33, and no one is turned away.</p>
+          <a class="btn btn-primary" href="#doors">See what is open</a>
+        </div>
+      </article>
+
+      <article class="door" data-rise style="--i:1">
+        <span class="frame" data-wipe><img class="ph" src="assets/coaching-2.jpg" width="400" height="267" alt="A DiscNW coach talking with young players at the sideline of a grass field."></span>
+        <div class="door-body">
+          <p class="door-tag">Coaches &amp; volunteers</p>
+          <h3>You do not have to be an expert to help.</h3>
+          <p>The DiscNW Coaching Collective backs you with training and a bench of experienced coaches to lean on. Cost is never the reason a team goes without a coach.</p>
+          <a class="btn btn-secondary" href="#doors">Start coaching</a>
+        </div>
+      </article>
+
+      <article class="door" data-rise style="--i:2">
+        <span class="frame" data-wipe><img class="ph" src="assets/coaching-3.jpg" width="400" height="267" alt="A DiscNW coach kneeling beside players during a practice on a sunny field."></span>
+        <div class="door-body">
+          <p class="door-tag">Parents &amp; families</p>
+          <h3>New to ultimate? Most of our parents were.</h3>
+          <p>Learn the game in a few minutes and see the real cost before you sign up. Worried about the price? Read how the sliding scale works, then choose what fits.</p>
+          <a class="btn btn-secondary" href="#doors">Read the parent guide</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ 8 · STORIES (tinted band) ============ -->
+  <section class="band-tint" id="stories" aria-labelledby="stories-title">
+    <div class="sec">
+      <p class="kicker">08 &middot; Stories</p>
+      <h2 class="sec-title" id="stories-title">Real people, plain words</h2>
+      <p class="sec-intro">The story unit is simple: one photo, one voice, no drama. These are the people who run the programs and set the rates, and the parents who use them.</p>
+
+      <div class="quote-lead" data-rise>
+        <img class="q-avatar" src="assets/sheila-camarena.jpg" width="640" height="480" alt="Sheila Camarena">
+        <blockquote>
+          <p class="q-text">&ldquo;When someone asks what it costs, I get to give them a good answer. You pay the rate that fits, and if it is still too much, we help. Nobody has to sit out because of money.&rdquo;</p>
+          <p class="q-by">Sheila Camarena &middot; DiscNW</p>
+        </blockquote>
+      </div>
+
+      <div class="who-grid">
+        <figure class="who-fig" data-rise>
+          <span class="frame" data-wipe><img class="ph" src="assets/2024-discnw-board-and-staff-strategic-planning-retreat-group-photo.jpg" width="800" height="600" alt="DiscNW board and staff gathered for a group photo at the 2024 strategic planning retreat."></span>
+          <figcaption>DiscNW board and staff at the 2024 planning retreat. The people who keep the sliding scale honest.</figcaption>
+        </figure>
+        <div class="facts" data-rise style="--i:1">
+          <h3>The plain facts</h3>
+          <p>No spin, just the numbers that matter when you are deciding whether to sign up.</p>
+          <ul>
+            <li><span>Players a year</span><b>10,000+</b></li>
+            <li><span>Playing since</span><b>1995</b></li>
+            <li><span>Fees start at</span><b class="copper">$33</b></li>
+            <li><span>Turned away for money</span><b class="copper">No one</b></li>
+            <li><span>Questions? Call</span><b>(206)&nbsp;781-5840</b></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="logos-head" data-rise>
+        <h3>The same deal, across every program</h3>
+        <p>Whatever your family plays, the sliding scale is the same. Pick your rate, ask for aid if you need it, and play the season.</p>
+      </div>
+      <div class="logos" data-rise style="--i:1" aria-label="DiscNW program logos">
+        <div class="logo-tile"><img src="assets/mshatleague-logo-with-hat.png" width="1024" height="1024" alt="Summer Mixed Hat League logo"></div>
+        <div class="logo-tile"><img src="assets/2025-swl-logo.png" width="800" height="801" alt="Summer Wonder League logo"></div>
+        <div class="logo-tile"><img src="assets/training-camp-logo-full-color-web.png" width="600" height="600" alt="DiscNW Summer Youth Ultimate Camps logo"></div>
+        <div class="logo-tile"><img src="assets/seaplastic-2026-logo.png" width="613" height="595" alt="Sea Plastic logo"></div>
+        <div class="logo-tile"><img src="assets/discnw-coaching-collective-3.png" width="352" height="322" alt="DiscNW Coaching Collective logo"></div>
+      </div>
+
+      <div class="quote-lead" data-rise style="margin-top:44px;margin-bottom:0">
+        <img class="q-avatar" src="assets/taylor-kanemori.jpg" width="800" height="533" alt="Taylor Kanemori">
+        <blockquote>
+          <p class="q-text">&ldquo;The sliding scale is the part I point families to first. You choose what works, no questions. It is the reason a lot of kids get to play.&rdquo;</p>
+          <p class="q-by">Taylor Kanemori &middot; DiscNW</p>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ deep brand moment ============ -->
+  <section class="crest-band on-dark" aria-label="DiscNW">
+    <div class="crest-in">
+      <img src="assets/brand/logo-mark-white.png" alt="DiscNW formline disc mark" width="590" height="616">
+      <p class="crest-line">There is room for everyone in this game.</p>
+      <p class="crest-sub">An Ultimate community without barriers.</p>
+    </div>
+  </section>
+
+  <!-- ============ 9 · WORKING PARTS ============ -->
+  <section class="sec" id="parts" aria-labelledby="parts-title">
+    <p class="kicker">09 &middot; Working parts</p>
+    <h2 class="sec-title" id="parts-title">The working parts</h2>
+    <p class="sec-intro">The pieces that do the day job of signing up. Every one names the cost the same way, so the sliding scale is never a surprise buried at checkout.</p>
+
+    <div class="ui-grid">
+      <div class="ui-cell">
+        <h3>Buttons</h3>
+        <div class="btn-row"><span class="btn-note">Primary</span><button type="button" class="btn btn-primary">Register</button><button type="button" class="btn btn-primary demo-hover">Register</button></div>
+        <div class="btn-row"><span class="btn-note">Second</span><button type="button" class="btn btn-secondary">See the dates</button><button type="button" class="btn btn-secondary demo-hover">See the dates</button></div>
+        <div class="btn-row"><span class="btn-note">Quiet</span><button type="button" class="btn btn-quiet">How the sliding scale works</button><button type="button" class="btn btn-quiet demo-hover">How the sliding scale works</button></div>
+        <p class="note">Rows show rest and hover. Focus draws a 3px copper ring. The primary leans a few pixels toward the cursor with a mouse, and stays put on touch or with motion off.</p>
+      </div>
+
+      <div class="ui-cell">
+        <h3>Event card</h3>
+        <article class="ev-card">
+          <div class="ev-top"><span class="ev-open">Open now</span><span class="ev-tags">Youth &middot; ages 11&ndash;18 &middot; fall</span></div>
+          <h4>Fall Middle &amp; High School League</h4>
+          <ul class="ev-meta">
+            <li>Sept 9 &ndash; Nov 15 &middot; fields across Seattle and the Eastside</li>
+            <li>Weekly practices, games on Saturdays</li>
+            <li class="fee">Sliding scale from $33 &middot; financial aid available</li>
+          </ul>
+          <div class="ev-cap">
+            <div class="ev-cap-row"><b>128 of 180 spots filled</b><span>closes Aug 29</span></div>
+            <div class="ev-bar" role="img" aria-label="Capacity: 128 of 180 spots filled"><i></i></div>
+          </div>
+          <div class="ev-actions"><button type="button" class="btn btn-primary">Register</button><button type="button" class="btn btn-quiet">League details</button></div>
+        </article>
+      </div>
+
+      <div class="ui-cell" style="grid-column:1/-1">
+        <h3>Start a registration</h3>
+        <form class="startform" action="#" onsubmit="return false">
+          <p class="flegend">Tell us who is playing</p>
+          <div class="f-row">
+            <div class="f-field">
+              <label for="f-name">Player name</label>
+              <input id="f-name" name="name" type="text" placeholder="First and last">
+            </div>
+            <div class="f-field">
+              <label for="f-prog">Program</label>
+              <select id="f-prog" name="program">
+                <option>Summer Mixed Hat League</option>
+                <option>Summer Wonder League</option>
+                <option>Summer Youth Ultimate Camp</option>
+                <option>Fall Middle &amp; High School League</option>
+              </select>
+            </div>
+            <div class="f-field">
+              <label for="f-rate">Your rate</label>
+              <select id="f-rate" name="rate">
+                <option>Base rate &middot; $95</option>
+                <option>Support rate &middot; $150</option>
+                <option>Accessibility rate &middot; from $33</option>
+                <option>I need financial aid</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Continue</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10 · VOICE & TONE ============ -->
+  <section class="sec" id="voice" aria-labelledby="voice-title">
+    <p class="kicker">10 &middot; Voice &amp; tone</p>
+    <h2 class="sec-title" id="voice-title">How Open to All sounds</h2>
+    <p class="sec-intro">Warm and plain, like a person who wants you to say yes. It states the cost, then makes clear the low rate is real and offered without a catch.</p>
+    <div class="voice-grid">
+      <div class="voice-cell" data-rise style="--i:0"><h3>Hero headline</h3><p class="v-hero">Here is what it costs, and how we keep it open to everyone.</p></div>
+      <div class="voice-cell" data-rise style="--i:1"><h3>To a worried parent</h3><p>Worried about the cost? Start with the rate that fits right now. If $33 is still too much, we have financial aid. No one is turned away.</p></div>
+      <div class="voice-cell" data-rise style="--i:2"><h3>Registration confirmation</h3><p>You are in for Fall Youth League. You chose the base rate, $95. Your spot is held. If money gets tight before the season, tell us and we will sort it out.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ about this direction ============ -->
+  <section class="sec" id="about" aria-labelledby="about-title">
+    <p class="kicker">Appendix &middot; About this direction</p>
+    <h2 class="sec-title" id="about-title">About this direction</h2>
+    <div class="about-grid">
+      <div>
+        <p>Open to All is one of three directions built around the real assets from the current DiscNW site instead of tournament action photos. The job here is the <strong>real fee model</strong>. DiscNW uses a sliding scale, and this direction rebuilds it as clean, plain design rather than a dense graphic.</p>
+        <p>The rate picker is the whole idea in one piece. Three rates, one season, the base rate chosen to start. It is offered plainly, with the low rate stated as clearly as the high one. There is no questionnaire and no proof of income, because the goal is to remove a barrier, not add one.</p>
+        <p>The copy follows one rule: say the plain, true thing in short sentences. No hype, no big claims. A family reading this should feel like someone is talking straight with them about money, which is exactly the moment that decides whether a kid gets to play.</p>
+      </div>
+      <ul class="asset-list" aria-label="Real DiscNW assets used on this page">
+        <li><b>Brand</b> <span>lockup, formline mark, favicon</span></li>
+        <li>logo-full-white.png <span>mock nav</span></li>
+        <li>logo-mark.png / -white <span>cost card, footer, crest</span></li>
+        <li>discnw-summer-camp-disc.jpg <span>players door</span></li>
+        <li>coaching-2.jpg, coaching-3.jpg <span>front doors</span></li>
+        <li>sheila-camarena.jpg <span>quote</span></li>
+        <li>taylor-kanemori.jpg <span>quote</span></li>
+        <li>2024 board &amp; staff photo <span>stories</span></li>
+        <li>5 program logos <span>program wall</span></li>
+      </ul>
+    </div>
+    <p class="note">Every photo is shown at or below its real size, in a consistent frame, in full color with nothing laid over it. Each program logo sits on the same neutral tile so a row of different shapes reads even.</p>
+  </section>
+
+</main>
+
+<!-- ============ 11 · VERDICT + FOOTER ============ -->
+<footer class="prop-footer on-dark" id="verdict">
+  <div class="prop-in">
+    <div class="verdicts">
+      <div class="verdict choose">
+        <h2>Choose this direction if&hellip;</h2>
+        <p>You want the site to answer the cost question before a family has to ask it. This direction leads with the real sliding scale, states the $33 floor and financial aid plainly, and makes the low rate feel like a normal choice. It is the front door for a nonprofit whose whole vision is a community without barriers.</p>
+      </div>
+      <div class="verdict twice">
+        <h2>Think twice if&hellip;</h2>
+        <p>You want the homepage to open with the sport at full volume. This direction leads with money and warmth, not action. The game is here, in the doors and the stories, but the hero is about access. If you need the first screen to feel like a highlight, another direction fits better.</p>
+      </div>
+    </div>
+    <nav class="prop-nav" aria-label="Direction navigation">
+      <a class="roll" href="index.html"><span class="roll-a">&larr; All directions</span><span class="roll-b" aria-hidden="true">&larr; All directions</span></a>
+      <small>Direction 22 of 22 &middot; Open to All &middot; prepared for DiscNW</small>
+      <a class="roll" href="index.html"><span class="roll-a">Next direction &rarr;</span><span class="roll-b" aria-hidden="true">Next direction &rarr;</span></a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+/* Progressive enhancement only. Base styles are the settled page: no JS,
+   print, screenshots, and reduced motion all render the complete page. */
+(function(){
+  'use strict';
+  var root=document.documentElement;
+  var mq=window.matchMedia;
+  var allow=mq&&mq('(prefers-reduced-motion: no-preference)').matches;
+
+  if(!allow||!('IntersectionObserver' in window)){ return; } /* settled base page */
+
+  try{
+    var io=new IntersectionObserver(function(es){
+      for(var j=0;j<es.length;j++){ if(es[j].isIntersecting){ es[j].target.classList.add('in'); io.unobserve(es[j].target); } }
+    },{threshold:.16,rootMargin:'0px 0px -6% 0px'});
+    var nodes=document.querySelectorAll('[data-wipe],[data-rise],.kicker');
+    for(var n=0;n<nodes.length;n++){ io.observe(nodes[n]); }
+    root.classList.add('anim');
+    /* unconditional settle: the whole page is landed by 2.2s so a screenshot or
+       print never catches a mid-reveal frame, and it is the catch for any failure. */
+    setTimeout(function(){ root.classList.add('settled'); },2200);
+  }catch(err){ root.classList.remove('anim'); root.classList.add('settled'); }
+
+  /* Magnetic primary buttons — fine pointers only, transform-only, calm. */
+  try{
+    if(mq('(hover: hover) and (pointer: fine)').matches){
+      var mags=document.querySelectorAll('.btn-primary, .mock-register');
+      Array.prototype.forEach.call(mags,function(el){
+        el.classList.add('magnet');
+        var raf=0,tx=0,ty=0,x=0,y=0;
+        function step(){
+          x+=(tx-x)*.18; y+=(ty-y)*.18;
+          if(Math.abs(tx-x)<.1&&Math.abs(ty-y)<.1){ x=tx; y=ty; raf=0; } else { raf=requestAnimationFrame(step); }
+          el.style.transform=(x||y)?'translate('+x.toFixed(2)+'px,'+y.toFixed(2)+'px)':'';
+        }
+        el.addEventListener('pointermove',function(e){
+          var r=el.getBoundingClientRect();
+          tx=Math.max(-5,Math.min(5,(e.clientX-r.left-r.width/2)*.14));
+          ty=Math.max(-5,Math.min(5,(e.clientY-r.top-r.height/2)*.28));
+          if(!raf){ raf=requestAnimationFrame(step); }
+        });
+        el.addEventListener('pointerleave',function(){ tx=0; ty=0; if(!raf){ raf=requestAnimationFrame(step); } });
+      });
+    }
+  }catch(e){}
+})();
+</script>
+
+</body>
+</html>
