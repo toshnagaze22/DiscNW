@@ -469,6 +469,33 @@ h1.hero-title .hl-accent{color:var(--accent)}
 .tile .tile-tag{position:absolute;left:10px;top:10px;z-index:2;background:var(--accent);color:#0A0B0D;font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:3px 7px;border-radius:4px}
 .tile .tile-tag.rep{background:rgba(10,11,13,.82);color:var(--white);border:1px solid var(--line)}
 
+/* ---------- ROLL CREDITS — the crew off-camera (real board & staff faces) ---
+   Broadcast end-credits after the reel: a clean team slate + named headshot
+   lower-thirds, matching the page's card + lower-third language. Photos stay
+   CLEAN (no tint/blend); the only overlay is one <=.6 caption scrim. Every face
+   renders well under its native size (tiles cap ~291px; smallest source 439px
+   wide, group slate capped at 760px vs an 800px native). */
+.credits{max-width:1200px;margin:clamp(56px,9vh,96px) auto 0;padding-inline:var(--pad)}
+.credits h2{font-family:var(--disp);font-weight:400;text-transform:uppercase;font-size:clamp(26px,3.6vw,46px);letter-spacing:.01em;margin:14px 0 8px}
+.credits-lede{max-width:64ch;margin:0 0 24px;font-size:15.5px;line-height:1.6;color:var(--dim-2)}
+.credits-lede b{color:var(--white);font-weight:600}
+.crew-slate{position:relative;max-width:760px;margin:0 0 20px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#000}
+.crew-slate img{width:100%;height:auto;filter:contrast(1.03) saturate(1.04)}
+.crew-slate .slate-cap{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;align-items:center;gap:9px;
+  padding:26px 16px 12px;background:linear-gradient(0deg,rgba(0,0,0,.6),rgba(0,0,0,0));
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--white)}
+.crew-slate .slate-cap i{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none}
+.cast{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.cast-card{background:var(--bg-2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cast-shot{position:relative;aspect-ratio:4/5;background:#000}
+.cast-shot img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;filter:contrast(1.03) saturate(1.04)}
+.cast-id{display:flex;align-items:stretch}
+.cast-id .ci-bar{width:5px;flex:none;background:var(--accent)}
+.cast-id .ci-body{padding:10px 12px}
+.cast-name{display:block;font-weight:700;font-size:13.5px;letter-spacing:.01em;color:var(--white);line-height:1.2}
+.cast-role{display:block;margin-top:4px;font-size:9.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+@media (max-width:460px){ .cast{grid-template-columns:1fr 1fr} }
+
 /* ---------- APPENDIX — about this direction ---------- */
 .about{border-top:1px solid var(--line);margin-top:clamp(64px,10vh,120px);padding:clamp(48px,8vh,88px) 0}
 .about .wrap{max-width:1200px}
@@ -906,6 +933,35 @@ h1.hero-title .hl-accent{color:var(--accent)}
           <span class="tile-cap">Spirit of the Game<span>Middle School Finals</span></span>
         </a>
       </div>
+    </div>
+
+    <!-- ROLL CREDITS — the crew off-camera (real DiscNW board & staff faces) -->
+    <div class="credits">
+      <p class="eyebrow rise">Roll credits</p>
+      <h2 class="rise" style="--i:1">The crew behind the reel</h2>
+      <p class="credits-lede rise" style="--i:2">Every highlight has a crew off&#8209;camera. DiscNW is a Seattle 501(c)(3) run by its board, staff, coaches, and volunteers &mdash; <b>the people who keep more than 10,000 players a year on the field</b>, with fees that slide from $33 and no one turned away.</p>
+      <figure class="crew-slate rise" style="--i:2">
+        <img src="assets/2024-discnw-board-and-staff-strategic-planning-retreat-group-photo.jpg" alt="DiscNW board and staff gathered for a group photo at the 2024 strategic planning retreat." width="800" height="600" loading="lazy" decoding="async">
+        <figcaption class="slate-cap"><i aria-hidden="true"></i>DiscNW board &amp; staff &middot; Seattle</figcaption>
+      </figure>
+      <ul class="cast" role="list">
+        <li class="cast-card rise">
+          <div class="cast-shot"><img src="assets/erin-armstrong-head-shot-1.jpg" alt="Erin Armstrong" width="900" height="600" loading="lazy" decoding="async"></div>
+          <div class="cast-id"><span class="ci-bar" aria-hidden="true"></span><div class="ci-body"><span class="cast-name">Erin Armstrong</span><span class="cast-role">Board &amp; staff</span></div></div>
+        </li>
+        <li class="cast-card rise" style="--i:1">
+          <div class="cast-shot"><img src="assets/matt-stenovec.jpg" alt="Matt Stenovec" width="649" height="600" loading="lazy" decoding="async"></div>
+          <div class="cast-id"><span class="ci-bar" aria-hidden="true"></span><div class="ci-body"><span class="cast-name">Matt Stenovec</span><span class="cast-role">Board &amp; staff</span></div></div>
+        </li>
+        <li class="cast-card rise" style="--i:2">
+          <div class="cast-shot"><img src="assets/joe-bisignano.jpg" alt="Joe Bisignano" width="600" height="600" loading="lazy" decoding="async"></div>
+          <div class="cast-id"><span class="ci-bar" aria-hidden="true"></span><div class="ci-body"><span class="cast-name">Joe Bisignano</span><span class="cast-role">Board &amp; staff</span></div></div>
+        </li>
+        <li class="cast-card rise" style="--i:3">
+          <div class="cast-shot"><img src="assets/qxhna-profile-picture.jpg" alt="Qxhna" width="439" height="600" loading="lazy" decoding="async"></div>
+          <div class="cast-id"><span class="ci-bar" aria-hidden="true"></span><div class="ci-body"><span class="cast-name">Qxhna</span><span class="cast-role">Board &amp; staff</span></div></div>
+        </li>
+      </ul>
     </div>
   </section>
 

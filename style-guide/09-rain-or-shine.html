@@ -450,6 +450,24 @@
   .mock-reg li{ white-space:nowrap; }
   .mock-reg li + li::before{ content:"·"; color:var(--dim); padding:0 12px; }
   .mock-reg .more{ margin-left:auto; color:var(--radar); }
+  /* program markers — each real program logo on a consistent neutral tile */
+  .mock-progs{
+    display:flex; flex-wrap:wrap; align-items:center; gap:12px 22px;
+    background:var(--ink); padding:16px clamp(16px,3vw,30px);
+    border-top:1px solid var(--line-dark);
+  }
+  .mock-progs .lbl{
+    flex:none; color:var(--radar); font-weight:600; font-size:11px;
+    letter-spacing:.16em; text-transform:uppercase;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+  }
+  .mock-progs .prog-tiles{ display:flex; flex-wrap:wrap; gap:10px; }
+  .mock-prog{
+    width:60px; height:60px; flex:none;
+    display:grid; place-items:center; padding:9px;
+    background:var(--card); border-radius:9px;
+  }
+  .mock-prog img{ max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; }
   .mock-foot{
     display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px;
     background:var(--ink); padding:24px clamp(16px,3vw,30px);
@@ -924,7 +942,7 @@
         <span class="browser-url">discnw.org</span>
       </div>
 
-      <div role="img" aria-label="Mockup of the redesigned DiscNW homepage: a dark charcoal navigation bar with the white DiscNW logo lockup, a monospace field-status ribbon reading fields open, a headline 'We play rain or shine.' beside a live conditions board where every status reads games on, a full-color photo of players celebrating a catch, a registering-now strip, and a signing-off footer with the formline station chip.">
+      <div role="img" aria-label="Mockup of the redesigned DiscNW homepage: a dark charcoal navigation bar with the white DiscNW logo lockup, a monospace field-status ribbon reading fields open, a headline 'We play rain or shine.' beside a live conditions board where every status reads games on, a full-color photo of players celebrating a catch, a registering-now strip, a row of program logos on neutral tiles, and a signing-off footer with the formline station chip.">
         <nav class="mock-nav" aria-hidden="true">
           <span class="mock-logo"><img src="assets/brand/logo-full-white.png" alt="" width="1446" height="616"></span>
           <ul class="mock-links">
@@ -1015,6 +1033,16 @@
           <span class="more">See all programs &rarr;</span>
         </div>
 
+        <div class="mock-progs" aria-hidden="true">
+          <span class="lbl">Programs</span>
+          <div class="prog-tiles">
+            <span class="mock-prog"><img src="assets/discnw-summer-camp-disc.jpg" alt="DiscNW Summer Ultimate Camps" width="503" height="504"></span>
+            <span class="mock-prog"><img src="assets/2025-swl-logo.png" alt="Summer Wonder League" width="800" height="801"></span>
+            <span class="mock-prog"><img src="assets/discnw-coaching-collective-3.png" alt="DiscNW Coaching Collective" width="352" height="322"></span>
+            <span class="mock-prog"><img src="assets/seaplastic-2026-logo.png" alt="Sea Plastic" width="613" height="595"></span>
+          </div>
+        </div>
+
         <div class="mock-foot" aria-hidden="true">
           <span class="station">
             <img src="assets/brand/logo-mark-white.png" alt="" width="590" height="616">
@@ -1025,7 +1053,7 @@
         </div>
       </div>
     </div>
-    <p class="note">Component note: the status ribbon and the board are the same live data at two scales &mdash; a glance under the nav, the full read in the hero. The lockup in the nav is the real white asset, undistorted; the formline mark signs the board and the footer as a station ID. The photograph runs clean, full color, captioned on its own plate. Nav labels roll on hover; Register leans up to six pixels toward the cursor.</p>
+    <p class="note">Component note: the status ribbon and the board are the same live data at two scales &mdash; a glance under the nav, the full read in the hero. The lockup in the nav is the real white asset, undistorted; the formline mark signs the board and the footer as a station ID. The photograph runs clean, full color, captioned on its own plate. Each program is marked by its own logo on a consistent neutral tile. Nav labels roll on hover; Register leans up to six pixels toward the cursor.</p>
   </section>
 
   <!-- ============ 7 · FRONT DOORS ============ -->
@@ -1046,7 +1074,7 @@
       </article>
 
       <article class="door" data-rise style="--i:1">
-        <img class="ph" src="assets/sr26-spirit-huddle.jpg" width="1920" height="1080" style="object-position:50% 30%" alt="High school players packed shoulder to shoulder in a tight post-game huddle, a few fists raised.">
+        <img class="ph" src="assets/coaching-2.jpg" width="400" height="267" style="object-position:50% 42%" alt="A DiscNW coach kneeling on the grass in a team huddle, talking with a group of young players.">
         <div class="door-body">
           <p class="door-tag">Coaches &amp; volunteers</p>
           <h3>You don&rsquo;t have to be elite. You have to show up.</h3>

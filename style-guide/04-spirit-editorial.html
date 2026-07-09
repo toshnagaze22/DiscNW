@@ -514,6 +514,27 @@ html.no-anim *,html.no-anim *::before,html.no-anim *::after{transition:none !imp
 .essay-end::before,.essay-end::after{content:"";height:1px;width:72px;background:var(--line);flex:none}
 .essay-end img{width:44px;height:44px}
 
+/* contributors — the magazine's masthead: real faces, real names, generic roles only.
+   Group photo held to its 800px native width; portrait tiles sit well under theirs. */
+.contrib{
+  margin-top:32px;display:grid;grid-template-columns:1.05fr .95fr;gap:0;
+  border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;
+}
+@media (max-width:900px){.contrib{grid-template-columns:1fr}}
+.contrib-lead{padding:clamp(24px,3vw,40px);display:flex;flex-direction:column;gap:12px}
+.contrib-lead .photo{aspect-ratio:4/3;max-width:800px;border-radius:10px}
+.contrib-side{
+  background:var(--paper);border-left:1px solid var(--line);
+  padding:clamp(24px,3vw,40px);display:flex;flex-direction:column;gap:16px;
+}
+@media (max-width:900px){.contrib-side{border-left:none;border-top:1px solid var(--line)}}
+.contrib-side .kicker{display:block}
+.contrib-intro{font-size:15px;line-height:1.6;color:var(--grey);max-width:46ch}
+.contrib-faces{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:2px;list-style:none}
+.contrib-faces figure{display:flex;flex-direction:column;gap:10px}
+.contrib-portrait{aspect-ratio:4/5;border-radius:10px}
+.contrib-name{font-family:var(--serif);font-weight:500;font-size:17px;line-height:1.18}
+
 /* ============ 09 UI COMPONENTS ============ */
 .ui-grid{display:grid;grid-template-columns:1fr 1.15fr .95fr;gap:24px;align-items:start}
 @media (max-width:1000px){.ui-grid{grid-template-columns:1fr}}
@@ -884,7 +905,7 @@ html.no-anim *,html.no-anim *::before,html.no-anim *::after{transition:none !imp
       <div class="shead">
         <span class="snum">08 · Storytelling components</span>
         <h2 class="stitle" id="t-story">The feature spread and the numbers that carry stories</h2>
-        <p class="ssub">Three live components: a community-submitted feature with bylines and full-color photographs, the site's one black-and-white photo essay, and an impact band where every stat is anchored by a human line.</p>
+        <p class="ssub">Four live components: a community-submitted feature with bylines and full-color photographs, the site's one black-and-white photo essay, an impact band where every stat is anchored by a human line, and a contributors strip that puts real names and faces to the voices.</p>
       </div>
 
       <p class="comp-label">Component A — community feature: "My first…" series</p>
@@ -983,6 +1004,46 @@ html.no-anim *,html.no-anim *::before,html.no-anim *::after{transition:none !imp
             <i>one league, eight sliding-scale tiers</i>
             <p>Community Supported Ultimate: every family self-selects a tier, and everyone plays the same season.</p>
           </div>
+        </div>
+      </div>
+
+      <p class="comp-label" style="margin-top:48px">Component D — contributors: the real people behind the pages</p>
+      <div class="contrib">
+        <figure class="contrib-lead clip-reveal">
+          <div class="photo">
+            <img src="assets/2024-discnw-board-and-staff-strategic-planning-retreat-group-photo.jpg" alt="DiscNW board and staff, 2024" width="800" height="600" style="object-position:50% 50%">
+          </div>
+          <figcaption class="cap"><b>Masthead</b>DiscNW board and staff, at the 2024 planning retreat.</figcaption>
+        </figure>
+        <div class="contrib-side reveal">
+          <span class="kicker">Board, staff &amp; coaches</span>
+          <p class="contrib-intro">A community magazine runs on real people. These are a few of the board, staff, and coaches behind DiscNW — named and credited the way a magazine credits its contributors.</p>
+          <ul class="contrib-faces stagger">
+            <li>
+              <figure>
+                <div class="photo contrib-portrait"><img src="assets/erin-armstrong-head-shot-1.jpg" alt="Erin Armstrong" width="900" height="600" style="object-position:50% 35%"></div>
+                <figcaption class="contrib-name">Erin Armstrong</figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure>
+                <div class="photo contrib-portrait"><img src="assets/matt-stenovec.jpg" alt="Matt Stenovec" width="649" height="600" style="object-position:50% 35%"></div>
+                <figcaption class="contrib-name">Matt Stenovec</figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure>
+                <div class="photo contrib-portrait"><img src="assets/sarah-titcomb-2.jpg" alt="Sarah Titcomb" width="800" height="600" style="object-position:50% 35%"></div>
+                <figcaption class="contrib-name">Sarah Titcomb</figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure>
+                <div class="photo contrib-portrait"><img src="assets/qxhna-profile-picture.jpg" alt="Qxhna" width="439" height="600" style="object-position:50% 28%"></div>
+                <figcaption class="contrib-name">Qxhna</figcaption>
+              </figure>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

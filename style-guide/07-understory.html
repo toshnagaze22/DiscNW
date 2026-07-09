@@ -159,6 +159,20 @@ a{color:var(--coral-ink)}
 .rl-name{font-family:var(--disp);font-weight:700;font-size:19px;letter-spacing:.03em;text-transform:uppercase}
 .rl-what{font-style:italic;color:var(--muted);font-size:14.5px;margin-left:auto;text-align:right}
 
+/* program stamps — program logos as trail-register stamps, each on a consistent neutral tile */
+.stamp-row{margin-top:24px;padding-top:18px;border-top:1px dashed rgba(31,58,46,.35)}
+.stamp-row .stamp-head{color:var(--glacier-ink);display:block;margin-bottom:15px}
+.stamps{list-style:none;display:flex;flex-wrap:wrap;gap:14px 26px}
+.stamp{display:flex;align-items:center;gap:13px}
+.stamp-tile{
+  width:72px;height:72px;flex:none;border-radius:50%;
+  background:var(--white);border:1px solid rgba(31,58,46,.22);
+  box-shadow:0 3px 10px rgba(31,58,46,.10);
+  display:flex;align-items:center;justify-content:center;padding:12px;
+}
+.stamp-tile img{width:100%;height:100%;object-fit:contain}
+.stamp-name{font-family:var(--disp);font-weight:700;font-size:14.5px;letter-spacing:.045em;text-transform:uppercase;color:var(--ink);line-height:1.06;max-width:15ch}
+
 /* ————— the trail ————— */
 .trail{max-width:1160px;margin:0 auto;padding:0 clamp(18px,4vw,32px)}
 .connector{position:relative;height:clamp(120px,17vh,190px);margin:0 auto;width:min(680px,92%)}
@@ -444,6 +458,23 @@ footer .mid{font-size:13px;font-style:italic}
         <li><a href="#wp-fall"><span class="rl-no">03</span><span class="rl-name">Fall</span><span class="rl-what">school leagues</span></a></li>
         <li><a href="#wp-winter"><span class="rl-no">04</span><span class="rl-name">Winter</span><span class="rl-what">training &amp; coaching</span></a></li>
       </ul>
+      <div class="stamp-row">
+        <span class="tag stamp-head">Programs on the route</span>
+        <ul class="stamps">
+          <li class="stamp">
+            <span class="stamp-tile"><img src="assets/discnw-summer-camp-disc.jpg" alt="DiscNW Summer Ultimate Camps" width="503" height="504"></span>
+            <span class="stamp-name">Summer Ultimate Camps</span>
+          </li>
+          <li class="stamp">
+            <span class="stamp-tile"><img src="assets/2025-swl-logo.png" alt="Summer Wonder League" width="800" height="801"></span>
+            <span class="stamp-name">Summer Wonder League</span>
+          </li>
+          <li class="stamp">
+            <span class="stamp-tile"><img src="assets/discnw-coaching-collective-3.png" alt="DiscNW Coaching Collective" width="352" height="322"></span>
+            <span class="stamp-name">DiscNW Coaching Collective</span>
+          </li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -527,6 +558,11 @@ footer .mid{font-size:13px;font-style:italic}
             <button type="button" class="btn btn-quiet">See all summer programs</button>
           </div>
           <p class="wp-fee">Sliding-scale fees from $33 — pick the tier that fits; the season is identical at every tier.</p>
+          <figure class="specimen small tilt-r">
+            <span class="pin" aria-hidden="true"></span>
+            <div class="ph"><img src="assets/dsc03420-edit-1.jpg" alt="An adult player in a pink cap and white jersey throws a disc across a grass field, other players behind" width="900" height="600"></div>
+            <figcaption><span class="s-tag tag">Specimen 03b · summer league</span><span class="s-cap">Mid-throw. Summer league play.</span></figcaption>
+          </figure>
         </div>
       </div>
     </article>
@@ -597,6 +633,11 @@ footer .mid{font-size:13px;font-style:italic}
             <button type="button" class="btn btn-primary">Join the Coaching Collective</button>
           </div>
           <p class="wp-fee">Coaching the understory is how the canopy got here.</p>
+          <figure class="specimen small tilt-r">
+            <span class="pin" aria-hidden="true"></span>
+            <div class="ph"><img src="assets/coaching-2.jpg" alt="A coach kneels with a group of young players gathered in a huddle on a grass field" width="400" height="267"></div>
+            <figcaption><span class="s-tag tag">Specimen 05b · coaching</span><span class="s-cap">A coach and a huddle before a drill.</span></figcaption>
+          </figure>
         </div>
       </div>
     </article>

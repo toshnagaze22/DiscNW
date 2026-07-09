@@ -303,6 +303,11 @@ figure{margin:0}
 .card.warm .fine{color:var(--warm-muted)}
 .card.warm .fine b{color:var(--warm-ink)}
 
+/* real-site program badges — a small logo tile crowning a registration card,
+   each held on the same light plate so a varied set reads clean over any sky */
+.card .seed{display:inline-flex;align-items:center;justify-content:center;background:#FFFFFF;border:1px solid rgba(36,23,8,.16);padding:9px 12px;margin:0 0 6px}
+.card .seed img{display:block;width:auto;height:56px}
+
 /* ————— bridges — the sky passing between hours ————— */
 .bridge{
   min-height:46svh;display:flex;flex-direction:column;justify-content:center;align-items:center;
@@ -426,6 +431,7 @@ figure{margin:0}
   html.anim .card.in>:nth-child(3){transition-delay:.18s}
   html.anim .card.in>:nth-child(4){transition-delay:.27s}
   html.anim .card.in>:nth-child(5){transition-delay:.35s}
+  html.anim .card.in>:nth-child(6){transition-delay:.42s}   /* cards wearing a program badge gain a 6th child */
 
   /* daylight bars grow from the ground, 40ms staggers */
   html.anim .dc-bar{transform:scaleY(0)}
@@ -627,6 +633,7 @@ figure{margin:0}
         <figcaption><span class="chip"><b>Exhibit</b><span class="t"><span>The first sky-ball of somebody&rsquo;s life</span></span></span></figcaption>
       </figure>
       <aside class="card rv" aria-label="Register for summer camps">
+        <span class="seed"><img src="assets/discnw-summer-camp-disc.jpg" alt="DiscNW Summer Ultimate Camps logo" width="503" height="504"></span>
         <span class="c-k mono">Register at this hour</span>
         <h3>Camp weeks, ages 7–18</h3>
         <ul class="log">
@@ -674,6 +681,7 @@ figure{margin:0}
         <figcaption><span class="chip"><b>Game film</b><span class="t"><span>Middle school spirit tunnel · every game ends through one</span></span></span></figcaption>
       </figure>
       <aside class="card rv" aria-label="Register for fall school leagues">
+        <span class="seed"><img src="assets/discnw-sps-league-logo.jpg" alt="DiscNW Seattle Public Schools League logo" width="1464" height="1464"></span>
         <span class="c-k mono">Register at this hour</span>
         <h3>Fall leagues, after school</h3>
         <ul class="log">
@@ -723,9 +731,14 @@ figure{margin:0}
 
     <div class="duo">
       <div>
+        <figure class="fig-side fig-small rv-photo" style="margin:0 0 clamp(22px,3.6vh,34px)">
+          <div class="ph" style="max-width:400px"><img src="assets/coaching-2.jpg" alt="A DiscNW coach kneeling with a group of young players gathered around on a grass field" width="400" height="267"></div>
+          <figcaption><span class="chip"><b>Coaching Collective</b><span class="t"><span>A coach and their team</span></span></span></figcaption>
+        </figure>
         <p class="lede rv" style="margin-top:0">Nothing looks like it&rsquo;s growing in winter. Everything is. The coach who runs your kid&rsquo;s April practice is in a gym right now, being coached — that&rsquo;s the Collective&rsquo;s whole trade: this season&rsquo;s players into next season&rsquo;s teachers, school teams and club alike.</p>
       </div>
       <aside class="card warm rv" aria-label="Register for winter programs — the warm room in the blue hour">
+        <span class="seed"><img src="assets/discnw-coaching-collective-3.png" alt="The DiscNW Coaching Collective logo" width="352" height="322"></span>
         <span class="c-k mono">The one warm room</span>
         <h3>Winter, indoors, lit</h3>
         <ul class="log">

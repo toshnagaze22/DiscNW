@@ -445,6 +445,20 @@
   }
   .stat .why{ margin:0; font-size:15px; color:#C7D4CB; line-height:1.5; }
 
+  /* community beat: a real board-and-staff photo, clean, held on a fir panel */
+  .story-people{
+    max-width:560px; margin:44px 0 0;
+    background:var(--fir-panel); border-radius:16px; overflow:hidden;
+  }
+  .story-people img{ display:block; width:100%; height:auto; }
+  .story-people figcaption{ padding:20px 26px 22px; }
+  .story-people .people-kicker{
+    margin:0 0 6px;
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--grass-light);
+  }
+  .story-people .people-cap{ margin:0; font-size:14.5px; color:#C7D4CB; line-height:1.5; }
+
   /* ---------- field check vista: one clean photograph, captioned below ---------- */
   .vista{ margin:0; background:var(--fir); }
   .vista .ph{
@@ -518,6 +532,23 @@
   }
   .filter .check{ flex-direction:row; align-items:center; gap:9px; padding-bottom:12px; font-size:15px; color:var(--ink); }
   .filter input[type="checkbox"]{ width:18px; height:18px; accent-color:var(--hemlock); }
+
+  /* real program marks: a varied logo set on one neutral tile so it reads as a system */
+  .prog-block{ margin-top:24px; }
+  .prog-intro{ margin:0 0 22px; font-size:15.5px; color:var(--slate); max-width:70ch; }
+  .prog-strip{ display:flex; flex-wrap:wrap; gap:16px; margin:0; padding:0; list-style:none; }
+  .prog-tile{
+    flex:1 1 200px;
+    display:flex; flex-direction:column; align-items:center; gap:16px;
+    background:#FFF; border:1px solid #E0E5DD; border-radius:12px;
+    padding:28px 24px 22px;
+  }
+  .prog-logo{ display:block; width:auto; height:100px; max-width:100%; object-fit:contain; }
+  .prog-name{
+    margin:0; text-align:center;
+    font-family:'Archivo',sans-serif; font-weight:700; font-size:13.5px; line-height:1.2;
+    color:var(--fir);
+  }
 
   /* ---------- 10 · voice ---------- */
   .voice-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
@@ -950,6 +981,15 @@
           </li>
         </ul>
       </div>
+
+      <figure class="story-people" data-rise>
+        <img src="assets/2024-discnw-board-and-staff-strategic-planning-retreat-group-photo.jpg" width="800" height="600" alt="DiscNW board and staff at their 2024 planning retreat, gathered on gym bleachers.">
+        <figcaption>
+          <p class="people-kicker">Board &amp; staff · 2024</p>
+          <p class="people-cap">The people behind the leagues, camps, and tournaments.</p>
+        </figcaption>
+      </figure>
+
       <p class="note">Component note: field reports are 400–600 words with one photo, submitted by the community through a story form — a sustainable pipeline, not a staff burden. The twin-bird mark holds this band the way a crest holds a jersey: large, quiet, never over a photograph.</p>
     </div>
   </section>
@@ -1048,6 +1088,25 @@
           </form>
         </div>
       </div>
+    </div>
+
+    <div class="ui-block prog-block">
+      <h3>Program marks</h3>
+      <p class="prog-intro">Every program keeps its own art; a shared white tile and even spacing let a varied set read as one system.</p>
+      <ul class="prog-strip">
+        <li class="prog-tile">
+          <img class="prog-logo" src="assets/discnw-coaching-collective-3.png" width="352" height="322" alt="DiscNW Coaching Collective logo">
+          <p class="prog-name">DiscNW Coaching Collective</p>
+        </li>
+        <li class="prog-tile">
+          <img class="prog-logo" src="assets/seaplastic-2026-logo.png" width="613" height="595" alt="Sea Plastic logo">
+          <p class="prog-name">Sea Plastic</p>
+        </li>
+        <li class="prog-tile">
+          <img class="prog-logo" src="assets/mshatleague-logo-with-hat.png" width="1024" height="1024" alt="Fall Middle School Hat League logo">
+          <p class="prog-name">Fall Middle School Hat League</p>
+        </li>
+      </ul>
     </div>
   </section>
 

@@ -416,6 +416,38 @@ h1,h2,h3{margin:0;font-family:var(--disp);font-weight:300;line-height:1;letter-s
   .spec-ticks a:hover{transform:translateY(-2px)}
 }
 
+/* ————————————————————————————————————————————————————————————
+   REAL-SITE ADDITIONS — program marks, a coaching frame, real faces.
+   Purely additive. Program logos glow as small light-marks on
+   near-white tiles (contained, never recolored or squashed); every
+   photograph keeps the sacred clean render on a solid dark mat —
+   no tint, no color ever on the photo.
+———————————————————————————————————————————————————————————— */
+/* program marks — a few real program logos, lit as small markers */
+.prog-marks{margin-top:clamp(20px,2.8vw,28px);padding-top:clamp(16px,2.2vw,22px);border-top:1px solid var(--hair)}
+.prog-marks .pm-label{margin:0 0 14px}
+.pm-row{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,168px));justify-content:start;gap:clamp(10px,1.4vw,16px)}
+.pm-row li{margin:0}
+.pm-tile{display:flex;align-items:center;justify-content:center;height:clamp(76px,9vw,94px);padding:14px;border-radius:14px;
+  background:#f6f7fd;border:1px solid rgba(160,170,255,.16);
+  box-shadow:0 0 26px -6px rgba(150,140,255,.42),0 12px 30px -20px rgba(0,0,0,.7)}
+.pm-tile img{width:auto;height:auto;max-width:100%;max-height:clamp(46px,5.6vw,58px);object-fit:contain}
+
+/* a coaching photo — the sacred mat, framed a touch smaller to honor its native size */
+.shot.shot--cap .mat{max-width:420px;margin-inline:auto}
+
+/* real faces — staff on solid dark mats; studio black grounds melt into the mat */
+.people{margin-top:clamp(28px,4vw,42px);padding-top:clamp(20px,2.6vw,26px);border-top:1px solid var(--hair)}
+.people .pl-label{margin:0 0 clamp(14px,1.8vw,18px)}
+.pl-row{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:clamp(14px,2vw,22px)}
+.pl-row li{margin:0}
+.portrait{width:clamp(134px,20vw,172px);margin:0;min-width:0}
+.portrait .mat{padding:10px}
+.ph--port{aspect-ratio:4/5}
+.ph--port img{width:100%;height:100%;object-fit:cover}
+.portrait figcaption{margin:11px 2px 0;display:flex;align-items:center;gap:.5em;color:var(--muted);font-weight:600}
+.portrait figcaption .sw{color:var(--fc)}
+
 /* ————— responsive ————— */
 @media (max-width:940px){
   .facet-grid{grid-template-columns:1fr}
@@ -538,6 +570,14 @@ h1,h2,h3{margin:0;font-family:var(--disp);font-weight:300;line-height:1;letter-s
         <li style="--tc:var(--sp-violet);--tc-lt:var(--violet-lt)"><a href="#f-violet"><span class="tk-c"><span class="sw"></span>Violet</span><span class="tk-nm">410 nm · the spirit</span></a></li>
       </ul>
       <p class="spec-note">One light. <b>Ten thousand-plus players.</b> Not a color out of place.</p>
+      <div class="prog-marks">
+        <p class="pm-label mono soft">A few of the programs</p>
+        <ul class="pm-row">
+          <li><span class="pm-tile"><img src="assets/2025-swl-logo.png" alt="Summer Wonder League" width="800" height="801" loading="lazy"></span></li>
+          <li><span class="pm-tile"><img src="assets/discnw-summer-camp-disc.jpg" alt="DiscNW Summer Ultimate Camps" width="503" height="504" loading="lazy"></span></li>
+          <li><span class="pm-tile"><img src="assets/discnw-coaching-collective-3.png" alt="DiscNW Coaching Collective" width="352" height="322" loading="lazy"></span></li>
+        </ul>
+      </div>
     </div>
   </nav>
 
@@ -560,9 +600,9 @@ h1,h2,h3{margin:0;font-family:var(--disp);font-weight:300;line-height:1;letter-s
             </div>
             <p class="fine lift">Fees start at <b>$33</b> on a sliding scale — no questions asked. Every tier gets the identical week.</p>
           </div>
-          <figure class="shot rv-photo lift">
-            <div class="mat"><div class="ph"><img src="assets/sr26-sprint-race.jpg" alt="Two young players sprint flat-out across a sunlit grass field chasing a throw, spectators' tents along the far sideline" width="1920" height="1080"></div></div>
-            <figcaption class="mono"><span class="sw"></span>real players · Spring Reign 2026</figcaption>
+          <figure class="shot shot--cap rv-photo lift">
+            <div class="mat"><div class="ph"><img src="assets/coaching-2.jpg" alt="A DiscNW coach crouches among a group of young players gathered on the grass at a youth session" width="400" height="267"></div></div>
+            <figcaption class="mono"><span class="sw"></span>a coach and young players</figcaption>
           </figure>
         </div>
       </div>
@@ -681,6 +721,19 @@ h1,h2,h3{margin:0;font-family:var(--disp);font-weight:300;line-height:1;letter-s
             </div></div>
             <figcaption class="mono"><span class="sw"></span>every game ends through one · loop</figcaption>
           </figure>
+        </div>
+        <div class="people lift">
+          <p class="pl-label mono soft">Board &amp; staff · a few of the people behind it</p>
+          <ul class="pl-row">
+            <li><figure class="portrait">
+              <div class="mat"><div class="ph ph--port"><img src="assets/erin-armstrong-head-shot-1.jpg" alt="Erin Armstrong" width="900" height="600" loading="lazy"></div></div>
+              <figcaption class="mono"><span class="sw"></span>Erin Armstrong</figcaption>
+            </figure></li>
+            <li><figure class="portrait">
+              <div class="mat"><div class="ph ph--port"><img src="assets/matt-stenovec.jpg" alt="Matt Stenovec" width="649" height="600" loading="lazy"></div></div>
+              <figcaption class="mono"><span class="sw"></span>Matt Stenovec</figcaption>
+            </figure></li>
+          </ul>
         </div>
       </div>
     </div>

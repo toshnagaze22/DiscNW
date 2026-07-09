@@ -508,6 +508,46 @@ html.js .film-toggle{display:inline-flex}
   .wire{stroke-dashoffset:0!important}
   .matchup{opacity:1!important;transform:none!important;position:static!important}
 }
+
+/* ============================================================
+   REAL ASSETS woven in (additive, all below the hero):
+   · program badges — "the field" on one consistent light tile
+   · sideline strip — real coaching photos + board & staff faces
+   Photos stay clean (only contrast/saturate); logos never recolored.
+   ============================================================ */
+.field{margin-top:clamp(34px,6vh,58px)}
+.field-cap{
+  margin:0 0 20px;font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--steel);line-height:1.5;
+}
+.field-cap b{color:var(--gold);font-weight:600}
+.prog-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin:0;padding:0;list-style:none}
+@media (max-width:860px){.prog-grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:430px){.prog-grid{grid-template-columns:repeat(2,1fr)}}
+.prog{display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center}
+.prog-tile{
+  width:100%;aspect-ratio:1/1;display:grid;place-items:center;padding:13px;
+  background:#fff;border:1px solid var(--line-2);border-radius:12px;box-shadow:0 8px 22px rgba(3,5,10,.4);
+}
+.prog-tile img{width:100%;height:100%;object-fit:contain}
+.prog-name{font-family:var(--mono);font-size:10px;letter-spacing:.05em;line-height:1.35;color:var(--steel-2)}
+
+.sideline{margin-top:clamp(38px,6vh,60px);padding-top:clamp(30px,4vh,44px);border-top:1px solid var(--line)}
+.sideline-cap{
+  margin:0 0 20px;font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--steel);line-height:1.5;
+}
+.sideline-cap b{color:var(--gold);font-weight:600}
+.sideline-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media (max-width:820px){.sideline-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:430px){.sideline-grid{grid-template-columns:1fr}}
+.sl-card{margin:0;border:1px solid var(--line-2);border-radius:12px;overflow:hidden;background:var(--panel)}
+.sl-frame{aspect-ratio:3/2;background:#05070E;overflow:hidden}
+.sl-frame img{width:100%;height:100%;object-fit:cover;filter:contrast(1.03) saturate(1.04)}
+.sl-card figcaption{padding:12px 14px 14px}
+.sl-card figcaption b{display:block;font-family:var(--body);font-weight:700;color:var(--chalk);font-size:13.5px;margin-bottom:3px}
+.sl-card figcaption .role{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.sl-card figcaption em{font-style:normal;font-family:var(--body);font-size:13px;line-height:1.45;color:var(--steel-2)}
 </style>
 </head>
 <body>
@@ -578,6 +618,37 @@ html.js .film-toggle{display:inline-flex}
           <span class="rc-seed">O</span>
           <span><span class="rc-name">Open Region</span><span class="rc-sub">Potlatch · Sea Plastic · Hat &amp; Wonder Leagues</span></span>
         </div>
+      </div>
+
+      <!-- real DiscNW program badges — the field (added below hero) -->
+      <div class="field">
+        <p class="field-cap rise" style="--i:5"><b>The field</b> · real DiscNW program badges — every one open to all</p>
+        <ul class="prog-grid rise" style="--i:6">
+          <li class="prog">
+            <span class="prog-tile"><img src="assets/seaplastic-2026-logo.png" alt="Sea Plastic" width="613" height="595" loading="lazy" decoding="async"></span>
+            <span class="prog-name">Sea Plastic</span>
+          </li>
+          <li class="prog">
+            <span class="prog-tile"><img src="assets/2025-swl-logo.png" alt="Summer Wonder League" width="800" height="801" loading="lazy" decoding="async"></span>
+            <span class="prog-name">Summer Wonder League</span>
+          </li>
+          <li class="prog">
+            <span class="prog-tile"><img src="assets/discnw-summer-camp-disc.jpg" alt="DiscNW Summer Ultimate Camps" width="503" height="504" loading="lazy" decoding="async"></span>
+            <span class="prog-name">Summer Camps</span>
+          </li>
+          <li class="prog">
+            <span class="prog-tile"><img src="assets/discnw-coaching-collective-3.png" alt="DiscNW Coaching Collective" width="352" height="322" loading="lazy" decoding="async"></span>
+            <span class="prog-name">Coaching Collective</span>
+          </li>
+          <li class="prog">
+            <span class="prog-tile"><img src="assets/training-camp-logo-full-color-web.png" alt="DiscNW Training Camp" width="600" height="600" loading="lazy" decoding="async"></span>
+            <span class="prog-name">Training Camp</span>
+          </li>
+          <li class="prog">
+            <span class="prog-tile"><img src="assets/discnw-invite.png" alt="Seattle Invite" width="500" height="500" loading="lazy" decoding="async"></span>
+            <span class="prog-name">Seattle Invite</span>
+          </li>
+        </ul>
       </div>
     </div>
   </section>
@@ -750,6 +821,29 @@ html.js .film-toggle{display:inline-flex}
         <span>Rainout hotline · <b>(206) 781-5840</b></span>
         <span>Coaching Collective · <b>trains every sideline</b></span>
       </p>
+
+      <!-- real coaching photos + board & staff faces — from the sideline (added) -->
+      <div class="sideline">
+        <p class="sideline-cap rise" style="--i:6"><b>From the sideline</b> · real coaching, and some of the people behind DiscNW</p>
+        <div class="sideline-grid">
+          <figure class="sl-card rise" style="--i:7">
+            <div class="sl-frame"><img src="assets/coaching-2.jpg" alt="A coach kneels with a group of youth players in a field-side huddle." width="400" height="267" loading="lazy" decoding="async"></div>
+            <figcaption><em>A coach with a youth group, mid-huddle.</em></figcaption>
+          </figure>
+          <figure class="sl-card rise" style="--i:8">
+            <div class="sl-frame"><img src="assets/dsc03420-edit-1.jpg" alt="A player steps into a forehand throw on a grass field, teammates warming up behind." width="900" height="600" loading="lazy" decoding="async" style="object-position:50% 42%"></div>
+            <figcaption><em>A player steps into the throw.</em></figcaption>
+          </figure>
+          <figure class="sl-card rise" style="--i:9">
+            <div class="sl-frame"><img src="assets/erin-armstrong-head-shot-1.jpg" alt="Erin Armstrong" width="900" height="600" loading="lazy" decoding="async" style="object-position:50% 40%"></div>
+            <figcaption><b>Erin Armstrong</b><span class="role">Board &amp; staff</span></figcaption>
+          </figure>
+          <figure class="sl-card rise" style="--i:10">
+            <div class="sl-frame"><img src="assets/matt-stenovec.jpg" alt="Matt Stenovec" width="649" height="600" loading="lazy" decoding="async" style="object-position:50% 30%"></div>
+            <figcaption><b>Matt Stenovec</b><span class="role">Board &amp; staff</span></figcaption>
+          </figure>
+        </div>
+      </div>
     </div>
   </section>
 

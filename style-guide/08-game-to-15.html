@@ -337,6 +337,18 @@
   #pt-01 .ptgrid{grid-template-columns:minmax(280px,430px) minmax(64px,96px) minmax(300px,460px)}
   .crest-open{height:clamp(56px,7vw,84px);width:auto;justify-self:start;margin-top:.35em}
 
+  /* point 12 — a quiet program mark: the Coaching Collective's monochrome formline
+     sits on a neutral tile under the column, echoing the point-01 crest. Undistorted
+     and rendered small (well under its 352px native width). */
+  .prog{
+    display:flex;width:max-content;max-width:100%;
+    align-items:center;justify-content:center;
+    margin-top:clamp(28px,5vh,44px);
+    padding:20px 24px;
+    background:#fff;border:1px solid var(--hair);
+  }
+  .prog img{width:clamp(150px,19vw,188px);height:auto}
+
   /* appendix lockup */
   .about-lockup{width:clamp(128px,12vw,150px);height:auto;margin:0 0 30px}
 
@@ -736,6 +748,7 @@
         <div class="col">
           <h2 id="h12">Coaches, coached.</h2>
           <p>The DiscNW Coaching Collective trains the people who teach the game, school team and club alike — so a kid’s first coach is a coached coach.</p>
+          <div class="prog"><img src="assets/discnw-coaching-collective-3.png" alt="DiscNW Coaching Collective" width="352" height="322" loading="lazy" decoding="async"></div>
         </div>
       </div>
     </div>

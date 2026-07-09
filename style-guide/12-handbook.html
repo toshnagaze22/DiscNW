@@ -532,6 +532,24 @@
   .m-foot-meta a{ color:var(--d-text); text-decoration-color:var(--d-soft); }
   .m-foot-meta a:hover{ color:#fff; }
 
+  /* program index — real DiscNW program logos, each on a consistent neutral tile, undistorted */
+  .m-programs{ background:var(--buckram); padding:clamp(44px,5vw,60px) 40px; }
+  .prog-grid{
+    margin:0; padding:0; list-style:none;
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:16px;
+  }
+  .prog{
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    background:var(--white); border-radius:10px; padding:22px 16px 18px;
+  }
+  .prog-badge{ height:64px; margin-bottom:16px; display:flex; align-items:center; justify-content:center; }
+  .prog-badge img{ max-width:100%; max-height:64px; width:auto; height:auto; display:block; }
+  .prog-name{ font-weight:500; font-size:14.5px; line-height:1.35; color:var(--ink); text-wrap:balance; }
+  .prog-ref{
+    margin-top:8px;
+    font-family:var(--mono); font-weight:600; font-size:12px; letter-spacing:.02em; color:var(--oxblood);
+  }
+
   /* ---------- 7 · three front doors ---------- */
   .paths{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
   .path-card{
@@ -604,6 +622,29 @@
   }
   .footnote p{ margin:0; font-size:14.5px; line-height:1.6; color:var(--d-soft); }
   .footnote p .fx{ color:var(--d-text); font-family:var(--mono); font-size:12.5px; }
+
+  /* colophon — real board & staff headshots on light tiles over the ink appendix (a "who to ask" block) */
+  .colophon{ margin:56px 0 0; }
+  .colophon-label{
+    margin:0 0 6px;
+    font-family:var(--mono); font-weight:600; font-size:12.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--d-soft);
+  }
+  .colophon-sub{ margin:0 0 26px; max-width:60ch; font-size:16px; color:var(--d-soft); }
+  .roster{
+    margin:0; padding:0; list-style:none;
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:20px;
+  }
+  .roster > li{ min-width:0; }
+  .roster figure{ margin:0; background:var(--vellum); border-radius:10px; overflow:hidden; }
+  .roster .face{
+    display:block; width:100%; aspect-ratio:4/5; object-fit:cover; object-position:50% 40%;
+    background:var(--plate);
+  }
+  .roster figcaption{
+    padding:12px 14px 14px;
+    font-family:var(--mono); font-weight:500; font-size:12.5px; line-height:1.4; color:var(--ink);
+  }
 
   /* ---------- 9 · working parts ---------- */
   .ui-grid{ display:grid; grid-template-columns:.92fr 1.08fr; gap:24px; align-items:start; }
@@ -764,7 +805,7 @@
     .m-util{ padding:10px 24px; }
     .m-util a{ margin-left:0; }
     .m-hero{ padding-left:24px; padding-right:24px; }
-    .m-chapters, .m-index{ padding-left:24px; padding-right:24px; }
+    .m-chapters, .m-index, .m-programs{ padding-left:24px; padding-right:24px; }
     .m-plate .plate-cap{ padding:14px 24px 22px; }
     .m-foot{ padding-left:24px; padding-right:24px; }
     .paths{ grid-template-columns:1fr; }
@@ -1047,7 +1088,7 @@
         <div class="browser-url">discnw.org</div>
       </div>
 
-      <div role="group" aria-label="Mockup of the redesigned DiscNW homepage: an ink-dark field-status strip, a paper-white navigation with the DiscNW lockup, a reference-desk hero with a large handbook search box and three quick-answer clauses, a four-chapter contents band, a captioned photograph plate, a registering-now index with dot leaders, and an ink footer with the community vision.">
+      <div role="group" aria-label="Mockup of the redesigned DiscNW homepage: an ink-dark field-status strip, a paper-white navigation with the DiscNW lockup, a reference-desk hero with a large handbook search box and three quick-answer clauses, a four-chapter contents band, a captioned photograph plate, a program index of league and camp logos, a registering-now index with dot leaders, and an ink footer with the community vision.">
 
         <p class="m-util" data-page style="--i:0"><span class="lbl">Field status · Thu Jul 2</span><span><b>Magnuson</b> — games on</span><span><b>Marymoor</b> — games on</span><span>Sunset 9:07 pm</span><a href="tel:+12067815840">Rainout hotline (206)&nbsp;781-5840</a></p>
 
@@ -1132,6 +1173,43 @@
           </div>
           <figcaption class="plate-cap"><b>Plate 2 — Spring Reign, Burlington.</b> Photography is sparing in this direction: one strong plate per chapter opening, full color, captioned here and never typed over.</figcaption>
         </figure>
+
+        <!-- program index — real DiscNW program logos, each on a consistent neutral tile, undistorted (additive) -->
+        <div class="m-programs">
+          <p class="m-band-label" data-page>The programs — an index</p>
+          <ul class="prog-grid">
+            <li class="prog" data-page style="--i:0">
+              <span class="prog-badge"><img src="assets/mshatleague-logo-with-hat.png" width="1024" height="1024" alt="Fall Middle School Hat League"></span>
+              <span class="prog-name">Fall Middle School Hat League</span>
+              <span class="prog-ref">§ 2.3</span>
+            </li>
+            <li class="prog" data-page style="--i:1">
+              <span class="prog-badge"><img src="assets/2025-swl-logo.png" width="800" height="801" alt="Summer Wonder League"></span>
+              <span class="prog-name">Summer Wonder League</span>
+              <span class="prog-ref">§ 2.4</span>
+            </li>
+            <li class="prog" data-page style="--i:2">
+              <span class="prog-badge"><img src="assets/training-camp-logo-full-color-web.png" width="600" height="600" alt="DiscNW Training Camp"></span>
+              <span class="prog-name">Training Camp</span>
+              <span class="prog-ref">§ 2.5</span>
+            </li>
+            <li class="prog" data-page style="--i:3">
+              <span class="prog-badge"><img src="assets/seaplastic-2026-logo.png" width="613" height="595" alt="Sea Plastic"></span>
+              <span class="prog-name">Sea Plastic</span>
+              <span class="prog-ref">§ 2.7</span>
+            </li>
+            <li class="prog" data-page style="--i:4">
+              <span class="prog-badge"><img src="assets/discnw-sps-league-logo.jpg" width="1464" height="1464" alt="Seattle Public Schools League"></span>
+              <span class="prog-name">Seattle Public Schools League</span>
+              <span class="prog-ref">§ 2.6</span>
+            </li>
+            <li class="prog" data-page style="--i:5">
+              <span class="prog-badge"><img src="assets/discnw-coaching-collective-3.png" width="352" height="322" alt="DiscNW Coaching Collective"></span>
+              <span class="prog-name">DiscNW Coaching Collective</span>
+              <span class="prog-ref">§ 4.3</span>
+            </li>
+          </ul>
+        </div>
 
         <div class="m-index">
           <p class="m-band-label" data-page>Registering now — from the index</p>
@@ -1228,6 +1306,50 @@
         </li>
       </ul>
       <p class="note">Component note — records are 100–200 words, community-submitted through a story form and filed under the clause they prove. Staff-light by design: the numbering does the curating.</p>
+
+      <!-- colophon: the real people who keep the handbook — a "who to ask / who runs this" reference block (additive) -->
+      <div class="colophon">
+        <p class="colophon-label" data-page>Colophon — who keeps the handbook current</p>
+        <p class="colophon-sub" data-page>DiscNW board &amp; staff — the people behind the record and the reference desk.</p>
+        <ul class="roster">
+          <li data-page style="--i:0">
+            <figure>
+              <img class="face" src="assets/erin-armstrong-head-shot-1.jpg" width="900" height="600" alt="Erin Armstrong">
+              <figcaption>Erin Armstrong</figcaption>
+            </figure>
+          </li>
+          <li data-page style="--i:1">
+            <figure>
+              <img class="face" src="assets/lili-gu.jpg" width="901" height="600" alt="Lili Gu">
+              <figcaption>Lili Gu</figcaption>
+            </figure>
+          </li>
+          <li data-page style="--i:2">
+            <figure>
+              <img class="face" src="assets/sarah-titcomb-2.jpg" width="800" height="600" alt="Sarah Titcomb">
+              <figcaption>Sarah Titcomb</figcaption>
+            </figure>
+          </li>
+          <li data-page style="--i:3">
+            <figure>
+              <img class="face" src="assets/taylor-kanemori.jpg" width="800" height="533" alt="Taylor Kanemori">
+              <figcaption>Taylor Kanemori</figcaption>
+            </figure>
+          </li>
+          <li data-page style="--i:4">
+            <figure>
+              <img class="face" src="assets/joe-bisignano.jpg" width="600" height="600" alt="Joe Bisignano">
+              <figcaption>Joe Bisignano</figcaption>
+            </figure>
+          </li>
+          <li data-page style="--i:5">
+            <figure>
+              <img class="face" src="assets/matt-stenovec.jpg" width="649" height="600" alt="Matt Stenovec">
+              <figcaption>Matt Stenovec</figcaption>
+            </figure>
+          </li>
+        </ul>
+      </div>
     </div>
   </section>
 

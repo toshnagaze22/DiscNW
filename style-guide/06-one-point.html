@@ -250,6 +250,40 @@ main::before{ /* the sun, going down behind the hero — JS eases it out as you 
 .still-cap{max-width:1400px} /* 1280px native poster frame: full-bleed through laptop widths, never stretched past 1.1x */
 .huck .still-replay{margin-top:11vh}
 
+/* ---------- added: contained documentary photos ----------
+   Real coaching + league photography woven in at native-safe sizes.
+   dsc03420 is 900px and coaching-3 is 400px native, so both are capped
+   well under 1.15x native and never stretched to a full-bleed still. */
+.poss-still{max-width:760px;margin:70px auto 0}
+.poss-still img{
+  display:block;width:100%;height:auto;
+  border:1px solid var(--line-faint);
+  filter:contrast(1.03) saturate(1.04);
+}
+.poss-still figcaption{
+  display:flex;justify-content:space-between;gap:22px;flex-wrap:wrap;
+  margin-top:13px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--chalk-dim);
+}
+.turn-coach{max-width:400px;margin:48px auto 2px}
+.turn-coach img{
+  display:block;width:100%;height:auto;
+  border:1px solid var(--line-faint);
+  filter:contrast(1.03) saturate(1.04);
+}
+.turn-coach figcaption{
+  display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;
+  margin-top:14px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--chalk-dim);
+}
+.turn-coach .cc-badge{
+  width:54px;height:54px;flex:none;border-radius:5px;background:var(--chalk);
+  padding:7px;display:flex;align-items:center;justify-content:center;
+}
+.turn-coach .cc-badge img{display:block;width:100%;height:100%;object-fit:contain}
+
 /* ---------- 04 · THE HUCK ---------- */
 .huck{padding:16vh 0 15vh}
 .huck-head{margin-bottom:58px}
@@ -568,6 +602,12 @@ main::before{ /* the sun, going down behind the hero — JS eases it out as you 
         </article>
       </div>
     </div>
+    <div class="wrap">
+      <figure class="poss-still rise" style="--r:0">
+        <img src="assets/dsc03420-edit-1.jpg" width="900" height="600" alt="A league player releases a backhand on a grass field, the disc just leaving her hand, other players blurred downfield." loading="lazy" decoding="async">
+        <figcaption><span>League play</span><span>A backhand goes up</span></figcaption>
+      </figure>
+    </div>
   </section>
 
   <!-- ============ 03 · THE TURN ============ -->
@@ -596,6 +636,10 @@ main::before{ /* the sun, going down behind the hero — JS eases it out as you 
         </div>
       </div>
       <p class="vision rise">&ldquo;An Ultimate community without barriers.&rdquo;<small>The whole DiscNW vision, one line</small></p>
+      <figure class="turn-coach rise" style="--r:0">
+        <img src="assets/coaching-3.jpg" width="400" height="267" alt="A DiscNW coach kneels with a huddle of young ultimate players on a grass field." loading="lazy" decoding="async">
+        <figcaption><span class="cc-badge"><img src="assets/discnw-coaching-collective-3.png" width="352" height="322" alt="DiscNW Coaching Collective"></span><span>The DiscNW Coaching Collective</span></figcaption>
+      </figure>
     </div>
   </section>
 

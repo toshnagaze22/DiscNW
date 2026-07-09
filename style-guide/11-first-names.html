@@ -301,6 +301,33 @@ a{color:var(--ink)}
   font-family:var(--disp);font-weight:600;font-size:13px;letter-spacing:.15em;text-transform:uppercase;
 }
 
+/* ————— real names — real faces beside the typeset roster ————— */
+.people{max-width:var(--wrap);margin-inline:auto;padding:clamp(56px,9vh,104px) var(--pad) 0}
+.people h2{font-weight:750;font-size:clamp(34px,4.6vw,60px);letter-spacing:-.02em;margin-top:12px;max-width:20ch}
+.people .lede{max-width:62ch;margin-top:18px;font-size:clamp(16.5px,1.5vw,19px)}
+.people-grid{
+  margin-top:clamp(28px,4vh,44px);list-style:none;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;
+}
+.pcard{border:1px solid var(--hair-strong);background:var(--paper-2);padding:10px 10px 12px}
+.pcard .p-photo{display:block;overflow:hidden;border:1px solid var(--hair);aspect-ratio:1/1}
+.pcard .p-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;filter:contrast(1.03) saturate(1.04)}
+.pcard .p-name{display:block;margin-top:10px;font-family:var(--disp);font-weight:700;font-size:clamp(17px,1.7vw,20px);letter-spacing:-.01em}
+.pcard .p-name::before{content:"";display:inline-block;width:9px;height:9px;background:var(--ink);margin-right:8px}
+.people-docs{
+  margin-top:clamp(20px,3vh,32px);
+  display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:clamp(14px,2.4vw,28px);align-items:center;
+}
+.people-docs figure{margin:0}
+.people-docs .ph{overflow:hidden;border:1px solid var(--hair-strong)}
+.people-docs .ph img{width:100%;filter:contrast(1.03) saturate(1.04)}
+.people-docs .doc-coach{justify-self:start;max-width:400px}
+.people-docs figcaption{margin-top:10px;color:var(--muted);font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+@media (max-width:640px){
+  .people-docs{grid-template-columns:1fr;align-items:start}
+  .people-docs .doc-coach{max-width:100%}
+}
+
 /* ————— odometer (02-style) — built by JS only; base markup is plain text ————— */
 .odr{white-space:nowrap}
 .od{position:relative;display:inline-block;vertical-align:baseline}
@@ -739,6 +766,31 @@ footer .mid{font-size:13px;font-style:italic}
           <span class="fee">Three generations on the same fields since 1995.</span>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ————————— REAL NAMES — real faces beside the typeset roster ————————— -->
+  <section class="people" aria-labelledby="people-h">
+    <div class="people-head rv">
+      <span class="sec-k tag">Not a sample</span>
+      <h2 id="people-h">Some of these names are real.</h2>
+      <p class="lede">The wall at the top is a composed example. These faces are not — they are a few of the board members, staff, and coaches behind the roster. First names, like everyone else on it.</p>
+    </div>
+    <ul class="people-grid rv" aria-label="A few of the real people behind the DiscNW roster">
+      <li class="pcard"><span class="p-photo"><img src="assets/erin-armstrong-head-shot-1.jpg" alt="Erin Armstrong" width="900" height="600" loading="lazy"></span><span class="p-name">Erin</span></li>
+      <li class="pcard"><span class="p-photo"><img src="assets/joe-bisignano.jpg" alt="Joe Bisignano" width="600" height="600" loading="lazy"></span><span class="p-name">Joe</span></li>
+      <li class="pcard"><span class="p-photo"><img src="assets/matt-stenovec.jpg" alt="Matt Stenovec" width="649" height="600" loading="lazy"></span><span class="p-name">Matt</span></li>
+      <li class="pcard"><span class="p-photo"><img src="assets/qxhna-profile-picture.jpg" alt="Qxhna" width="439" height="600" loading="lazy"></span><span class="p-name">Qxhna</span></li>
+    </ul>
+    <div class="people-docs rv">
+      <figure>
+        <div class="ph"><img src="assets/2024-discnw-board-and-staff-strategic-planning-retreat-group-photo.jpg" alt="DiscNW board and staff gathered on gym bleachers at their 2024 planning retreat" width="800" height="600" loading="lazy"></div>
+        <figcaption>DiscNW board &amp; staff — 2024 planning retreat</figcaption>
+      </figure>
+      <figure class="doc-coach">
+        <div class="ph"><img src="assets/coaching-2.jpg" alt="A DiscNW coach crouches in a huddle with a youth team on a grass field" width="400" height="267" loading="lazy"></div>
+        <figcaption>A coach and a youth team, mid-huddle</figcaption>
+      </figure>
     </div>
   </section>
 

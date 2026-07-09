@@ -315,6 +315,42 @@
   }
   .sig-uses span{ color:#B7B0A4; padding:0 8px; }
 
+  /* the station index — every program is a stop, shown by its real mark on a neutral tile */
+  .stationdex{ margin:44px 0 0; }
+  .stationdex-head{ display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 18px; margin:0 0 22px; }
+  .stationdex-head h3{
+    margin:0; font-family:'Overpass',sans-serif; font-weight:800; font-size:20px; letter-spacing:-.01em; color:var(--ink);
+  }
+  .stationdex-head p{ margin:0; font-size:15px; color:var(--grey); }
+  .stationdex ul{
+    list-style:none; margin:0; padding:0;
+    display:grid; grid-template-columns:repeat(6,1fr); gap:16px;
+  }
+  .stationdex li{
+    background:var(--card); border:1px solid var(--hair); border-radius:14px;
+    overflow:hidden; display:flex; flex-direction:column;
+  }
+  .stationdex .st-line{ display:block; height:5px; }
+  .st-y{ background:var(--ly); } .st-s{ background:var(--ls); }
+  .st-a{ background:var(--la); } .st-p{ background:var(--lp); }
+  .stationdex .st-logo{
+    height:92px; display:flex; align-items:center; justify-content:center; padding:18px 16px 8px;
+  }
+  .stationdex .st-logo img{
+    max-width:100%; max-height:100%; width:auto; height:auto; display:block; object-fit:contain;
+  }
+  .stationdex .st-meta{ padding:2px 12px 16px; text-align:center; }
+  .stationdex .st-name{
+    display:block; margin:0 0 3px;
+    font-family:'Overpass',sans-serif; font-weight:700; font-size:13.5px; line-height:1.2; color:var(--ink);
+    text-wrap:balance;
+  }
+  .stationdex .st-tag{
+    display:block;
+    font-family:'Overpass Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--grey);
+  }
+
   /* diagram type — signage at two sizes, one family */
   .rm-name{ font-family:'Overpass',sans-serif; font-weight:700; font-size:16px; fill:var(--ink); text-anchor:middle; }
   .rm-sub{ font-family:'Inter',sans-serif; font-weight:500; font-size:12.5px; fill:var(--grey); text-anchor:middle; }
@@ -773,6 +809,7 @@
     .ui-grid{ grid-template-columns:1fr; }
     .voice-grid{ grid-template-columns:1fr; }
     .verdicts{ grid-template-columns:1fr; }
+    .stationdex ul{ grid-template-columns:repeat(3,1fr); }
   }
   @media (max-width: 880px){
     .mock-links{ display:none; }
@@ -810,6 +847,7 @@
     .site-foot .foot-in{ padding:64px 20px 44px; }
     .journey-body{ padding:22px 20px 26px; }
     .band-plate-in{ padding:16px 20px 24px; }
+    .stationdex ul{ grid-template-columns:repeat(2,1fr); }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -1088,6 +1126,46 @@
 
     <p class="sig-uses">System page hero<span>·</span>Program headers — one line, enlarged<span>·</span>Confirmations — your stop, circled<span>·</span>Season recaps — the route you rode</p>
     <p class="note">Motion rule: the four lines pull out of the origin, 150ms apart, stations pop in travel order, labels post last, and YOU ARE HERE pulses exactly once. Then the map holds still — because maps hold still. A 2.4s failsafe lands everything regardless.</p>
+
+    <div class="stationdex">
+      <div class="stationdex-head">
+        <h3>The stations, by their marks</h3>
+        <p>Every program is a stop — here are real ones, each on the line it rides.</p>
+      </div>
+      <ul>
+        <li data-rise style="--i:0">
+          <span class="st-line st-y" aria-hidden="true"></span>
+          <span class="st-logo"><img src="assets/2025-swl-logo.png" width="800" height="801" alt="Summer Wonder League" loading="lazy"></span>
+          <span class="st-meta"><span class="st-name">Summer Wonder League</span><span class="st-tag">Youth Line</span></span>
+        </li>
+        <li data-rise style="--i:1">
+          <span class="st-line st-y" aria-hidden="true"></span>
+          <span class="st-logo"><img src="assets/colorcamp-logo.png" width="1756" height="896" alt="DiscNW Summer Camps" loading="lazy"></span>
+          <span class="st-meta"><span class="st-name">DiscNW Summer Camps</span><span class="st-tag">Youth Line</span></span>
+        </li>
+        <li data-rise style="--i:2">
+          <span class="st-line st-s" aria-hidden="true"></span>
+          <span class="st-logo"><img src="assets/discnw-sps-league-logo.jpg" width="1464" height="1464" alt="Seattle Public Schools League" loading="lazy"></span>
+          <span class="st-meta"><span class="st-name">Seattle Public Schools League</span><span class="st-tag">School Line</span></span>
+        </li>
+        <li data-rise style="--i:3">
+          <span class="st-line st-s" aria-hidden="true"></span>
+          <span class="st-logo"><img src="assets/discnw-invite.png" width="500" height="500" alt="Seattle Invite" loading="lazy"></span>
+          <span class="st-meta"><span class="st-name">Seattle Invite</span><span class="st-tag">School Line</span></span>
+        </li>
+        <li data-rise style="--i:4">
+          <span class="st-line st-a" aria-hidden="true"></span>
+          <span class="st-logo"><img src="assets/seaplastic-2026-logo.png" width="613" height="595" alt="Sea Plastic" loading="lazy"></span>
+          <span class="st-meta"><span class="st-name">Sea Plastic</span><span class="st-tag">Adult Line</span></span>
+        </li>
+        <li data-rise style="--i:5">
+          <span class="st-line st-p" aria-hidden="true"></span>
+          <span class="st-logo"><img src="assets/discnw-coaching-collective-3.png" width="352" height="322" alt="DiscNW Coaching Collective" loading="lazy"></span>
+          <span class="st-meta"><span class="st-name">DiscNW Coaching Collective</span><span class="st-tag">Spirit Line</span></span>
+        </li>
+      </ul>
+      <p class="note">Real program marks, each contained on a neutral tile and colored to its line — the same stops the diagram above draws as dots.</p>
+    </div>
   </section>
 
   <!-- 6 · HOMEPAGE MOCKUP: the departure board -->
@@ -1221,7 +1299,7 @@
       </article>
 
       <article class="path-card door-p" data-rise style="--i:1">
-        <img class="ph" src="assets/sr26-spirit-huddle.jpg" width="1920" height="1080" style="object-position:50% 30%" alt="High school players stand arm in arm in a tight post-game huddle at Spring Reign, a few fists raised.">
+        <img class="ph" src="assets/coaching-2.jpg" width="400" height="267" style="object-position:50% 42%" alt="A coach in a cap kneels and talks with a group of young players gathered on the grass at a DiscNW camp.">
         <div class="path-body">
           <p class="path-tag">Coaches &amp; volunteers · Spirit Line</p>
           <h3>The Spirit Line runs on people like you.</h3>

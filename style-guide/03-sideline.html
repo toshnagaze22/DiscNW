@@ -199,6 +199,21 @@ p{margin:0 0 1em}
 }
 .sheet-rules li{border-top:2px solid var(--ink); padding-top:16px; font-size:15.5px; line-height:1.55; color:var(--muted)}
 .sheet-rules b{display:block; font:700 17px/1.3 var(--disp); color:var(--ink); margin-bottom:4px}
+/* the program-art drawer — real DiscNW program badges shown FLAT on neutral tiles:
+   the source art the stickers are cut from. Deliberately NOT .die/.stkr — no
+   rotation, no die-cut ring, no drop-shadow — so the page's seven worn stickers
+   stay seven. Each logo sits undistorted and contained, one consistent tile each. */
+.badge-drawer{margin-top:64px}
+.badge-lead{max-width:64ch; color:var(--muted); margin:0 0 28px}
+.badge-lead b{font-family:var(--disp); color:var(--ink)}
+.badge-strip{display:grid; grid-template-columns:repeat(4,1fr); gap:20px; list-style:none; margin:0; padding:0}
+.badge-tile{
+  display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center;
+  background:var(--white); border:1.5px solid var(--line); border-radius:var(--r-md);
+  padding:26px 18px 20px;
+}
+.badge-tile img{width:auto; height:78px; max-width:100%; object-fit:contain} /* ≤~85px wide; every badge is ≥352px native, far under 1.15× */
+.badge-tile span{font:700 13px/1.35 var(--disp); color:var(--ink); letter-spacing:.01em}
 
 /* ================= 6 · HOMEPAGE HERO MOCKUP ================= */
 .mock-frame{
@@ -504,7 +519,7 @@ p{margin:0 0 1em}
   .story-body{padding:40px 32px 40px}
   .tl-track{grid-template-columns:repeat(2,1fr)}
   .ui-grid{grid-template-columns:1fr}
-  .event-card{max-width:480px} /* keeps the 712px-native huddle photo inside the small-card cap */
+  .event-card{max-width:480px} /* keeps the 900px-native league photo inside the small-card cap */
   .voice-grid{grid-template-columns:1fr}
   .pfoot-grid{grid-template-columns:1fr}
 }
@@ -530,6 +545,7 @@ p{margin:0 0 1em}
   .sat-crest{width:56px}
   .story-crest{width:84px; top:-20px; left:-8px} /* stays fully on-canvas at 390px — the mark never clips */
   .tl-track{grid-template-columns:1fr}
+  .badge-strip{grid-template-columns:repeat(2,1fr)}
   .story-body{padding:32px 24px}
 }
 </style>
@@ -709,6 +725,28 @@ p{margin:0 0 1em}
       <li><b>Three angles only.</b> −3°, 2°, −2°. Like a careful hand placed them, and the crest always signs at 2°. Nothing tumbles, nothing spins.</li>
       <li><b>Never on a face, never under text.</b> Stickers keep to photo corners and page margins; people and words always win.</li>
     </ol>
+
+    <div class="badge-drawer">
+      <p class="badge-lead"><b>Before the die-cut edge, it’s just program art.</b> These are real DiscNW program badges, shown flat and untouched on a plain tile — the same art a sticker is cut from, like the Sea Plastic duck up on the sheet.</p>
+      <ul class="badge-strip" aria-label="Real DiscNW program badges">
+        <li class="badge-tile">
+          <img src="assets/2025-swl-logo.png" width="800" height="801" alt="Summer Wonder League">
+          <span>Summer Wonder League</span>
+        </li>
+        <li class="badge-tile">
+          <img src="assets/discnw-coaching-collective-3.png" width="352" height="322" alt="DiscNW Coaching Collective">
+          <span>DiscNW Coaching Collective</span>
+        </li>
+        <li class="badge-tile">
+          <img src="assets/training-camp-logo-full-color-web.png" width="600" height="600" alt="DiscNW Training Camp">
+          <span>Training Camp</span>
+        </li>
+        <li class="badge-tile">
+          <img src="assets/seaplastic-2026-logo.png" width="613" height="595" alt="Sea Plastic">
+          <span>Sea Plastic</span>
+        </li>
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -929,7 +967,7 @@ p{margin:0 0 1em}
         <div class="event-card">
           <span class="stkr event-stkr">Registering now</span>
           <div class="ph event-ph">
-            <img src="assets/hudl.jpg" width="712" height="776" alt="A team of players huddles arms-over-shoulders on a dusky grass field, a band of pale evening clouds hanging over the treeline behind them.">
+            <img src="assets/dsc03420-edit-1.jpg" style="object-position:50% 45%" width="900" height="600" alt="An adult player in a pink cap and white long-sleeve throws a forehand across a sunlit grass field, other players warming up in the background.">
           </div>
           <div class="event-body">
             <h4>Summer Mixed Hat League</h4>

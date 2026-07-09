@@ -410,6 +410,14 @@ h1,h2,h3,h4{ margin:0; font-family:'Hanken Grotesk',sans-serif; }
 .mock-reg-strip li{ white-space:nowrap; }
 .mock-reg-strip li + li::before{ content:"·"; color:var(--deep-muted); padding:0 11px; }
 .mock-reg-strip .rs-more{ margin-left:auto; color:var(--gold); font-weight:700; font-size:14px; }
+/* mock: real program badges — varied logos on one consistent neutral tile, never recoloured or squashed */
+.mock-programs{ background:var(--cloud); padding:20px clamp(20px,3vw,36px) 24px; }
+.mp-k{ margin:0 0 14px; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.15em; text-transform:uppercase; color:var(--slate); }
+.mp-row{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(6,1fr); gap:12px; }
+.mp-row li{ display:flex; align-items:center; justify-content:center; min-height:100px; padding:16px; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+.mp-row img{ display:block; width:auto; height:auto; max-width:100%; max-height:66px; }
+@media (max-width:820px){ .mp-row{ grid-template-columns:repeat(3,1fr); } }
+@media (max-width:560px){ .mp-row{ grid-template-columns:repeat(2,1fr); } }
 
 /* ————— 7 · FRONT DOORS ————— */
 .doors{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
@@ -435,6 +443,20 @@ h1,h2,h3,h4{ margin:0; font-family:'Hanken Grotesk',sans-serif; }
 .stat::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--accent,var(--coral)); }
 .stat .num{ display:block; font-family:'Hanken Grotesk',sans-serif; font-weight:900; font-size:clamp(26px,3vw,34px); line-height:1.05; color:var(--ink); margin-bottom:5px; letter-spacing:-.02em; }
 .stat .why{ margin:0; font-size:14px; color:var(--slate); line-height:1.45; }
+
+/* storytelling: real community faces — one group photo beside clean headshots on consistent tiles */
+.people{ margin-top:34px; padding-top:34px; border-top:1px solid var(--line); }
+.people-head{ display:flex; flex-wrap:wrap; gap:4px 20px; align-items:baseline; margin:0 0 22px; }
+.people-k{ font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:15px; color:var(--ink); }
+.people-s{ font-size:14px; color:var(--slate); }
+.people-grid{ display:grid; grid-template-columns:1.25fr 1fr; gap:24px; align-items:start; }
+.people-photo{ margin:0; }
+.people-photo img{ width:100%; height:auto; border-radius:16px; border:1px solid var(--line); filter:contrast(1.03) saturate(1.04); }
+.face-row{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.face-row figure{ margin:0; }
+.face-row img{ width:100%; aspect-ratio:1/1; object-fit:cover; object-position:50% 25%; border-radius:14px; border:1px solid var(--line); background:var(--cloud); filter:contrast(1.03) saturate(1.04); }
+.face-row figcaption{ margin:9px 2px 0; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--ink); }
+@media (max-width:760px){ .people-grid{ grid-template-columns:1fr; } }
 
 /* ————— deep brand moment — the crest on solid ground ————— */
 .crest{ background:var(--deep); color:var(--deep-text); }
@@ -864,6 +886,18 @@ html.anim .crest:not(.in) .crest-mark{ opacity:0; transform:translateY(14px) sca
           <span class="rs-more">See all programs →</span>
         </div>
       </div>
+
+      <div class="mock-programs">
+        <p class="mp-k">Programs</p>
+        <ul class="mp-row">
+          <li><img src="assets/2025-swl-logo.png" width="800" height="801" loading="lazy" alt="Summer Wonder League"></li>
+          <li><img src="assets/discnw-summer-camp-disc.jpg" width="503" height="504" loading="lazy" alt="Summer Youth Ultimate Camps"></li>
+          <li><img src="assets/seaplastic-2026-logo.png" width="613" height="595" loading="lazy" alt="Sea Plastic"></li>
+          <li><img src="assets/training-camp-logo-full-color-web.png" width="600" height="600" loading="lazy" alt="Training Camp"></li>
+          <li><img src="assets/discnw-coaching-collective-3.png" width="352" height="322" loading="lazy" alt="DiscNW Coaching Collective"></li>
+          <li><img src="assets/heatup-sq.png" width="600" height="600" loading="lazy" alt="Heat Up"></li>
+        </ul>
+      </div>
     </div>
     <p class="note">Component note: the mesh is the only place the vivid spectrum touches the hero, and it never sits under the type — a paper scrim keeps the headline column effectively solid. The wordmark uses the real dark lockup on white; the spectrum reads on the keyline below the nav. The photograph is full colour, no treatment.</p>
   </section>
@@ -892,7 +926,7 @@ html.anim .crest:not(.in) .crest-mark{ opacity:0; transform:translateY(14px) sca
 
       <article class="door" data-rise style="--i:1">
         <div class="door-media">
-          <img class="ph" src="assets/sr26-spirit-huddle.jpg" width="1920" height="1080" style="object-position:50% 30%" alt="High school players stand arm in arm in a tight post-game huddle at Spring Reign, a few fists raised.">
+          <img class="ph" src="assets/coaching-2.jpg" width="400" height="267" style="object-position:50% 42%" alt="A coach crouches to talk with a group of youth players gathered on a field.">
           <div class="door-ribbon" style="background:#1699AC"></div>
         </div>
         <div class="door-body">
@@ -943,6 +977,25 @@ html.anim .crest:not(.in) .crest-mark{ opacity:0; transform:translateY(14px) sca
         <li class="stat" data-rise style="--i:3;--accent:#1699AC"><span class="num">Zero referees</span><p class="why">every game, every age — players make their own calls. Spirit of the Game welcomes all.</p></li>
         <li class="stat" data-rise style="--i:4;--accent:#8B4DC6"><span class="num">World&rsquo;s largest</span><p class="why">Spring Reign — the world&rsquo;s largest mixed youth ultimate tournament, played here every spring.</p></li>
       </ul>
+    </div>
+
+    <div class="people" data-rise>
+      <div class="people-head">
+        <span class="people-k">Board, staff &amp; coaches</span>
+        <span class="people-s">A few of the people who keep DiscNW&rsquo;s programs running.</span>
+      </div>
+      <div class="people-grid">
+        <figure class="people-photo">
+          <img src="assets/2024-discnw-board-and-staff-strategic-planning-retreat-group-photo.jpg" width="800" height="600" loading="lazy" alt="The DiscNW board and staff gathered on gym bleachers for a 2024 group photo.">
+          <figcaption class="ph-cap">DiscNW board and staff &middot; 2024 planning retreat.</figcaption>
+        </figure>
+        <ul class="face-row">
+          <li><figure><img src="assets/erin-armstrong-head-shot-1.jpg" width="900" height="600" loading="lazy" alt="Erin Armstrong"><figcaption>Erin Armstrong</figcaption></figure></li>
+          <li><figure><img src="assets/qxhna-profile-picture.jpg" width="439" height="600" loading="lazy" alt="Qxhna"><figcaption>Qxhna</figcaption></figure></li>
+          <li><figure><img src="assets/joe-bisignano.jpg" width="600" height="600" loading="lazy" alt="Joe Bisignano"><figcaption>Joe Bisignano</figcaption></figure></li>
+          <li><figure><img src="assets/matt-stenovec.jpg" width="649" height="600" loading="lazy" alt="Matt Stenovec"><figcaption>Matt Stenovec</figcaption></figure></li>
+        </ul>
+      </div>
     </div>
     <p class="note">Component note: community voices are submitted through a story form — a sustainable pipeline, not a staff burden. Each stat wears one spectrum accent on its edge, so even the data reads as belonging rather than a leaderboard.</p>
   </section>

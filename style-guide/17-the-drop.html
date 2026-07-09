@@ -410,6 +410,11 @@ html.js .m-vidbtn{display:inline-flex}
 .drop-tile.up{background:var(--asphalt-2);color:var(--volt);border:1px solid var(--line)}
 .drop-tile.live{background:var(--volt);color:var(--ink)}
 .drop-tile.sold{background:var(--asphalt-2);color:var(--ash-dim);border:1px solid var(--line)}
+/* program-badge tile: a real DiscNW program logo on a consistent neutral ground,
+   undistorted (object-fit:contain) with clearspace. State stays on the label + a live ring. */
+.drop-tile.badge{background:#fff;border:1px solid var(--line);padding:7px}
+.drop-tile.badge img{width:100%;height:100%;object-fit:contain}
+.drop-tile.badge.is-live{border:2px solid var(--volt);padding:6px}
 .drop-info{min-width:0}
 .drop-state{display:inline-flex;align-items:center;gap:7px;font-family:var(--body);font-weight:800;font-size:11px;
   letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px}
@@ -859,7 +864,7 @@ html.js .m-vidbtn{display:inline-flex}
           </div>
 
           <div class="drop-row" data-state="live">
-            <div class="drop-tile live">WON</div>
+            <div class="drop-tile badge is-live"><img src="assets/2025-swl-logo.png" width="800" height="801" alt="Summer Wonder League"></div>
             <div class="drop-info">
               <span class="drop-state live">Registering now</span>
               <h4>Summer Wonder League</h4>
@@ -879,7 +884,7 @@ html.js .m-vidbtn{display:inline-flex}
           </div>
 
           <div class="drop-row" data-state="upcoming">
-            <div class="drop-tile up">CMP</div>
+            <div class="drop-tile badge"><img src="assets/discnw-summer-camp-disc.jpg" width="503" height="504" alt="DiscNW Summer Ultimate Camps"></div>
             <div class="drop-info">
               <span class="drop-state up">Drops soon</span>
               <h4>Summer Youth Ultimate Camps</h4>
@@ -889,7 +894,7 @@ html.js .m-vidbtn{display:inline-flex}
           </div>
 
           <div class="drop-row is-sold" data-state="sold-out">
-            <div class="drop-tile sold">SEA</div>
+            <div class="drop-tile badge"><img src="assets/seaplastic-2026-logo.png" width="613" height="595" alt="Sea Plastic"></div>
             <div class="drop-info">
               <span class="drop-state sold">Sold out</span>
               <h4>Sea Plastic 2026 · beach</h4>
@@ -936,7 +941,7 @@ html.js .m-vidbtn{display:inline-flex}
       </article>
       <article class="door rv" style="--i:1">
         <div class="door-media">
-          <img src="assets/sr26-spirit-huddle.jpg" width="1920" height="1080" style="object-position:50% 30%" alt="High school players huddled in a tight line with arms around each other's shoulders at the Spring Reign finals.">
+          <img src="assets/dsc03420-edit-1.jpg" width="900" height="600" style="object-position:50% 45%" alt="A DiscNW player steps into a forehand throw on a grass field during a summer session, with others warming up behind.">
           <span class="pass">Coach pass</span>
         </div>
         <div class="door-body">
