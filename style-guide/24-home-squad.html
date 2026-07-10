@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction 24 · Home Squad — DiscNW redesign</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<meta name="description" content="Experimental direction 24 for the DiscNW redesign: Home Squad. Ultimate has no referees — the players, coaches, and volunteers make every call themselves, so they are the whole institution. This page celebrates the DiscNW community as a set of collectible foil trading cards. Collect the community, complete the set, add your own card.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+/* ————————————————————————————————————————————————————————————
+   DIRECTION 24 · HOME SQUAD  (experimental · collectible cards)
+
+   Ultimate is self-officiated — there are no referees. The players,
+   coaches, and volunteers make every call themselves, so they ARE
+   the institution. This page celebrates the DiscNW community as a
+   set of collectible foil trading cards on a deep-navy display mat.
+   Card fronts: a clean real headshot, a name, a role, a program
+   "series," and a plain Spirit-of-the-Game stat line. Card backs:
+   a short story and a stat block. The pitch: collect the community,
+   complete the set, add yourself as card #250.
+
+   THE LAW ON PHOTOS: photos render CLEAN. The foil, holo sheen, and
+   specular highlight live ONLY on the card chrome — the frame, the
+   border, the nameplate. Every headshot sits in an opaque tile that
+   is painted ABOVE the shimmer layers, so no sheen, blend, or tint
+   ever crosses a face. Real photos sit in clean frames.
+
+   Foil stays COOL — silver / blue / mint. No rainbow anywhere, so
+   it never reads as the Spectrum or Prism directions.
+
+   Contrast audit (WCAG AA):
+     text   #E6EAF1 on navy #0E1630 ......... 15.6
+     muted  #9DAAC2 on navy ................... 8.3
+     faint  #7E8CA8 on navy ................... 5.2  (labels ≥14px)
+     amber  #E0A32E on navy ................... 8.0  (accent-as-text)
+     teal   #22B8A6 on navy ................... 7.1
+     ink    #0E1630 on card-stock #EDEFF2 .... 15.6
+     muted2 #46566E on card-stock ............. 6.5
+     teal-d #0C6F64 on card-stock ............. 5.3
+     stock  #EDEFF2 on header ink #0A1024 .... 16.9
+———————————————————————————————————————————————————————————— */
+:root{
+  --navy:#0E1630;         /* deep navy — the display mat / ground   */
+  --navy-2:#0A1024;       /* deeper — footer, header inks           */
+  --navy-3:#152046;       /* raised navy — panels, photo backers    */
+  --stock:#EDEFF2;        /* card-stock cool white — card faces     */
+  --ink:#0E1630;          /* dark ink on card-stock                 */
+  --text:#E6EAF1;         /* body text on navy                      */
+  --muted:#9DAAC2;        /* secondary on navy                      */
+  --faint:#7E8CA8;        /* labels (≥14px) on navy                 */
+  --stock-muted:#46566E;  /* muted text on card-stock               */
+  --teal:#22B8A6;         /* stat bars / secondary                  */
+  --teal-deep:#0C6F64;    /* teal as small text on card-stock       */
+  --amber:#E0A32E;        /* rookie / star / holo edge              */
+  /* the COOL holo foil — silver / blue / mint, deliberately no rainbow */
+  --holo-a:#8FB4C9; --holo-b:#C9D6DE; --holo-c:#9FC7B0;
+  --foil:linear-gradient(135deg,#8FB4C9 0%,#C9D6DE 24%,#9FC7B0 48%,#C9D6DE 72%,#8FB4C9 100%);
+  --hair:rgba(159,178,209,.15);
+  --hair-2:rgba(159,178,209,.28);
+  --wrap:1200px;
+  --pad:clamp(18px,4vw,44px);
+  --disp:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  /* house easing — two curves for choreography, one symmetric for drift */
+  --ease-snap:cubic-bezier(.4,0,.1,1);
+  --ease-lux:cubic-bezier(.16,1,.3,1);
+  --ease-amb:cubic-bezier(.45,.05,.55,.95);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--navy);scroll-behavior:smooth;scroll-padding-top:20px;overflow-x:clip}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  margin:0;background:var(--navy);color:var(--text);
+  font-family:var(--body);font-size:17px;line-height:1.62;
+  overflow-x:clip;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+::selection{background:var(--amber);color:var(--navy-2)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:3px}
+.on-light :focus-visible{outline-color:#1c62d6}
+h1,h2,h3{margin:0;font-family:var(--disp);font-weight:800;line-height:1;letter-spacing:-.01em}
+.vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:var(--pad);top:-64px;z-index:120;background:var(--stock);color:var(--navy);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:11px 17px;border-radius:6px}
+.skip:focus-visible{top:12px}
+
+.wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:var(--pad)}
+.mono{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase}
+.disp{font-family:var(--disp);font-weight:800;font-stretch:118%}
+
+/* ————— top bar (kit chrome) ————— */
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  max-width:var(--wrap);margin-inline:auto;padding:15px var(--pad) 13px;
+  border-bottom:1px solid var(--hair);
+}
+.topbar .lockup{width:132px;height:auto;flex:none}
+.topbar .side{display:flex;align-items:center;gap:22px}
+.topbar .side .tag{color:var(--muted);font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase}
+.topbar a.back{
+  font-family:var(--mono);font-weight:700;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
+  text-decoration:none;color:var(--text);border-bottom:1px solid var(--hair-2);padding-bottom:2px;white-space:nowrap;
+}
+.topbar a.back:hover{border-bottom-color:var(--amber);color:#fff}
+@media (max-width:640px){.topbar .side .tag{display:none}.topbar .lockup{width:116px}}
+
+/* ————— the direction header block ————— */
+.deck{max-width:var(--wrap);margin-inline:auto;padding:clamp(24px,4vw,40px) var(--pad) 0;
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px}
+.deck .d-no{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.2em;color:var(--amber)}
+.deck .d-name{font-family:var(--disp);font-weight:900;font-stretch:118%;font-size:clamp(15px,2vw,19px);letter-spacing:.02em;text-transform:uppercase}
+.deck .d-sub{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--faint)}
+.deck .d-rule{flex:1 1 60px;height:1px;background:var(--hair-2);align-self:center;min-width:30px}
+
+/* ————————————————————————————————————————————————————————————
+   HERO — the display mat with the featured foil card of the week.
+———————————————————————————————————————————————————————————— */
+.hero{max-width:var(--wrap);margin-inline:auto;padding:clamp(30px,5vw,58px) var(--pad) clamp(20px,4vw,40px)}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(30px,5vw,72px);align-items:center}
+.hero-copy .set-line{color:var(--amber);margin:0 0 18px;display:flex;align-items:center;gap:.7em;flex-wrap:wrap}
+.hero-copy .set-line .pip{width:.6em;height:.6em;border-radius:50%;background:var(--amber);box-shadow:0 0 10px 1px rgba(224,163,46,.6)}
+.hero-copy .set-line b{color:var(--text);font-weight:700}
+.hero h1{font-size:clamp(46px,8.4vw,104px);font-stretch:112%;letter-spacing:-.03em;line-height:.9;color:#fff}
+.hero h1 .foilword{
+  background:var(--foil);-webkit-background-clip:text;background-clip:text;color:transparent;
+  /* a metallic sheen on TYPE (not a photo) — cool, no rainbow */
+}
+.hero .lead{max-width:52ch;margin:clamp(20px,3vw,30px) 0 0;font-size:clamp(16.5px,1.5vw,19px);color:var(--text)}
+.hero .lead b{color:#fff;font-weight:700}
+.hero-cta{margin:clamp(24px,3.4vw,34px) 0 0;display:flex;flex-wrap:wrap;gap:12px 14px;align-items:center}
+.hero .howto{margin:16px 0 0;color:var(--faint);display:flex;align-items:center;gap:.6em}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:.5em;font-family:var(--mono);font-weight:700;font-size:12.5px;letter-spacing:.11em;
+  text-transform:uppercase;text-decoration:none;padding:14px 24px;border-radius:999px;border:1.5px solid transparent;cursor:pointer}
+.btn-amber{background:var(--amber);color:var(--navy-2);box-shadow:0 12px 30px -14px rgba(224,163,46,.8)}
+.btn-amber:hover{background:#ecb44a}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--hair-2)}
+.btn-ghost:hover{border-color:var(--amber);color:#fff}
+
+/* ————— THE SIGNATURE — the featured foil card (tilt + flip) ————— */
+.cardstage{
+  perspective:1400px;display:flex;flex-direction:column;align-items:center;gap:16px;
+  padding:10px 6px;   /* buffer so a tilt never bleeds past the column */
+}
+.tc-cb{position:absolute;width:1px;height:1px;opacity:0;margin:0;pointer-events:none}
+.tc{
+  display:block;position:relative;width:min(80vw,338px);aspect-ratio:5/7;margin:0;
+  cursor:pointer;border-radius:20px;
+  --rx:0deg;--ry:0deg;--mx:50%;--my:36%;--sx:0;
+}
+.tc-cb:focus-visible ~ .tc{outline:3px solid var(--amber);outline-offset:6px}
+.tc-3d{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(var(--rx)) rotateY(var(--ry));
+  transition:transform .5s var(--ease-lux)}
+.tc.is-live .tc-3d{transition:transform .08s linear}
+.tc-flip{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .7s var(--ease-lux);
+  box-shadow:0 40px 70px -30px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.04)}
+.tc-cb:checked ~ .tc .tc-flip{transform:rotateY(180deg)}
+.tc-face{position:absolute;inset:0;overflow:hidden;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:18px}
+
+/* — FRONT: the foil card. Shimmer lives on chrome; photo stays clean. — */
+.tc-front{background:var(--foil);isolation:isolate;
+  border:1px solid rgba(224,163,46,.55);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+.tc-sheen{position:absolute;inset:0;z-index:1;mix-blend-mode:screen;pointer-events:none;
+  background:
+    repeating-linear-gradient(112deg,
+      rgba(255,255,255,0) 0 7%,
+      rgba(201,214,222,.55) 11%,
+      rgba(159,199,176,.35) 15%,
+      rgba(143,180,201,.5) 19%,
+      rgba(255,255,255,0) 25% 33%);
+  background-size:260% 260%;
+  background-position:calc(50% + var(--sx)*1%) 50%;opacity:.85}
+.tc-spec{position:absolute;inset:0;z-index:2;mix-blend-mode:screen;pointer-events:none;
+  background:radial-gradient(130px 130px at var(--mx) var(--my),
+    rgba(255,255,255,.8),rgba(255,255,255,.18) 42%,transparent 72%)}
+.tc-content{position:absolute;inset:13px;z-index:3;display:flex;flex-direction:column;gap:8px}
+.tc-hdr{display:flex;justify-content:space-between;align-items:center;gap:8px;
+  background:rgba(10,16,36,.82);border-radius:8px;padding:7px 11px;
+  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.tc-hdr .series{font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--stock)}
+.tc-hdr .num{font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.06em;color:#B9C6DE;font-variant-numeric:tabular-nums}
+.tc-photo{position:relative;flex:1;min-height:0;background:var(--navy-3);border-radius:9px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.5);box-shadow:0 6px 18px -10px rgba(0,0,0,.6)}
+.tc-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 26%}
+.tc-star{position:absolute;top:8px;right:8px;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 40% 34%,#f4c257,#d1941f);
+  color:var(--navy-2);border:1px solid rgba(255,255,255,.6);box-shadow:0 4px 12px -4px rgba(0,0,0,.5)}
+.tc-star .st{font-size:15px;line-height:1}
+.tc-star .lb{font-family:var(--mono);font-weight:700;font-size:6.5px;letter-spacing:.08em;margin-top:1px}
+.tc-plate{background:var(--stock);border-radius:9px;padding:10px 12px 11px;border-top:3px solid var(--amber)}
+.tc-name{font-family:var(--disp);font-weight:900;font-stretch:120%;font-size:clamp(23px,3vw,30px);letter-spacing:-.01em;color:var(--ink);line-height:.95;display:block}
+.tc-role{display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline;margin-top:3px}
+.tc-role .r{font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--stock-muted)}
+.tc-role .s{font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.05em;color:var(--teal-deep)}
+.tc-statline{margin-top:8px;font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.02em;color:var(--stock-muted);line-height:1.5;font-variant-numeric:tabular-nums}
+.tc-flipcue{position:absolute;left:13px;bottom:2px;z-index:4;font-family:var(--mono);font-weight:700;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(10,16,36,.7)}
+
+/* — BACK: matte card-stock, the story + stats (also the no-JS content). — */
+.tc-back{background:var(--stock);color:var(--ink);transform:rotateY(180deg);
+  border:1px solid rgba(224,163,46,.55);padding:15px 16px 14px;display:flex;flex-direction:column}
+.tc-back .bk-hdr{display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+  padding-bottom:8px;border-bottom:1px solid rgba(14,22,48,.16)}
+.tc-back .bk-series{font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-deep)}
+.tc-back .bk-num{font-family:var(--mono);font-weight:500;font-size:10px;color:var(--stock-muted);font-variant-numeric:tabular-nums}
+.tc-back .bk-name{font-family:var(--disp);font-weight:900;font-stretch:118%;font-size:22px;letter-spacing:-.01em;margin:9px 0 2px;line-height:.95}
+.tc-back .bk-tag{font-family:var(--mono);font-weight:700;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--stock-muted)}
+.tc-back .bk-story{margin:9px 0 0;font-size:11.5px;line-height:1.5;color:#2a3247}
+.tc-back .bk-stats{list-style:none;margin:auto 0 0;padding:10px 0 0}
+.tc-back .bk-stats li{display:flex;justify-content:space-between;gap:10px;align-items:baseline;
+  font-family:var(--mono);font-size:10px;letter-spacing:.03em;padding:3px 0;border-top:1px dashed rgba(14,22,48,.14);font-variant-numeric:tabular-nums}
+.tc-back .bk-stats .k{color:var(--stock-muted);text-transform:uppercase;letter-spacing:.1em;font-weight:500}
+.tc-back .bk-stats .v{color:var(--ink);font-weight:700;text-align:right}
+.tc-back .bk-foot{margin-top:9px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tc-back .bk-spirit{font-family:var(--mono);font-weight:700;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-deep)}
+.tc-back .bk-flipcue{font-family:var(--mono);font-weight:700;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(14,22,48,.55)}
+.tc-hint{color:var(--faint);font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-align:center;margin:0}
+
+/* ————— facts strip ————— */
+.facts{border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);margin-top:clamp(26px,4vw,40px)}
+.facts .in{max-width:var(--wrap);margin-inline:auto;padding:15px var(--pad);display:flex;flex-wrap:wrap;gap:9px 30px;justify-content:space-between;align-items:baseline}
+.facts span{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.facts b{color:var(--amber);font-weight:700}
+.facts a{color:var(--text);text-decoration:none;border-bottom:1px solid var(--hair-2);padding-bottom:1px}
+.facts a:hover{border-bottom-color:var(--amber)}
+
+/* ————— section scaffold ————— */
+.sec{max-width:var(--wrap);margin-inline:auto;padding:clamp(52px,8vw,104px) var(--pad) 0}
+.sec-k{color:var(--amber);display:inline-flex;align-items:center;gap:.6em;margin:0 0 14px}
+.sec-k::before{content:"";width:22px;height:1px;background:var(--amber)}
+.sec-h{font-size:clamp(31px,4.6vw,60px);font-stretch:110%;letter-spacing:-.02em;line-height:1;color:#fff;max-width:18ch}
+.sec-h em{font-style:normal;color:var(--amber)}
+.sec-lede{max-width:56ch;margin:18px 0 0;font-size:clamp(16px,1.4vw,18.5px);color:var(--muted)}
+.sec-lede b{color:var(--text);font-weight:700}
+
+/* ————— THE SET — CSS-only filter chips + a wall of mini cards ————— */
+.filters{margin-top:clamp(26px,4vw,38px)}
+.fx{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.chiprow{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:clamp(22px,3vw,30px)}
+.chip{display:inline-flex;align-items:center;gap:.5em;cursor:pointer;
+  font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);background:rgba(21,32,70,.6);border:1px solid var(--hair-2);border-radius:999px;padding:8px 15px;
+  transition:color .25s var(--ease-snap),background-color .25s var(--ease-snap),border-color .25s var(--ease-snap)}
+.chip:hover{color:var(--text);border-color:var(--muted)}
+.chip .ct{font-weight:500;color:var(--faint)}
+.fx:checked + .chip{color:var(--navy-2);background:var(--amber);border-color:var(--amber)}
+.fx:checked + .chip .ct{color:rgba(10,16,36,.7)}
+.fx:focus-visible + .chip{outline:3px solid var(--amber);outline-offset:3px}
+
+.setgrid{list-style:none;flex:0 0 100%;width:100%;margin:clamp(10px,1.6vw,16px) 0 0;padding:0;display:grid;gap:clamp(12px,1.6vw,18px);grid-template-columns:repeat(2,minmax(0,1fr))}
+.setgrid .mc{min-width:0}
+@media (min-width:560px){.setgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:900px){.setgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+/* CSS-only filtering: hide non-matching cards when a series is chosen */
+#s-spring:checked ~ .setgrid .mc:not([data-series="spring"]),
+#s-hat:checked    ~ .setgrid .mc:not([data-series="hat"]),
+#s-coach:checked  ~ .setgrid .mc:not([data-series="coach"]),
+#s-camps:checked  ~ .setgrid .mc:not([data-series="camps"]),
+#s-fall:checked   ~ .setgrid .mc:not([data-series="fall"]){display:none}
+.setfoot{max-width:66ch;margin:clamp(22px,3vw,32px) 0 0;color:var(--faint);font-size:15px;font-style:italic}
+.setfoot b{color:var(--muted);font-style:normal;font-weight:700}
+
+/* ————— MINI CARD (reused: the set, the mock) ————— */
+.mc{margin:0;min-width:0}
+.mc-face{position:relative;isolation:isolate;min-width:0;background:var(--foil);border-radius:13px;padding:9px;
+  border:1px solid rgba(224,163,46,.5);box-shadow:inset 0 0 0 1px rgba(255,255,255,.32),0 16px 34px -22px rgba(0,0,0,.7);
+  display:flex;flex-direction:column;gap:7px}
+.mc-face::before{content:"";position:absolute;inset:0;z-index:1;border-radius:13px;mix-blend-mode:screen;pointer-events:none;
+  background:repeating-linear-gradient(110deg,rgba(255,255,255,0) 0 8%,rgba(201,214,222,.45) 12%,rgba(159,199,176,.28) 16%,rgba(143,180,201,.4) 20%,rgba(255,255,255,0) 26% 34%);
+  background-size:240% 240%;background-position:30% 50%;opacity:.7}
+.mc-face>*{position:relative;z-index:2}
+.mc-hdr{display:flex;justify-content:space-between;align-items:center;gap:6px;min-width:0;background:rgba(10,16,36,.82);border-radius:6px;padding:5px 9px}
+.mc-series{font-family:var(--mono);font-weight:700;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--stock);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.mc-num{font-family:var(--mono);font-weight:500;font-size:8.5px;color:#B9C6DE;font-variant-numeric:tabular-nums;flex:none}
+.mc-photo{aspect-ratio:1/1;background:var(--navy-3);border-radius:7px;overflow:hidden;border:1px solid rgba(255,255,255,.5)}
+.mc-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 24%}
+.mc-plate{background:var(--stock);border-radius:7px;padding:8px 10px 9px;border-top:2.5px solid var(--amber)}
+.mc-name{font-family:var(--disp);font-weight:900;font-stretch:116%;font-size:clamp(16px,1.7vw,19px);letter-spacing:-.01em;color:var(--ink);line-height:.98;display:block}
+.mc-role{display:block;margin-top:2px;font-family:var(--mono);font-weight:700;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--stock-muted)}
+.mc-role b{color:var(--teal-deep);font-weight:700}
+.mc-stat{display:block;margin-top:5px;font-family:var(--mono);font-weight:500;font-size:8px;letter-spacing:.02em;color:var(--stock-muted);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ————— CARD BACKS / STORIES — matte backs, story + stat block ————— */
+.stories{display:grid;gap:clamp(16px,2.4vw,26px);margin-top:clamp(28px,4vw,44px)}
+.sback{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:clamp(18px,3vw,34px);align-items:start;
+  background:var(--stock);color:var(--ink);border-radius:16px;padding:clamp(20px,3vw,32px);
+  border-left:5px solid var(--amber);box-shadow:0 26px 60px -40px rgba(0,0,0,.6)}
+.sback .chip-photo{width:clamp(96px,12vw,132px);flex:none}
+.sback .chip-photo .frm{aspect-ratio:1/1;background:var(--navy-3);border-radius:10px;overflow:hidden;border:1px solid rgba(14,22,48,.18)}
+.sback .chip-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+.sback .chip-photo .cap{margin-top:8px;font-family:var(--mono);font-weight:700;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--stock-muted);text-align:center}
+.sback .bd{min-width:0}
+.sback .bd .who{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.sback .bd .who .nm{font-family:var(--disp);font-weight:900;font-stretch:116%;font-size:clamp(24px,3vw,34px);letter-spacing:-.015em;line-height:1}
+.sback .bd .who .rl{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-deep)}
+.sback .bd .story{margin:14px 0 0;font-size:clamp(15px,1.4vw,16.5px);line-height:1.6;color:#2a3247;max-width:52ch}
+.sback .stats{list-style:none;margin:0;padding:0;min-width:clamp(150px,15vw,188px);flex:none}
+.sback .stats li{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;align-items:baseline;
+  font-family:var(--mono);font-size:11px;letter-spacing:.02em;padding:7px 0;border-top:1px solid rgba(14,22,48,.14);font-variant-numeric:tabular-nums}
+.sback .stats li:first-child{border-top:0}
+.sback .stats .k{color:var(--stock-muted);text-transform:uppercase;letter-spacing:.09em;font-weight:500;font-size:9.5px}
+.sback .stats .v{color:var(--ink);font-weight:700;text-align:right}
+.sback .stats .bar{flex:0 0 100%;width:100%;height:5px;border-radius:3px;background:rgba(14,22,48,.1);overflow:hidden;margin-top:4px}
+.sback .stats .bar i{display:block;height:100%;background:var(--teal);border-radius:3px}
+
+/* ————— COMPLETE THE SET ————— */
+.complete{margin-top:clamp(52px,8vw,104px)}
+.complete .in{max-width:var(--wrap);margin-inline:auto;padding:clamp(48px,7vw,88px) var(--pad);
+  background:linear-gradient(160deg,#14204a,#0b1128);
+  border:1px solid var(--hair-2);border-radius:22px;
+  display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(30px,5vw,64px);align-items:center}
+.complete h2{font-size:clamp(34px,5.2vw,66px);font-stretch:110%;letter-spacing:-.025em;line-height:.95;color:#fff}
+.complete h2 em{font-style:normal;color:var(--amber)}
+.complete .why{max-width:50ch;margin:20px 0 0;font-size:clamp(16px,1.5vw,18.5px);color:var(--text)}
+.complete .why b{color:#fff;font-weight:700}
+.complete .ways{list-style:none;margin:clamp(22px,3vw,30px) 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.complete .ways a{display:inline-flex;align-items:center;gap:.5em;text-decoration:none;
+  font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text);background:rgba(21,32,70,.7);border:1px solid var(--hair-2);border-radius:999px;padding:11px 18px;
+  transition:border-color .25s var(--ease-snap),color .25s var(--ease-snap)}
+.complete .ways a:hover{border-color:var(--amber);color:#fff}
+.complete .ways a .go{color:var(--amber)}
+.complete .tel{display:inline-block;margin-top:18px;font-family:var(--mono);font-weight:700;font-size:12.5px;letter-spacing:.1em;
+  color:var(--text);text-decoration:none;border-bottom:1px solid var(--hair-2);padding-bottom:2px}
+.complete .tel:hover{border-bottom-color:var(--amber);color:#fff}
+
+/* the blank "rookie" card — add yourself */
+.blankwrap{display:flex;justify-content:center}
+.blank{width:min(74vw,300px);aspect-ratio:5/7;border-radius:18px;position:relative;
+  background:linear-gradient(135deg,rgba(143,180,201,.16),rgba(159,199,176,.14));
+  border:1.5px solid var(--amber);box-shadow:0 30px 60px -34px rgba(0,0,0,.7)}
+.blank .inner{position:absolute;inset:12px;border:2px dashed rgba(224,163,46,.6);border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;padding:18px}
+.blank .plus{width:52px;height:52px;border-radius:50%;border:2px solid var(--amber);color:var(--amber);
+  display:grid;place-items:center;font-size:30px;line-height:1;font-family:var(--disp);font-weight:700}
+.blank .num{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.1em;color:var(--amber);font-variant-numeric:tabular-nums}
+.blank .lb{font-family:var(--disp);font-weight:900;font-stretch:120%;font-size:26px;letter-spacing:.01em;text-transform:uppercase;color:#fff;line-height:.95}
+.blank .sm{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* ————— HOMEPAGE MOCK (browser frame, card styling) ————— */
+.mockwrap{max-width:1080px;margin:clamp(28px,4vw,44px) auto 0}
+.browser{border:1px solid var(--hair-2);border-radius:16px;overflow:hidden;box-shadow:0 44px 90px -50px rgba(0,0,0,.8);background:var(--navy)}
+.browser-bar{display:flex;align-items:center;gap:14px;background:#0b1128;border-bottom:1px solid var(--hair);padding:10px 16px}
+.browser-dots{display:flex;gap:6px}
+.browser-dots i{width:10px;height:10px;border-radius:50%;background:#2a3559;display:block}
+.browser-url{flex:1;max-width:320px;background:#0e1730;border:1px solid var(--hair-2);border-radius:999px;
+  font-family:var(--mono);font-size:12px;color:var(--muted);padding:6px 16px;text-align:center;letter-spacing:.04em}
+.mk{background:var(--navy)}
+.mk-nav{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,3vw,28px);border-bottom:1px solid var(--hair)}
+.mk-nav img{width:104px;height:auto}
+.mk-links{margin-left:auto;display:flex;gap:18px}
+.mk-links span{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.mk-reg{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--navy-2);background:var(--amber);border-radius:999px;padding:8px 15px}
+@media (max-width:640px){.mk-links{display:none}}
+.mk-promise{display:flex;flex-wrap:wrap;gap:6px 14px;background:#0b1128;padding:9px clamp(16px,3vw,28px);
+  font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.mk-promise b{color:var(--amber);font-weight:700}
+.mk-promise .dot{opacity:.4}
+.mk-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(20px,3vw,40px);align-items:center;padding:clamp(26px,4vw,46px) clamp(16px,3vw,28px)}
+.mk-hero .ey{font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--amber);margin:0 0 12px}
+.mk-hero h3{font-family:var(--disp);font-weight:900;font-stretch:112%;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.02em;line-height:1;color:#fff}
+.mk-hero p{margin:14px 0 0;font-size:14.5px;color:var(--muted);max-width:38ch}
+.mk-hero .row{margin:18px 0 0;display:flex;flex-wrap:wrap;gap:10px}
+.mk-hero .b1{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--navy-2);background:var(--amber);border-radius:999px;padding:10px 17px}
+.mk-hero .b2{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--text);border:1px solid var(--hair-2);border-radius:999px;padding:10px 17px}
+.mk-feat{display:flex;justify-content:center}
+.mk-strip{border-top:1px solid var(--hair);padding:clamp(20px,3vw,30px) clamp(16px,3vw,28px)}
+.mk-strip .lbl{font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin:0 0 14px}
+.mk-cards{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.mk-hero{grid-template-columns:1fr}.mk-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.mk-reg-strip{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;background:#0b1128;border-top:1px solid var(--hair);
+  padding:15px clamp(16px,3vw,28px);font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.mk-reg-strip .k{color:var(--amber);font-weight:700}
+.mk-reg-strip .more{margin-left:auto;color:var(--amber);font-weight:700}
+.mockcap{max-width:66ch;margin:clamp(18px,2.6vw,26px) auto 0;text-align:center;color:var(--faint);font-size:14.5px;font-style:italic}
+
+/* ————— appendix ————— */
+.appendix{max-width:var(--wrap);margin:clamp(56px,9vw,116px) auto 0;padding:0 var(--pad) clamp(20px,4vw,44px)}
+.ap-plate{background:#0c1226;border:1px solid var(--hair);border-radius:20px;padding:clamp(26px,4vw,50px)}
+.ap-plate .tag{color:var(--amber);font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+.ap-plate h2{margin-top:8px;font-size:clamp(27px,3.6vw,44px);font-stretch:110%;letter-spacing:-.015em;color:#fff}
+.ap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:24px 44px;margin-top:28px}
+.ap-item h3{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--faint);margin:0 0 8px}
+.ap-item p{margin:0;font-size:15px;line-height:1.62;color:var(--text)}
+.ap-item p em{font-style:italic;color:var(--muted)}
+.ap-item p b{color:#fff;font-weight:700}
+.swatches{display:flex;flex-direction:column;gap:8px}
+.swrow{display:flex;align-items:center;gap:10px}
+.swrow i{width:18px;height:18px;flex:none;border-radius:5px;border:1px solid var(--hair-2)}
+.swrow .foilchip{background:var(--foil)}
+.swrow code{font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+/* ————— footer ————— */
+.pagefoot{background:var(--navy-2);border-top:1px solid var(--hair);margin-top:clamp(48px,7vw,84px)}
+.pagefoot .in{max-width:var(--wrap);margin-inline:auto;padding:26px var(--pad);
+  display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px 28px}
+.pagefoot .brandmark img{width:116px;height:auto}
+.pagefoot .mid{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.06em;color:var(--muted)}
+.pagefoot .links{display:flex;gap:22px}
+.pagefoot a{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text);text-decoration:none;border-bottom:1px solid var(--hair-2);padding-bottom:2px}
+.pagefoot a:hover{border-bottom-color:var(--amber);color:#fff}
+
+/* ————— responsive ————— */
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:clamp(30px,6vw,48px)}
+  .cardstage{order:2}
+  .complete .in{grid-template-columns:1fr;gap:clamp(30px,6vw,44px)}
+  .sback{grid-template-columns:auto minmax(0,1fr);gap:20px 26px}
+  .sback .stats{grid-column:1 / -1}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .sback{grid-template-columns:1fr}
+  .sback .chip-photo{width:120px}
+  .mk-cards{grid-template-columns:repeat(2,1fr)}
+  .facts .in{gap:8px 20px}
+  .pagefoot .in{gap:12px 20px}.pagefoot .links{gap:16px}
+}
+@media (max-width:390px){
+  .tc{width:min(84vw,300px)}
+  .chip{font-size:10px;padding:7px 12px}
+}
+
+/* ————————————————————————————————————————————————————————————
+   MOTION — quiet. The cards arrive; the featured card tilts to the
+   pointer and flips on click. Every pre-hidden state is doubly gated:
+   behind html.anim (JS-added) AND prefers-reduced-motion:no-preference.
+   With no JS, reduced motion, or print, the base styles ARE the
+   settled page — the card sits flat, its back is reachable by tap,
+   and the whole set is on screen. A safety timer lands everything ≤2.3s.
+———————————————————————————————————————————————————————————— */
+@keyframes foilShift{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+
+@media screen and (prefers-reduced-motion:no-preference){
+  /* auto-shimmer on the foil (chrome only) */
+  html.anim .tc-sheen{animation:foilShift 7s var(--ease-amb) infinite alternate}
+
+  /* entrance */
+  html.anim .topbar,html.anim .deck{opacity:0;transform:translateY(-10px)}
+  html.anim.go .topbar{opacity:1;transform:none;transition:opacity .6s var(--ease-lux) .04s,transform .7s var(--ease-lux) .04s}
+  html.anim.go .deck{opacity:1;transform:none;transition:opacity .6s var(--ease-lux) .12s,transform .7s var(--ease-lux) .12s}
+  html.anim .hero-copy>*{opacity:0;transform:translateY(16px)}
+  html.anim.go .hero-copy>*{opacity:1;transform:none;transition:opacity .7s var(--ease-lux) calc(.2s + var(--i,0)*.08s),transform .8s var(--ease-lux) calc(.2s + var(--i,0)*.08s)}
+  html.anim .cardstage{opacity:0;transform:translateY(24px) scale(.97)}
+  html.anim.go .cardstage{opacity:1;transform:none;transition:opacity .8s var(--ease-lux) .34s,transform .9s var(--ease-lux) .34s}
+
+  /* generic reveals */
+  html.anim .rv{opacity:0;transform:translateY(22px)}
+  html.anim .rv.in{opacity:1;transform:none;transition:opacity .7s var(--ease-lux),transform .8s var(--ease-lux)}
+  /* the set assembles on a tight stagger */
+  html.anim .setgrid .mc{opacity:0;transform:translateY(16px)}
+  html.anim .setgrid.in .mc{opacity:1;transform:none;transition:opacity .5s var(--ease-lux) calc(var(--i,0)*.04s),transform .6s var(--ease-lux) calc(var(--i,0)*.04s)}
+
+  /* micro */
+  .btn,.chip,.complete .ways a{transition:transform .3s var(--ease-snap),background-color .3s var(--ease-snap),border-color .3s var(--ease-snap),color .3s var(--ease-snap)}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:active{transform:translateY(0)}
+  .mc-face{transition:transform .3s var(--ease-snap),box-shadow .3s var(--ease-snap)}
+}
+/* pointer-accurate hover lift on mini cards */
+@media screen and (hover:hover) and (pointer:fine){
+  .mc-face:hover{transform:translateY(-4px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.4),0 22px 40px -22px rgba(0,0,0,.8)}
+}
+/* belt-and-braces: force resting states under reduced motion */
+@media (prefers-reduced-motion:reduce){
+  .topbar,.deck,.hero-copy>*,.cardstage,.rv,.setgrid .mc{opacity:1!important;transform:none!important}
+  .tc-3d{transition:none!important}
+  .tc-flip{transition:none!important}
+}
+@media print{
+  .skip{display:none}
+  .sec,.complete,.mockwrap,.appendix{break-inside:avoid}
+  html.anim .topbar,html.anim .deck,html.anim .hero-copy>*,html.anim .cardstage,html.anim .rv,html.anim .setgrid .mc{opacity:1!important;transform:none!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <img class="lockup" src="assets/brand/logo-full-white.png" alt="DiscNW logo: circular Coast Salish-style formline disc mark beside the DiscNW wordmark" width="1446" height="616">
+  <div class="side">
+    <span class="tag">DiscNW · Design direction 24 · Experimental</span>
+    <a class="back" href="index.html">← All directions</a>
+  </div>
+</header>
+
+<!-- ————— the direction header block ————— -->
+<div class="deck">
+  <span class="d-no">Direction 24</span>
+  <span class="d-name">Home Squad</span>
+  <span class="d-rule" aria-hidden="true"></span>
+  <span class="d-sub">Collectible trading cards</span>
+</div>
+
+<main id="main">
+
+  <!-- ————————————— HERO — the card of the week ————————————— -->
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <p class="set-line mono" style="--i:0"><span class="pip" aria-hidden="true"></span>DiscNW <b>’26</b> · Home Squad · Series 1</p>
+        <h1 id="hero-h" style="--i:1">The whole<br><span class="foilword">home squad.</span></h1>
+        <p class="lead" style="--i:2">Ultimate has no referees. The players, coaches, and volunteers make every call themselves, so they are the whole institution. <b>Here is that community as a set of trading cards.</b> Tilt the card. Click it for the story. Then collect the rest — and add your own.</p>
+        <div class="hero-cta" style="--i:3">
+          <a class="btn btn-amber" href="#the-set">See the set</a>
+          <a class="btn btn-ghost" href="#complete">Add your card</a>
+        </div>
+        <p class="howto" style="--i:4"><span class="mono">Card of the week · #009 / 250 → hover to tilt, click to flip</span></p>
+      </div>
+
+      <!-- THE SIGNATURE: featured foil card, pointer-tilt + click-flip.
+           The checkbox drives a pure-CSS flip so it works with no JS. -->
+      <div class="cardstage">
+        <input type="checkbox" id="flip-hero" class="tc-cb" aria-label="Flip the Card of the Week to read Khalif's story on the back">
+        <label class="tc" for="flip-hero" id="heroCard">
+          <span class="tc-3d">
+            <span class="tc-flip">
+              <!-- FRONT -->
+              <span class="tc-face tc-front">
+                <span class="tc-sheen" aria-hidden="true"></span>
+                <span class="tc-spec" aria-hidden="true"></span>
+                <span class="tc-content">
+                  <span class="tc-hdr">
+                    <span class="series">Summer Hat League</span>
+                    <span class="num">#009 / 250</span>
+                  </span>
+                  <span class="tc-photo">
+                    <span class="tc-star" aria-hidden="true"><span class="st">★</span><span class="lb">SOTG</span></span>
+                    <img src="assets/khalif-photo-5-002.jpg" alt="Khalif, a DiscNW coach, smiling for a headshot" width="442" height="600">
+                  </span>
+                  <span class="tc-plate">
+                    <span class="tc-name">Khalif</span>
+                    <span class="tc-role"><span class="r">Coach</span><span class="s">Summer Hat League</span></span>
+                    <span class="tc-statline">SEASONS 7 · HOME LOWER WOODLAND · CALLS CONTESTED 0</span>
+                  </span>
+                </span>
+                <span class="tc-flipcue" aria-hidden="true">Tap to flip ↻</span>
+              </span>
+              <!-- BACK (also the no-JS readable content) -->
+              <span class="tc-face tc-back">
+                <span class="bk-hdr"><span class="bk-series">Summer Hat League</span><span class="bk-num">#009 / 250</span></span>
+                <span class="bk-name">Khalif</span>
+                <span class="bk-tag">Coach · Series 1</span>
+                <span class="bk-story">The Summer Mixed Hat League draws teams out of a hat, so most rosters start as strangers. By week three they are a team. No referees — the players make every call themselves, and the coaches keep it fair and loose.</span>
+                <ul class="bk-stats">
+                  <li><span class="k">Seasons</span><span class="v">7</span></li>
+                  <li><span class="k">Home field</span><span class="v">Lower Woodland</span></li>
+                  <li><span class="k">Calls contested</span><span class="v">0</span></li>
+                  <li><span class="k">Spirit huddle</span><span class="v">Every game</span></li>
+                </ul>
+                <span class="bk-foot"><span class="bk-spirit">Spirit of the Game</span><span class="bk-flipcue" aria-hidden="true">↻ Tap for front</span></span>
+              </span>
+            </span>
+          </span>
+        </label>
+        <p class="tc-hint" aria-hidden="true">Card of the Week</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ————— facts strip ————— -->
+  <aside class="facts" aria-label="A few plain facts">
+    <div class="in">
+      <span><b>10,000+</b> players a year</span>
+      <span>First cards printed <b>1995</b></span>
+      <span>Fees from <b>$33</b>, sliding scale</span>
+      <span><b>0</b> referees</span>
+      <span><a href="tel:+12067815840">(206) 781-5840</a></span>
+    </div>
+  </aside>
+
+  <!-- ————————————— THE SET ————————————— -->
+  <section class="sec" id="the-set" aria-labelledby="set-h">
+    <span class="sec-k mono">The set · Series 1</span>
+    <h2 class="sec-h" id="set-h">Twelve of <em>two hundred fifty.</em></h2>
+    <p class="sec-lede">Every card is a real person from DiscNW, framed the same, printed on the same cool foil. Pick a series to sort by program, the way you would flip through a binder.</p>
+
+    <div class="filters">
+      <div class="chiprow" role="group" aria-label="Filter the set by program series">
+        <input type="radio" name="series" id="s-all" class="fx" checked>
+        <label for="s-all" class="chip">All <span class="ct">12</span></label>
+        <input type="radio" name="series" id="s-spring" class="fx">
+        <label for="s-spring" class="chip">Spring Reign <span class="ct">2</span></label>
+        <input type="radio" name="series" id="s-hat" class="fx">
+        <label for="s-hat" class="chip">Summer Hat <span class="ct">3</span></label>
+        <input type="radio" name="series" id="s-coach" class="fx">
+        <label for="s-coach" class="chip">Coaching <span class="ct">2</span></label>
+        <input type="radio" name="series" id="s-camps" class="fx">
+        <label for="s-camps" class="chip">Youth Camps <span class="ct">3</span></label>
+        <input type="radio" name="series" id="s-fall" class="fx">
+        <label for="s-fall" class="chip">Fall Leagues <span class="ct">2</span></label>
+
+        <ul class="setgrid rv" aria-label="DiscNW community, twelve collectible cards">
+          <li class="mc" data-series="spring" style="--i:0"><span class="mc-face">
+            <span class="mc-hdr"><span class="mc-series">Spring Reign</span><span class="mc-num">#001</span></span>
+            <span class="mc-photo"><img src="assets/erin-armstrong-head-shot-1.jpg" alt="Erin Armstrong" width="900" height="600"></span>
+            <span class="mc-plate"><span class="mc-name">Erin</span><span class="mc-role">Board · <b>Spring Reign</b></span><span class="mc-stat">SEASONS 11 · CONTESTED 0</span></span>
+          </span></li>
+          <li class="mc" data-series="hat" style="--i:1"><span class="mc-face">
+            <span class="mc-hdr"><span class="mc-series">Summer Hat</span><span class="mc-num">#002</span></span>
+            <span class="mc-photo"><img src="assets/lili-gu.jpg" alt="Lili Gu" width="901" height="600"></span>
+            <span class="mc-plate"><span class="mc-name">Lili</span><span class="mc-role">Staff · <b>Summer Hat</b></span><span class="mc-stat">SEASONS 6 · CONTESTED 0</span></span>
+          </span></li>
+          <li class="mc" data-series="coach" style="--i:2"><span class="mc-face">
+            <span class="mc-hdr"><span class="mc-series">Coaching</span><span class="mc-num">#003</span></span>
+            <span class="mc-photo"><img src="assets/sarah-titcomb-2.jpg" alt="Sarah Titcomb" width="800" height="600"></span>
+            <span class="mc-plate"><span class="mc-name">Sarah</span><span class="mc-role">Coach · <b>Coaching</b></span><span class="mc-stat">SEASONS 8 · CONTESTED 0</span></span>
+          </span></li>
+          <li class="mc" data-series="camps" style="--i:3"><span class="mc-face">
+            <span class="mc-hdr"><span class="mc-series">Youth Camps</span><span class="mc-num">#004</span></span>
+            <span class="mc-photo"><img src="assets/taylor-kanemori.jpg" alt="Taylor Kanemori" width="800" height="533"></span>
+            <span class="mc-plate"><span class="mc-name">Taylor</span><span class="mc-role">Board · <b>Youth Camps</b></span><span class="mc-stat">SEASONS 5 · CONTESTED 0</span></span>
+          </span></li>
+          <li class="mc" data-series="hat" style="--i:4"><span class="mc-face">
+            <span class="mc-hdr"><span class="mc-series">Summer Hat</span><span class="mc-num">#005</span></span>
+            <span class="mc-photo"><img src="assets/joe-bisignano.jpg" alt="Joe Bisignano" width="600" height="600"></span>
+            <span class="mc-plate"><span class="mc-name">Joe</span><span class="mc-role">Volunteer · <b>Summer Hat</b></span><span class="mc-stat">SEASONS 12 · CONTESTED 0</span></span>
+          </span></li>
+          <li class="mc" data-series="spring" style="--i:5"><span class="mc-face">
+            <span class="mc-hdr"><span class="mc-series">Spring Reign</span><span class="mc-num">#006</span></span>
+            <span class="mc-photo"><img src="assets/matt-stenovec.jpg" alt="Matt Stenovec" width="649" height="600"></span>
+            <span class="mc-plate"><span class="mc-name">Matt</span><span class="mc-role">Staff · <b>Spring Reign</b></span><span class="mc-stat">SEASONS 9 · CONTESTED 0</span></span>
+          </span></li>
+          <li class="mc" data-series="fall" style="--i:6"><span class="mc-face">
+            <span class="mc-hdr"><span class="mc-series">Fall Leagues</span><span class="mc-num">#007</span></span>
+            <span class="mc-photo"><img src="assets/chris-page.jpg" alt="Chris Page" width="292" height="600"></span>
+            <span class="mc-plate"><span class="mc-name">Chris</span><span class="mc-role">Board · <b>Fall Leagues</b></span><span class="mc-stat">SEASONS 10 · CONTESTED 0</span></span>
+          </span></li>
+          <li class="mc" data-series="camps" style="--i:7"><span class="mc-face">
+            <span class="mc-hdr"><span class="mc-series">Youth Camps</span><span class="mc-num">#008</span></span>
+            <span class="mc-photo"><img src="assets/alan-hensley.png" alt="Alan Hensley" width="294" height="365"></span>
+            <span class="mc-plate"><span class="mc-name">Alan</span><span class="mc-role">Volunteer · <b>Youth Camps</b></span><span class="mc-stat">SEASONS 4 · CONTESTED 0</span></span>
+          </span></li>
+          <li class="mc" data-series="hat" style="--i:8"><span class="mc-face">
+            <span class="mc-hdr"><span class="mc-series">Summer Hat</span><span class="mc-num">#009</span></span>
+            <span class="mc-photo"><img src="assets/khalif-photo-5-002.jpg" alt="Khalif" width="442" height="600"></span>
+            <span class="mc-plate"><span class="mc-name">Khalif</span><span class="mc-role">Coach · <b>Summer Hat</b></span><span class="mc-stat">SEASONS 7 · CONTESTED 0</span></span>
+          </span></li>
+          <li class="mc" data-series="camps" style="--i:9"><span class="mc-face">
+            <span class="mc-hdr"><span class="mc-series">Youth Camps</span><span class="mc-num">#010</span></span>
+            <span class="mc-photo"><img src="assets/sheila-camarena.jpg" alt="Sheila Camarena" width="640" height="480"></span>
+            <span class="mc-plate"><span class="mc-name">Sheila</span><span class="mc-role">Staff · <b>Youth Camps</b></span><span class="mc-stat">SEASONS 6 · CONTESTED 0</span></span>
+          </span></li>
+          <li class="mc" data-series="coach" style="--i:10"><span class="mc-face">
+            <span class="mc-hdr"><span class="mc-series">Coaching</span><span class="mc-num">#011</span></span>
+            <span class="mc-photo"><img src="assets/qxhna-profile-picture.jpg" alt="Qxhna" width="439" height="600"></span>
+            <span class="mc-plate"><span class="mc-name">Qxhna</span><span class="mc-role">Coach · <b>Coaching</b></span><span class="mc-stat">SEASONS 9 · CONTESTED 0</span></span>
+          </span></li>
+          <li class="mc" data-series="fall" style="--i:11"><span class="mc-face">
+            <span class="mc-hdr"><span class="mc-series">Fall Leagues</span><span class="mc-num">#012</span></span>
+            <span class="mc-photo"><img src="assets/mel-clark.jpg" alt="Mel Clark" width="250" height="260"></span>
+            <span class="mc-plate"><span class="mc-name">Mel</span><span class="mc-role">Volunteer · <b>Fall Leagues</b></span><span class="mc-stat">SEASONS 8 · CONTESTED 0</span></span>
+          </span></li>
+        </ul>
+      </div>
+      <p class="setfoot">That is twelve of them. <b>Cards #013 through #250 are still out on the fields</b> — coaches, volunteers, board, and 10,000-plus players. Same idea, more faces.</p>
+    </div>
+  </section>
+
+  <!-- ————————————— CARD BACKS / STORIES ————————————— -->
+  <section class="sec" id="stories" aria-labelledby="stories-h">
+    <span class="sec-k mono">Card backs</span>
+    <h2 class="sec-h" id="stories-h">Turn a card <em>over.</em></h2>
+    <p class="sec-lede">The front is the face. The back is the reason they keep showing up. A short read and a stat block, printed the way a card is.</p>
+
+    <div class="stories">
+      <article class="sback rv on-light">
+        <div class="chip-photo">
+          <div class="frm"><img src="assets/khalif-photo-5-002.jpg" alt="Khalif, a DiscNW coach" width="442" height="600"></div>
+          <p class="cap">#009 · Coach</p>
+        </div>
+        <div class="bd">
+          <p class="who"><span class="nm">Khalif</span><span class="rl">Coach · Summer Hat League</span></p>
+          <p class="story">The Summer Mixed Hat League draws teams out of a hat, so most rosters start as strangers. By week three they are a team. There are no referees — the players make every call themselves, and the coaches keep it fair and loose. That is the whole league.</p>
+        </div>
+        <ul class="stats">
+          <li><span class="k">Seasons</span><span class="v">7</span></li>
+          <li><span class="k">Home field</span><span class="v">Lower Woodland</span></li>
+          <li><span class="k">Calls contested</span><span class="v">0</span></li>
+          <li><span class="k">Spirit (of 5)</span><span class="v">5.0</span><span class="bar"><i style="width:100%"></i></span></li>
+        </ul>
+      </article>
+
+      <article class="sback rv on-light">
+        <div class="chip-photo">
+          <div class="frm"><img src="assets/qxhna-profile-picture.jpg" alt="Qxhna, a DiscNW coach" width="439" height="600"></div>
+          <p class="cap">#011 · Coach</p>
+        </div>
+        <div class="bd">
+          <p class="who"><span class="nm">Qxhna</span><span class="rl">Coach · Coaching Collective</span></p>
+          <p class="story">The DiscNW Coaching Collective turns this season's players into next season's coaches. Nobody needs a whistle. You learn to run a practice, teach a throw, and hold the spirit of the game — then you go and do it for the next group of kids.</p>
+        </div>
+        <ul class="stats">
+          <li><span class="k">Seasons</span><span class="v">9</span></li>
+          <li><span class="k">Home field</span><span class="v">Magnuson</span></li>
+          <li><span class="k">Calls contested</span><span class="v">0</span></li>
+          <li><span class="k">Spirit (of 5)</span><span class="v">4.9</span><span class="bar"><i style="width:98%"></i></span></li>
+        </ul>
+      </article>
+
+      <article class="sback rv on-light">
+        <div class="chip-photo">
+          <div class="frm"><img src="assets/joe-bisignano.jpg" alt="Joe Bisignano, a DiscNW volunteer" width="600" height="600"></div>
+          <p class="cap">#005 · Volunteer</p>
+        </div>
+        <div class="bd">
+          <p class="who"><span class="nm">Joe</span><span class="rl">Volunteer · Potlatch</span></p>
+          <p class="story">Potlatch is the tournament DiscNW grew out of, back in 1995. It still fills a summer weekend, and it still runs on volunteers — the people who line the fields, keep the water cold, and remember your name in the morning.</p>
+        </div>
+        <ul class="stats">
+          <li><span class="k">Seasons</span><span class="v">12</span></li>
+          <li><span class="k">Home field</span><span class="v">Marymoor</span></li>
+          <li><span class="k">Calls contested</span><span class="v">0</span></li>
+          <li><span class="k">On the crew since</span><span class="v">1995</span></li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- ————————————— COMPLETE THE SET ————————————— -->
+  <section class="complete" id="complete" aria-labelledby="complete-h">
+    <div class="in rv">
+      <div>
+        <h2 id="complete-h">Card <em>#250</em> is you.</h2>
+        <p class="why">The set has 250 cards. The first ones are the coaches, volunteers, board members, and players who keep DiscNW running — <b>more than 10,000 of them get on the field every year</b>, on fields with no referees, calling their own games since 1995. Card #250 is blank. It is for you. <b>Fees start at $33 on a sliding scale, no questions asked.</b></p>
+        <ul class="ways">
+          <li><a href="https://www.discnw.org/">Play <span class="go">→</span></a></li>
+          <li><a href="https://www.discnw.org/">Coach <span class="go">→</span></a></li>
+          <li><a href="https://www.discnw.org/">Volunteer <span class="go">→</span></a></li>
+          <li><a href="https://www.discnw.org/">Give <span class="go">→</span></a></li>
+        </ul>
+        <a class="tel" href="tel:+12067815840">Questions? (206) 781-5840</a>
+      </div>
+      <div class="blankwrap">
+        <div class="blank" aria-label="A blank rookie card numbered 250 of 250, reading add yourself">
+          <div class="inner">
+            <span class="plus" aria-hidden="true">+</span>
+            <span class="num">#250 / 250</span>
+            <span class="lb">Your card</span>
+            <span class="sm">Rookie · add yourself</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ————————————— HOMEPAGE MOCK ————————————— -->
+  <section class="sec" id="mock" aria-labelledby="mock-h">
+    <span class="sec-k mono">The homepage, in this style</span>
+    <h2 class="sec-h" id="mock-h">discnw.org, as a <em>card shop.</em></h2>
+    <p class="sec-lede">The same idea carried to the front door: a featured card of the week, this week's pulls, and the register strip underneath.</p>
+
+    <div class="mockwrap rv">
+      <div class="browser" role="img" aria-label="A mock of a redesigned discnw.org homepage in the Home Squad card style: a nav, a featured card of the week, a row of this week's cards, and a registration strip.">
+        <div class="browser-bar">
+          <span class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="browser-url">discnw.org</span>
+        </div>
+        <div class="mk" aria-hidden="true">
+          <div class="mk-nav">
+            <img src="assets/brand/logo-full-white.png" alt="" width="1446" height="616">
+            <span class="mk-links"><span>Play</span><span>Coach</span><span>Volunteer</span><span>Give</span></span>
+            <span class="mk-reg">Register</span>
+          </div>
+          <div class="mk-promise"><span>No referees since <b>1995</b></span><span class="dot">·</span><span>Fees from <b>$33</b></span><span class="dot">·</span><span><b>10,000+</b> players</span></div>
+          <div class="mk-hero">
+            <div>
+              <p class="ey">DiscNW ’26 · Home Squad</p>
+              <h3>Youth &amp; adult ultimate in Seattle.</h3>
+              <p>Collect the community, join a program, and add your own card. Self-officiated, always — the players make the calls.</p>
+              <div class="row"><span class="b1">Find your program</span><span class="b2">Meet the squad</span></div>
+            </div>
+            <div class="mk-feat">
+              <span class="mc" style="width:min(56vw,200px)"><span class="mc-face">
+                <span class="mc-hdr"><span class="mc-series">Card of the week</span><span class="mc-num">#009</span></span>
+                <span class="mc-photo"><img src="assets/khalif-photo-5-002.jpg" alt="" width="442" height="600"></span>
+                <span class="mc-plate"><span class="mc-name">Khalif</span><span class="mc-role">Coach · <b>Summer Hat</b></span><span class="mc-stat">SEA 7 · CONTESTED 0</span></span>
+              </span></span>
+            </div>
+          </div>
+          <div class="mk-strip">
+            <p class="lbl">This week's cards</p>
+            <ul class="mk-cards">
+              <li class="mc"><span class="mc-face">
+                <span class="mc-hdr"><span class="mc-series">Spring Reign</span><span class="mc-num">#001</span></span>
+                <span class="mc-photo"><img src="assets/erin-armstrong-head-shot-1.jpg" alt="" width="900" height="600"></span>
+                <span class="mc-plate"><span class="mc-name">Erin</span><span class="mc-role">Board</span></span>
+              </span></li>
+              <li class="mc"><span class="mc-face">
+                <span class="mc-hdr"><span class="mc-series">Coaching</span><span class="mc-num">#011</span></span>
+                <span class="mc-photo"><img src="assets/qxhna-profile-picture.jpg" alt="" width="439" height="600"></span>
+                <span class="mc-plate"><span class="mc-name">Qxhna</span><span class="mc-role">Coach</span></span>
+              </span></li>
+              <li class="mc"><span class="mc-face">
+                <span class="mc-hdr"><span class="mc-series">Youth Camps</span><span class="mc-num">#004</span></span>
+                <span class="mc-photo"><img src="assets/taylor-kanemori.jpg" alt="" width="800" height="533"></span>
+                <span class="mc-plate"><span class="mc-name">Taylor</span><span class="mc-role">Board</span></span>
+              </span></li>
+              <li class="mc"><span class="mc-face">
+                <span class="mc-hdr"><span class="mc-series">Summer Hat</span><span class="mc-num">#005</span></span>
+                <span class="mc-photo"><img src="assets/joe-bisignano.jpg" alt="" width="600" height="600"></span>
+                <span class="mc-plate"><span class="mc-name">Joe</span><span class="mc-role">Volunteer</span></span>
+              </span></li>
+            </ul>
+          </div>
+          <div class="mk-reg-strip"><span class="k">Open now</span><span>Spring Reign</span><span class="dot">·</span><span>Summer Hat League</span><span class="dot">·</span><span>Youth Camps</span><span class="dot">·</span><span>Coaching Collective</span><span class="more">All programs →</span></div>
+        </div>
+      </div>
+      <p class="mockcap">A homepage sketch in the Home Squad direction — real faces, real programs, the card as the unit.</p>
+    </div>
+  </section>
+
+  <!-- ————————————— APPENDIX ————————————— -->
+  <section class="appendix" aria-labelledby="ap-h">
+    <div class="ap-plate rv">
+      <span class="tag">About this direction</span>
+      <h2 id="ap-h">24 — Home Squad</h2>
+      <div class="ap-grid">
+        <div class="ap-item">
+          <h3>The idea</h3>
+          <p>Ultimate is self-officiated — there are no referees, so the players, coaches, and volunteers <b>are</b> the institution. This direction celebrates that community as a set of collectible foil trading cards. Fronts hold a clean headshot, a name, a role, a program series, and a plain Spirit-of-the-Game stat line. Backs hold a short story and a stat block. The pitch: collect the community, complete the set, add yourself.</p>
+        </div>
+        <div class="ap-item">
+          <h3>Signature</h3>
+          <p>The Card of the Week. It tilts in 3D toward your pointer with a moving specular highlight and a cool holo sheen, and it flips on click to reveal the story on the back. <b>The foil and shine live only on the card chrome</b> — every photo sits in an opaque frame painted above the shimmer, so nothing ever crosses a face. With no JavaScript or reduced motion it sits flat and still flips on tap.</p>
+        </div>
+        <div class="ap-item">
+          <h3>Palette — card-shop navy &amp; cool foil</h3>
+          <div class="swatches">
+            <span class="swrow"><i style="background:#0E1630"></i>Deep navy <code>#0E1630</code></span>
+            <span class="swrow"><i style="background:#EDEFF2"></i>Card-stock <code>#EDEFF2</code></span>
+            <span class="swrow"><i class="foilchip"></i>Cool holo foil <code>silver→blue→mint</code></span>
+            <span class="swrow"><i style="background:#E0A32E"></i>Amber (rookie/star) <code>#E0A32E</code></span>
+            <span class="swrow"><i style="background:#22B8A6"></i>Teal (stats) <code>#22B8A6</code></span>
+          </div>
+        </div>
+        <div class="ap-item">
+          <h3>Type</h3>
+          <p><b>Archivo</b> at heavy, expanded weights carries the names and headers with sports-card punch. <b>Hanken Grotesk</b> handles body text. <b>JetBrains Mono</b> sets every stat line and card number — <em>#009 / 250</em> — so the numbers feel printed.</p>
+        </div>
+        <div class="ap-item">
+          <h3>Motion</h3>
+          <p>Two house curves for choreography, one symmetric curve for the foil shimmer. The card tilts and flips; cards fade up in a tight stagger; the set filters with pure CSS. Reduced motion removes the tilt and shimmer, and the settle lands everything on screen by about two seconds.</p>
+        </div>
+        <div class="ap-item">
+          <h3>Accessibility</h3>
+          <p>Body and UI clear WCAG AA on both grounds (text on navy ≈ 15:1; ink on card-stock ≈ 15:1). The flip is a real, focusable control; the set filters are radio buttons that work by keyboard; every headshot has real alt text and is held at or below its native size. One <b>h1</b>, semantic landmarks, visible amber focus rings.</p>
+        </div>
+        <div class="ap-item">
+          <h3>Choose this if</h3>
+          <p>You want the front door to feel like a thing people <em>collect</em> — a warm, gamified way to say the community is the institution, and an easy on-ramp to "add your card."</p>
+        </div>
+        <div class="ap-item">
+          <h3>Placeholder data</h3>
+          <p>The roles, program series, card numbers, home fields, and the playful stat lines are <b>placeholders to show the format</b>. Swap in real ones — and get each person's OK — before anything ships.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pagefoot">
+  <div class="in">
+    <span class="brandmark"><img src="assets/brand/logo-full-white.png" alt="DiscNW" width="1446" height="616"></span>
+    <span class="mid">Direction 24 · Home Squad · prepared for DiscNW</span>
+    <span class="links">
+      <a href="index.html">← All directions</a>
+      <a href="25-field-notes.html">Next direction →</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+/* HOME SQUAD — the card comes alive.
+   · The flip is pure CSS (a focusable checkbox), so it works with no JS,
+     under reduced motion, and by keyboard. The set filter is pure CSS too.
+   · JS only ENHANCES: it arms entrance/scroll reveals, and gives the
+     featured card a pointer-driven 3D tilt + moving specular + sheen.
+   · Guarantees: base styles are the settled page. html.anim is added only
+     when motion is allowed; a safety timer lands everything by 2.3s. The
+     tilt is capped and disabled on touch/narrow screens so it can never
+     push horizontal overflow. Transforms are visual only. */
+(function(){
+  var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var doc = document.documentElement;
+
+  /* ————— reveals + entrance (only when motion is allowed) ————— */
+  if (('IntersectionObserver' in window) && !mq.matches){
+    doc.classList.add('anim');
+    try{
+      window.requestAnimationFrame(function(){
+        window.requestAnimationFrame(function(){ doc.classList.add('go'); });
+      });
+      var revs = Array.prototype.slice.call(document.querySelectorAll('.rv, .setgrid'));
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting){
+            e.target.classList.add('in');
+            var cells = e.target.querySelectorAll('.mc');
+            for (var i=0;i<cells.length;i++){ cells[i].style.setProperty('--i', i); }
+            io.unobserve(e.target);
+          }
+        });
+      }, {rootMargin:'0px 0px -8% 0px', threshold:.06});
+      revs.forEach(function(el){ io.observe(el); });
+
+      window.setTimeout(function(){
+        doc.classList.add('go');
+        var vh = window.innerHeight;
+        revs.forEach(function(el){
+          var r = el.getBoundingClientRect();
+          if (!el.classList.contains('in') && r.top < vh && r.bottom > 0){ el.classList.add('in'); io.unobserve(el); }
+        });
+      }, 2300);
+    }catch(err){ doc.classList.remove('anim'); doc.classList.remove('go'); }
+  }
+
+  /* ————— the signature: pointer-driven 3D tilt on the featured card ————— */
+  (function(){
+    var fine = window.matchMedia('(hover:hover) and (pointer:fine)');
+    var card = document.getElementById('heroCard');
+    var tilt = card && card.querySelector('.tc-3d');
+    if (!card || !tilt) return;
+    var MAX = 7, raf = 0, tx = 0, ty = 0, mx = 50, my = 36, sx = 0;
+    function enabled(){ return !mq.matches && fine.matches && window.innerWidth >= 760; }
+    function apply(){
+      raf = 0;
+      tilt.style.setProperty('--rx', tx.toFixed(2) + 'deg');
+      tilt.style.setProperty('--ry', ty.toFixed(2) + 'deg');
+      card.style.setProperty('--mx', mx.toFixed(1) + '%');
+      card.style.setProperty('--my', my.toFixed(1) + '%');
+      card.style.setProperty('--sx', sx.toFixed(1));
+    }
+    function schedule(){ if (!raf) raf = window.requestAnimationFrame(apply); }
+    function onMove(e){
+      if (!enabled()) return;
+      var r = card.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width - 0.5;
+      var py = (e.clientY - r.top) / r.height - 0.5;
+      px = Math.max(-0.5, Math.min(0.5, px));
+      py = Math.max(-0.5, Math.min(0.5, py));
+      ty = px * 2 * MAX;    /* rotateY toward the cursor */
+      tx = -py * 2 * MAX;   /* rotateX toward the cursor */
+      mx = (px + 0.5) * 100; my = (py + 0.5) * 100;
+      sx = px * 40;
+      card.classList.add('is-live');
+      schedule();
+    }
+    function reset(){ tx = 0; ty = 0; mx = 50; my = 36; sx = 0; card.classList.remove('is-live'); schedule(); }
+    card.addEventListener('pointermove', onMove);
+    card.addEventListener('pointerleave', reset);
+    card.addEventListener('pointercancel', reset);
+    window.addEventListener('resize', function(){ if (!enabled()) reset(); }, {passive:true});
+  })();
+})();
+</script>
+</body>
+</html>

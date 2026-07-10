@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction 25 · Field Notes — DiscNW design directions</title>
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<meta name="description" content="Experimental direction 25 for the DiscNW redesign: a season of ultimate told as a well-traveled passport. Tournaments are places you travel to, and every trip earns a stamp. Real photos are taped in, margin notes are handwritten, and each destination stamp presses in as you scroll.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ————————————————————————————————————————————————————————————
+   DIRECTION 25 · FIELD NOTES  (experimental · Season Passport)
+   A season of ultimate told as a well-traveled passport. Every
+   tournament is a place you travel to, and every trip leaves a
+   stamp. Real photographs are taped in and render perfectly clean
+   — every bit of paper, tape, and ink texture lives on the CHROME,
+   never on a photo. The signature is the rubber stamp: each
+   destination presses in as it scrolls into view, the way it does
+   at the desk. With no JS or reduced motion, every stamp is already
+   fully inked and the page reads as a finished passport.
+
+   Contrast audit (WCAG, computed on kraft ground #DCC7A8, lum .589,
+   and the deep cover #1B2B42, lum .0235):
+     ink      #20242A on kraft #DCC7A8 ......... 9.5   body/headings
+     ink-soft #3A3E44 on kraft #DCC7A8 ......... 6.5   secondary text
+     blue     #284B6F on kraft #DCC7A8 ......... 5.5   labels + small type OK
+     olive    #5E6B3B on kraft #DCC7A8 ......... 3.5   large text / rules only
+     red      #B23A2E on kraft #DCC7A8 ......... 3.6   large text / stamps only
+     cream    #EDE4CE on cover #1B2B42 ......... 10.8  cover subtitle
+     foil     #CBA35E on cover #1B2B42 ......... 6.1   cover title (large)
+   Red and olive appear as TEXT only at large sizes or inside the
+   graphical stamps; body copy is always ink or ink-soft.
+———————————————————————————————————————————————————————————— */
+:root{
+  --kraft:#DCC7A8;        /* manila / kraft paper — the page ground        */
+  --kraft-2:#D4BD98;      /* a slightly deeper paper — cards, insets       */
+  --kraft-3:#CBB088;      /* deepest paper edge                            */
+  --ink:#20242A;          /* handwriting & type                            */
+  --ink-soft:#3A3E44;     /* secondary text (AA on kraft)                  */
+  --red:#B23A2E;          /* customs stamp red (stamps + large text only)  */
+  --red-deep:#8C2A1F;     /* deep brick red — small labels, AA on kraft    */
+  --blue:#284B6F;         /* passport blue — official ink, labels          */
+  --olive:#5E6B3B;        /* twine / field accent                          */
+  --cover:#1B2B42;        /* deep passport-cover navy                      */
+  --cover-2:#14213280;    /* cover shadow                                  */
+  --foil:#CBA35E;         /* gold foil                                     */
+  --foil-hi:#E4C888;      /* foil highlight                                */
+  --cream:#EDE4CE;        /* warm cream on the dark cover                  */
+  --line:rgba(32,36,42,.26);     /* dashed hairlines on kraft             */
+  --line-2:rgba(32,36,42,.14);
+  --paper-edge:rgba(90,66,30,.14);
+  --barh:56px;
+  --pad:clamp(20px,5vw,68px);
+  --maxw:1180px;
+  --disp:"Spectral",Georgia,"Times New Roman",serif;
+  --body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --hand:"Caveat",ui-rounded,"Segoe Print",cursive;
+  /* house easing — two curves, plus one for the stamp press */
+  --ease-snap:cubic-bezier(.4,0,.1,1);
+  --ease-lux:cubic-bezier(.16,1,.3,1);
+  --ease-press:cubic-bezier(.34,1.56,.5,1);   /* the rubber-stamp settle */
+}
+*,*::before,*::after{box-sizing:border-box}
+html{
+  background:var(--kraft);scroll-behavior:smooth;
+  scroll-padding-top:calc(var(--barh) + 16px);overflow-x:clip;
+  -webkit-text-size-adjust:100%;
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  margin:0;color:var(--ink);
+  font-family:var(--body);font-size:17px;line-height:1.62;
+  overflow-x:clip;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  /* kraft ground + a quiet paper grain + soft vignette — CHROME ONLY,
+     always behind content; photographs sit in opaque frames above it. */
+  background-color:var(--kraft);
+  background-image:
+    radial-gradient(120% 80% at 15% -10%, rgba(255,247,230,.5), transparent 55%),
+    radial-gradient(120% 90% at 100% 0%, rgba(150,120,74,.14), transparent 50%),
+    radial-gradient(140% 120% at 50% 120%, rgba(120,92,52,.16), transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+  background-attachment:fixed,fixed,fixed,scroll;
+}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+::selection{background:var(--ink);color:var(--kraft)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:3px}
+.on-cover :focus-visible{outline-color:var(--foil-hi)}
+
+.vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:fixed;left:var(--pad);top:-64px;z-index:120;background:var(--ink);color:var(--kraft);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;padding:11px 17px;border-radius:4px}
+.skip:focus-visible{top:calc(var(--barh) + 12px)}
+
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--pad)}
+.mono{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase}
+.hand{font-family:var(--hand);font-weight:600}
+
+/* ————— fixed chrome: the desk bar ————— */
+.bar{
+  position:fixed;inset:0 0 auto 0;z-index:60;height:var(--barh);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:0 clamp(14px,3vw,26px);
+  background:rgba(220,199,168,.9);
+  border-bottom:1.5px solid var(--ink);
+  -webkit-backdrop-filter:blur(9px) saturate(1.1);backdrop-filter:blur(9px) saturate(1.1);
+}
+.bar .lockup{width:clamp(104px,13vw,124px);height:auto;flex:none}
+.bar .b-mid{color:var(--ink-soft);flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .b-mid b{color:var(--ink);font-weight:700}
+.bar a.b-link{
+  font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--red);padding-bottom:2px;white-space:nowrap;
+}
+.bar a.b-link:hover{border-bottom-color:var(--ink)}
+@media (max-width:860px){.bar .b-mid{display:none}}
+
+/* ————— buttons ————— */
+.btn{display:inline-flex;align-items:center;gap:.55em;font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.1em;
+  text-transform:uppercase;text-decoration:none;padding:14px 22px;border-radius:4px;border:1.5px solid var(--ink);cursor:pointer}
+.btn-solid{background:var(--ink);color:var(--kraft)}
+.btn-solid:hover{background:var(--red);border-color:var(--red);color:#fff}
+.btn-ghost{background:transparent;color:var(--ink)}
+.btn-ghost:hover{background:var(--ink);color:var(--kraft)}
+.on-cover .btn-solid{background:var(--foil);color:var(--cover);border-color:var(--foil)}
+.on-cover .btn-solid:hover{background:var(--foil-hi);border-color:var(--foil-hi)}
+.on-cover .btn-ghost{color:var(--cream);border-color:rgba(237,228,206,.5)}
+.on-cover .btn-ghost:hover{background:var(--cream);color:var(--cover);border-color:var(--cream)}
+
+/* ————————————————————————————————————————————————————————————
+   1 · THE PASSPORT COVER — the hero. Deep navy leather with a
+   foil-stamped title and the white formline crest, like the outside
+   of a real travel document. Below it, the book opens to the kraft
+   interior pages.
+———————————————————————————————————————————————————————————— */
+.cover{
+  position:relative;background:var(--cover);color:var(--cream);
+  padding:calc(var(--barh) + clamp(52px,10vh,104px)) var(--pad) clamp(48px,9vh,104px);
+  overflow:hidden;
+}
+.cover::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(80% 60% at 50% 8%, rgba(203,163,94,.14), transparent 60%),
+    radial-gradient(120% 90% at 50% 120%, rgba(0,0,0,.5), transparent 62%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.05'/%3E%3C/svg%3E");
+}
+/* foil-embossed inner keyline, like a passport border */
+.cover::after{content:"";position:absolute;inset:clamp(14px,2.4vw,26px);pointer-events:none;
+  border:1.5px solid rgba(203,163,94,.42);border-radius:6px;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.25);}
+.cover-in{position:relative;z-index:2;max-width:var(--maxw);margin-inline:auto;
+  display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,5vw,72px);align-items:center}
+.cover-crest{width:clamp(56px,7vw,78px);height:auto;margin:0 0 clamp(20px,3vh,30px);
+  filter:drop-shadow(0 3px 10px rgba(0,0,0,.5))}
+.cover-eyebrow{font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--foil);margin:0 0 clamp(14px,2vh,20px)}
+.cover h1{
+  font-family:var(--disp);font-weight:600;font-size:clamp(52px,9.5vw,116px);line-height:.92;letter-spacing:-.02em;margin:0;
+  background:linear-gradient(174deg,var(--foil-hi),var(--foil) 42%,#9c7736 78%,var(--foil-hi));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 1px 0 rgba(0,0,0,.18);
+}
+.cover h1 .sub{display:block;font-size:clamp(20px,3vw,34px);font-weight:500;font-style:italic;letter-spacing:.01em;margin-top:.12em}
+.cover-lede{max-width:46ch;margin:clamp(22px,3.4vh,30px) 0 0;font-size:clamp(16px,1.5vw,18.5px);line-height:1.62;color:var(--cream)}
+.cover-lede b{color:#fff;font-weight:600}
+.cover-cta{margin:clamp(24px,3.6vh,34px) 0 0;display:flex;flex-wrap:wrap;gap:12px}
+/* the passport data strip — mono, like a machine-readable page */
+.cover-mrz{margin:clamp(26px,4vh,40px) 0 0;padding-top:16px;border-top:1px solid rgba(203,163,94,.32);
+  display:flex;flex-wrap:wrap;gap:6px 26px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(237,228,206,.72)}
+.cover-mrz b{color:var(--foil-hi);font-weight:600}
+.cover-vision{margin:clamp(20px,3vh,26px) 0 0;font-family:var(--disp);font-style:italic;font-size:clamp(16px,1.7vw,20px);color:var(--foil-hi)}
+
+/* the stamp cluster on the cover */
+.cover-stamps{position:relative;min-height:280px;display:grid;place-items:center}
+.cover-stamps .stamp{position:absolute}
+.cover-stamps .s-a{top:2%;left:6%}
+.cover-stamps .s-b{bottom:4%;right:2%}
+.cover-stamps .s-c{top:34%;right:30%}
+@media (max-width:860px){
+  .cover-in{grid-template-columns:1fr;gap:clamp(30px,6vw,40px)}
+  .cover-stamps{min-height:230px;order:2}
+}
+
+/* ————— the "opens here" seam between cover and interior ————— */
+.seam{position:relative;height:34px;background:var(--kraft);z-index:3}
+.seam::before{content:"";position:absolute;left:0;right:0;top:0;height:16px;
+  background:linear-gradient(var(--cover-2),transparent);}
+.seam .tab{position:absolute;left:50%;top:-1px;transform:translateX(-50%);
+  background:var(--kraft);border:1.5px solid var(--ink);border-top:0;border-radius:0 0 10px 10px;
+  padding:5px 16px 6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+
+/* ————— shared section rhythm ————— */
+.page{max-width:var(--maxw);margin-inline:auto;padding:clamp(56px,8vh,104px) var(--pad);position:relative}
+.page + .page{border-top:1.5px dashed var(--line)}
+.kicker{display:flex;align-items:center;gap:11px;margin:0 0 15px;
+  font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--red-deep)}
+.kicker::before{content:"";width:22px;height:2px;background:var(--red-deep);flex:none}
+.h2{font-family:var(--disp);font-weight:600;font-size:clamp(34px,5vw,62px);line-height:1.02;letter-spacing:-.015em;margin:0 0 16px;color:var(--ink);text-wrap:balance}
+.h2 em{font-style:italic;color:var(--blue)}
+.intro{max-width:62ch;margin:0 0 clamp(30px,4vw,48px);font-size:clamp(16.5px,1.4vw,18.5px);color:var(--ink-soft)}
+.intro b{color:var(--ink);font-weight:600}
+.pnote{margin:clamp(22px,3vw,30px) 2px 0;font-family:var(--mono);font-size:12px;line-height:1.65;color:var(--ink-soft);max-width:88ch}
+.pnote b{color:var(--ink);font-weight:600}
+
+/* ————————————————————————————————————————————————————————————
+   THE STAMP — the signature. Built as CSS/SVG rubber-stamp art:
+   concentric rings, curved customs text, a disc glyph and a date,
+   roughened at the edges by an SVG turbulence filter so the ink
+   reads as freshly pressed. Each stamp carries an inline --rot so
+   it lands hand-applied. Base state = fully inked and static (this
+   is what prints and what reduced-motion / no-JS shows). The press
+   only arms under html.anim.
+———————————————————————————————————————————————————————————— */
+.stamp{display:inline-grid;place-items:center;transform:rotate(var(--rot,0deg));opacity:.9;
+  filter:drop-shadow(0 1px 0 rgba(0,0,0,.04))}
+.stamp--red{color:var(--red)}
+.stamp--blue{color:var(--blue)}
+.stamp--olive{color:var(--olive)}
+.stamp .st{width:100%;height:auto;display:block}
+.stamp .st-top,.stamp .st-bot{font-family:var(--disp);font-weight:600;letter-spacing:2.5px;fill:currentColor}
+.stamp .st-year{font-family:var(--mono);font-weight:700;letter-spacing:1.5px;fill:currentColor}
+.stamp .st-small{font-family:var(--mono);font-weight:600;letter-spacing:1px;fill:currentColor}
+.stamp .st-stars{fill:currentColor}
+
+/* circular stamp footprint */
+.stamp.circ{width:clamp(150px,20vw,204px)}
+/* rectangular customs stamp */
+.stamp.rect{width:clamp(168px,22vw,224px)}
+/* oval stamp */
+.stamp.oval{width:clamp(168px,22vw,226px)}
+
+/* the grid of destinations — a passport page collage */
+.stampwall{display:grid;grid-template-columns:repeat(auto-fill,minmax(206px,1fr));gap:clamp(20px,3vw,34px) clamp(12px,2vw,26px);
+  align-items:center;justify-items:center;position:relative;
+  padding:clamp(20px,3vw,34px);
+  border:1.5px solid var(--line);border-radius:8px;
+  background:
+    linear-gradient(var(--kraft-2),var(--kraft-2)) padding-box;
+  box-shadow:inset 0 0 0 6px rgba(203,163,94,.06), 0 20px 44px -34px rgba(60,40,14,.6)}
+.cell{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;max-width:240px}
+.cell .cap{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink-soft);line-height:1.5;max-width:24ch}
+.cell .cap b{color:var(--ink);font-weight:600}
+
+/* logo sticker — a clean travel decal. The paper + peel is CHROME;
+   the logo art stays true-colour and crisp, never recoloured. */
+.sticker{position:relative;background:#fff;border-radius:12px;padding:16px 18px;
+  transform:rotate(var(--rot,0deg));
+  box-shadow:0 2px 0 rgba(0,0,0,.06),0 16px 30px -20px rgba(50,34,12,.7);
+  outline:5px solid #fff;outline-offset:-5px}
+.sticker::before{content:"";position:absolute;inset:0;border-radius:12px;
+  box-shadow:inset 0 0 0 1.5px rgba(32,36,42,.12);
+  -webkit-mask:radial-gradient(circle at 12px 12px, transparent 9px, #000 10px);
+          mask:radial-gradient(circle at 12px 12px, transparent 9px, #000 10px)}
+.sticker img{width:auto;height:auto;max-width:100%;object-fit:contain;position:relative;z-index:1}
+.sticker .peel{position:absolute;bottom:-1px;right:-1px;width:26px;height:26px;
+  background:linear-gradient(135deg,transparent 48%,rgba(0,0,0,.1) 50%,#efe7d6 52%);
+  border-radius:0 0 12px 0;box-shadow:-2px -2px 6px -2px rgba(0,0,0,.25)}
+.sticker .s-w{display:flex;align-items:center;justify-content:center;min-height:66px}
+
+/* ————————————————————————————————————————————————————————————
+   3 · FIELD NOTES — journal spreads. A real photo taped in (clean),
+   a serif dateline and headline, plain body, and one handwritten
+   margin note. Tape corners are chrome; the photo never carries a
+   tint, blend, or texture.
+———————————————————————————————————————————————————————————— */
+.entry{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(26px,4vw,58px);align-items:center;
+  padding:clamp(30px,4vw,46px) 0;position:relative}
+.entry + .entry{border-top:1px dashed var(--line-2)}
+.entry.rev .e-photo{order:-1}
+.e-date{font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin:0 0 12px}
+.entry h3{font-family:var(--disp);font-weight:600;font-size:clamp(26px,3.4vw,42px);line-height:1.08;letter-spacing:-.01em;margin:0 0 16px;color:var(--ink)}
+.entry h3 em{font-style:italic;color:var(--blue)}
+.e-body{font-size:16.5px;line-height:1.68;color:var(--ink-soft);margin:0 0 4px;max-width:52ch}
+.e-body b{color:var(--ink);font-weight:600}
+.e-body + .e-body{margin-top:14px}
+.e-mono{margin:18px 0 0;font-family:var(--mono);font-size:12px;letter-spacing:.03em;color:var(--blue);text-transform:uppercase}
+
+/* the taped-in photo — clean render, tape corners only */
+.e-photo{margin:0;min-width:0}
+.taped{position:relative;background:#fbf6ea;padding:12px 12px 14px;border-radius:2px;
+  box-shadow:0 22px 44px -26px rgba(50,34,12,.7),0 2px 5px rgba(0,0,0,.14);
+  transform:rotate(var(--rot,-1.4deg))}
+.taped.port{max-width:322px;margin-inline:auto;padding-bottom:44px}
+.taped .frame{overflow:hidden;background:#e7ddca;border-radius:1px}
+.taped .frame img{width:100%;height:auto;display:block}   /* NO filter — clean */
+/* crop the source-video watermark out of the bottom-left corner of these two SR26 frames (transform on the photo, frame clips; no tint/filter) */
+.taped .frame img[src*="sr26-thrower-mountains"],.taped .frame img[src*="sr26-spirit-tunnel"]{transform:scale(1.18);transform-origin:88% 12%}
+.taped figcaption{margin:9px 3px 0;font-family:var(--hand);font-weight:600;font-size:20px;line-height:1.15;color:var(--ink);text-align:center}
+.taped.port figcaption{position:absolute;left:0;right:0;bottom:12px;margin:0}
+/* washi tape — chrome texture, sits on the frame's paper, not the photo */
+.tape{position:absolute;width:82px;height:26px;background:
+   linear-gradient(180deg,rgba(94,107,59,.42),rgba(94,107,59,.3)),
+   repeating-linear-gradient(90deg,rgba(255,255,255,.16) 0 5px,transparent 5px 10px);
+  box-shadow:0 2px 5px rgba(0,0,0,.16);z-index:3}
+.tape.tl{top:-11px;left:-14px;transform:rotate(-38deg)}
+.tape.br{bottom:-11px;right:-14px;transform:rotate(-38deg)}
+.tape.blue{background:linear-gradient(180deg,rgba(40,75,111,.42),rgba(40,75,111,.3)),repeating-linear-gradient(90deg,rgba(255,255,255,.16) 0 5px,transparent 5px 10px)}
+/* the handwritten margin note */
+.margin{position:relative;font-family:var(--hand);font-weight:700;font-size:clamp(21px,2.4vw,27px);line-height:1.2;color:var(--red);
+  max-width:22ch;padding-left:28px;margin:20px 0 0}
+.margin::before{content:"";position:absolute;left:2px;top:6px;bottom:6px;width:2px;background:var(--red);opacity:.55;border-radius:2px}
+.margin .arw{display:block;font-family:var(--mono);font-size:13px;color:var(--ink-soft);letter-spacing:.1em;margin-top:6px}
+
+/* ————————————————————————————————————————————————————————————
+   4 · ITINERARY — the upcoming season and how to earn your first
+   stamp. Laid out like a boarding pass / visa page, with the real
+   facts and a stamp that presses over the corner.
+———————————————————————————————————————————————————————————— */
+.itin{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(24px,3.4vw,44px);align-items:start}
+.ticket{position:relative;background:var(--kraft-2);border:1.5px solid var(--ink);border-radius:10px;overflow:hidden}
+.ticket-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 18px;
+  background:var(--ink);color:var(--kraft);padding:16px clamp(18px,3vw,26px)}
+.ticket-head .t-air{font-family:var(--disp);font-weight:600;font-size:19px;letter-spacing:.02em}
+.ticket-head .t-tag{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--foil-hi)}
+.ticket-body{padding:clamp(20px,3vw,30px) clamp(18px,3vw,30px)}
+.legs{list-style:none;margin:0;padding:0}
+.leg{display:grid;grid-template-columns:auto 1fr auto;gap:6px 16px;align-items:baseline;padding:14px 0;border-bottom:1px dashed var(--line)}
+.leg:last-child{border-bottom:0}
+.leg .lo{font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);white-space:nowrap}
+.leg .ld{min-width:0}
+.leg .ld b{display:block;font-family:var(--disp);font-weight:600;font-size:19px;color:var(--ink);line-height:1.15}
+.leg .ld span{font-size:14px;color:var(--ink-soft)}
+.leg .lw{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;text-align:right}
+/* perforation notch */
+.ticket::before,.ticket::after{content:"";position:absolute;width:22px;height:22px;background:var(--kraft);border:1.5px solid var(--ink);border-radius:50%}
+.ticket::before{left:-12px}
+.ticket::after{right:-12px}
+.ticket::before,.ticket::after{top:clamp(58px,10vw,70px)}
+
+.board{position:relative;background:var(--kraft-2);border:1.5px solid var(--ink);border-radius:10px;padding:clamp(22px,3vw,28px);overflow:visible}
+.board h3{font-family:var(--disp);font-weight:600;font-size:22px;margin:0 0 6px;color:var(--ink)}
+.board p{margin:0 0 18px;font-size:15.5px;color:var(--ink-soft)}
+.facts{list-style:none;margin:0 0 20px;padding:0}
+.facts li{display:flex;gap:12px;padding:9px 0;border-top:1px solid var(--line-2);font-size:15px;color:var(--ink)}
+.facts li:first-child{border-top:0}
+.facts b{font-family:var(--mono);font-weight:700;font-size:12.5px;letter-spacing:.04em;color:var(--blue);flex:none;width:78px;padding-top:2px}
+.board .stamp-mark{position:absolute;top:-6px;right:-6px}
+.tel{font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.06em;color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--red);padding-bottom:2px}
+.tel:hover{border-bottom-color:var(--ink)}
+.itin-cta{margin:clamp(24px,3vw,30px) 0 0;display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center}
+
+/* ————————————————————————————————————————————————————————————
+   5 · HOMEPAGE MOCK — discnw.org in the passport styling.
+———————————————————————————————————————————————————————————— */
+.browser{border:1.5px solid var(--ink);border-radius:12px;overflow:hidden;
+  box-shadow:0 40px 80px -46px rgba(50,34,12,.75);background:var(--kraft)}
+.br-bar{display:flex;align-items:center;gap:14px;background:var(--kraft-3);border-bottom:1.5px solid var(--ink);padding:10px 16px}
+.br-dots{display:flex;gap:6px}
+.br-dots i{width:10px;height:10px;border-radius:50%;background:rgba(32,36,42,.32);display:block}
+.br-url{flex:1;max-width:300px;background:var(--kraft);border:1px solid var(--ink);border-radius:999px;
+  font-family:var(--mono);font-size:12px;color:var(--ink-soft);padding:5px 16px;text-align:center}
+.m-nav{display:flex;align-items:center;gap:22px;background:var(--cover);padding:14px clamp(16px,3vw,28px)}
+.m-nav .m-logo img{width:132px;height:auto;display:block}
+.m-links{display:flex;gap:6px;margin-left:auto;list-style:none;margin-block:0;padding:0}
+.m-links a{display:block;padding:8px 11px;color:var(--cream);text-decoration:none;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.m-links a:hover{color:var(--foil-hi)}
+.m-reg{background:var(--foil);color:var(--cover);font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  padding:10px 16px;border-radius:5px;text-decoration:none;white-space:nowrap}
+.m-reg:hover{background:var(--foil-hi)}
+.m-burger{display:none;margin-left:auto}
+.m-burger i{display:block;width:22px;height:2px;background:var(--cream);margin:5px 0;border-radius:2px}
+.m-hero{position:relative;background:var(--cover);color:var(--cream);padding:clamp(30px,4vw,54px) clamp(18px,3vw,44px) clamp(30px,4vw,48px);overflow:hidden}
+.m-hero::after{content:"";position:absolute;inset:14px;border:1px solid rgba(203,163,94,.34);border-radius:5px;pointer-events:none}
+.m-hero .m-eyebrow{position:relative;margin:0 0 12px;font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--foil)}
+.m-hero h3{position:relative;margin:0 0 14px;font-family:var(--disp);font-weight:600;font-size:clamp(30px,4.4vw,50px);line-height:.98;letter-spacing:-.015em;color:var(--foil-hi)}
+.m-hero p{position:relative;margin:0;font-size:16px;color:var(--cream);max-width:50ch}
+.m-strip{display:flex;gap:clamp(18px,3vw,32px);align-items:center;justify-content:center;flex-wrap:wrap;
+  background:var(--kraft-2);border-top:1.5px solid var(--ink);padding:clamp(20px,3vw,30px)}
+.m-strip .stamp{width:clamp(96px,12vw,118px)}
+.m-dir{background:var(--kraft);padding:clamp(22px,3vw,32px) clamp(18px,3vw,44px);border-top:1.5px dashed var(--line)}
+.m-dir-head{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;margin:0 0 16px;
+  font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.m-dir-head .m-count{margin-left:auto;color:var(--red-deep);font-weight:600}
+.m-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px}
+.mtile{display:flex;flex-direction:column;background:#fff;border:1.5px solid var(--ink);border-radius:10px;overflow:hidden;text-decoration:none}
+.mtile-well{height:78px;display:flex;align-items:center;justify-content:center;padding:12px;border-bottom:1.5px solid var(--kraft-3);background:#fff}
+.mtile-well img{max-height:52px;max-width:104px;width:auto;height:auto;object-fit:contain}
+.mtile-body{padding:10px 12px 12px;background:var(--kraft-2)}
+.mtile-name{display:block;font-family:var(--body);font-weight:700;font-size:13px;line-height:1.2;color:var(--ink)}
+.mtile-meta{display:block;margin-top:4px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.m-openline{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;background:var(--ink);color:var(--kraft);
+  padding:15px clamp(18px,3vw,44px);font-size:14.5px}
+.m-openline .oline-tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--foil-hi);flex:none}
+.m-openline b{color:#fff;font-weight:700}
+.m-foot{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;background:var(--cover);padding:22px clamp(18px,3vw,44px)}
+.m-foot .m-mark{display:flex;align-items:center;gap:11px}
+.m-foot .m-mark img{width:30px;height:auto}
+.m-foot .m-mark span{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(237,228,206,.7);line-height:1.55}
+.m-foot .m-vision{margin-left:auto;font-family:var(--disp);font-style:italic;font-size:16px;color:var(--foil-hi)}
+
+/* ————————————————————————————————————————————————————————————
+   6 · APPENDIX — the page steps back to explain itself.
+———————————————————————————————————————————————————————————— */
+.about{background:var(--kraft-2);border-top:1.5px solid var(--ink)}
+.about .wrap{padding-block:clamp(56px,9vh,104px)}
+.about .lockup-dark{width:clamp(128px,13vw,150px);height:auto;margin:0 0 26px}
+.about h2{font-family:var(--disp);font-weight:600;font-size:clamp(30px,3.8vw,48px);letter-spacing:-.01em;margin:0 0 6px;color:var(--ink)}
+.about .thesis{max-width:64ch;margin:16px 0 42px;font-size:18px;line-height:1.7;color:var(--ink-soft)}
+.about .thesis em{font-style:italic;color:var(--blue)}
+.spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:28px clamp(24px,3vw,52px);margin:0}
+.spec>div{border-top:1.5px solid var(--line);padding-top:16px}
+.spec dt{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--red-deep);margin:0 0 10px}
+.spec dd{margin:0;font-size:15px;line-height:1.62;color:var(--ink)}
+.spec dd em{font-style:italic;color:var(--blue)}
+.spec dd b{font-weight:700}
+.swatches{display:flex;flex-direction:column;gap:8px}
+.swrow{display:flex;align-items:center;gap:10px}
+.swrow i{width:18px;height:18px;flex:none;border-radius:4px;border:1px solid rgba(32,36,42,.28)}
+.swrow code{font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+
+/* ————— footer ————— */
+.pagefoot{background:var(--ink);color:var(--kraft)}
+.pagefoot .wrap{display:flex;justify-content:space-between;align-items:baseline;gap:14px 28px;flex-wrap:wrap;padding-block:26px}
+.pagefoot a{font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--kraft);text-decoration:none;border-bottom:1.5px solid var(--foil);padding-bottom:2px}
+.pagefoot a:hover{border-bottom-color:var(--kraft)}
+.pagefoot .mid{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:rgba(220,199,168,.7);text-transform:uppercase}
+
+/* ————————————————————————————————————————————————————————————
+   MOTION — every stamp presses in; sections rise. Doubly gated:
+   inside prefers-reduced-motion:no-preference AND behind html.anim
+   (JS adds it, removes it if the preference flips). Base styles ARE
+   the finished passport: fully inked, nothing hidden.
+———————————————————————————————————————————————————————————— */
+@keyframes stampPress{
+  0%{opacity:0;transform:rotate(var(--rot,0deg)) scale(1.42)}
+  55%{opacity:.95;transform:rotate(var(--rot,0deg)) scale(.965)}
+  78%{transform:rotate(var(--rot,0deg)) scale(1.015)}
+  100%{opacity:.9;transform:rotate(var(--rot,0deg)) scale(1)}
+}
+@keyframes inkBleed{from{opacity:.35;filter:blur(1.4px)}to{opacity:1;filter:blur(0)}}
+@media screen and (prefers-reduced-motion:no-preference){
+  /* stamps: armed, waiting to be pressed */
+  html.anim .stamp{opacity:0}
+  html.anim .stamp.inked{animation:stampPress .52s var(--ease-press) both}
+  html.anim .stamp.inked .st>g,html.anim .stamp.inked .st{animation:inkBleed .6s var(--ease-lux) both}
+
+  /* stickers place with a small settle */
+  html.anim .sticker{opacity:0;transform:rotate(var(--rot,0deg)) translateY(12px) scale(.96)}
+  html.anim .sticker.inked{opacity:1;transform:rotate(var(--rot,0deg));transition:opacity .5s var(--ease-lux),transform .6s var(--ease-press)}
+
+  /* generic reveals */
+  html.anim .rv{opacity:0;transform:translateY(22px)}
+  html.anim .rv.in{opacity:1;transform:none;transition:opacity .7s var(--ease-lux),transform .8s var(--ease-lux)}
+  html.anim .rv-mask{display:block;overflow:hidden}
+  html.anim .rv-mask>span{display:block;transform:translateY(112%)}
+  html.anim .rv-mask.in>span{transform:none;transition:transform .9s var(--ease-lux) .05s}
+
+  /* the cover title foils in; crest and lede settle */
+  html.anim .cover h1,html.anim .cover-crest,html.anim .cover-eyebrow,
+  html.anim .cover-lede,html.anim .cover-cta,html.anim .cover-mrz,html.anim .cover-vision{opacity:0}
+  html.anim.go .cover-crest{opacity:1;transform:none;animation:fadeUp .8s var(--ease-lux) .05s both}
+  html.anim.go .cover-eyebrow{opacity:1;animation:fadeUp .7s var(--ease-lux) .18s both}
+  html.anim.go .cover h1{opacity:1;animation:fadeUp .9s var(--ease-lux) .28s both}
+  html.anim.go .cover-lede{opacity:1;animation:fadeUp .8s var(--ease-lux) .46s both}
+  html.anim.go .cover-cta{opacity:1;animation:fadeUp .8s var(--ease-lux) .56s both}
+  html.anim.go .cover-mrz{opacity:1;animation:fadeUp .8s var(--ease-lux) .64s both}
+  html.anim.go .cover-vision{opacity:1;animation:fadeUp .8s var(--ease-lux) .72s both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+}
+
+/* micro-interactions — pointer, hover, motion-OK only */
+@media screen and (prefers-reduced-motion:no-preference) and (hover:hover) and (pointer:fine){
+  .btn{transition:transform .28s var(--ease-snap),background-color .28s var(--ease-snap),border-color .28s var(--ease-snap),color .28s var(--ease-snap)}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:active{transform:translateY(0)}
+  .mtile{transition:transform .3s var(--ease-snap),box-shadow .3s var(--ease-snap)}
+  .mtile:hover{transform:translateY(-3px);box-shadow:0 18px 30px -22px rgba(50,34,12,.6)}
+  .m-links a,.bar a.b-link,.pagefoot a,.tel{transition:color .25s var(--ease-snap),border-color .25s var(--ease-snap)}
+  .sticker{transition:transform .3s var(--ease-snap),box-shadow .3s var(--ease-snap)}
+  .sticker:hover{transform:rotate(0deg) translateY(-3px);box-shadow:0 3px 0 rgba(0,0,0,.06),0 22px 38px -20px rgba(50,34,12,.7)}
+}
+
+/* ————— responsive ————— */
+@media (max-width:900px){
+  .entry{grid-template-columns:1fr;gap:24px}
+  .entry.rev .e-photo{order:0}
+  .itin{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  body{font-size:16px}
+  .stampwall{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:22px 10px}
+  .cover-mrz{gap:5px 16px}
+  .leg{grid-template-columns:auto 1fr;gap:4px 12px}
+  .leg .lw{grid-column:1/-1;text-align:left}
+  .m-links{display:none}
+  .m-reg{margin-left:auto}
+  .m-burger{display:block}
+  .m-foot .m-vision{margin-left:0;width:100%}
+}
+
+/* ————— unconditional settle + print ————— */
+html.settled .stamp{opacity:.9!important;transform:rotate(var(--rot,0deg))!important;animation:none!important}
+html.settled .stamp .st,html.settled .stamp .st>g{animation:none!important;opacity:1!important;filter:none!important}
+html.settled .sticker{opacity:1!important;transform:rotate(var(--rot,0deg))!important;transition:none!important}
+html.settled .rv{opacity:1!important;transform:none!important;transition:none!important}
+html.settled .rv-mask>span{transform:none!important;transition:none!important}
+html.settled .cover h1,html.settled .cover-crest,html.settled .cover-eyebrow,
+html.settled .cover-lede,html.settled .cover-cta,html.settled .cover-mrz,html.settled .cover-vision{opacity:1!important;transform:none!important;animation:none!important}
+@media print{
+  .skip,.bar{position:static}
+  *{animation:none!important;transition:none!important}
+  .stamp{opacity:.9!important;transform:rotate(var(--rot,0deg))!important}
+  .cover,.about,.pagefoot,.m-nav,.m-hero,.m-foot,.ticket-head,.m-openline{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .entry,.ticket,.board,.browser,.stampwall{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- shared stamp filter: roughens the ink edges so every stamp reads
+     as freshly pressed. Static (rasterised once), CHROME only. -->
+<svg class="vh" width="0" height="0" aria-hidden="true" focusable="false"><defs>
+  <filter id="inkRough" x="-8%" y="-8%" width="116%" height="116%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.014 0.021" numOctaves="3" seed="6" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.42" numOctaves="2" seed="14" result="m"/>
+    <feColorMatrix in="m" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -0.75 1.02" result="ma"/>
+    <feComposite in="d" in2="ma" operator="in"/>
+  </filter>
+</defs></svg>
+
+<header class="bar">
+  <img class="lockup" src="assets/brand/logo-full.png" alt="DiscNW — Disc Northwest" width="1446" height="616">
+  <span class="b-mid mono"><b>Direction 25 · Field Notes</b> · Season Passport · Experimental</span>
+  <a class="b-link" href="index.html">← All directions</a>
+</header>
+
+<main id="main">
+
+  <!-- ————————————— 1 · THE PASSPORT COVER ————————————— -->
+  <section class="cover on-cover" aria-labelledby="cover-h">
+    <div class="cover-in">
+      <div class="cover-copy">
+        <img class="cover-crest" src="assets/brand/logo-mark-white.png" alt="DiscNW formline mark, a flying disc held in a circular Coast Salish-style design, in white" width="590" height="616">
+        <p class="cover-eyebrow">Disc Northwest · Est. 1995</p>
+        <h1 id="cover-h">Season<br>Passport<span class="sub">a year of ultimate, stamped</span></h1>
+        <p class="cover-lede">One season told the way you'd keep it: a passport. Every tournament is a place you travel to, and every trip earns a stamp. <b>This is the keepsake you bring home.</b></p>
+        <div class="cover-cta">
+          <a class="btn btn-solid" href="#stamps">See the stamps</a>
+          <a class="btn btn-ghost" href="#itinerary">Get your first</a>
+        </div>
+        <p class="cover-mrz"><span>Type <b>P/UL</b></span><span>Code <b>USA·WA</b></span><span>Season <b>2026</b></span><span>Holder <b>10,000+ players</b></span></p>
+        <p class="cover-vision">An Ultimate community without barriers.</p>
+      </div>
+
+      <div class="cover-stamps" aria-hidden="true">
+        <!-- SPRING REIGN — the marquee stamp -->
+        <span class="stamp circ stamp--red s-a" style="--rot:-8deg">
+          <svg viewBox="0 0 220 220" class="st" focusable="false">
+            <defs>
+              <path id="tpA" d="M20,110 A90,90 0 0 1 200,110" fill="none"/>
+              <path id="bpA" d="M200,110 A90,90 0 0 1 20,110" fill="none"/>
+            </defs>
+            <g filter="url(#inkRough)">
+              <circle cx="110" cy="110" r="103" fill="none" stroke="currentColor" stroke-width="3.4"/>
+              <circle cx="110" cy="110" r="89" fill="none" stroke="currentColor" stroke-width="1.3"/>
+              <text class="st-top" font-size="18"><textPath href="#tpA" startOffset="50%" text-anchor="middle">SPRING REIGN</textPath></text>
+              <text class="st-bot" font-size="12"><textPath href="#bpA" startOffset="50%" text-anchor="middle">SKAGIT VALLEY · WA</textPath></text>
+              <ellipse cx="110" cy="82" rx="27" ry="9" fill="none" stroke="currentColor" stroke-width="2.4"/>
+              <path d="M85,82 a25,8 0 0 0 50,0" fill="none" stroke="currentColor" stroke-width="1.3"/>
+              <text class="st-year" x="110" y="120" font-size="19" text-anchor="middle">MAY 2026</text>
+              <text class="st-stars" x="110" y="142" font-size="13" text-anchor="middle" letter-spacing="4">★ ★ ★</text>
+            </g>
+          </svg>
+        </span>
+        <!-- POTLATCH — est. 1995 -->
+        <span class="stamp circ stamp--blue s-b" style="--rot:7deg;width:clamp(120px,15vw,158px)">
+          <svg viewBox="0 0 220 220" class="st" focusable="false">
+            <defs>
+              <path id="tpB" d="M22,110 A88,88 0 0 1 198,110" fill="none"/>
+              <path id="bpB" d="M198,110 A88,88 0 0 1 22,110" fill="none"/>
+            </defs>
+            <g filter="url(#inkRough)">
+              <circle cx="110" cy="110" r="102" fill="none" stroke="currentColor" stroke-width="3.2"/>
+              <circle cx="110" cy="110" r="88" fill="none" stroke="currentColor" stroke-width="1.3"/>
+              <text class="st-top" font-size="20"><textPath href="#tpB" startOffset="50%" text-anchor="middle">POTLATCH</textPath></text>
+              <text class="st-bot" font-size="12"><textPath href="#bpB" startOffset="50%" text-anchor="middle">SEATTLE · WA</textPath></text>
+              <text class="st-year" x="110" y="102" font-size="15" text-anchor="middle">EST.</text>
+              <text class="st-year" x="110" y="130" font-size="30" text-anchor="middle">1995</text>
+            </g>
+          </svg>
+        </span>
+        <!-- small square date stamp -->
+        <span class="stamp rect stamp--olive s-c" style="--rot:-3deg;width:clamp(92px,12vw,120px)">
+          <svg viewBox="0 0 200 120" class="st" focusable="false">
+            <g filter="url(#inkRough)">
+              <rect x="8" y="8" width="184" height="104" rx="4" fill="none" stroke="currentColor" stroke-width="3"/>
+              <rect x="16" y="16" width="168" height="88" rx="2" fill="none" stroke="currentColor" stroke-width="1"/>
+              <text class="st-small" x="100" y="45" font-size="15" text-anchor="middle">ADMITTED</text>
+              <line x1="30" y1="58" x2="170" y2="58" stroke="currentColor" stroke-width="1.4"/>
+              <text class="st-year" x="100" y="86" font-size="22" text-anchor="middle">SEASON 26</text>
+            </g>
+          </svg>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <div class="seam" aria-hidden="true"><span class="tab">the book opens</span></div>
+
+  <!-- ————————————— 2 · WHERE WE PLAYED (the stamp wall) ————————————— -->
+  <section class="page" id="stamps" aria-labelledby="stamps-h">
+    <p class="kicker">02 · Stamps</p>
+    <h2 class="h2" id="stamps-h">Where we <em>played</em></h2>
+    <p class="intro">A season on the road. Spring up in the Skagit Valley, summer around Seattle, fall back at school. Each tournament earns a stamp. Scroll, and watch them press in the way they do at the desk. <b>Spring Reign is the world's largest mixed youth ultimate tournament</b>, and it is only one page of the year.</p>
+
+    <div class="stampwall">
+      <!-- Spring Reign -->
+      <div class="cell">
+        <span class="stamp circ stamp--red" style="--rot:-6deg">
+          <svg viewBox="0 0 220 220" class="st" role="img" aria-label="Passport stamp: Spring Reign, Skagit Valley, Washington, May 2026" focusable="false">
+            <defs><path id="tp1" d="M20,110 A90,90 0 0 1 200,110" fill="none"/><path id="bp1" d="M200,110 A90,90 0 0 1 20,110" fill="none"/></defs>
+            <g filter="url(#inkRough)">
+              <circle cx="110" cy="110" r="103" fill="none" stroke="currentColor" stroke-width="3.4"/>
+              <circle cx="110" cy="110" r="89" fill="none" stroke="currentColor" stroke-width="1.3"/>
+              <text class="st-top" font-size="18"><textPath href="#tp1" startOffset="50%" text-anchor="middle">SPRING REIGN</textPath></text>
+              <text class="st-bot" font-size="11.5"><textPath href="#bp1" startOffset="50%" text-anchor="middle">SKAGIT VALLEY · WA</textPath></text>
+              <ellipse cx="110" cy="82" rx="27" ry="9" fill="none" stroke="currentColor" stroke-width="2.4"/>
+              <path d="M85,82 a25,8 0 0 0 50,0" fill="none" stroke="currentColor" stroke-width="1.3"/>
+              <text class="st-year" x="110" y="120" font-size="19" text-anchor="middle">MAY 2026</text>
+              <text class="st-stars" x="110" y="142" font-size="13" text-anchor="middle" letter-spacing="4">★ ★ ★</text>
+            </g>
+          </svg>
+        </span>
+        <p class="cap"><b>Spring Reign.</b> World's largest mixed youth tournament.</p>
+      </div>
+
+      <!-- Summer Wonder League — clean logo decal -->
+      <div class="cell">
+        <span class="sticker" style="--rot:4deg"><span class="s-w"><img src="assets/2025-swl-logo.png" alt="Summer Wonder League logo" width="800" height="801" style="max-height:96px"></span><span class="peel" aria-hidden="true"></span></span>
+        <p class="cap"><b>Summer Wonder League.</b> Easygoing summer evenings.</p>
+      </div>
+
+      <!-- Potlatch -->
+      <div class="cell">
+        <span class="stamp circ stamp--blue" style="--rot:5deg">
+          <svg viewBox="0 0 220 220" class="st" role="img" aria-label="Passport stamp: Potlatch, Seattle, Washington, established 1995" focusable="false">
+            <defs><path id="tp2" d="M22,110 A88,88 0 0 1 198,110" fill="none"/><path id="bp2" d="M198,110 A88,88 0 0 1 22,110" fill="none"/></defs>
+            <g filter="url(#inkRough)">
+              <circle cx="110" cy="110" r="102" fill="none" stroke="currentColor" stroke-width="3.2"/>
+              <circle cx="110" cy="110" r="88" fill="none" stroke="currentColor" stroke-width="1.3"/>
+              <text class="st-top" font-size="20"><textPath href="#tp2" startOffset="50%" text-anchor="middle">POTLATCH</textPath></text>
+              <text class="st-bot" font-size="12"><textPath href="#bp2" startOffset="50%" text-anchor="middle">SEATTLE · WA</textPath></text>
+              <text class="st-year" x="110" y="100" font-size="14" text-anchor="middle">EST.</text>
+              <text class="st-year" x="110" y="130" font-size="30" text-anchor="middle">1995</text>
+              <text class="st-stars" x="110" y="150" font-size="11" text-anchor="middle" letter-spacing="3">★ ★ ★</text>
+            </g>
+          </svg>
+        </span>
+        <p class="cap"><b>Potlatch.</b> Where DiscNW started, 1995.</p>
+      </div>
+
+      <!-- Sea Plastic — rectangular customs stamp -->
+      <div class="cell">
+        <span class="stamp rect stamp--red" style="--rot:-4deg">
+          <svg viewBox="0 0 240 150" class="st" role="img" aria-label="Passport stamp: Sea Plastic, beach ultimate, Seattle" focusable="false">
+            <g filter="url(#inkRough)">
+              <rect x="8" y="8" width="224" height="134" rx="5" fill="none" stroke="currentColor" stroke-width="3.4"/>
+              <rect x="16" y="16" width="208" height="118" rx="3" fill="none" stroke="currentColor" stroke-width="1.1"/>
+              <text class="st-top" x="120" y="46" font-size="21" text-anchor="middle" letter-spacing="2">SEA PLASTIC</text>
+              <line x1="34" y1="60" x2="206" y2="60" stroke="currentColor" stroke-width="1.4"/>
+              <text class="st-small" x="120" y="82" font-size="12" text-anchor="middle">BEACH ULTIMATE</text>
+              <text class="st-year" x="120" y="112" font-size="17" text-anchor="middle">CLEATS OFF · WA</text>
+            </g>
+          </svg>
+        </span>
+        <p class="cap"><b>Sea Plastic.</b> The whole thing, moved to the sand.</p>
+      </div>
+
+      <!-- Sea Plastic logo decal -->
+      <div class="cell">
+        <span class="sticker" style="--rot:-5deg"><span class="s-w"><img src="assets/seaplastic-2026-logo.png" alt="Sea Plastic 2026 logo" width="613" height="595" style="max-height:104px"></span><span class="peel" aria-hidden="true"></span></span>
+        <p class="cap"><b>Sea Plastic 2026.</b> On the beach this spring.</p>
+      </div>
+
+      <!-- Summer Mixed Hat League -->
+      <div class="cell">
+        <span class="stamp circ stamp--blue" style="--rot:6deg">
+          <svg viewBox="0 0 220 220" class="st" role="img" aria-label="Passport stamp: Summer Mixed Hat League, Magnuson Park, Seattle" focusable="false">
+            <defs><path id="tp3" d="M18,110 A92,92 0 0 1 202,110" fill="none"/><path id="bp3" d="M202,110 A92,92 0 0 1 18,110" fill="none"/></defs>
+            <g filter="url(#inkRough)">
+              <circle cx="110" cy="110" r="104" fill="none" stroke="currentColor" stroke-width="3.2"/>
+              <circle cx="110" cy="110" r="90" fill="none" stroke="currentColor" stroke-width="1.3"/>
+              <text class="st-top" font-size="15"><textPath href="#tp3" startOffset="50%" text-anchor="middle">SUMMER MIXED HAT</textPath></text>
+              <text class="st-bot" font-size="12"><textPath href="#bp3" startOffset="50%" text-anchor="middle">MAGNUSON PARK</textPath></text>
+              <path d="M88,92 q22,-26 44,0" fill="none" stroke="currentColor" stroke-width="2.2"/>
+              <line x1="78" y1="92" x2="142" y2="92" stroke="currentColor" stroke-width="2.2"/>
+              <text class="st-year" x="110" y="128" font-size="16" text-anchor="middle">MON · JUN–AUG</text>
+              <text class="st-stars" x="110" y="148" font-size="11" text-anchor="middle" letter-spacing="3">★ ★ ★</text>
+            </g>
+          </svg>
+        </span>
+        <p class="cap"><b>Summer Mixed Hat.</b> Sign up alone, teams drawn from a hat.</p>
+      </div>
+
+      <!-- Coaching Collective decal -->
+      <div class="cell">
+        <span class="sticker" style="--rot:3deg"><span class="s-w"><img src="assets/discnw-coaching-collective-3.png" alt="DiscNW Coaching Collective logo" width="352" height="322" style="max-height:92px"></span><span class="peel" aria-hidden="true"></span></span>
+        <p class="cap"><b>Coaching Collective.</b> This year's players, next year's coaches.</p>
+      </div>
+
+      <!-- Fall leagues — oval stamp -->
+      <div class="cell">
+        <span class="stamp oval stamp--olive" style="--rot:-2deg">
+          <svg viewBox="0 0 250 150" class="st" role="img" aria-label="Passport stamp: Fall middle and high school leagues, school year, Seattle" focusable="false">
+            <defs><path id="tp4" d="M40,75 A85,60 0 0 1 210,75" fill="none"/><path id="bp4" d="M210,75 A85,60 0 0 1 40,75" fill="none"/></defs>
+            <g filter="url(#inkRough)">
+              <ellipse cx="125" cy="75" rx="118" ry="66" fill="none" stroke="currentColor" stroke-width="3.2"/>
+              <ellipse cx="125" cy="75" rx="106" ry="55" fill="none" stroke="currentColor" stroke-width="1.1"/>
+              <text class="st-top" font-size="15"><textPath href="#tp4" startOffset="50%" text-anchor="middle">FALL LEAGUES</textPath></text>
+              <text class="st-bot" font-size="11"><textPath href="#bp4" startOffset="50%" text-anchor="middle">MS + HS · SEATTLE</textPath></text>
+              <text class="st-year" x="125" y="82" font-size="18" text-anchor="middle">SCHOOL YEAR</text>
+            </g>
+          </svg>
+        </span>
+        <p class="cap"><b>Fall leagues.</b> Middle and high school, on wet grass.</p>
+      </div>
+    </div>
+    <p class="pnote"><b>How the stamps are built:</b> every stamp is drawn in CSS and SVG, roughened at the edges so the ink looks freshly pressed. The real program logos are the true-colour decals, placed clean and never recoloured. With animation off, or with no JavaScript, all of it is already inked and still.</p>
+  </section>
+
+  <!-- ————————————— 3 · FIELD NOTES ————————————— -->
+  <section class="page" id="notes" aria-labelledby="notes-h">
+    <p class="kicker">03 · Field notes</p>
+    <h2 class="h2" id="notes-h">What we wrote in the <em>margins</em></h2>
+    <p class="intro">Between the stamps, the notes. A few short entries from the season, with the photos taped in the way you'd keep them. The handwriting stays in the margin, where it belongs.</p>
+
+    <article class="entry rv">
+      <div class="e-copy">
+        <p class="e-date">May · Skagit Valley</p>
+        <h3>The mountains watched the <em>whole time</em></h3>
+        <p class="e-body">Every spring the season moves north to the Skagit Valley for Spring Reign. One weekend, every age bracket, a disc in the air at all times, and foothills on the horizon while kids play the best games of their year.</p>
+        <p class="e-body">It is the world's largest mixed youth ultimate tournament, and it still feels like a field trip. You come home tired, sunburned, and already counting to next May.</p>
+        <p class="margin">kids playing the best games of their year<span class="arw">↖ pitch 7, sunday</span></p>
+      </div>
+      <figure class="e-photo">
+        <div class="taped rv" style="--rot:-1.8deg">
+          <span class="tape tl" aria-hidden="true"></span><span class="tape br" aria-hidden="true"></span>
+          <div class="frame"><img src="assets/sr26-thrower-mountains.jpg" alt="A young player steps out to line up a throw at Spring Reign, with sunlit fields and a dark treeline of foothills behind her" width="1920" height="1080"></div>
+          <figcaption>Spring Reign · the throw, the mountains</figcaption>
+        </div>
+      </figure>
+    </article>
+
+    <article class="entry rev rv">
+      <div class="e-copy">
+        <p class="e-date">June · around Seattle</p>
+        <h3>Nobody is born knowing how to <em>throw</em></h3>
+        <p class="e-body">Summer is the first-timers' season. Summer Youth Ultimate Camps take players ages 7 to 18 at every level, and the Wonder League keeps the evenings low-key. The disc goes up, somebody drops it, everybody laughs, you go again.</p>
+        <p class="e-body">Fees start at <b>$33</b> on a sliding scale, no questions asked. Every tier gets the identical week.</p>
+        <p class="margin">the disc goes up, somebody laughs<span class="arw">↖ week one, magnuson</span></p>
+      </div>
+      <figure class="e-photo">
+        <div class="taped port rv" style="--rot:2.2deg">
+          <span class="tape tl blue" aria-hidden="true"></span><span class="tape br blue" aria-hidden="true"></span>
+          <div class="frame"><img src="assets/summer-ultimate.jpg" alt="A youth ultimate player on a summer field reaches to make a catch, arms up against a bright sky" width="360" height="450"></div>
+          <figcaption>summer camps · first season</figcaption>
+        </div>
+      </figure>
+    </article>
+
+    <article class="entry rv">
+      <div class="e-copy">
+        <p class="e-date">All season · every field</p>
+        <h3>No referees. That is the <em>point</em></h3>
+        <p class="e-body">Ultimate has zero referees. Players make their own calls, at every level, in every division. It is called Spirit of the Game, and it is really just a way of saying everyone belongs on the field.</p>
+        <p class="e-body">Every game ends the same way, both teams through one tunnel of high-fives. It is the part nobody photographs and everybody remembers.</p>
+        <p class="margin">every game ends through one of these<span class="arw">↖ after the final</span></p>
+      </div>
+      <figure class="e-photo">
+        <div class="taped rv" style="--rot:1.5deg">
+          <span class="tape tl" aria-hidden="true"></span><span class="tape br" aria-hidden="true"></span>
+          <div class="frame"><img src="assets/sr26-spirit-tunnel.jpg" alt="Two youth teams form a spirit tunnel of raised hands and high-fives after a game at Spring Reign" width="1920" height="1080"></div>
+          <figcaption>Spirit of the Game · the tunnel</figcaption>
+        </div>
+      </figure>
+    </article>
+  </section>
+
+  <!-- ————————————— 4 · ITINERARY ————————————— -->
+  <section class="page" id="itinerary" aria-labelledby="itin-h">
+    <p class="kicker">04 · Itinerary</p>
+    <h2 class="h2" id="itin-h">Get your <em>first stamp</em></h2>
+    <p class="intro">The season ahead, and the one thing you need to start collecting: a spot on a field. Here is the year, and here is the desk.</p>
+
+    <div class="itin">
+      <div class="ticket">
+        <div class="ticket-head">
+          <span class="t-air">DiscNW · Season 2026</span>
+          <span class="t-tag">Boarding · all welcome</span>
+        </div>
+        <div class="ticket-body">
+          <ul class="legs">
+            <li class="leg"><span class="lo">Spring</span><span class="ld"><b>Spring Reign</b><span>Skagit Valley · world's largest mixed youth tournament</span></span><span class="lw">May</span></li>
+            <li class="leg"><span class="lo">Spring</span><span class="ld"><b>Sea Plastic</b><span>Beach ultimate, cleats off, out on the sand</span></span><span class="lw">Spring</span></li>
+            <li class="leg"><span class="lo">Summer</span><span class="ld"><b>Youth Camps + Wonder League</b><span>Ages 7 to 18, evenings around Seattle at Magnuson Park</span></span><span class="lw">Jun–Aug</span></li>
+            <li class="leg"><span class="lo">Summer</span><span class="ld"><b>Summer Mixed Hat League</b><span>Sign up alone, teams drawn from a hat</span></span><span class="lw">Jun–Aug</span></li>
+            <li class="leg"><span class="lo">Fall</span><span class="ld"><b>Middle + high school leagues</b><span>Whole seasons on grass, self-officiated</span></span><span class="lw">Sep–Nov</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <aside class="board" aria-label="How to get your first stamp">
+        <span class="stamp circ stamp--red stamp-mark" style="--rot:11deg;width:clamp(94px,12vw,120px)" aria-hidden="true">
+          <svg viewBox="0 0 220 220" class="st" focusable="false">
+            <defs><path id="tp5" d="M24,110 A86,86 0 0 1 196,110" fill="none"/><path id="bp5" d="M196,110 A86,86 0 0 1 24,110" fill="none"/></defs>
+            <g filter="url(#inkRough)">
+              <circle cx="110" cy="110" r="101" fill="none" stroke="currentColor" stroke-width="3.4"/>
+              <circle cx="110" cy="110" r="87" fill="none" stroke="currentColor" stroke-width="1.2"/>
+              <text class="st-top" font-size="17"><textPath href="#tp5" startOffset="50%" text-anchor="middle">REGISTERED</textPath></text>
+              <text class="st-bot" font-size="12"><textPath href="#bp5" startOffset="50%" text-anchor="middle">WELCOME · DISCNW</textPath></text>
+              <text class="st-year" x="110" y="118" font-size="26" text-anchor="middle">✓</text>
+            </g>
+          </svg>
+        </span>
+        <h3>Start here</h3>
+        <p>Founded in 1995 at the first Potlatch, DiscNW now serves more than 10,000 players a year. There is room for one more.</p>
+        <ul class="facts">
+          <li><b>Fees</b><span>From $33 on a sliding scale. No questions asked, no one turned away.</span></li>
+          <li><b>Rules</b><span>Self-officiated under Spirit of the Game. No referees, at any level.</span></li>
+          <li><b>Since</b><span>1995, the first Potlatch. 10,000+ players a year.</span></li>
+          <li><b>Desk</b><span><a class="tel" href="tel:+12067815840">(206) 781-5840</a></span></li>
+        </ul>
+        <div class="itin-cta">
+          <a class="btn btn-solid" href="https://www.discnw.org/">Find your program</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ————————————— 5 · HOMEPAGE MOCK ————————————— -->
+  <section class="page" id="home" aria-labelledby="home-h">
+    <p class="kicker">05 · Homepage</p>
+    <h2 class="h2" id="home-h">discnw.org, as a <em>passport</em></h2>
+    <p class="intro">The top of the new homepage in this styling. A cover-style hero, a row of the season's stamps, then the programs as clean logo tiles. The nav carries the real DiscNW lockup; the footer signs off with the formline mark.</p>
+
+    <div class="browser rv">
+      <div class="br-bar"><span class="br-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="br-url">discnw.org</span></div>
+      <div role="img" aria-label="Mockup of the redesigned DiscNW homepage: a deep navy nav bar with the white DiscNW lockup, a cover-style hero reading 'A season of ultimate. Bring it home.', a row of destination stamps for Spring Reign, Potlatch and Sea Plastic, a grid of program tiles each with its real logo, a line reading fees start at 33 dollars with no one turned away, and a navy footer with the formline mark and the line an Ultimate community without barriers.">
+        <nav class="m-nav" aria-hidden="true">
+          <span class="m-logo"><img src="assets/brand/logo-full-white.png" alt="" width="1446" height="616"></span>
+          <ul class="m-links">
+            <li><a href="#home">Stamps</a></li>
+            <li><a href="#home">Youth</a></li>
+            <li><a href="#home">Adult</a></li>
+            <li><a href="#home">Coaches</a></li>
+          </ul>
+          <a class="m-reg" href="#home">Register</a>
+          <span class="m-burger" aria-hidden="true"><i></i><i></i><i></i></span>
+        </nav>
+        <div class="m-hero">
+          <p class="m-eyebrow">DiscNW · Season Passport</p>
+          <h3>A season of ultimate.<br>Bring it home.</h3>
+          <p>Leagues, camps, and tournaments for more than 10,000 players a year. Pick a season and start collecting stamps.</p>
+        </div>
+        <div class="m-strip" aria-hidden="true">
+          <span class="stamp circ stamp--red" style="--rot:-7deg">
+            <svg viewBox="0 0 220 220" class="st" focusable="false">
+              <defs><path id="tp6" d="M20,110 A90,90 0 0 1 200,110" fill="none"/><path id="bp6" d="M200,110 A90,90 0 0 1 20,110" fill="none"/></defs>
+              <g filter="url(#inkRough)">
+                <circle cx="110" cy="110" r="103" fill="none" stroke="currentColor" stroke-width="3.6"/>
+                <circle cx="110" cy="110" r="89" fill="none" stroke="currentColor" stroke-width="1.4"/>
+                <text class="st-top" font-size="18"><textPath href="#tp6" startOffset="50%" text-anchor="middle">SPRING REIGN</textPath></text>
+                <text class="st-bot" font-size="12"><textPath href="#bp6" startOffset="50%" text-anchor="middle">SKAGIT · WA</textPath></text>
+                <ellipse cx="110" cy="86" rx="27" ry="9" fill="none" stroke="currentColor" stroke-width="2.6"/>
+                <text class="st-year" x="110" y="126" font-size="19" text-anchor="middle">MAY 26</text>
+              </g>
+            </svg>
+          </span>
+          <span class="stamp circ stamp--blue" style="--rot:6deg">
+            <svg viewBox="0 0 220 220" class="st" focusable="false">
+              <defs><path id="tp7" d="M22,110 A88,88 0 0 1 198,110" fill="none"/><path id="bp7" d="M198,110 A88,88 0 0 1 22,110" fill="none"/></defs>
+              <g filter="url(#inkRough)">
+                <circle cx="110" cy="110" r="102" fill="none" stroke="currentColor" stroke-width="3.4"/>
+                <circle cx="110" cy="110" r="88" fill="none" stroke="currentColor" stroke-width="1.4"/>
+                <text class="st-top" font-size="20"><textPath href="#tp7" startOffset="50%" text-anchor="middle">POTLATCH</textPath></text>
+                <text class="st-bot" font-size="12"><textPath href="#bp7" startOffset="50%" text-anchor="middle">SEATTLE · WA</textPath></text>
+                <text class="st-year" x="110" y="124" font-size="30" text-anchor="middle">1995</text>
+              </g>
+            </svg>
+          </span>
+          <span class="stamp rect stamp--olive" style="--rot:-4deg;width:clamp(108px,14vw,140px)">
+            <svg viewBox="0 0 240 150" class="st" focusable="false">
+              <g filter="url(#inkRough)">
+                <rect x="8" y="8" width="224" height="134" rx="5" fill="none" stroke="currentColor" stroke-width="3.4"/>
+                <rect x="16" y="16" width="208" height="118" rx="3" fill="none" stroke="currentColor" stroke-width="1.1"/>
+                <text class="st-top" x="120" y="52" font-size="22" text-anchor="middle" letter-spacing="2">SEA PLASTIC</text>
+                <line x1="34" y1="66" x2="206" y2="66" stroke="currentColor" stroke-width="1.4"/>
+                <text class="st-year" x="120" y="104" font-size="18" text-anchor="middle">BEACH · WA</text>
+              </g>
+            </svg>
+          </span>
+        </div>
+        <div class="m-dir">
+          <p class="m-dir-head"><span>Summer · open now</span><span class="m-count">6 of 16 programs</span></p>
+          <div class="m-grid">
+            <a class="mtile" href="#home"><span class="mtile-well"><img src="assets/mshatleague-logo-with-hat.png" alt="Summer Mixed Hat League logo" width="1024" height="1024"></span><span class="mtile-body"><span class="mtile-name">Summer Mixed Hat</span><span class="mtile-meta">Summer · Adult</span></span></a>
+            <a class="mtile" href="#home"><span class="mtile-well"><img src="assets/2025-swl-logo.png" alt="Summer Wonder League logo" width="800" height="801"></span><span class="mtile-body"><span class="mtile-name">Summer Wonder League</span><span class="mtile-meta">Summer · Youth</span></span></a>
+            <a class="mtile" href="#home"><span class="mtile-well"><img src="assets/discnw-summer-camp-disc.jpg" alt="Summer Youth Ultimate Camps logo" width="503" height="504"></span><span class="mtile-body"><span class="mtile-name">Summer Youth Camps</span><span class="mtile-meta">Summer · Youth</span></span></a>
+            <a class="mtile" href="#home"><span class="mtile-well"><img src="assets/colorcamp-logo.png" alt="Color Camp logo" width="1756" height="896"></span><span class="mtile-body"><span class="mtile-name">Color Camp</span><span class="mtile-meta">Summer · Youth</span></span></a>
+            <a class="mtile" href="#home"><span class="mtile-well"><img src="assets/training-camp-logo-full-color-web.png" alt="Training Camp logo" width="600" height="600"></span><span class="mtile-body"><span class="mtile-name">Training Camp</span><span class="mtile-meta">Summer · Youth</span></span></a>
+            <a class="mtile" href="#home"><span class="mtile-well"><img src="assets/seaplastic-2026-logo.png" alt="Sea Plastic logo" width="613" height="595"></span><span class="mtile-body"><span class="mtile-name">Sea Plastic</span><span class="mtile-meta">Spring · Adult</span></span></a>
+          </div>
+        </div>
+        <div class="m-openline" aria-hidden="true"><span class="oline-tag">Cost</span><span>Fees start at <b>$33</b>. There is a sliding scale and financial aid, and <b>no one is turned away</b> for lack of money.</span></div>
+        <div class="m-foot" aria-hidden="true">
+          <span class="m-mark"><img src="assets/brand/logo-mark-white.png" alt="" width="590" height="616"><span>Seattle 501(c)(3)<br>Founded 1995 · (206) 781-5840</span></span>
+          <span class="m-vision">An Ultimate community without barriers.</span>
+        </div>
+      </div>
+    </div>
+    <p class="pnote">The lockup in the nav is the real white asset, undistorted. The formline mark signs the footer with clearspace on the navy cover. Every homepage tile is a real program logo on the same white ground, never recoloured. The stamps in the strip are the same CSS art as the season page.</p>
+  </section>
+
+  <!-- ————————————— 6 · ABOUT THIS DIRECTION ————————————— -->
+  <section class="about" aria-labelledby="about-h">
+    <div class="wrap">
+      <img class="lockup-dark" src="assets/brand/logo-full.png" alt="DiscNW — Disc Northwest" width="1446" height="616">
+      <p class="kicker">About this direction</p>
+      <h2 id="about-h">25 — Field Notes</h2>
+      <p class="thesis">A season of ultimate, kept the way you'd keep a trip: as a passport. Tournaments are places you travel to, and every trip earns a stamp. It is warm, analog, and personal, a keepsake rather than a brochure. It leans on DiscNW's vision, <em>an Ultimate community without barriers</em>, by making the whole year feel like somewhere anyone can go.</p>
+      <dl class="spec">
+        <div>
+          <dt>The mechanism</dt>
+          <dd>Every destination is a rubber stamp, drawn in CSS and SVG with a roughened ink edge. As each one scrolls into view it presses in, a quick settle with a small ink-bleed, as if stamped just now. With reduced motion or no JavaScript, every stamp is already fully inked and the page reads as a finished passport.</dd>
+        </div>
+        <div>
+          <dt>Signature</dt>
+          <dd>The stamp itself. Circular customs stamps, a rectangular admittance stamp, and an oval, each carrying a date and a location. Real program logos are woven in as clean travel decals beside the stamps, true-colour and never recoloured.</dd>
+        </div>
+        <div>
+          <dt>Palette</dt>
+          <dd class="swatches">
+            <span class="swrow"><i style="background:#DCC7A8"></i>Kraft paper <code>#DCC7A8</code></span>
+            <span class="swrow"><i style="background:#20242A"></i>Ink <code>#20242A</code></span>
+            <span class="swrow"><i style="background:#B23A2E"></i>Stamp red <code>#B23A2E</code></span>
+            <span class="swrow"><i style="background:#284B6F"></i>Passport blue <code>#284B6F</code></span>
+            <span class="swrow"><i style="background:#5E6B3B"></i>Olive <code>#5E6B3B</code></span>
+          </dd>
+        </div>
+        <div>
+          <dt>Type</dt>
+          <dd><b>Spectral</b> sets the official headings and destination names, a document serif · <b>Hanken Grotesk</b> carries the body · <b>JetBrains Mono</b> handles dates, coordinates, and entry numbers · <b>Caveat</b> writes the margin notes, sparingly, and never the body.</dd>
+        </div>
+        <div>
+          <dt>Photography</dt>
+          <dd>Every photo renders clean, taped into a paper frame with washi-tape corners. The tape and paper are the only texture. No tint, blend, grain, or duotone ever touches a photograph, and nothing is upscaled past its native size.</dd>
+        </div>
+        <div>
+          <dt>Accessibility</dt>
+          <dd>Body copy is ink on kraft at about 9.5:1. Red and olive appear as text only at large sizes or inside the graphical stamps. One <b>h1</b>, semantic landmarks, described alt text on every photo, and visible focus rings throughout.</dd>
+        </div>
+        <div>
+          <dt>Choose this if</dt>
+          <dd>You want the warmest, most personal front door in the kit, one that treats a season as something worth keeping and makes joining feel like the start of a trip.</dd>
+        </div>
+        <div>
+          <dt>Think twice if</dt>
+          <dd>You need a dense utility homepage with standings and schedules above the fold, or a cool corporate tone. This is a keepsake, and it wants a little romance to work.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<footer class="pagefoot">
+  <nav class="wrap" aria-label="Direction navigation">
+    <a href="index.html">← All directions</a>
+    <span class="mid">Direction 25 · Field Notes · prepared for DiscNW</span>
+    <a href="index.html">Next direction →</a>
+  </nav>
+</footer>
+
+<script>
+/* FIELD NOTES — progressive enhancement only.
+   Base styles ARE the finished passport: no JS, print, screenshots, and
+   reduced motion all render every stamp fully inked and still. JS only
+   arms the press and the reveals, and removes them if the preference flips. */
+(function(){
+  'use strict';
+  var doc=document.documentElement;
+  if(!('IntersectionObserver' in window)) return;      /* base page stands */
+  var mq=window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* collect the things that animate in */
+  var stamps=Array.prototype.slice.call(document.querySelectorAll('.stamp'));
+  var stickers=Array.prototype.slice.call(document.querySelectorAll('.sticker'));
+  var revs=Array.prototype.slice.call(document.querySelectorAll('.rv'));
+
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('inked'); e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  },{rootMargin:'0px 0px -8% 0px',threshold:.14});
+
+  function observeAll(){ stamps.concat(stickers,revs).forEach(function(el){ io.observe(el); }); }
+
+  function bind(){
+    doc.classList.add('anim');
+    observeAll();
+    window.requestAnimationFrame(function(){window.requestAnimationFrame(function(){ doc.classList.add('go'); });});
+    /* unconditional settle: everything on screen is landed by ~2s, and this
+       is also the catch-all so a screenshot or print is always complete */
+    window.setTimeout(function(){
+      doc.classList.add('go');
+      var vh=window.innerHeight;
+      stamps.concat(stickers,revs).forEach(function(el){
+        if(el.getBoundingClientRect().top < vh + 40){ el.classList.add('inked'); el.classList.add('in'); }
+      });
+    },1300);
+    window.setTimeout(function(){ doc.classList.add('settled'); },2400);
+  }
+  function unbind(){
+    doc.classList.remove('anim');doc.classList.remove('go');
+    doc.classList.add('settled');
+  }
+  function decide(){ if(mq.matches){ unbind(); } else { bind(); } }
+  if(mq.addEventListener) mq.addEventListener('change',decide);
+  decide();
+})();
+</script>
+</body>
+</html>

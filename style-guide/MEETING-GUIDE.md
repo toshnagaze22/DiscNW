@@ -1,7 +1,7 @@
 # DiscNW Design Direction Review — Meeting Guide
 
 **With:** Matt · **Time:** ~100–110 min · **Materials:** open `index.html` in a browser; this guide on paper.
-**Goal by end of meeting:** a favorite from each of the six families, one lead direction overall, and a short list of borrowed elements — including, possibly, an experimental page's mechanism riding on a grounded system.
+**Goal by end of meeting:** a favorite from each of the seven families, one lead direction overall, and a short list of borrowed elements — including, possibly, an experimental page's mechanism riding on a grounded system.
 
 ---
 
@@ -9,24 +9,25 @@
 
 | Time | Item |
 |---|---|
-| 0:00–0:03 | Setup: brief, ground rules, how the six families work (3 min) |
+| 0:00–0:03 | Setup: brief, ground rules, how the seven families work (3 min) |
 | 0:03–0:19 | **Place & weather** — 01 Evergreen · 02 Understory · 03 Rain or Shine · 04 Last Light → pick a favorite (16 min) |
 | 0:19–0:32 | **Sport & broadcast** — 05 Game Film · 06 One Point · 07 Game to 15 → pick a favorite (13 min) |
-| 0:32–0:51 | **People & community** — 08 Sideline Day · 09 Spirit & Story · 10 First Names · 11 Spectrum · 12 Prism → pick a favorite (19 min) |
+| 0:32–0:51 | **People & community** — 08 Sideline Day · 09 Spirit & Story · 10 First Names · 11 Wide Open · 12 All In → pick a favorite (19 min) |
 | 0:51–1:06 | **Gameday** — 16 Highlight Reel · 17 The Drop · 18 Combine · 19 Bracket → pick a favorite (15 min) |
 | 1:06–1:17 | **The organization** — 20 The People · 21 The Programs · 22 Open to All → pick a favorite (11 min) |
 | 1:17–1:28 | **System & utility** — 13 Flight Path · 14 Route Map · 15 Handbook → pick a favorite (11 min) |
-| 1:28–1:37 | Cross-family final three: put the six favorites up, cut to three (9 min) |
-| 1:37–1:45 | Synthesis: cross-cutting questions + scoring grid (8 min) |
-| 1:45–1:49 | Buffer / spillover (4 min) |
+| 1:28–1:39 | **Keepsakes** — 23 Side A · 24 Home Squad · 25 Field Notes → pick a favorite (11 min) |
+| 1:39–1:48 | Cross-family final three: put the seven favorites up, cut to three (9 min) |
+| 1:48–1:56 | Synthesis: cross-cutting questions + scoring grid (8 min) |
+| 1:56–2:00 | Buffer / spillover (4 min) |
 
 **Pace within a family:** grounded pages ~3 min each, experimental pages ~4 min (the scroll *is* the design), then ~2 min to name the family's favorite before moving on.
 
-**Setup script (read aloud):** "Twenty-two directions for the discnw.org redesign, all built around storytelling for players, coaches, and parents. They're sorted into six families, each answering one question about how the site should feel: **Place & weather** (does it feel like HERE?), **Sport & broadcast** (does it feel like the GAME?), **People & community** (does it feel like US?), **Gameday** (does it bring the energy?), **System & utility** (does it work harder?), and **The organization** (who runs it, and what does it offer?). Some directions are *grounded* — complete design systems you could ship — and some are *experimental* — immersive homepage experiences built around one mechanism you have to scroll to feel; a badge on each card says which. We'll walk one family at a time and pick a favorite from each, then cut those six favorites to a final three across families. React honestly — gut first, reasons second. Nothing is all-or-nothing: we can mix palettes, components, and mechanisms, and a grounded system can adopt an experimental page's mechanism."
+**Setup script (read aloud):** "Twenty-five directions for the discnw.org redesign, all built around storytelling for players, coaches, and parents. They're sorted into seven families, each answering one question about how the site should feel: **Place & weather** (does it feel like HERE?), **Sport & broadcast** (does it feel like the GAME?), **People & community** (does it feel like US?), **Gameday** (does it bring the energy?), **System & utility** (does it work harder?), **The organization** (who runs it, and what does it offer?), and **Keepsakes** (would you keep it?). Some directions are *grounded* — complete design systems you could ship — and some are *experimental* — immersive homepage experiences built around one mechanism you have to scroll to feel; a badge on each card says which. We'll walk one family at a time and pick a favorite from each, then cut those seven favorites to a final three across families. React honestly — gut first, reasons second. Nothing is all-or-nothing: we can mix palettes, components, and mechanisms, and a grounded system can adopt an experimental page's mechanism."
 
 ---
 
-## 2. How to read the six families (and why this order)
+## 2. How to read the seven families (and why this order)
 
 Each family answers one question about what discnw.org should *feel* like. Walk them in order — it builds from the most emotional, place-driven worlds, peaks at the loudest hype tier, and ends on the most utilitarian, so the "does it actually work?" question lands while the atmosphere ones are still fresh.
 
@@ -36,8 +37,8 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 2. **Sport & broadcast — "Does it feel like the GAME?"** (05 Game Film, 06 One Point, 07 Game to 15)
    The athlete's worlds. The counterweight to place: intensity, scoreboards, broadcast treatment. Tests how far toward "serious sport" DiscNW should lean.
 
-3. **People & community — "Does it feel like US?"** (08 Sideline Day, 09 Spirit & Story, 10 First Names, 11 Spectrum, 12 Prism)
-   The people-first worlds. The most literal answers to the storytelling brief — a welcoming sideline, a community magazine, a roster of ten thousand names, and an expressive/inclusion pair (11 Spectrum, 12 Prism) that makes "an Ultimate community without barriers" the literal subject of the design.
+3. **People & community — "Does it feel like US?"** (08 Sideline Day, 09 Spirit & Story, 10 First Names, 11 Wide Open, 12 All In)
+   The people-first worlds. The most literal answers to the storytelling brief — a welcoming sideline, a community magazine, a roster of ten thousand names, and an inclusion pair (11 Wide Open, 12 All In) that makes "an Ultimate community without barriers" the literal subject of the design.
 
 4. **Gameday — "Does it bring the energy?"** (16 Highlight Reel, 17 The Drop, 18 Combine, 19 Bracket)
    The loudest tier, modeled on how the best sports websites bring hype: a broadcast Top 10 (16 Highlight Reel), a streetwear drop-day countdown (17 The Drop), a telemetry stat-slam (18 Combine), and a live tournament bracket (19 Bracket). This is where the energy peaks — and where 07 Game to 15 was amped up to match. Two are grounded (17, 18), two experimental (16, 19).
@@ -48,7 +49,10 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 6. **System & utility — "Does it WORK harder?"** (13 Flight Path, 14 The Route Map, 15 The Handbook)
    The workhorse worlds. End here on the practical question: the trusted navy given lift, the whole program list as a transit map, the site rebuilt as a numbered handbook. Whatever wins on feeling still has to do this job.
 
-**After each family, name one favorite** — highest conviction, not consensus. The six favorites feed the final three.
+7. **Keepsakes — "Would you keep it?"** (23 Side A, 24 Home Squad, 25 Field Notes)
+   The collectible worlds. A short coda after the workhorses: the season as a vinyl record (23 Side A), the community as foil trading cards (24 Home Squad), and a year of tournaments as a stamped passport (25 Field Notes). All three are experimental, and all three turn real DiscNW people, programs, and places into something a family would want to keep.
+
+**After each family, name one favorite** — highest conviction, not consensus. The seven favorites feed the final three.
 
 ---
 
@@ -91,7 +95,7 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 - Q: This is a narrative cover, not a schedule tool. Which grounded system would you put behind it — and does the flight line landing on "Register" feel earned, or engineered?
 
 #### 07 Game to 15 — "The whole site is a game to 15" · *experimental*
-**Pitch:** "The site is a game of ultimate played to 15 — a fixed scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point, ending on 'DiscNW pulls. You score.' It's pure typography turned into a live broadcast — each numeral now lands with an overshoot pop and a spark burst in its own color, a LIVE bug and momentum meter ride the strip, and at 15 the orange floods the screen. Still the cheapest of the twenty-two to build flawlessly, and the easiest to retell in one sentence."
+**Pitch:** "The site is a game of ultimate played to 15 — a fixed scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point, ending on 'DiscNW pulls. You score.' It's pure typography turned into a live broadcast — each numeral now lands with an overshoot pop and a spark burst in its own color, a LIVE bug and momentum meter ride the strip, and at 15 the orange floods the screen. Still the cheapest of the twenty-five to build flawlessly, and the easiest to retell in one sentence."
 - Q: Genius or gimmick — and if your honest answer is gimmick, is that risk still worth the launch buzz of a site people screenshot, share, and retell in one sentence?
 - Q: The scoreboard is a first-visit thrill by design. Does the joke still land on your third visit — and does that matter, if this voice sits on top of a grounded system doing the daily work?
 
@@ -114,17 +118,17 @@ Each family answers one question about what discnw.org should *feel* like. Walk 
 - Q: Does 'people first, programs second' make the mission self-evident — or do you need program-first wayfinding on day one?
 - Q: This is strongest when the wall goes *real* — opt-in names from actual registration. Would invented sample names sit uneasily beside your member data until then?
 
-#### 11 Spectrum — "An Ultimate community without barriers, in colour" · *grounded*
-**Pitch:** "This says the quiet part out loud — a community without barriers, in colour. One full-spectrum ribbon recurs under the wordmark and becomes a 'belonging bar' where every audience (youth, teens, adults, hat & mixed, coaches, volunteers, families) takes a place along one continuous spectrum, none of them at the edge — all above a hero of soft colour breathing like light through frosted glass. Joyful and premium, never a novelty or a pride-flag graphic."
-- Q: Committing to the whole spectrum instead of one ownable brand colour — does that read as 'for everyone' at a glance, or does it ask more taste-discipline than every future editor can guarantee?
+#### 11 Wide Open — "An Ultimate community without barriers" · *grounded*
+**Pitch:** "The warmest, most welcoming everyday system in the kit. The colour lives in light, ribbons, and focus rings — never tinting a word or a photo — and a 'belonging bar' gives every DiscNW audience (youth, teens, adults, hat & mixed, coaches, volunteers, families) a place along one line, none of them at the edge, above a hero that glows softly like light through frosted glass. It's built to feel like a well-run festival, not a flag: the colour stays in the design, the type stays precise, the photography is left alone. Joyful and premium, and shippable as the real system."
+- Q: A colorful, joyful brand instead of one ownable brand colour — does that read as 'for everyone' at a glance, or does keeping it tasteful ask more discipline than every future editor can guarantee?
 - Q: The belonging bar puts every audience on one line with no edge. Does that land as inclusion you can *feel* in the first second — or as a diagram people scroll past?
 
-#### 12 Prism — "Every color. One community." · *experimental*
-**Pitch:** "The boldest, most emotional front door in the kit. A beam of white light enters a prism and fans into the whole spectrum on near-black — color flowing like an aurora — and the DiscNW story surfaces panel by panel, each program a different color of the same beam, recombining to white at the close above 'Every color. One community.' White light holds every color; so does a community without barriers. No other sports org could wear it without also meaning it."
-- Q: Scroll it once: does 'white light holding every color' make 'community without barriers' something you can *see* in five seconds — or is it a beautiful light show first, message second?
-- Q: A spectral show on near-black wants very few things on stage and every word legible. Can you guarantee editors keep text on the dark panels — and that the homepage never needs standings and dozens of links above the fold?
+#### 12 All In — "All in. One community." · *experimental*
+**Pitch:** "The boldest, most emotional front door in the kit. A dark, luminous scroll where light and energy build on near-black and the DiscNW story surfaces panel by panel, program by program, closing on 'All in. One community.' It turns the vision — an Ultimate community without barriers — into something you feel by scrolling, not something you read. No other sports org could wear it without also meaning it."
+- Q: Scroll it once: does the luminous build make 'community without barriers' something you can *feel* in five seconds — or is it a beautiful light show first, message second?
+- Q: A luminous scroll on near-black wants very few things on stage and every word legible. Can you guarantee editors keep text on the dark panels — and that the homepage never needs standings and dozens of links above the fold?
 
-**These two as a pair:** 11 Spectrum and 12 Prism are the kit's *expressive / inclusion pair* — the two directions that make "an Ultimate community without barriers" the literal subject of the design. Spectrum is the grounded, shippable everyday system; Prism is the experimental, boldest single-mechanism front door. Weigh them together: how loudly should DiscNW say "everyone belongs"?
+**These two as a pair:** 11 Wide Open and 12 All In are the kit's *inclusion pair* — the two directions that make "an Ultimate community without barriers" the subject of the design. Wide Open is the grounded, shippable everyday system; All In is the experimental, boldest single-mechanism front door. Weigh them together: how loudly should DiscNW say "everyone belongs"?
 
 **People & community favorite:** ________________
 
@@ -194,21 +198,42 @@ The organization's own worlds, built from the real staff, programs, and fees alr
 
 **System & utility favorite:** ________________
 
+### Keepsakes — "Would you keep it?"
+
+A coda after the workhorse family: three experimental directions that turn a DiscNW season into something you collect and hold onto. Each takes real people, programs, and places and reframes them as a keepsake — a record, a card set, a passport. Loud in concept, warm in tone.
+
+#### 23 Side A — "The season, pressed as a record" · *experimental*
+**Pitch:** "A flying disc and a record are the same shape, so the DiscNW year plays like an album — a spinning 12-inch on the hero, the tournaments and leagues as Side A and Side B tracklists, the coaches and staff as liner-note credits. It makes a season feel like something you'd shelve and play again."
+- Q: Does the record metaphor make the calendar feel collectible and warm — or is it a lot of concept for a visitor who just wants to register?
+- Q: Which grounded system carries the real schedules and sign-ups under this album voice?
+
+#### 24 Home Squad — "The community as a set of collectible cards" · *experimental*
+**Pitch:** "Ultimate has no referees, so the people are the institution — here they're a set of foil trading cards. A holographic card of a real coach tilts to the light and flips to a short story and stat line, then a wall of the set invites you to collect the community and add your own. It makes the volunteers who run this the heroes."
+- Q: Do collectible cards make the people feel like the org's stars — or does the game-card frame read as too playful for the board and parents?
+- Q: The stats and roles are placeholder flavor on real names. Are we comfortable featuring specific staff this way, with their sign-off?
+
+#### 25 Field Notes — "A season as a stamped passport" · *experimental*
+**Pitch:** "A year of ultimate told as a well-traveled passport — every tournament is a place you go and every trip earns an inked stamp, with taped-in photos and handwritten margin notes. Spring Reign, Potlatch, Sea Plastic and the summer leagues become destinations. It turns the season into a keepsake of where the community played."
+- Q: Does the passport make the tournament calendar feel like an adventure worth collecting — or does the travel-journal warmth undercut the plain 'when and where do I register' need?
+- Q: Which grounded system holds the real dates, locations, and registration under the stamp-and-journal styling?
+
+**Keepsakes favorite:** ________________
+
 ---
 
 ## 4. Cross-cutting questions (synthesis)
 
-Put the **six family favorites** on the board, cut to a **final three** across families, then work these:
+Put the **seven family favorites** on the board, cut to a **final three** across families, then work these:
 
 - **Cross-family final three:** of your six family favorites, which three survive — and what does cutting the fourth tell you about what DiscNW *isn't*?
-- **If we could only build ONE family's worldview, which family is DiscNW?** Place & weather, Sport & broadcast, People & community, Gameday, System & utility, or The organization — pick one and say why in a sentence.
+- **If we could only build ONE family's worldview, which family is DiscNW?** Place & weather, Sport & broadcast, People & community, Gameday, System & utility, The organization, or Keepsakes — pick one and say why in a sentence.
 - Which **hype direction** actually fits a nonprofit that welcomes 7-year-olds and 60-year-olds — where does hype help, where does it shout over the story?
 - Which **hero** made you want to scroll — and can you say why in one sentence?
 - Scrolling each page — which one **feels** most innovative, and is that feeling serving DiscNW or showing off?
 - Across the grounded directions, which **audience-pathways section** (players / coaches / parents) speaks to all three groups best?
 - Which **storytelling component** would we actually keep publishing content for a year from now?
 - If an experimental concept won your gut, which **grounded system carries its schedules, standings, and registration** — and does the pairing still feel like one brand?
-- What's **missing from all twenty-two**?
+- What's **missing from all twenty-five**?
 - Instinct check: if we had to launch one tomorrow, which — and which element or mechanism from another direction would you steal for it?
 
 ---
@@ -227,8 +252,8 @@ Put the **six family favorites** on the board, cut to a **final three** across f
 | 08 Sideline Day | People & community | | | | | | | |
 | 09 Spirit & Story | People & community | | | | | | | |
 | 10 First Names | People & community | | | | | | | |
-| 11 Spectrum | People & community | | | | | | | |
-| 12 Prism | People & community | | | | | | | |
+| 11 Wide Open | People & community | | | | | | | |
+| 12 All In | People & community | | | | | | | |
 | 16 Highlight Reel | Gameday | | | | | | | |
 | 17 The Drop | Gameday | | | | | | | |
 | 18 Combine | Gameday | | | | | | | |
@@ -239,8 +264,11 @@ Put the **six family favorites** on the board, cut to a **final three** across f
 | 13 Flight Path | System & utility | | | | | | | |
 | 14 The Route Map | System & utility | | | | | | | |
 | 15 The Handbook | System & utility | | | | | | | |
+| 23 Side A | Keepsakes | | | | | | | |
+| 24 Home Squad | Keepsakes | | | | | | | |
+| 25 Field Notes | Keepsakes | | | | | | | |
 
-*Scores are a conversation aid, not a verdict — a strong disagreement in one cell is worth more than the totals. Expect the experimental and hype directions (02, 04, 06, 07, 10, 12, 16, 19, 20) to score lopsided; that's information, not a problem.*
+*Scores are a conversation aid, not a verdict — a strong disagreement in one cell is worth more than the totals. Expect the experimental and hype directions (02, 04, 06, 07, 10, 12, 16, 19, 20, 23, 24, 25) to score lopsided; that's information, not a problem.*
 
 ---
 
