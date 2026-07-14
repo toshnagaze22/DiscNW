@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Design directions for discnw.org</title>
+<meta name="description" content="25 working design directions for the new discnw.org, in seven groups — each one a full homepage built with real DiscNW photos, programs, and numbers.">
+<meta property="og:title" content="Design directions for the new discnw.org">
+<meta property="og:description" content="25 working homepage designs in seven groups. Open any of them, scroll, and tell us what feels right.">
+<meta property="og:image" content="https://discnw-style-guide.vercel.app/previews/og.png">
+<meta property="og:url" content="https://discnw-style-guide.vercel.app/">
+<meta property="og:type" content="website">
 <link rel="icon" type="image/png" href="assets/brand/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,13 +82,23 @@
   .card:hover .arw{transform:translateX(4px)}
 
   /* Footer */
-  footer.end{margin-top:56px; border-top:1px solid var(--line); padding:34px 0 72px}
+  footer.end{margin-top:56px; border-top:1px solid var(--line); padding:40px 0 72px}
+  footer.end h2{font-size:clamp(21px,2.6vw,26px); font-weight:800; letter-spacing:-.015em; margin:0 0 18px}
+  .steps{list-style:none; margin:0 0 24px; padding:0; counter-reset:step;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+  .steps li{counter-increment:step; background:var(--card); border:1px solid var(--line);
+    border-radius:14px; padding:18px 20px; font-size:15px; line-height:1.55; color:var(--desc)}
+  .steps li::before{content:counter(step,decimal-leading-zero); display:block;
+    font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:600;
+    letter-spacing:.14em; color:var(--accent-ink); margin-bottom:9px}
+  .steps b{color:var(--ink); font-weight:700}
   footer.end p{margin:0; color:var(--muted); font-size:15.5px; max-width:66ch}
   footer.end a{color:var(--accent-ink); text-decoration:underline; text-underline-offset:2px}
 
   @media (max-width:820px){
     .grid{grid-template-columns:1fr; gap:24px}
     header.top{padding:44px 0 22px}
+    .steps{grid-template-columns:1fr}
   }
   @media (prefers-reduced-motion:reduce){
     .card, .arw{transition:none}
@@ -97,7 +113,7 @@
     <img class="mark" src="assets/brand/logo-mark.png" alt="DiscNW mark" width="590" height="616">
     <p class="eyebrow">DiscNW &middot; site redesign</p>
     <h1>Design directions for the new discnw.org</h1>
-    <p class="lede">Each one is a full, working design for the DiscNW site. Open any page and click through it. They're sorted into seven groups, and each group answers one question about how the site should feel. Look through the ones you like and tell us what you think.</p>
+    <p class="lede">Each one is a full, working design for the DiscNW site, sorted into seven groups. Each group answers one question about how the site should feel. Open the ones that catch your eye, scroll through them, and tell us what feels right — and what doesn't.</p>
     <div class="facts">
       <span class="chip"><b>25</b> directions</span>
       <span class="chip"><b>7</b> groups</span>
@@ -125,7 +141,7 @@
         </span>
       </a>
       <a class="card" href="07-understory.html">
-        <span class="shot"><img src="previews/scroll/07-understory.jpeg" alt="Preview of the The Understory homepage" loading="lazy"></span>
+        <span class="shot"><img src="previews/scroll/07-understory.jpeg" alt="Preview of The Understory homepage" loading="lazy"></span>
         <span class="meta">
           <span class="row1"><span class="idx">02</span><span class="name">The Understory</span><span class="badge experimental">Experimental</span></span>
           <span class="desc">Designed like a national-park field guide, with photos of the changing seasons.</span>
@@ -248,7 +264,7 @@
         </span>
       </a>
       <a class="card" href="10-route-map.html">
-        <span class="shot"><img src="previews/scroll/10-route-map.jpeg" alt="Preview of the The Route Map homepage" loading="lazy"></span>
+        <span class="shot"><img src="previews/scroll/10-route-map.jpeg" alt="Preview of The Route Map homepage" loading="lazy"></span>
         <span class="meta">
           <span class="row1"><span class="idx">14</span><span class="name">The Route Map</span><span class="badge grounded">Grounded</span></span>
           <span class="desc">The site drawn like a subway map, with each program as a stop.</span>
@@ -256,7 +272,7 @@
         </span>
       </a>
       <a class="card" href="12-handbook.html">
-        <span class="shot"><img src="previews/scroll/12-handbook.jpeg" alt="Preview of the The Handbook homepage" loading="lazy"></span>
+        <span class="shot"><img src="previews/scroll/12-handbook.jpeg" alt="Preview of The Handbook homepage" loading="lazy"></span>
         <span class="meta">
           <span class="row1"><span class="idx">15</span><span class="name">The Handbook</span><span class="badge grounded">Grounded</span></span>
           <span class="desc">The site built like a handbook, with clear, numbered answers to common questions.</span>
@@ -281,7 +297,7 @@
         </span>
       </a>
       <a class="card" href="17-the-drop.html">
-        <span class="shot"><img src="previews/scroll/17-the-drop.jpeg" alt="Preview of the The Drop homepage" loading="lazy"></span>
+        <span class="shot"><img src="previews/scroll/17-the-drop.jpeg" alt="Preview of The Drop homepage" loading="lazy"></span>
         <span class="meta">
           <span class="row1"><span class="idx">17</span><span class="name">The Drop</span><span class="badge grounded">Grounded</span></span>
           <span class="desc">Sign-ups treated like a product launch, with a live countdown to Spring Reign.</span>
@@ -300,7 +316,7 @@
         <span class="shot"><img src="previews/scroll/19-bracket.jpeg" alt="Preview of the Bracket homepage" loading="lazy"></span>
         <span class="meta">
           <span class="row1"><span class="idx">19</span><span class="name">Bracket</span><span class="badge experimental">Experimental</span></span>
-          <span class="desc">A tournament bracket for Spring Reign, the world's largest youth event.</span>
+          <span class="desc">A tournament bracket for Spring Reign, the world's largest mixed youth ultimate tournament.</span>
           <span class="row3"><span class="dots" aria-hidden="true"><span class="dot" style="background:#0A0D16"></span><span class="dot" style="background:#141A2B"></span><span class="dot" style="background:#FFC53D"></span><span class="dot" style="background:#F4F5FA"></span><span class="dot" style="background:#FF4646"></span><span class="dot" style="background:#9198AC"></span></span><span class="go">View<span class="arw">&#8594;</span></span></span>
         </span>
       </a>
@@ -314,7 +330,7 @@
     </div>
     <div class="grid">
       <a class="card" href="20-the-people.html">
-        <span class="shot"><img src="previews/scroll/20-the-people.jpeg" alt="Preview of the The People homepage" loading="lazy"></span>
+        <span class="shot"><img src="previews/scroll/20-the-people.jpeg" alt="Preview of The People homepage" loading="lazy"></span>
         <span class="meta">
           <span class="row1"><span class="idx">20</span><span class="name">The People</span><span class="badge experimental">Experimental</span></span>
           <span class="desc">A wall of the real DiscNW staff and board, each face framed the same, with a first name and role.</span>
@@ -322,7 +338,7 @@
         </span>
       </a>
       <a class="card" href="21-the-programs.html">
-        <span class="shot"><img src="previews/scroll/21-the-programs.jpeg" alt="Preview of the The Programs homepage" loading="lazy"></span>
+        <span class="shot"><img src="previews/scroll/21-the-programs.jpeg" alt="Preview of The Programs homepage" loading="lazy"></span>
         <span class="meta">
           <span class="row1"><span class="idx">21</span><span class="name">The Programs</span><span class="badge grounded">Grounded</span></span>
           <span class="desc">Every DiscNW program on its own tile with its real logo, sorted by season and who it's for.</span>
@@ -377,7 +393,13 @@
 
 <footer class="end">
   <div class="wrap">
-    <p>All of these use real DiscNW photos and video. You don't have to choose just one. A simpler design can still borrow an idea from a bolder one. Tell us which ones you like.</p>
+    <h2>How to review</h2>
+    <ol class="steps">
+      <li><b>Skim, then open.</b> Every page scrolls like a real homepage, built with real DiscNW photos, programs, and numbers. Open anything that catches your eye.</li>
+      <li><b>React in plain words.</b> "This feels like us" or "too loud" is exactly the feedback we need. No design vocabulary required.</li>
+      <li><b>Mix and match.</b> You don't have to choose just one. Name a favorite or two, plus any pieces worth borrowing from the others.</li>
+    </ol>
+    <p>A simpler design can still carry an idea from a bolder one — tell us which ones you like, and which ones you don't.</p>
   </div>
 </footer>
 

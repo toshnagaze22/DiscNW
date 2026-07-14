@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>19 · Bracket — DiscNW design directions</title>
 <link rel="icon" type="image/png" href="assets/brand/favicon.png">
-<meta name="description" content="Experimental direction 19 for the DiscNW redesign: the site is bracket season. An illustrative tournament bracket that draws itself as you scroll — matchups, seeds, upsets, and a road to the final crowned by the world's largest mixed youth tournament.">
+<meta name="description" content="Experimental direction 19 for the DiscNW redesign: the site is bracket season. An illustrative tournament bracket that draws itself as you scroll — matchups, seeds, upsets, and a road to the final crowned by the world's largest mixed youth ultimate tournament.">
 <meta name="theme-color" content="#0A0D16">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +14,7 @@
 /* ============================================================
    DIRECTION 19 — BRACKET
    The site is bracket season. Spring Reign is the world's largest
-   mixed youth tournament, so the whole DiscNW season is seeded like
+   mixed youth ultimate tournament, so the whole DiscNW season is seeded like
    a March-Madness tree that inks itself as you scroll to the final.
    Base styles ARE the settled page: with no JS the bracket is fully
    drawn, numbers show their totals, the countdown shows the date.
@@ -616,7 +616,7 @@ html.js .film-toggle{display:inline-flex}
         </div>
         <div class="region-chip rise" style="--i:4">
           <span class="rc-seed">O</span>
-          <span><span class="rc-name">Open Region</span><span class="rc-sub">Potlatch · Sea Plastic · Hat &amp; Wonder Leagues</span></span>
+          <span><span class="rc-name">Open Region</span><span class="rc-sub">Sunbreak · Sea Plastic · Hat &amp; Wonder Leagues</span></span>
         </div>
       </div>
 
@@ -674,7 +674,7 @@ html.js .film-toggle{display:inline-flex}
     </div>
 
     <div class="stage-scroll">
-      <div class="stage reveal" role="img" aria-label="Illustrative single-elimination bracket. Youth Region: Spring Reign (1) beats Summer Youth Camps (4); Fall Middle School League (3) upsets Fall High School League (2); Spring Reign beats Fall Middle School League to take the region. Open Region: Potlatch (1) beats Sea Plastic (4); Summer Wonder League (3) upsets Summer Mixed Hat League (2); Potlatch beats Summer Wonder League to take the region. Final: Spring Reign 15, Potlatch 14. Champion: Spring Reign.">
+      <div class="stage reveal" role="img" aria-label="Illustrative single-elimination bracket. Youth Region: Spring Reign (1) beats Summer Youth Camps (4); Fall Middle School League (3) upsets Fall High School League (2); Spring Reign beats Fall Middle School League to take the region. Open Region: Sunbreak (1) beats Sea Plastic (4); Summer Wonder League (3) upsets Summer Mixed Hat League (2); Sunbreak beats Summer Wonder League to take the region. Final: Spring Reign 15, Sunbreak 14. Champion: Spring Reign.">
         <!-- connector wires: viewBox 0 0 1280 600, pathLength 1 so each draws with a single dash -->
         <svg class="wires" viewBox="0 0 1280 600" preserveAspectRatio="none" focusable="false" aria-hidden="true">
           <path class="wire" style="--r:0" pathLength="1" d="M204 120 H238 Q248 120 248 130 V290 Q248 300 258 300 H294"/>
@@ -691,11 +691,11 @@ html.js .film-toggle{display:inline-flex}
           <img class="champ-mark" src="assets/brand/logo-mark-white.png" alt="DiscNW formline mark" width="590" height="616">
           <p class="champ-label">Champion</p>
           <p class="champ-name">Spring Reign</p>
-          <p class="champ-crown">World's largest mixed youth tournament</p>
+          <p class="champ-crown">World's largest mixed youth ultimate tournament</p>
         </div>
 
         <!-- YOUTH REGION -->
-        <div class="matchup" style="--x:112;--y:120;--d:0" tabindex="0" aria-label="Youth Semifinal. 1 seed Spring Reign 15 defeats 4 seed Summer Youth Camps 11. Spring Reign advances. The world's largest mixed youth tournament, the overall number one seed.">
+        <div class="matchup" style="--x:112;--y:120;--d:0" tabindex="0" aria-label="Youth Semifinal. 1 seed Spring Reign 15 defeats 4 seed Summer Youth Camps 11. Spring Reign advances. The world's largest mixed youth ultimate tournament, the overall number one seed.">
           <p class="mu-round">Youth · Semi</p>
           <div class="team win"><span class="seed">1</span><span class="tname">Spring Reign</span><span class="score">15</span></div>
           <div class="team"><span class="seed">4</span><span class="tname">Youth Camps</span><span class="score">11</span></div>
@@ -717,9 +717,9 @@ html.js .film-toggle{display:inline-flex}
         </div>
 
         <!-- OPEN REGION -->
-        <div class="matchup" style="--x:1168;--y:120;--d:0" tabindex="0" aria-label="Open Semifinal. 1 seed Potlatch 15 defeats 4 seed Sea Plastic 10. Potlatch advances. The founding tournament, running since 1995.">
+        <div class="matchup" style="--x:1168;--y:120;--d:0" tabindex="0" aria-label="Open Semifinal. 1 seed Sunbreak 15 defeats 4 seed Sea Plastic 10. Sunbreak advances. The founding tournament — DiscNW grew out of it in 1995.">
           <p class="mu-round">Open · Semi</p>
-          <div class="team win"><span class="seed">1</span><span class="tname">Potlatch</span><span class="score">15</span></div>
+          <div class="team win"><span class="seed">1</span><span class="tname">Sunbreak</span><span class="score">15</span></div>
           <div class="team"><span class="seed">4</span><span class="tname">Sea Plastic</span><span class="score">10</span></div>
           <p class="mu-note" aria-hidden="true">Sea Plastic brings beach chaos to the sand at Puget Sound, but the tournament that founded DiscNW in 1995 has seen it all.</p>
         </div>
@@ -731,18 +731,18 @@ html.js .film-toggle{display:inline-flex}
           <p class="mu-note" aria-hidden="true">Double game point. The mellow, show-up-after-work summer league steals it on universe point over the higher seed.</p>
         </div>
 
-        <div class="matchup" style="--x:896;--y:300;--d:1" tabindex="0" aria-label="Open Regional Final. 1 seed Potlatch 15 defeats 3 seed Summer Wonder League 12. Potlatch wins the Open Region.">
+        <div class="matchup" style="--x:896;--y:300;--d:1" tabindex="0" aria-label="Open Regional Final. 1 seed Sunbreak 15 defeats 3 seed Summer Wonder League 12. Sunbreak wins the Open Region.">
           <p class="mu-round">Open · Regional Final</p>
-          <div class="team win"><span class="seed">1</span><span class="tname">Potlatch</span><span class="score">15</span></div>
+          <div class="team win"><span class="seed">1</span><span class="tname">Sunbreak</span><span class="score">15</span></div>
           <div class="team"><span class="seed">3</span><span class="tname">Wonder League</span><span class="score">12</span></div>
-          <p class="mu-note" aria-hidden="true">The origin story rolls on. Thirty-one summers later, Potlatch is still the party the whole region circles on the calendar.</p>
+          <p class="mu-note" aria-hidden="true">The origin story rolls on. Sunbreak — born as Potlatch — is still the party the whole region circles on the calendar.</p>
         </div>
 
         <!-- THE FINAL -->
-        <div class="matchup" style="--x:640;--y:300;--w:210;--d:2" tabindex="0" aria-label="The Final. 1 seed Spring Reign 15 defeats 1 seed Potlatch 14 on universe point. Spring Reign is the champion.">
+        <div class="matchup" style="--x:640;--y:300;--w:210;--d:2" tabindex="0" aria-label="The Final. 1 seed Spring Reign 15 defeats 1 seed Sunbreak 14 on universe point. Spring Reign is the champion.">
           <p class="mu-round">The Final · Universe Point</p>
           <div class="team win"><span class="seed">1</span><span class="tname">Spring Reign</span><span class="score">15</span></div>
-          <div class="team"><span class="seed">1</span><span class="tname">Potlatch</span><span class="score">14</span></div>
+          <div class="team"><span class="seed">1</span><span class="tname">Sunbreak</span><span class="score">14</span></div>
           <p class="mu-note" aria-hidden="true">Flagship vs. founder, decided on the game-winning point — the way every great DiscNW game should end.</p>
         </div>
       </div>
@@ -769,7 +769,7 @@ html.js .film-toggle{display:inline-flex}
         </div>
         <div class="stat rise" style="--i:3">
           <span class="stat-n">1995</span>
-          <p class="stat-l">Founded out of the Potlatch tournament</p>
+          <p class="stat-l">Founded out of the Sunbreak tournament</p>
         </div>
         <div class="stat rise" style="--i:4">
           <span class="stat-n"><span class="count" data-to="31">31</span></span>
@@ -910,7 +910,7 @@ html.js .film-toggle{display:inline-flex}
       <div class="choose">
         <div>
           <h3>Choose this if</h3>
-          <p>You want the loudest, most event-driven front door in the kit — one that turns the DiscNW season into a bracket the whole city fills out, and makes registering feel like claiming a spot in the tournament. It is unmistakably its own, and it is earned — because DiscNW actually runs the world's largest mixed youth tournament.</p>
+          <p>You want the loudest, most event-driven front door in the kit — one that turns the DiscNW season into a bracket the whole city fills out, and makes registering feel like claiming a spot in the tournament. It is unmistakably its own, and it is earned — because DiscNW actually runs the world's largest mixed youth ultimate tournament.</p>
         </div>
         <div>
           <h3>Think twice if</h3>
