@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>23 · Side A · DiscNW design directions</title>
 <link rel="icon" type="image/png" href="assets/brand/favicon.png">
-<meta name="description" content="Experimental direction 23 for the DiscNW redesign: the year pressed as a vinyl record. A flying disc and a record are both flat spinning discs, so the season becomes an album. Side A is spring and summer, the tracklist is the tournaments and leagues, the liner notes are the people. Warm, analog, music-culture.">
+<meta name="description" content="Experimental direction 23 for the DiscNW redesign: the year pressed as a record that is half vinyl, half ultimate disc. Side A is spring and summer, the tracklist is the tournaments and leagues, the liner notes are the people. Warm, analog, music-culture.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Hanken+Grotesk:wght@400..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,7 +15,9 @@
    "The Season on Vinyl."
 
    A flying disc and a record rhyme — both are flat discs
-   that spin. So the DiscNW year is pressed as an album.
+   that spin. So the hero presses them into one object:
+   half black vinyl, half bone-white game disc, one label
+   between them. The DiscNW year is the album.
    Side A is the spring/summer season; the tracklist is the
    tournaments and leagues (each runtime a real stat); the
    liner notes are the people; the record label at the
@@ -451,10 +453,20 @@ section.side.b{background:var(--bone-2)}
 @media (max-width:640px){.bhero{grid-template-columns:1fr}}
 .mini-disc{position:relative;width:clamp(96px,20vw,150px);aspect-ratio:1/1;border-radius:50%;flex:none;
   background:
-    repeating-radial-gradient(circle at 50% 50%, rgba(0,0,0,.5) 0 1px, rgba(80,96,84,.14) 1px 2px, rgba(0,0,0,.3) 2px 3px),
-    radial-gradient(circle at 50% 40%, #1e2a22, #0c110d 100%);
-  box-shadow:0 20px 40px -22px rgba(0,0,0,.8), inset 0 0 30px rgba(0,0,0,.6)}
-.mini-disc .ml{position:absolute;inset:33%;border-radius:50%;display:grid;place-items:center;
+    radial-gradient(circle closest-side at 50% 50%,
+      transparent 0 56%, rgba(20,26,23,.15) 56% 57.5%, transparent 57.5% 63%,
+      rgba(20,26,23,.15) 63% 64.5%, transparent 64.5% 70%,
+      rgba(20,26,23,.15) 70% 71.5%, transparent 71.5% 100%),
+    radial-gradient(circle closest-side at 50% 42%, #FAF4E4, #F0E9D6 55%, #DBD0B5 88%, #AC9F7E 100%);
+  box-shadow:0 20px 40px -22px rgba(0,0,0,.8), inset 0 0 0 1px rgba(20,26,23,.16)}
+.mini-disc::before{content:"";position:absolute;inset:0;border-radius:50%;clip-path:inset(0 0 0 50%);
+  background:
+    repeating-radial-gradient(circle at 50% 50%, rgba(0,0,0,.5) 0 1px, rgba(110,130,116,.16) 1px 2px, rgba(0,0,0,.3) 2px 3px),
+    radial-gradient(circle at 50% 40%, #243128, #0d130e 100%);
+  box-shadow:inset 0 0 24px rgba(0,0,0,.55)}
+.mini-disc .ms{position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;
+  background:linear-gradient(180deg,rgba(200,146,46,0),rgba(224,180,92,.7) 50%,rgba(200,146,46,0))}
+.mini-disc .ml{position:absolute;inset:33%;border-radius:50%;display:grid;place-items:center;z-index:1;
   background:radial-gradient(circle at 50% 36%, #a63a4c, var(--oxblood) 60%, var(--oxblood-dk));
   box-shadow:inset 0 0 0 1px rgba(200,146,46,.5)}
 .mini-disc .ml img{width:52%}
@@ -620,10 +632,11 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
         </h1>
         <ul class="spec" aria-hidden="true">
           <li>33⅓ RPM</li>
+          <li>175 g</li>
           <li>Stereo</li>
           <li>Pressed in Seattle · since 1995</li>
         </ul>
-        <p class="hero-lede">A flying disc and a record are the same shape, flat and made to spin. So here is one nonprofit's year as an album. <b>Side A is the spring and summer:</b> the tournaments and leagues that fill the long days. Read the season like a tracklist.</p>
+        <p class="hero-lede">A flying disc and a record are the same shape, flat and made to spin, so this pressing is half of each. One side of the seam is vinyl, the other is game plastic. <b>Side A is the spring and summer:</b> the tournaments and leagues that fill the long days. Read the season like a tracklist.</p>
 
         <nav class="sidetoggle" aria-label="Choose a side">
           <a class="a" href="#side-a" aria-pressed="true" data-side="a">Side A</a>
@@ -901,7 +914,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
             </ul>
           </div>
           <div class="bhero">
-            <div class="mini-disc" aria-hidden="true"><span class="ml"><img src="assets/discnwlogo-copper-200.png" alt="" width="200" height="200"></span></div>
+            <div class="mini-disc" aria-hidden="true"><i class="ms"></i><span class="ml"><img src="assets/discnwlogo-copper-200.png" alt="" width="200" height="200"></span></div>
             <div class="bhead">
               <span class="k">Now playing · Side A</span>
               <h3>The Season is on.</h3>
@@ -932,7 +945,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
           </div>
           <div class="ap-item">
             <h3>Signature</h3>
-            <p>The hero is a 12-inch record drawn in CSS: grooves, a rotating reflection, the DiscNW mark on the label, and a tonearm resting in the groove. It turns slowly and freezes cleanly for reduced motion. A Side A / Side B toggle flips the label and the now-playing readout.</p>
+            <p>The hero is one spinning circle drawn in CSS, split down the middle: the left half is a white ultimate disc with flight rings and a raised rim, the right half is black vinyl with grooves, and a single centre label reads as both a record label and the disc's printed centre. A tonearm rests on the vinyl side. It turns slowly and freezes cleanly for reduced motion. A Side A / Side B toggle flips the label and the now-playing readout.</p>
           </div>
           <div class="ap-item">
             <h3>Palette · warm analog sleeve</h3>
@@ -954,7 +967,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
           </div>
           <div class="ap-item">
             <h3>Motion</h3>
-            <p>The record turns; the needle drops on load; sections and rows rise as you scroll. Turn motion off and the page is already the finished pressing: a still record, tonearm down, both sides legible.</p>
+            <p>Both halves turn; the needle drops on load; sections and rows rise as you scroll. Turn motion off and the page is already the finished pressing: a still record, tonearm down, both sides legible.</p>
           </div>
           <div class="ap-item">
             <h3>Choose this if</h3>
