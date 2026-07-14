@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>23 · Side A — DiscNW design directions</title>
+<title>23 · Side A · DiscNW design directions</title>
 <link rel="icon" type="image/png" href="assets/brand/favicon.png">
-<meta name="description" content="Experimental direction 23 for the DiscNW redesign: the year pressed as a vinyl record. A flying disc and a record are both flat spinning discs — so the whole season becomes an album. Side A is spring and summer, the tracklist is the tournaments and leagues, the liner notes are the people. Warm, analog, music-culture.">
+<meta name="description" content="Experimental direction 23 for the DiscNW redesign: the year pressed as a vinyl record. A flying disc and a record are both flat spinning discs, so the season becomes an album. Side A is spring and summer, the tracklist is the tournaments and leagues, the liner notes are the people. Warm, analog, music-culture.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Hanken+Grotesk:wght@400..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -185,39 +185,74 @@ a{color:inherit}
 /* the felt slipmat glow under the vinyl */
 .platter::before{content:"";position:absolute;inset:-3.2%;border-radius:50%;
   background:radial-gradient(circle,#20130f 0%, #16100c 60%, transparent 74%);
-  box-shadow:0 46px 100px -36px rgba(0,0,0,.9)}
+  box-shadow:0 46px 100px -36px rgba(0,0,0,.9), 0 40px 90px -30px rgba(0,0,0,.8)}
 
-.record{
-  position:absolute;inset:0;border-radius:50%;
+/* the two halves — static clip windows; the full-circle faces spin inside */
+.half{position:absolute;inset:0;z-index:1}
+.half-disc{clip-path:inset(0 49.9% 0 0)}   /* left: the white game disc */
+.half-vinyl{clip-path:inset(0 0 0 49.9%)}  /* right: the black pressing */
+.face{position:absolute;inset:0;border-radius:50%}
+
+/* right half — vinyl, brightened so the grooves read against the room */
+.vinyl-face{
   background:
-    /* reflection sweep — rotates with the disc, so the spin reads */
+    /* reflection sweep — rotates with the face, so the spin reads */
     conic-gradient(from 0deg at 50% 50%,
-      rgba(240,233,214,0) 0deg, rgba(240,233,214,.11) 16deg, rgba(240,233,214,0) 58deg,
-      rgba(240,233,214,0) 168deg, rgba(240,233,214,.07) 190deg, rgba(240,233,214,0) 236deg,
+      rgba(240,233,214,0) 0deg, rgba(240,233,214,.13) 16deg, rgba(240,233,214,0) 58deg,
+      rgba(240,233,214,0) 168deg, rgba(240,233,214,.09) 190deg, rgba(240,233,214,0) 236deg,
       rgba(240,233,214,0) 360deg),
     /* fine grooves */
     repeating-radial-gradient(circle at 50% 50%,
       rgba(0,0,0,.55) 0px, rgba(0,0,0,.55) 1px,
-      rgba(80,96,84,.13) 1px, rgba(80,96,84,.13) 2px,
+      rgba(110,130,116,.17) 1px, rgba(110,130,116,.17) 2px,
       rgba(0,0,0,.30) 2px, rgba(0,0,0,.30) 3.2px),
     /* broad tonal banding */
     repeating-radial-gradient(circle at 50% 50%,
-      #10160f 0px, #10160f 8px, #172018 8px, #172018 16px),
+      #121a13 0px, #121a13 8px, #1a241b 8px, #1a241b 16px),
     /* base vinyl */
-    radial-gradient(circle at 50% 40%, #1e2a22 0%, #141b16 54%, #0c110d 100%);
-  box-shadow:
-    0 40px 90px -34px rgba(0,0,0,.85),
-    inset 0 0 0 1px rgba(240,233,214,.05),
-    inset 0 0 70px rgba(0,0,0,.62);
-  z-index:1;
+    radial-gradient(circle at 50% 40%, #243128 0%, #17211a 54%, #0d130e 100%);
+  box-shadow:inset 0 0 0 1px rgba(240,233,214,.07), inset 0 0 70px rgba(0,0,0,.55);
 }
 /* raised outer rim + run-in ring */
-.record::after{content:"";position:absolute;inset:1.2%;border-radius:50%;
+.vinyl-face::after{content:"";position:absolute;inset:1.2%;border-radius:50%;
   box-shadow:inset 0 0 0 1px rgba(240,233,214,.10), inset 0 0 0 6px rgba(0,0,0,.28)}
+
+/* left half — the bone-white ultimate disc: dome, flight rings, raised rim */
+.disc-face{
+  background:
+    /* shading sweep — rotates with the face, so the spin reads */
+    conic-gradient(from 0deg at 50% 50%,
+      rgba(20,26,23,0) 0deg, rgba(20,26,23,.06) 18deg, rgba(20,26,23,0) 62deg,
+      rgba(20,26,23,0) 175deg, rgba(20,26,23,.045) 200deg, rgba(20,26,23,0) 246deg,
+      rgba(20,26,23,0) 360deg),
+    /* flight rings — pressed ridges, shadow line then light line */
+    radial-gradient(circle closest-side at 50% 50%,
+      transparent 0 55%,
+      rgba(20,26,23,.15) 55% 55.9%, rgba(255,252,240,.55) 55.9% 56.6%, transparent 56.6% 59.2%,
+      rgba(20,26,23,.15) 59.2% 60.1%, rgba(255,252,240,.55) 60.1% 60.8%, transparent 60.8% 63.4%,
+      rgba(20,26,23,.15) 63.4% 64.3%, rgba(255,252,240,.55) 64.3% 65%,   transparent 65% 67.6%,
+      rgba(20,26,23,.15) 67.6% 68.5%, rgba(255,252,240,.55) 68.5% 69.2%, transparent 69.2% 71.8%,
+      rgba(20,26,23,.15) 71.8% 72.7%, rgba(255,252,240,.55) 72.7% 73.4%, transparent 73.4% 76%,
+      rgba(20,26,23,.15) 76% 76.9%,  rgba(255,252,240,.55) 76.9% 77.6%, transparent 77.6% 100%),
+    /* rim lip highlight */
+    radial-gradient(circle closest-side at 50% 50%,
+      transparent 0 88%, rgba(255,252,240,.5) 90.5% 92%, transparent 93.5% 100%),
+    /* dome + rim shading */
+    radial-gradient(circle closest-side at 50% 42%,
+      #FAF4E4 0%, #F0E9D6 48%, #E7DEC6 72%, #DBD0B5 88%, #C9BD9F 96%, #AC9F7E 100%);
+  box-shadow:inset 0 0 0 1px rgba(20,26,23,.20), inset 0 0 60px rgba(20,26,23,.06);
+}
+
+/* the seam — a deliberate brass hairline where the two halves meet */
+.seam{position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;z-index:2;border-radius:1px;
+  background:linear-gradient(180deg,
+    rgba(200,146,46,0) 0%, rgba(200,146,46,.5) 12%,
+    rgba(224,180,92,.75) 50%,
+    rgba(200,146,46,.5) 88%, rgba(200,146,46,0) 100%)}
 
 /* the record label at the centre */
 .label{
-  position:absolute;inset:31.5%;border-radius:50%;overflow:hidden;
+  position:absolute;inset:31.5%;border-radius:50%;overflow:hidden;z-index:3;
   display:grid;place-items:center;
   background:radial-gradient(circle at 50% 36%, #a63a4c 0%, var(--oxblood) 58%, var(--oxblood-dk) 100%);
   box-shadow:inset 0 0 0 1.5px rgba(200,146,46,.55), inset 0 0 22px rgba(0,0,0,.4), 0 0 0 2px #0b0f0c;
@@ -225,6 +260,7 @@ a{color:inherit}
 .deck.is-b .label{background:radial-gradient(circle at 50% 36%, #3d8a7d 0%, var(--pine) 58%, var(--pine-dk) 100%)}
 .label::before{content:"";position:absolute;width:56%;aspect-ratio:1;border-radius:50%;
   background:radial-gradient(circle, var(--bone) 0%, rgba(240,233,214,0) 70%);opacity:.13}
+.label-spin{position:absolute;inset:0;display:grid;place-items:center}
 .label-ring{position:absolute;inset:0;width:100%;height:100%}
 .label-ring text{fill:var(--bone);font-family:var(--mono);font-weight:600;letter-spacing:.055em}
 .label-ring .rt-top{font-size:5.7px}
@@ -235,7 +271,7 @@ a{color:inherit}
   box-shadow:inset 0 0 3px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.5)}
 
 /* fixed sheen over the disc (a consistent light source; does not spin) */
-.sheen{position:absolute;inset:0;border-radius:50%;z-index:2;pointer-events:none;
+.sheen{position:absolute;inset:0;border-radius:50%;z-index:4;pointer-events:none;
   background:radial-gradient(120% 120% at 26% 20%, rgba(240,233,214,.10), rgba(240,233,214,0) 42%)}
 
 /* the tonearm — resting down on the record (the base/settled state) */
@@ -465,8 +501,8 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
 @keyframes eqp{0%,100%{transform:scaleY(.32)}50%{transform:scaleY(1)}}
 
 @media screen and (prefers-reduced-motion:no-preference){
-  /* the record turns; the reflection sweep + label carry the motion */
-  html.anim .record{animation:spin 7s linear infinite;will-change:transform}
+  /* both faces + the label turn in step; the sweeps carry the motion */
+  html.anim .vinyl-face,html.anim .disc-face,html.anim .label-spin{animation:spin 7s linear infinite;will-change:transform}
   /* now-playing equaliser */
   html.anim .np-eq i{animation:eqp 1s var(--ease-snap) infinite}
   html.anim .np-eq i:nth-child(1){animation-duration:.9s;animation-delay:-.2s}
@@ -519,7 +555,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
 
 /* belt-and-braces: reduced motion forces the resting state */
 @media (prefers-reduced-motion:reduce){
-  .record{animation:none!important}
+  .vinyl-face,.disc-face,.label-spin{animation:none!important}
   .np-eq i{animation:none!important}
   .rv,.tracklist .track,.crew .cface,
   .hero .catno,.hero .album,.hero .spec,.hero .hero-lede,.hero .sidetoggle,.hero .nowplaying,
@@ -547,7 +583,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
 @media print{
   .skip{display:none}
   html,body{background:#fff}
-  .record{animation:none!important}
+  .vinyl-face,.disc-face,.label-spin{animation:none!important}
   .side,.liner,.credits,.mockwrap,.appendix{break-inside:avoid}
   html.anim .topbar,html.anim .platter,html.anim .rv,html.anim .tracklist .track,
   html.anim .crew .cface,html.anim .hero .album{opacity:1!important;transform:none!important}
@@ -571,7 +607,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
   <section class="hero on-dark" aria-labelledby="hero-h">
     <div class="in">
       <div class="hero-copy">
-        <p class="catno mono">DNW·001 — a pressing for the season</p>
+        <p class="catno mono">DNW·001 · a pressing for the season</p>
         <h1 class="album" id="hero-h">
           <span class="artist">DiscNW</span>
           <span class="title-main">The Season</span>
@@ -582,7 +618,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
           <li>Stereo</li>
           <li>Pressed in Seattle · since 1995</li>
         </ul>
-        <p class="hero-lede">A flying disc and a record are the same shape — flat, and made to spin. So here is one nonprofit's year as an album. <b>Side A is the spring and summer:</b> the tournaments and leagues that fill the long days. Read the season like a tracklist.</p>
+        <p class="hero-lede">A flying disc and a record are the same shape, flat and made to spin. So here is one nonprofit's year as an album. <b>Side A is the spring and summer:</b> the tournaments and leagues that fill the long days. Read the season like a tracklist.</p>
 
         <nav class="sidetoggle" aria-label="Choose a side">
           <a class="a" href="#side-a" aria-pressed="true" data-side="a">Side A</a>
@@ -591,26 +627,29 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
 
         <p class="nowplaying" aria-live="polite">
           <span class="np-eq" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="np-txt"><b>Now playing</b> — Side A · A1 Spring Reign</span>
+          <span class="np-txt"><b>Now playing</b> · Side A · A1 Spring Reign</span>
         </p>
       </div>
 
-      <!-- the signature: a real spinning record with the tonearm down -->
-      <div class="deck" id="deck" role="img" aria-label="A 12-inch vinyl record on a turntable, tonearm resting in the groove, with the DiscNW mark on the record label. It turns slowly.">
+      <!-- the signature: one spinning circle, half record and half game disc -->
+      <div class="deck" id="deck" role="img" aria-label="One spinning circle, half a white ultimate disc with flight rings and half a black 12-inch vinyl record, with a tonearm resting in the groove and the DiscNW mark on the centre label. It turns slowly.">
         <div class="platter">
-          <div class="record">
-            <div class="label">
+          <div class="half half-disc" aria-hidden="true"><div class="face disc-face"></div></div>
+          <div class="half half-vinyl" aria-hidden="true"><div class="face vinyl-face"></div></div>
+          <span class="seam" aria-hidden="true"></span>
+          <div class="label">
+            <div class="label-spin">
               <svg class="label-ring" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
                 <defs>
                   <path id="arcTop" d="M 14,50 A 36,36 0 0 1 86,50" fill="none"></path>
-                  <path id="arcBot" d="M 86,50 A 36,36 0 0 1 14,50" fill="none"></path>
+                  <path id="arcBot" d="M 9,50 A 41,41 0 0 0 91,50" fill="none"></path>
                 </defs>
                 <text class="rt-top"><textPath href="#arcTop" startOffset="50%" text-anchor="middle">DISCNW RECORDINGS · SEATTLE</textPath></text>
                 <text class="rt-bot" id="labelSide"><textPath href="#arcBot" startOffset="50%" text-anchor="middle">33⅓ · THE SEASON · SIDE A</textPath></text>
               </svg>
               <img class="label-logo" src="assets/discnwlogo-copper-200.png" alt="" width="200" height="200">
-              <span class="spindle"></span>
             </div>
+            <span class="spindle"></span>
           </div>
           <div class="sheen" aria-hidden="true"></div>
         </div>
@@ -635,7 +674,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
           <span class="side-count">6 tracks · the warm half of the year</span>
         </div>
       </div>
-      <p class="side-intro rv">Six ways onto the field between the first thaw and the last long evening. Every runtime is a real number from the program — a count, a length, a season.</p>
+      <p class="side-intro rv">Six ways onto the field between the first thaw and the last long evening. Each runtime is a number pulled from the program itself: team counts, weeks, ages.</p>
 
       <div class="grooveline rv" aria-hidden="true"></div>
 
@@ -649,7 +688,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
         <li class="track" style="--i:1">
           <span class="t-no">A2</span>
           <span class="t-label"><img src="assets/discnwlogo-copper-200.png" alt="DiscNW mark" width="200" height="200"></span>
-          <span class="t-main"><span class="t-name">Sunbreak</span><span class="t-sub">Born as Potlatch — the summer tournament DiscNW grew out of.</span></span>
+          <span class="t-main"><span class="t-name">Sunbreak</span><span class="t-sub">Born as Potlatch, the summer tournament DiscNW grew out of.</span></span>
           <span class="t-run">since 1995</span>
         </li>
         <li class="track" style="--i:2">
@@ -667,7 +706,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
         <li class="track" style="--i:4">
           <span class="t-no">A5</span>
           <span class="t-label"><img src="assets/discnw-summer-camp-disc.jpg" alt="Summer Youth Ultimate Camps logo" width="503" height="504"></span>
-          <span class="t-main"><span class="t-name">Summer Youth Ultimate Camps</span><span class="t-sub">Every level, no experience needed.</span></span>
+          <span class="t-main"><span class="t-name">Summer Youth Ultimate Camps</span><span class="t-sub">All levels, no experience needed.</span></span>
           <span class="t-run">ages 7–18</span>
         </li>
         <li class="track" style="--i:5">
@@ -699,7 +738,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
           <span class="side-count">5 tracks · the quiet half</span>
         </div>
       </div>
-      <p class="side-intro rv">School starts, the fields turn wet, and the game keeps going — down to the off-season, when next year gets drawn up.</p>
+      <p class="side-intro rv">School starts, the fields turn wet, and the game keeps going, right down to the off-season, when next year gets drawn up.</p>
 
       <div class="grooveline rv" aria-hidden="true"></div>
 
@@ -731,7 +770,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
         <li class="track hidden-track" style="--i:4">
           <span class="t-no">B5</span>
           <span class="t-label"><img src="assets/discnwlogo-copper-200.png" alt="DiscNW mark" width="200" height="200"></span>
-          <span class="t-main"><span class="t-name">The Off-Season</span><span class="t-sub">Fields booked, schedules drawn, the next year quietly cut.</span></span>
+          <span class="t-main"><span class="t-name">The Off-Season</span><span class="t-sub">Fields booked, schedules drawn, next year taking shape.</span></span>
           <span class="t-run">hidden track</span>
         </li>
       </ol>
@@ -751,7 +790,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
     <div class="in">
       <span class="liner-k">Liner notes</span>
       <h2 id="liner-h">Who and what is on the record.</h2>
-      <p class="liner-lede">Every record has a few lines on the sleeve about the people who made it. This one runs on people too — coaches, captains, and a small staff. Featured on this pressing:</p>
+      <p class="liner-lede">Every record has a few lines on the sleeve about the people who made it. This one runs on people too: coaches, captains, and a small staff. Featured on this pressing:</p>
 
       <div class="notes">
         <div class="note rv">
@@ -783,7 +822,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
           </figure>
           <div class="note-body">
             <span class="note-num">Note 03</span>
-            <p>Every game is self-officiated. <b>No referees.</b> Players make the calls and settle the close ones themselves, under Spirit of the Game.</p>
+            <p>Games here are self-officiated. <b>No referees.</b> Players make the calls and settle the close ones themselves, under Spirit of the Game.</p>
           </div>
         </div>
       </div>
@@ -798,9 +837,9 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
   <!-- ————————————— SLEEVE BACK / CREDITS ————————————— -->
   <section class="credits" aria-labelledby="cred-h">
     <div class="in">
-      <span class="credits-k">Sleeve back — credits</span>
+      <span class="credits-k">Sleeve back · credits</span>
       <h2 id="cred-h">Produced by the players.</h2>
-      <p class="credits-lede">Recorded across the Seattle area since 1995. A nonprofit pressing, with no barrier on the door — an Ultimate community without barriers is the whole idea.</p>
+      <p class="credits-lede">Recorded across the Seattle area since 1995. A nonprofit pressing with no barrier on the door: an Ultimate community anyone can join is the point.</p>
 
       <div class="credits-grid">
         <ul class="credit-lines rv" aria-label="Album credits">
@@ -838,7 +877,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
     <div class="in">
       <span class="mock-k">The site, in this styling</span>
       <h2 id="mock-h">discnw.org, pressed as a record.</h2>
-      <p class="mock-lede">A quick look at the homepage in this direction, so the record idea reads as a real site and not just a poster.</p>
+      <p class="mock-lede">A quick look at the homepage in this direction, showing the record idea working as a site rather than a poster.</p>
 
       <div class="browser rv" role="img" aria-label="A mock-up of the redesigned DiscNW homepage in this record styling, shown in a browser window.">
         <div class="bchrome">
@@ -858,7 +897,7 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
             <div class="bhead">
               <span class="k">Now playing · Side A</span>
               <h3>The Season is on.</h3>
-              <p>Ten thousand players, one game, no barriers. Find your track for the spring and summer.</p>
+              <p>Ten thousand players and one game, open to anyone. Find your track for the spring and summer.</p>
               <span class="bcta">Drop the needle →</span>
             </div>
           </div>
@@ -877,18 +916,18 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
     <div class="in">
       <div class="plate rv">
         <span class="tag">About this direction</span>
-        <h2 id="ap-h">Nº 23 — Side A</h2>
+        <h2 id="ap-h">Nº 23 · Side A</h2>
         <div class="ap-grid">
           <div class="ap-item">
             <h3>The idea</h3>
-            <p>A flying disc and a record are the same shape, and both are made to spin. So the DiscNW year is pressed as an album: Side A is spring and summer, Side B is fall and winter, and the tracklist is the real tournaments and leagues — each runtime a real stat.</p>
+            <p>A flying disc and a record are the same shape, and both are made to spin. So the DiscNW year is pressed as an album: Side A is spring and summer, Side B is fall and winter, and the tracklist is the actual tournaments and leagues, each runtime a stat from the program.</p>
           </div>
           <div class="ap-item">
             <h3>Signature</h3>
-            <p>A real 12-inch record as the hero: CSS grooves, a rotating reflection, the DiscNW mark on the label, and a tonearm resting in the groove. It turns slowly and freezes cleanly for reduced motion. A Side A / Side B toggle flips the label and the now-playing readout.</p>
+            <p>The hero is a 12-inch record drawn in CSS: grooves, a rotating reflection, the DiscNW mark on the label, and a tonearm resting in the groove. It turns slowly and freezes cleanly for reduced motion. A Side A / Side B toggle flips the label and the now-playing readout.</p>
           </div>
           <div class="ap-item">
-            <h3>Palette — warm analog sleeve</h3>
+            <h3>Palette · warm analog sleeve</h3>
             <div class="chips">
               <span class="chip"><i style="background:#141A17"></i>Vinyl green-black <code>#141A17</code></span>
               <span class="chip"><i style="background:#F0E9D6"></i>Bone sleeve <code>#F0E9D6</code></span>
@@ -899,19 +938,19 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
           </div>
           <div class="ap-item">
             <h3>Type</h3>
-            <p><strong>Fraunces</strong> italic at a high optical size for the album title and side letters — warm and characterful. <strong>Hanken Grotesk</strong> for body. <strong>JetBrains Mono</strong> for track numbers, runtimes, and the catalog details.</p>
+            <p><strong>Fraunces</strong> italic at a high optical size for the album title and side letters, warm and characterful. <strong>Hanken Grotesk</strong> for body. <strong>JetBrains Mono</strong> for track numbers, runtimes, and the catalog details.</p>
           </div>
           <div class="ap-item">
             <h3>Photography</h3>
-            <p>Every photo renders clean. The analog texture — grooves, foil, sleeve — lives only on the chrome. No headshot or action shot ever carries a tint, blend, grain, or overlay. Real faces sit in plain bone or ink frames.</p>
+            <p>Photographs render clean. The analog texture of grooves, foil, and sleeve lives only on the chrome. No headshot or action shot ever carries a tint, blend, grain, or overlay. Faces sit in plain bone or ink frames.</p>
           </div>
           <div class="ap-item">
             <h3>Motion</h3>
-            <p>The record turns; the needle drops on load; sections and rows rise as you scroll. Turn motion off and the page is already the finished pressing — a still record, tonearm down, both sides legible.</p>
+            <p>The record turns; the needle drops on load; sections and rows rise as you scroll. Turn motion off and the page is already the finished pressing: a still record, tonearm down, both sides legible.</p>
           </div>
           <div class="ap-item">
             <h3>Choose this if</h3>
-            <p>You want the calendar to feel like a thing you'd keep — warm, physical, and easy to scan as a tracklist. It suits a big seasonal push, a print poster, or a fundraiser where the season is the product.</p>
+            <p>You want the calendar to feel like a thing you'd keep: warm, physical, and easy to scan as a tracklist. It suits a big seasonal push, a print poster, or a fundraiser where the season is the product.</p>
           </div>
           <div class="ap-item">
             <h3>Think twice if</h3>
@@ -960,8 +999,8 @@ footer a:hover{border-bottom-color:var(--brass-lt)}
     var npTxt = document.querySelector('.np-txt');
     var toggles = Array.prototype.slice.call(document.querySelectorAll('.sidetoggle a'));
     var sideData = {
-      a:{cls:false, ring:'33⅓ · THE SEASON · SIDE A', np:'<b>Now playing</b> — Side A · A1 Spring Reign'},
-      b:{cls:true,  ring:'33⅓ · THE SEASON · SIDE B', np:'<b>Now playing</b> — Side B · B1 Fall Leagues'}
+      a:{cls:false, ring:'33⅓ · THE SEASON · SIDE A', np:'<b>Now playing</b> · Side A · A1 Spring Reign'},
+      b:{cls:true,  ring:'33⅓ · THE SEASON · SIDE B', np:'<b>Now playing</b> · Side B · B1 Fall Leagues'}
     };
     function setSide(side, doScroll){
       var d = sideData[side]; if(!d) return;
