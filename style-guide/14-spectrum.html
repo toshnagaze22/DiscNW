@@ -268,6 +268,10 @@ h1,h2,h3,h4{ margin:0; font-family:'Hanken Grotesk',sans-serif; }
 }
 @keyframes shimmer{ 0%,100%{ --angle:89deg; } 50%{ --angle:105deg; } }
 
+/* Direction header sits on plain white — the color lives in the wordmark and ribbon */
+.dirhead .mesh{ background:#fff; }
+.dirhead .blob, .dirhead .mesh-scrim{ display:none; }
+
 /* ————— 1 · DIRECTION HEADER (the spectral-mesh hero) ————— */
 .dirhead{ position:relative; overflow:hidden; isolation:isolate; border-bottom:1px solid var(--line); }
 .dirhead-in{
