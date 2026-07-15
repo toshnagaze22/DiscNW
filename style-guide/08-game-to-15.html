@@ -3,26 +3,31 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>07 · Game to 15 — DiscNW design directions</title>
+<title>07 · Game to 15 · DiscNW design directions</title>
 <link rel="icon" type="image/png" href="assets/brand/favicon.png">
-<meta name="description" content="Experimental direction 07 for the DiscNW redesign: the site is a game of ultimate played to 15 — a live scoreboard, fifteen numbered truths that each land with a burst, momentum building to a full-screen orange flood.">
+<meta name="description" content="Experimental direction 07 for the DiscNW redesign: the site is a game of ultimate played to 15. A live scoreboard, fifteen numbered truths that each land with a burst, momentum building to a full-screen orange flood.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@500..900&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#FAFAF7;
+    --night:#0B120D;                          /* the field at night — page ground */
+    --night-2:#070C08;                        /* the board + deep chrome */
+    --chalk:#F4F2E6;                          /* field lines + primary text */
+    --sage:#A9B5A4;                           /* muted text on the night ground */
+    --paper:#FAFAF7;                          /* button text + print ground */
     --ink:#101010;
-    --accent:#FF4A00;                         /* Universe Orange — the hero + the flood */
-    --indigo:#3E59C4;                         /* kit energy accent — cool (AA even at small size) */
-    --tidal:#1699AC;                          /* kit energy accent — cool (graphic / large only) */
-    --marigold:#FFB61E;                       /* spark-only accent — decorative bursts, never text */
+    --accent:#FF4A00;                         /* Universe Orange — the LED + the flood */
+    --indigo:#8FA1EC;                         /* indigo LED — lightened for the dark ground */
+    --tidal:#3FC1D4;                          /* tidal LED — lightened for the dark ground */
+    --marigold:#FFB61E;                       /* amber LED — decorative bursts, never text */
     --pt:var(--accent);                       /* per-point accent — set inline on each .pt; drives its
-                                                 tickmark, rule, numeral echo and celebration burst */
-    --muted:#45433F;
-    --hair:rgba(16,16,16,.16);
-    --hair-strong:rgba(16,16,16,.32);
-    --strip-h:52px;
+                                                 tickmark, rule, numeral glow and celebration burst */
+    --muted:var(--sage);
+    --hair:rgba(244,242,230,.16);
+    --hair-strong:rgba(244,242,230,.34);
+    --led:"Doto",var(--grot);                 /* the dot-matrix scoreboard face */
+    --strip-h:56px;
     --pad:clamp(20px, 5.5vw, 84px);
     --grot:"Space Grotesk","Helvetica Neue",Helvetica,Arial,sans-serif;
     --serif:"Newsreader",Georgia,"Times New Roman",serif;
@@ -37,8 +42,8 @@
   html{overflow-x:clip;scroll-padding-top:calc(var(--strip-h) + 8px)}
   body{
     margin:0;
-    background:var(--paper);
-    color:var(--ink);
+    background:var(--night);
+    color:var(--chalk);
     font-family:var(--serif);
     font-optical-sizing:auto;
     font-size:17px;
@@ -47,42 +52,46 @@
     -webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility;
   }
-  ::selection{background:var(--accent);color:var(--ink)}
+  ::selection{background:var(--accent);color:var(--night)}
   img{display:block;max-width:100%;height:auto}
 
-  a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:3px}
-  a:hover{text-decoration-color:var(--ink)}
+  a{color:var(--chalk);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:3px}
+  a:hover{text-decoration-color:var(--chalk)}
   :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:1px}
   .pt-15 :focus-visible, .strip.final :focus-visible{outline-color:var(--ink)}
 
   .visually-hidden{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-  .skip{position:absolute;left:var(--pad);top:-64px;z-index:60;background:var(--ink);color:var(--paper);font-family:var(--grot);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;padding:10px 16px;transition:none}
+  .skip{position:absolute;left:var(--pad);top:-64px;z-index:60;background:var(--chalk);color:var(--night);font-family:var(--grot);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;padding:10px 16px;transition:none}
   .skip:focus-visible{top:calc(var(--strip-h) + 10px)}
 
   /* ---------- THE SCOREBOARD (the one system) ---------- */
   .strip{
     position:fixed;inset:0 0 auto 0;z-index:50;
     height:var(--strip-h);
-    background:var(--paper);
-    border-bottom:1px solid var(--hair);
+    background:var(--night-2);
+    border-bottom:1px solid var(--hair-strong);
+    box-shadow:inset 0 -1px 0 rgba(255,255,255,.05);
     display:flex;align-items:center;justify-content:center;
   }
   .strip-in{
     display:inline-flex;align-items:baseline;gap:.85em;
     font-family:var(--grot);font-weight:500;font-size:12px;
     letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
+    color:var(--chalk);
   }
   /* the crest — the mark sits at the scoreboard's left like a team badge */
   .strip-crest{position:absolute;left:clamp(14px,2.2vw,26px);top:50%;transform:translateY(-50%);display:flex;align-items:center}
   .strip-crest img{height:30px;width:auto}
-  .strip-crest .crest-white{display:none}
-  html.play .strip.final .crest-dark{display:none}
-  html.play .strip.final .crest-white{display:block}
+  .strip-crest .crest-dark{display:none}
+  .strip-crest .crest-white{display:block}
+  html.play .strip.final .crest-white{display:none}
+  html.play .strip.final .crest-dark{display:block}
   .s-live,.s-final{display:none}
   .s-team{font-weight:500}
   .s-box{
-    position:relative;display:inline-flex;gap:.45em;
-    font-weight:700;letter-spacing:.06em;
+    position:relative;display:inline-flex;gap:.45em;align-items:baseline;
+    font-family:var(--led);font-weight:900;font-size:17px;letter-spacing:.08em;
+    color:var(--accent);text-shadow:0 0 10px rgba(255,74,0,.6),0 0 26px rgba(255,74,0,.28);
     font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
   }
   .s-you{display:inline-block}
@@ -90,26 +99,28 @@
     content:"";position:absolute;left:0;right:0;bottom:-8px;height:2px;
     background:var(--accent);opacity:0;
   }
-  .s-dash{color:var(--ink)}
-  .s-sep{color:var(--muted)}
-  .s-meta{color:var(--muted);font-weight:500}
-  .s-final{font-weight:700;letter-spacing:.14em;font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+  .s-dash{color:var(--sage);text-shadow:none}
+  .s-sep{color:var(--sage)}
+  .s-meta{color:var(--sage);font-weight:500}
+  .s-final{font-family:var(--led);font-weight:900;font-size:17px;letter-spacing:.1em;color:var(--ink);font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
 
   /* live crowd-energy cluster + momentum meter — all decorative (the strip is
      aria-hidden). Shown only when the live scoreboard is on (html.play); the
      base / no-JS / reduced-motion strip stays the calm static "Game to 15". */
-  .s-bug{display:inline-flex;align-items:center;gap:6px;font-weight:600;letter-spacing:.16em;color:var(--ink)}
+  .s-bug{display:inline-flex;align-items:center;gap:7px;font-weight:600;letter-spacing:.16em;color:var(--chalk)}
+  .s-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
   .eq{display:inline-flex;align-items:flex-end;gap:2px;width:19px;height:13px}
   .eq i{flex:1;height:100%;background:var(--accent);transform-origin:50% 100%;transform:scaleY(.32);border-radius:1px}
   .s-plus{
     position:absolute;left:50%;top:-4px;transform:translate(-50%,0);
-    font-size:19px;font-weight:700;line-height:1;color:var(--accent);opacity:0;pointer-events:none;
+    font-size:19px;font-weight:700;line-height:1;color:var(--marigold);opacity:0;pointer-events:none;
     font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
   }
+  /* fifteen LED blocks; JS keeps setting --mo (0..1) and the clip reveals n blocks */
   .s-momentum{
-    position:absolute;left:0;bottom:0;height:3px;width:100%;display:none;
-    transform:scaleX(var(--mo,0));transform-origin:0 50%;
-    background:linear-gradient(90deg,var(--tidal),var(--accent));
+    position:absolute;left:0;bottom:0;height:5px;width:100%;display:none;
+    background:repeating-linear-gradient(90deg,var(--accent) 0 calc(100%/15 - 3px),transparent calc(100%/15 - 3px) calc(100%/15));
+    clip-path:inset(0 calc((1 - var(--mo,0)) * 100%) 0 0);
   }
   html.play .s-momentum{display:block}
   html.play .strip.final .s-momentum{opacity:0}
@@ -130,7 +141,9 @@
     .eq i:nth-child(3){animation-duration:.7s;animation-delay:.05s}
     .eq i:nth-child(4){animation-duration:1.03s;animation-delay:.2s}
     @keyframes eq{0%{transform:scaleY(.26)}100%{transform:scaleY(1)}}
-    html.play .s-momentum{transition:transform .55s var(--ease-lux)}
+    html.play .s-momentum{transition:clip-path .55s var(--ease-lux)}
+    html.play .s-dot{animation:blinkdot 1.2s steps(2,jump-none) infinite}
+    @keyframes blinkdot{50%{opacity:.25}}
     html.play .s-plus.pop{animation:plus .72s var(--ease-pop)}
     @keyframes plus{0%{opacity:0;transform:translate(-50%,7px) scale(.7)}28%{opacity:1}100%{opacity:0;transform:translate(-50%,-16px) scale(1.12)}}
     html.play .strip.hot .eq i{animation-duration:.5s}
@@ -503,7 +516,10 @@
   }
 
   @media print{
-    .strip{position:static;background:var(--paper)!important;border-bottom-color:var(--ink)}
+    body{background:#fff;color:var(--ink)}
+    a{color:var(--ink)}
+    .strip{position:static;background:#fff!important;border-bottom-color:var(--ink);box-shadow:none}
+    .strip-in{color:var(--ink)}
     html.play .s-live,html.play .s-final{display:none!important}
     html.play .s-static{display:inline!important}
     .strip-crest .crest-white{display:none!important}
@@ -519,7 +535,7 @@
     html.play .pt .tagrow > span,html.play .pt .col > *,html.play .crest-open{opacity:1!important;transform:none!important}
     html.play .pt .tagrow{border-top-color:var(--ink)!important}
     html.play .pt .tagrow::before{display:none!important}
-    .s-momentum,.burst,.s-bug,.s-plus{display:none!important}
+    .s-momentum,.burst,.s-bug,.s-plus,.s-dot{display:none!important}
     html.play .highlight .hl-bug,html.play .highlight .hl-third{transform:none!important}
   }
 </style>
@@ -527,7 +543,7 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<header class="strip" id="strip" aria-label="Scoreboard — game to 15">
+<header class="strip" id="strip" aria-label="Scoreboard, game to 15">
   <span class="strip-crest">
     <img class="crest-dark" src="assets/brand/logo-mark.png" alt="DiscNW" width="590" height="616">
     <img class="crest-white" src="assets/brand/logo-mark-white.png" alt="" aria-hidden="true" width="590" height="616">
@@ -536,13 +552,13 @@
     <span class="s-static">Game to 15</span>
     <span class="s-live">
       <span class="s-team">DiscNW</span>
-      <span class="s-box" id="scorebox"><span>0</span><span class="s-dash">—</span><span class="s-you" id="score-you">0</span><span class="s-plus" id="s-plus">+1</span></span>
+      <span class="s-box" id="scorebox"><span>0</span><span class="s-dash">–</span><span class="s-you" id="score-you">0</span><span class="s-plus" id="s-plus">+1</span></span>
       <span class="s-team">You</span>
-      <span class="s-bug"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Live</span>
+      <span class="s-bug"><span class="s-dot" aria-hidden="true"></span>Live</span>
       <span class="s-sep">·</span>
       <span class="s-meta">Game to 15</span>
     </span>
-    <span class="s-final">15 — Game.</span>
+    <span class="s-final">15 · Game.</span>
   </div>
   <span class="s-momentum" aria-hidden="true"></span>
 </header>
@@ -550,7 +566,7 @@
 <main id="main">
 
   <!-- THE PULL -->
-  <section class="hero wrap" aria-label="Game to 15 — introduction">
+  <section class="hero wrap" aria-label="Game to 15, introduction">
     <div>
       <p class="kicker"><span class="tickmark" aria-hidden="true"></span>DiscNW · Design direction 07 · Experimental</p>
       <h1><span class="hl"><span class="hl-in">Game</span></span><span class="hl"><span class="hl-in">to 15</span></span></h1>
@@ -562,13 +578,13 @@
   <!-- 01 -->
   <section class="pt" id="pt-01" data-pt="1" aria-labelledby="h01">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 01 · The vision</span><span class="run" aria-hidden="true">0 — 1</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 01 · The vision</span><span class="run" aria-hidden="true">0 – 1</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="01">01</div><span class="burst"></span></div>
-        <img class="crest-open" src="assets/brand/logo-mark.png" alt="DiscNW — Coast Salish-style formline disc mark" width="590" height="616">
+        <img class="crest-open" src="assets/brand/logo-mark.png" alt="DiscNW, Coast Salish-style formline disc mark" width="590" height="616">
         <div class="col">
           <h2 id="h01">An Ultimate community without barriers.</h2>
-          <p>That is DiscNW’s entire vision, in six words. No gate at the field, no fine print under the mission. The next fourteen points are what those six words cost, and what they buy.</p>
+          <p>That is DiscNW’s entire vision, in six words. Nobody gets stopped at the field, and the mission carries no fine print. The next fourteen points are what those six words cost, and what they buy.</p>
         </div>
       </div>
     </div>
@@ -577,12 +593,12 @@
   <!-- 02 -->
   <section class="pt" id="pt-02" data-pt="2" aria-labelledby="h02" style="--pt:var(--indigo)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 02 · The scale</span><span class="run" aria-hidden="true">0 — 2</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 02 · The scale</span><span class="run" aria-hidden="true">0 – 2</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="02">02</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h02">Ten thousand players. And counting.</h2>
-          <p>More than 10,000 people play with DiscNW every year, from Magnuson Park to grass fields all around Puget Sound. Less a league, more a small city that sprints.</p>
+          <p>More than 10,000 people play with DiscNW every year, from Magnuson Park to grass fields all around Puget Sound. It adds up to a small city that sprints.</p>
         </div>
       </div>
     </div>
@@ -591,12 +607,12 @@
   <!-- 03 -->
   <section class="pt" id="pt-03" data-pt="3" aria-labelledby="h03" style="--pt:var(--tidal)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 03 · The rules</span><span class="run" aria-hidden="true">0 — 3</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 03 · The rules</span><span class="run" aria-hidden="true">0 – 3</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="03">03</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h03">Zero referees. Since the first pull.</h2>
-          <p>Every DiscNW game is self-officiated: players make the calls, players resolve the disputes. Spirit of the Game is not a banner slogan — it is the entire officiating system, and it has held for three decades.</p>
+          <p>DiscNW games are self-officiated: players make the calls and settle the disputes themselves. That system is called Spirit of the Game, and thirty seasons in it still works.</p>
         </div>
       </div>
     </div>
@@ -605,7 +621,7 @@
   <!-- 04 -->
   <section class="pt" id="pt-04" data-pt="4" aria-labelledby="h04">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 04 · The origin</span><span class="run" aria-hidden="true">0 — 4</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 04 · The origin</span><span class="run" aria-hidden="true">0 – 4</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="04">04</div><span class="burst"></span></div>
         <div class="col">
@@ -619,19 +635,19 @@
   <!-- 05 -->
   <section class="pt" id="pt-05" data-pt="5" aria-labelledby="h05" style="--pt:var(--indigo)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 05 · The span</span><span class="run" aria-hidden="true">0 — 5</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 05 · The span</span><span class="run" aria-hidden="true">0 – 5</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="05">05</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h05">Ages 7 to 70-plus.</h2>
-          <p>Summer Youth Ultimate Camps start at seven. Masters hat leagues never really stop. Same disc, same field lines — one game, played for a whole lifetime.</p>
+          <p>Summer Youth Ultimate Camps start at seven, and masters hat leagues never really stop. The disc and the field lines stay the same across a playing lifetime.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- halftime highlight — the one live moment -->
-  <figure class="break highlight" data-hl aria-label="Halftime highlight — the Spring Reign spirit tunnel, running live">
+  <figure class="break highlight" data-hl aria-label="Halftime highlight: the Spring Reign spirit tunnel, running live">
     <div class="break-frame hl-frame">
       <video class="hl-vid" autoplay muted loop playsinline poster="assets/video/poster--vM_JH6IbDo.jpg" width="1280" height="720" aria-label="Looping highlight: middle schoolers form a spirit tunnel and high-five their opponents down the line at a DiscNW game.">
         <source src="assets/video/loop-ms-spirit-tunnel.mp4" type="video/mp4">
@@ -640,18 +656,18 @@
       <span class="hl-bug" aria-hidden="true"><span class="eq"><i></i><i></i><i></i><i></i></span>Live</span>
       <span class="hl-third" aria-hidden="true"><b>Halftime</b> · Spring Reign · The spirit tunnel</span>
     </div>
-    <figcaption>Halftime — Spring Reign · The post-game spirit tunnel, running live</figcaption>
+    <figcaption>Halftime · Spring Reign · The post-game spirit tunnel, running live</figcaption>
   </figure>
 
   <!-- 06 -->
   <section class="pt" id="pt-06" data-pt="6" aria-labelledby="h06" style="--pt:var(--tidal)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 06 · The flagship</span><span class="run" aria-hidden="true">0 — 6</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 06 · The flagship</span><span class="run" aria-hidden="true">0 – 6</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="06">06</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h06">The largest mixed youth ultimate tournament in the world.</h2>
-          <p>It is called Spring Reign, and it happens here every spring. Not the region’s biggest, not the country’s — the world’s. Middle schoolers headline it.</p>
+          <p>It is called Spring Reign, and it happens here every spring. Nothing in mixed youth ultimate, anywhere on earth, is bigger. Middle schoolers headline it.</p>
         </div>
       </div>
     </div>
@@ -660,27 +676,27 @@
   <!-- 07 -->
   <section class="pt" id="pt-07" data-pt="7" aria-labelledby="h07">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 07 · The fee</span><span class="run" aria-hidden="true">0 — 7</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 07 · The fee</span><span class="run" aria-hidden="true">0 – 7</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="07">07</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h07">From $33. Sliding scale. No questions.</h2>
-          <p>Registration slides down to $33 so that money never keeps anyone off the field. You pay what works; nobody checks. Here, barrier-free is a budget line, not a value statement.</p>
+          <p>Registration slides down to $33 so that money never keeps anyone off the field. You pay what works for you, and nobody checks. Barrier-free here is a line item in the budget.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- 08 — the quote -->
-  <section class="pt pt-quote" id="pt-08" data-pt="8" aria-label="Point 8 — a parent's point" style="--pt:var(--indigo)">
+  <section class="pt pt-quote" id="pt-08" data-pt="8" aria-label="Point 8, a parent's point" style="--pt:var(--indigo)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 08 · The sideline</span><span class="run" aria-hidden="true">0 — 8</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 08 · The sideline</span><span class="run" aria-hidden="true">0 – 8</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="08">08</div><span class="burst"></span></div>
         <div class="col">
           <figure style="margin:0">
             <blockquote>
-              <p>“My daughter came home from her first game and spent twenty minutes explaining why there are no referees — who made the calls, how they talked it out. She was sold. Honestly, so was I.”</p>
+              <p>“My daughter came home from her first game and spent twenty minutes explaining why there are no referees: who made the calls, how they talked it out. She was sold. Honestly, so was I.”</p>
             </blockquote>
             <figcaption>Parent · Fall Middle School League</figcaption>
           </figure>
@@ -692,12 +708,12 @@
   <!-- 09 -->
   <section class="pt" id="pt-09" data-pt="9" aria-labelledby="h09" style="--pt:var(--tidal)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 09 · The season</span><span class="run" aria-hidden="true">0 — 9</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 09 · The season</span><span class="run" aria-hidden="true">0 – 9</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="09">09</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h09">Fall belongs to the schools.</h2>
-          <p>Every autumn, the Middle School and High School leagues turn hallways into rosters across the region. For a lot of kids, sixth grade is where the first pull happens.</p>
+          <p>The Middle School and High School leagues turn hallways into rosters across the region each autumn. For a lot of kids, sixth grade is where the first pull happens.</p>
         </div>
       </div>
     </div>
@@ -706,12 +722,12 @@
   <!-- 10 — the hotline -->
   <section class="pt" id="pt-10" data-pt="10" aria-labelledby="h10">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 10 · The hotline</span><span class="run" aria-hidden="true">0 — 10</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 10 · The hotline</span><span class="run" aria-hidden="true">0 – 10</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="10">10</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h10" class="hotline"><a href="tel:+12067815840" aria-label="Call the DiscNW rainout hotline at (206) 781-5840">(206)<br>781‑5840</a></h2>
-          <p>The rainout hotline. Before apps, before push alerts, Seattle ultimate checked the fields by phone — and this number still answers. Some institutions are ten digits long.</p>
+          <p>The rainout hotline. Seattle ultimate was checking field closures by phone long before apps and push alerts, and on a wet morning this number still answers.</p>
         </div>
       </div>
     </div>
@@ -722,18 +738,18 @@
     <div class="break-frame portrait">
       <img src="assets/ycc-tryouts-2015-4.jpg" width="2333" height="2475" alt="Two young players contest a throw at YCC tryouts, the disc hovering mid-flight between them." decoding="async">
     </div>
-    <figcaption>Second half — YCC tryouts, 2015 · Two of the ten thousand</figcaption>
+    <figcaption>Second half · YCC tryouts, 2015 · Two of the ten thousand</figcaption>
   </figure>
 
   <!-- 11 -->
   <section class="pt" id="pt-11" data-pt="11" aria-labelledby="h11" style="--pt:var(--indigo)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 11 · The beach</span><span class="run" aria-hidden="true">0 — 11</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 11 · The beach</span><span class="run" aria-hidden="true">0 – 11</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="11">11</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h11">One weekend a year is played on sand.</h2>
-          <p>Sea Plastic: sand instead of grass, salt air instead of drizzle, and the one weekend a year the state’s ultimate takes its cleats off.</p>
+          <p>Sea Plastic trades the grass for sand and the drizzle for salt air. It is the one weekend a year when players get to leave their cleats at home.</p>
         </div>
       </div>
     </div>
@@ -742,12 +758,12 @@
   <!-- 12 -->
   <section class="pt" id="pt-12" data-pt="12" aria-labelledby="h12" style="--pt:var(--tidal)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 12 · The coaches</span><span class="run" aria-hidden="true">0 — 12</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 12 · The coaches</span><span class="run" aria-hidden="true">0 – 12</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="12">12</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h12">Coaches, coached.</h2>
-          <p>The DiscNW Coaching Collective trains the people who teach the game, school team and club alike — so a kid’s first coach is a coached coach.</p>
+          <p>The DiscNW Coaching Collective trains the people who teach the game, school team and club alike, so a kid’s first coach has been coached too.</p>
           <div class="prog"><img src="assets/discnw-coaching-collective-3.png" alt="DiscNW Coaching Collective" width="352" height="322" loading="lazy" decoding="async"></div>
         </div>
       </div>
@@ -757,7 +773,7 @@
   <!-- 13 -->
   <section class="pt" id="pt-13" data-pt="13" aria-labelledby="h13">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 13 · The engine</span><span class="run" aria-hidden="true">0 — 13</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 13 · The engine</span><span class="run" aria-hidden="true">0 – 13</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="13">13</div><span class="burst"></span></div>
         <div class="col">
@@ -771,12 +787,12 @@
   <!-- 14 -->
   <section class="pt" id="pt-14" data-pt="14" aria-labelledby="h14">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 14 · The roster spot</span><span class="run" aria-hidden="true">0 — 14</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 14 · The roster spot</span><span class="run" aria-hidden="true">0 – 14</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="14">14</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h14">You.</h2>
-          <p>Fourteen points in, one thing missing. Look at the scoreboard — notice who has scored every point on this page. That is the whole model: <em>DiscNW pulls. You score.</em></p>
+          <p>Fourteen points in, one thing missing. Look at the scoreboard and notice who has scored every point on this page. That is the model: <em>DiscNW pulls. You score.</em></p>
         </div>
       </div>
     </div>
@@ -786,14 +802,14 @@
   <section class="pt pt-15" id="pt-15" data-pt="15" aria-labelledby="h15">
     <div class="flood" aria-hidden="true"></div>
     <div class="wrap">
-      <div class="tagrow"><span>Point 15 · Game point</span><span class="run" aria-hidden="true">0 — 15 · Game</span></div>
+      <div class="tagrow"><span>Point 15 · Game point</span><span class="run" aria-hidden="true">0 – 15 · Game</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="15">15</div><span class="burst"></span></div>
         <div class="col">
           <h2 id="h15" class="game-word">Game.</h2>
           <p class="lead">You read to 15. Now play to 15.</p>
           <p><a class="btn" href="https://www.discnw.org/"><span class="roll"><span>Register at discnw.org</span><span aria-hidden="true">Register at discnw.org</span></span></a></p>
-          <p class="fine">Sliding scale from $33 — point 07 always applies.</p>
+          <p class="fine">Sliding scale from $33. Point 07 always applies.</p>
         </div>
       </div>
     </div>
@@ -802,10 +818,10 @@
   <!-- appendix -->
   <section class="about" aria-labelledby="about-h">
     <div class="wrap">
-      <img class="about-lockup" src="assets/brand/logo-full.png" alt="DiscNW — Disc Northwest" width="1446" height="616">
+      <img class="about-lockup" src="assets/brand/logo-full.png" alt="DiscNW, Disc Northwest" width="1446" height="616">
       <p class="kicker" style="margin-bottom:0"><span class="tickmark" aria-hidden="true"></span>About this direction</p>
-      <h2 id="about-h">07 — Game to 15</h2>
-      <p class="thesis">The site is a game of ultimate played to 15: a live scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point. Every numeral lands with a punch and a spark burst, a momentum meter fills as you climb, and a halftime highlight loop breaks in. The whole personality lives in the typesetting, now with the noise of a game.</p>
+      <h2 id="about-h">07 · Game to 15</h2>
+      <p class="thesis">The site is a game of ultimate played to 15: a live scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point. The numerals land with a punch and a spark burst, a momentum meter fills as you climb, and a halftime highlight loop breaks in. The typesetting carries all of the personality, backed by the noise of a game.</p>
       <dl class="spec">
         <div>
           <dt>Palette</dt>
@@ -819,15 +835,15 @@
         </div>
         <div>
           <dt>Type</dt>
-          <dd>Space Grotesk — colossal tabular numerals &amp; scoreboard. Newsreader — the editorial columns, sharp and small.</dd>
+          <dd>Space Grotesk for the colossal tabular numerals and the scoreboard. Newsreader for the editorial columns, sharp and small.</dd>
         </div>
         <div>
           <dt>Signature</dt>
-          <dd>The crested score strip: “DISCNW 0 — 0 YOU” with an equalizer, a LIVE bug and a momentum meter, ticking up as you read. Each numeral lands with a pop and a spark burst in its own color. The final points run hot, and the orange floods down out of the scoreboard itself.</dd>
+          <dd>The crested score strip: “DISCNW 0 – 0 YOU” with an equalizer, a LIVE bug and a momentum meter, ticking up as you read. Each numeral lands with a pop and a spark burst in its own color. The final points run hot, and the orange floods down out of the scoreboard itself.</dd>
         </div>
         <div>
           <dt>Choose this if</dt>
-          <dd>You want the page people retell in one sentence: “the site is a game to 15.” Pure typography, cheapest to build well, and the sport’s own structure doing the branding.</dd>
+          <dd>You want the page people retell in one sentence: “the site is a game to 15.” Pure typography, cheapest to build well, with the branding drawn straight from how the sport keeps score.</dd>
         </div>
         <div>
           <dt>Think twice if</dt>
