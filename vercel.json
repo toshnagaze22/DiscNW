@@ -1,5 +1,6 @@
 {
   "redirects": [
-    { "source": "/", "destination": "/style-guide/", "permanent": false }
+    { "source": "/", "destination": "/style-guide/", "permanent": false },
+    { "source": "/index.html", "destination": "/style-guide/", "permanent": false }
   ]
 }
