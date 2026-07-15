@@ -173,15 +173,20 @@
     html.play .hl:nth-child(1) .hl-in{transition-delay:.14s}
     html.play .hl:nth-child(2) .hl-in{transition-delay:.22s}
     html.play .hero .kicker,
+    html.play .hero .vs-row,
     html.play .hero .standfirst,
     html.play .hero .pull-hint{opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease-lux),transform .6s var(--ease-lux)}
     html.play .hero .kicker{transition-delay:.06s}
-    html.play .hero .standfirst{transition-delay:.42s}
-    html.play .hero .pull-hint{transition-delay:.58s}
+    html.play .hero .vs-row{transition-delay:.36s}
+    html.play .hero .standfirst{transition-delay:.48s}
+    html.play .hero .pull-hint{transition-delay:.62s}
     html.go .hl-in{transform:none}
     html.go .hero .kicker,
+    html.go .hero .vs-row,
     html.go .hero .standfirst,
     html.go .hero .pull-hint{opacity:1;transform:none}
+    html.play .blink{animation:blinkhint 1.3s steps(2,jump-none) infinite}
+    @keyframes blinkhint{50%{opacity:.3}}
   }
 
   /* per-point choreography — the rule draws, the colossal numeral lands under a
@@ -249,11 +254,18 @@
   .wrap{max-width:1440px;margin-inline:auto;padding-inline:var(--pad)}
   main{padding-top:var(--strip-h)}
 
-  /* hero — the pull */
-  .hero{min-height:calc(100svh - var(--strip-h));display:flex;flex-direction:column;justify-content:space-between;padding-block:clamp(48px,8vh,96px) clamp(28px,5vh,56px)}
+  /* hero — the pull, under the floodlights */
+  .hero{min-height:calc(100svh - var(--strip-h));display:flex;flex-direction:column;justify-content:space-between;padding-block:clamp(48px,8vh,96px) clamp(28px,5vh,56px);
+    background:
+      radial-gradient(46% 40% at 16% -6%, rgba(255,243,209,.14), transparent 62%),
+      radial-gradient(46% 40% at 84% -6%, rgba(255,243,209,.14), transparent 62%)}
+  .vs-row{display:flex;align-items:baseline;gap:18px;margin:clamp(18px,3vh,28px) 0 0;
+    font-family:var(--led);font-weight:900;font-size:clamp(18px,2.2vw,26px);
+    letter-spacing:.14em;text-transform:uppercase;color:var(--chalk)}
+  .vs-row .vs{color:var(--accent);font-size:.78em;text-shadow:0 0 12px rgba(255,74,0,.55)}
   .kicker{
     font-family:var(--grot);font-size:11px;font-weight:600;
-    letter-spacing:.18em;text-transform:uppercase;color:var(--ink);
+    letter-spacing:.18em;text-transform:uppercase;color:var(--chalk);
     margin:0 0 clamp(28px,6vh,72px);
   }
   .tickmark{display:inline-block;width:8px;height:8px;background:var(--pt);margin-right:10px;vertical-align:1px}
@@ -274,9 +286,11 @@
     text-transform:uppercase;color:var(--muted);margin:0;
   }
 
-  /* point sections — rule pinned at top, the pair commands the center */
+  /* point sections — rule pinned at top, the pair commands the center,
+     chalk sidelines frame the field */
   .pt{min-height:92svh;display:flex}
   .pt > .wrap{width:100%;display:flex;flex-direction:column;padding-block:clamp(40px,7vh,84px) clamp(56px,10vh,132px)}
+  .pt:not(.pt-15) > .wrap{box-shadow:inset 1px 0 0 var(--hair),inset -1px 0 0 var(--hair)}
   .pt .ptgrid{flex:1;align-content:center}
   .tagrow{
     display:flex;justify-content:space-between;align-items:baseline;gap:16px;
@@ -294,20 +308,22 @@
   }
   .numcell{position:relative}
   .num{
-    font-family:var(--grot);font-weight:700;
-    font-size:clamp(200px,21vw + 120px,320px);
-    line-height:.75;letter-spacing:-.045em;
+    font-family:var(--led);font-weight:900;
+    font-size:clamp(170px,17vw + 100px,290px);
+    line-height:.8;letter-spacing:0;color:var(--pt);
+    text-shadow:0 0 18px color-mix(in srgb, var(--pt) 50%, transparent),
+                0 0 64px color-mix(in srgb, var(--pt) 26%, transparent);
     font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
-    margin-top:-.015em;
+    margin-top:0;
     user-select:none;
     position:relative;z-index:0;
   }
-  /* colored numeral echo — a static offset in the point's accent behind the ink
-     numeral. Present even with no JS / reduced motion, so every point carries a
-     little color life in the calm settled state too. */
+  /* LED afterglow — a blurred copy of the digits directly behind them, in the
+     point's accent. Present even with no JS / reduced motion, so every point
+     glows in the calm settled state too. */
   .num::before{
     content:attr(data-n);position:absolute;left:0;top:0;z-index:-1;
-    color:var(--pt);transform:translate(.05em,.055em);
+    color:var(--pt);opacity:.35;filter:blur(14px);
   }
   /* per-point celebration burst — abstract ring-pop + multi-color spark ring,
      fired the frame the numeral lands. Decorative + aria-hidden; hidden with no
@@ -358,7 +374,7 @@
     align-items:center;justify-content:center;
     margin-top:clamp(28px,5vh,44px);
     padding:20px 24px;
-    background:#fff;border:1px solid var(--hair);
+    background:#fff;border:1px solid var(--hair-strong);
   }
   .prog img{width:clamp(150px,19vw,188px);height:auto}
 
@@ -434,7 +450,8 @@
   .pt-15{background:var(--accent);color:var(--ink);min-height:100svh}
   .pt-15 .tagrow{border-top-color:var(--ink)}
   .pt-15 .run{color:var(--ink)}
-  /* the climax numeral echoes white, and its burst recolors to pop on the flood */
+  /* the climax digits go ink on the flood with a white afterglow, and the burst recolors */
+  .pt-15 .num{color:var(--ink);text-shadow:0 0 18px rgba(255,255,255,.45),0 0 64px rgba(255,255,255,.22)}
   .pt-15 .num::before{color:#fff;opacity:.5}
   @media (prefers-reduced-motion: no-preference){
     html.play .pt-15 .burst{color:#fff}
@@ -471,7 +488,7 @@
   }
 
   /* appendix + footer */
-  .about{border-top:1px solid var(--ink);padding-block:clamp(48px,8vh,88px)}
+  .about{border-top:1px solid var(--chalk);padding-block:clamp(48px,8vh,88px)}
   .about h2{
     font-family:var(--grot);font-weight:700;font-size:clamp(22px,2.4vw,30px);
     letter-spacing:-.01em;margin:14px 0 10px;text-transform:uppercase;
@@ -491,7 +508,7 @@
     font-family:var(--grot);font-size:12px;letter-spacing:.06em;
     font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;color:var(--muted);
   }
-  .pagefoot{border-top:1px solid var(--ink);}
+  .pagefoot{border-top:1px solid var(--chalk);}
   .pagefoot .wrap{
     display:flex;justify-content:space-between;align-items:baseline;gap:18px;flex-wrap:wrap;
     padding-block:26px;
@@ -531,7 +548,7 @@
     html.play .pt-15{background:var(--accent)!important}
     .flood{display:none!important}
     html.play .hl-in,html.play .pt .num{transform:none!important;clip-path:none!important}
-    html.play .hero .kicker,html.play .hero .standfirst,html.play .hero .pull-hint,
+    html.play .hero .kicker,html.play .hero .vs-row,html.play .hero .standfirst,html.play .hero .pull-hint,
     html.play .pt .tagrow > span,html.play .pt .col > *,html.play .crest-open{opacity:1!important;transform:none!important}
     html.play .pt .tagrow{border-top-color:var(--ink)!important}
     html.play .pt .tagrow::before{display:none!important}
@@ -570,9 +587,10 @@
     <div>
       <p class="kicker"><span class="tickmark" aria-hidden="true"></span>DiscNW · Design direction 07 · Experimental</p>
       <h1><span class="hl"><span class="hl-in">Game</span></span><span class="hl"><span class="hl-in">to 15</span></span></h1>
+      <p class="vs-row" aria-label="DiscNW versus you"><span>DiscNW</span><b class="vs">VS</b><span>You</span></p>
       <p class="standfirst">Fifteen points. Fifteen true things about ultimate in the Northwest. <strong>DiscNW pulls; you receive.</strong> Every point you read is a point you score.</p>
     </div>
-    <p class="pull-hint">↓ First pull</p>
+    <p class="pull-hint"><span class="blink">Press ↓ to pull</span></p>
   </section>
 
   <!-- 01 -->
@@ -581,7 +599,7 @@
       <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 01 · The vision</span><span class="run" aria-hidden="true">0 – 1</span></div>
       <div class="ptgrid">
         <div class="numcell" aria-hidden="true"><div class="num" data-n="01">01</div><span class="burst"></span></div>
-        <img class="crest-open" src="assets/brand/logo-mark.png" alt="DiscNW, Coast Salish-style formline disc mark" width="590" height="616">
+        <img class="crest-open" src="assets/brand/logo-mark-white.png" alt="DiscNW, Coast Salish-style formline disc mark" width="590" height="616">
         <div class="col">
           <h2 id="h01">An Ultimate community without barriers.</h2>
           <p>That is DiscNW’s entire vision, in six words. Nobody gets stopped at the field, and the mission carries no fine print. The next fourteen points are what those six words cost, and what they buy.</p>
@@ -818,7 +836,7 @@
   <!-- appendix -->
   <section class="about" aria-labelledby="about-h">
     <div class="wrap">
-      <img class="about-lockup" src="assets/brand/logo-full.png" alt="DiscNW, Disc Northwest" width="1446" height="616">
+      <img class="about-lockup" src="assets/brand/logo-full-white.png" alt="DiscNW, Disc Northwest" width="1446" height="616">
       <p class="kicker" style="margin-bottom:0"><span class="tickmark" aria-hidden="true"></span>About this direction</p>
       <h2 id="about-h">07 · Game to 15</h2>
       <p class="thesis">The site is a game of ultimate played to 15: a live scoreboard scores your reading as fifteen colossal numbered truths carry you from the first pull to a full-screen game point. The numerals land with a punch and a spark burst, a momentum meter fills as you climb, and a halftime highlight loop breaks in. The typesetting carries all of the personality, backed by the noise of a game.</p>
