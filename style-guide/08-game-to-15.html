@@ -299,7 +299,31 @@
     font-family:var(--grot);font-size:11px;font-weight:600;
     letter-spacing:.18em;text-transform:uppercase;
   }
-  .run{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;font-size:12px;letter-spacing:.1em;color:var(--muted)}
+  .run{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;font-size:12px;letter-spacing:.1em;color:var(--muted);display:inline-flex;align-items:center}
+
+  /* field-position HUD — a chalk field, the disc advancing to the end zone */
+  .fieldpos{width:78px;height:auto;display:inline-block;margin-right:10px;flex:none}
+  .fp-f{fill:none;stroke:var(--hair-strong)}
+  .fp-l{stroke:var(--hair-strong)}
+  .fp-m{stroke:var(--hair)}
+  .fp-d{fill:var(--pt)}
+  .pt-15 .fp-d{fill:var(--ink)}
+  .pt-15 .fp-f,.pt-15 .fp-l{stroke:rgba(16,16,16,.45)}
+  .pt-15 .fp-m{stroke:rgba(16,16,16,.25)}
+
+  /* the pull — a chalk disc arcs across the numeral when the point reveals */
+  .pull-disc{display:none}
+  @media (prefers-reduced-motion: no-preference){
+    html.play .pull-disc{display:block;position:absolute;left:-6%;top:16%;width:26px;height:26px;z-index:3;pointer-events:none;opacity:0}
+    html.play .pull-disc::before{content:"";display:block;width:100%;height:100%;border-radius:50%;
+      background:radial-gradient(circle at 38% 32%, #fff, var(--chalk) 55%, #C9C6B4 100%);
+      box-shadow:inset 0 0 0 3px rgba(16,16,16,.18), 0 2px 6px rgba(0,0,0,.5)}
+    html.play .pt.in .pull-disc{animation:pullx 1.05s var(--ease-lux) .12s both}
+    html.play .pt.in .pull-disc::before{animation:pully 1.05s var(--ease-lux) .12s both}
+    @keyframes pullx{0%{opacity:0;transform:translateX(0)}10%{opacity:1}86%{opacity:1}100%{opacity:0;transform:translateX(min(30vw,420px))}}
+    @keyframes pully{0%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-74px) rotate(180deg)}100%{transform:translateY(10px) rotate(360deg)}}
+    html.play #pt-01 .pull-disc{display:none}
+  }
   .ptgrid{
     display:grid;
     grid-template-columns:minmax(280px,430px) minmax(300px,460px);
@@ -552,7 +576,7 @@
     html.play .pt .tagrow > span,html.play .pt .col > *,html.play .crest-open{opacity:1!important;transform:none!important}
     html.play .pt .tagrow{border-top-color:var(--ink)!important}
     html.play .pt .tagrow::before{display:none!important}
-    .s-momentum,.burst,.s-bug,.s-plus,.s-dot{display:none!important}
+    .s-momentum,.burst,.s-bug,.s-plus,.s-dot,.pull-disc{display:none!important}
     html.play .highlight .hl-bug,html.play .highlight .hl-third{transform:none!important}
   }
 </style>
@@ -596,9 +620,9 @@
   <!-- 01 -->
   <section class="pt" id="pt-01" data-pt="1" aria-labelledby="h01">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 01 · The vision</span><span class="run" aria-hidden="true">0 – 1</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 01 · The vision</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="24.5" cy="14" r="4"/></svg>0 – 1</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="01">01</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="01">01</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <img class="crest-open" src="assets/brand/logo-mark-white.png" alt="DiscNW, Coast Salish-style formline disc mark" width="590" height="616">
         <div class="col">
           <h2 id="h01">An Ultimate community without barriers.</h2>
@@ -611,9 +635,9 @@
   <!-- 02 -->
   <section class="pt" id="pt-02" data-pt="2" aria-labelledby="h02" style="--pt:var(--indigo)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 02 · The scale</span><span class="run" aria-hidden="true">0 – 2</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 02 · The scale</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="29.9" cy="14" r="4"/></svg>0 – 2</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="02">02</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="02">02</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <div class="col">
           <h2 id="h02">Ten thousand players. And counting.</h2>
           <p>More than 10,000 people play with DiscNW every year, from Magnuson Park to grass fields all around Puget Sound. It adds up to a small city that sprints.</p>
@@ -625,9 +649,9 @@
   <!-- 03 -->
   <section class="pt" id="pt-03" data-pt="3" aria-labelledby="h03" style="--pt:var(--tidal)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 03 · The rules</span><span class="run" aria-hidden="true">0 – 3</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 03 · The rules</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="35.4" cy="14" r="4"/></svg>0 – 3</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="03">03</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="03">03</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <div class="col">
           <h2 id="h03">Zero referees. Since the first pull.</h2>
           <p>DiscNW games are self-officiated: players make the calls and settle the disputes themselves. That system is called Spirit of the Game, and thirty seasons in it still works.</p>
@@ -639,9 +663,9 @@
   <!-- 04 -->
   <section class="pt" id="pt-04" data-pt="4" aria-labelledby="h04">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 04 · The origin</span><span class="run" aria-hidden="true">0 – 4</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 04 · The origin</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="40.9" cy="14" r="4"/></svg>0 – 4</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="04">04</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="04">04</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <div class="col">
           <h2 id="h04">Born at Potlatch, 1995.</h2>
           <p>A tournament needed an organization, so the players built one. DiscNW grew out of the Potlatch tournament in 1995 and has been organizing the region’s ultimate ever since.</p>
@@ -653,9 +677,9 @@
   <!-- 05 -->
   <section class="pt" id="pt-05" data-pt="5" aria-labelledby="h05" style="--pt:var(--indigo)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 05 · The span</span><span class="run" aria-hidden="true">0 – 5</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 05 · The span</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="46.3" cy="14" r="4"/></svg>0 – 5</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="05">05</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="05">05</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <div class="col">
           <h2 id="h05">Ages 7 to 70-plus.</h2>
           <p>Summer Youth Ultimate Camps start at seven, and masters hat leagues never really stop. The disc and the field lines stay the same across a playing lifetime.</p>
@@ -680,9 +704,9 @@
   <!-- 06 -->
   <section class="pt" id="pt-06" data-pt="6" aria-labelledby="h06" style="--pt:var(--tidal)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 06 · The flagship</span><span class="run" aria-hidden="true">0 – 6</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 06 · The flagship</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="51.8" cy="14" r="4"/></svg>0 – 6</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="06">06</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="06">06</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <div class="col">
           <h2 id="h06">The largest mixed youth ultimate tournament in the world.</h2>
           <p>It is called Spring Reign, and it happens here every spring. Nothing in mixed youth ultimate, anywhere on earth, is bigger. Middle schoolers headline it.</p>
@@ -694,9 +718,9 @@
   <!-- 07 -->
   <section class="pt" id="pt-07" data-pt="7" aria-labelledby="h07">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 07 · The fee</span><span class="run" aria-hidden="true">0 – 7</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 07 · The fee</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="57.3" cy="14" r="4"/></svg>0 – 7</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="07">07</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="07">07</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <div class="col">
           <h2 id="h07">From $33. Sliding scale. No questions.</h2>
           <p>Registration slides down to $33 so that money never keeps anyone off the field. You pay what works for you, and nobody checks. Barrier-free here is a line item in the budget.</p>
@@ -708,9 +732,9 @@
   <!-- 08 — the quote -->
   <section class="pt pt-quote" id="pt-08" data-pt="8" aria-label="Point 8, a parent's point" style="--pt:var(--indigo)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 08 · The sideline</span><span class="run" aria-hidden="true">0 – 8</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 08 · The sideline</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="62.7" cy="14" r="4"/></svg>0 – 8</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="08">08</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="08">08</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <div class="col">
           <figure style="margin:0">
             <blockquote>
@@ -726,9 +750,9 @@
   <!-- 09 -->
   <section class="pt" id="pt-09" data-pt="9" aria-labelledby="h09" style="--pt:var(--tidal)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 09 · The season</span><span class="run" aria-hidden="true">0 – 9</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 09 · The season</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="68.2" cy="14" r="4"/></svg>0 – 9</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="09">09</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="09">09</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <div class="col">
           <h2 id="h09">Fall belongs to the schools.</h2>
           <p>The Middle School and High School leagues turn hallways into rosters across the region each autumn. For a lot of kids, sixth grade is where the first pull happens.</p>
@@ -740,9 +764,9 @@
   <!-- 10 — the hotline -->
   <section class="pt" id="pt-10" data-pt="10" aria-labelledby="h10">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 10 · The hotline</span><span class="run" aria-hidden="true">0 – 10</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 10 · The hotline</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="73.7" cy="14" r="4"/></svg>0 – 10</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="10">10</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="10">10</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <div class="col">
           <h2 id="h10" class="hotline"><a href="tel:+12067815840" aria-label="Call the DiscNW rainout hotline at (206) 781-5840">(206)<br>781‑5840</a></h2>
           <p>The rainout hotline. Seattle ultimate was checking field closures by phone long before apps and push alerts, and on a wet morning this number still answers.</p>
@@ -762,9 +786,9 @@
   <!-- 11 -->
   <section class="pt" id="pt-11" data-pt="11" aria-labelledby="h11" style="--pt:var(--indigo)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 11 · The beach</span><span class="run" aria-hidden="true">0 – 11</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 11 · The beach</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="79.1" cy="14" r="4"/></svg>0 – 11</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="11">11</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="11">11</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <div class="col">
           <h2 id="h11">One weekend a year is played on sand.</h2>
           <p>Sea Plastic trades the grass for sand and the drizzle for salt air. It is the one weekend a year when players get to leave their cleats at home.</p>
@@ -776,9 +800,9 @@
   <!-- 12 -->
   <section class="pt" id="pt-12" data-pt="12" aria-labelledby="h12" style="--pt:var(--tidal)">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 12 · The coaches</span><span class="run" aria-hidden="true">0 – 12</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 12 · The coaches</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="84.6" cy="14" r="4"/></svg>0 – 12</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="12">12</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="12">12</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <div class="col">
           <h2 id="h12">Coaches, coached.</h2>
           <p>The DiscNW Coaching Collective trains the people who teach the game, school team and club alike, so a kid’s first coach has been coached too.</p>
@@ -791,9 +815,9 @@
   <!-- 13 -->
   <section class="pt" id="pt-13" data-pt="13" aria-labelledby="h13">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 13 · The engine</span><span class="run" aria-hidden="true">0 – 13</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 13 · The engine</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="90.1" cy="14" r="4"/></svg>0 – 13</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="13">13</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="13">13</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <div class="col">
           <h2 id="h13">Run on volunteers.</h2>
           <p>Field-liners, score reporters, tournament directors, board members. The organization runs on people who show up early, stay late, and take a shift because somebody once took one for them.</p>
@@ -805,9 +829,9 @@
   <!-- 14 -->
   <section class="pt" id="pt-14" data-pt="14" aria-labelledby="h14">
     <div class="wrap">
-      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 14 · The roster spot</span><span class="run" aria-hidden="true">0 – 14</span></div>
+      <div class="tagrow"><span><span class="tickmark" aria-hidden="true"></span>Point 14 · The roster spot</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="95.5" cy="14" r="4"/></svg>0 – 14</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="14">14</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="14">14</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <div class="col">
           <h2 id="h14">You.</h2>
           <p>Fourteen points in, one thing missing. Look at the scoreboard and notice who has scored every point on this page. That is the model: <em>DiscNW pulls. You score.</em></p>
@@ -820,9 +844,9 @@
   <section class="pt pt-15" id="pt-15" data-pt="15" aria-labelledby="h15">
     <div class="flood" aria-hidden="true"></div>
     <div class="wrap">
-      <div class="tagrow"><span>Point 15 · Game point</span><span class="run" aria-hidden="true">0 – 15 · Game</span></div>
+      <div class="tagrow"><span>Point 15 · Game point</span><span class="run" aria-hidden="true"><svg class="fieldpos" viewBox="0 0 120 28" aria-hidden="true" focusable="false"><rect class="fp-f" x="1" y="1" width="118" height="26"/><line class="fp-l" x1="19" y1="1" x2="19" y2="27"/><line class="fp-l" x1="101" y1="1" x2="101" y2="27"/><line class="fp-m" x1="60" y1="1" x2="60" y2="27"/><circle class="fp-d" cx="107.0" cy="14" r="4"/></svg>0 – 15 · Game</span></div>
       <div class="ptgrid">
-        <div class="numcell" aria-hidden="true"><div class="num" data-n="15">15</div><span class="burst"></span></div>
+        <div class="numcell" aria-hidden="true"><div class="num" data-n="15">15</div><span class="burst"></span><span class="pull-disc" aria-hidden="true"></span></div>
         <div class="col">
           <h2 id="h15" class="game-word">Game.</h2>
           <p class="lead">You read to 15. Now play to 15.</p>
